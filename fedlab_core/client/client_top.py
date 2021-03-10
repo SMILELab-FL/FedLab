@@ -4,7 +4,7 @@ import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from FLTB_core.utils.messaging import send_message, recv_message, MessageCode
+from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
 
 class ClientTop(Process):
     def __init__(self, worker, args):

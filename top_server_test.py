@@ -1,8 +1,8 @@
 import torch
-from FLTB_core.server.parameter_server import SSGDParameterServer
-from FLTB_core.models.lenet import LeNet
-from FLTB_core.server.end_top import ServerTop
-from FLTB_core.utils.serialization import ravel_model_params
+from fedlab_core.server.parameter_server import SSGDParameterServer
+from fedlab_core.models.lenet import LeNet
+from fedlab_core.server.end_top import ServerTop
+from fedlab_core.utils.serialization import ravel_model_params
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import os
 
-from FLTB_core.utils.serialization import ravel_model_params
+from fedlab_core.utils.serialization import ravel_model_params
 
 
 def ClientWork(self):
