@@ -1,8 +1,6 @@
 import os
 
-import torch
-
-from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
+from FLTB_core.utils.serialization import ravel_model_params
 
 
 def ClientWork(self):
@@ -15,8 +13,7 @@ def ClientWork(self):
         self._data_loader = data_loader
 
     def train(self, buff):
-        unravel_model_params(self._model, buff) # load model params
-        optimizer = torch.optimizer
+        raise NotImplementedError()
 
     def get_buff(self):
         return self._buff

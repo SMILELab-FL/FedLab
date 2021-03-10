@@ -6,8 +6,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from torch.multiprocessing import Process
-from fedlab_core.utils.messaging import MessageCode, send_message
-from fedlab_core.utils.serialization import ravel_model_params
+from FLTB_core.utils.messaging import MessageCode, send_message
+from FLTB_core.utils.serialization import ravel_model_params
 
 _LOGGER = logging.getLogger(__name__)
 handler = logging.FileHandler("log.txt")
