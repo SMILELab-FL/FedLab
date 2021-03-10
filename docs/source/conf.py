@@ -34,6 +34,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
               'sphinx.ext.mathjax',
+	      'sphinx_typo3_theme',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
