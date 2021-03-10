@@ -8,10 +8,9 @@ import torch.distributed as dist
 import torchvision
 import torchvision.transforms as transforms
 
-from FLTB_core.models.lenet import LeNet
-from FLTB_core.utils.messaging import recv_message, send_message, MessageCode
-from FLTB_core.utils.serialization import ravel_model_params, unravel_model_params
-
+from fedlab_core.models.lenet import LeNet
+from fedlab_core.utils.messaging import recv_message, send_message, MessageCode
+from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
 
 
 if __name__ == "__main__":
