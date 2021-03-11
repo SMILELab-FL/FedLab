@@ -34,13 +34,14 @@ class ClientTop(Process):
         """
         开放接口
         """
+        self._worker.update_model(parameter)
         self._worker.train(self._buff)
 
     def sync(self, buff):
         """
         开放接口 
         """
-        raise NotImplementedError()
+        send_message(MessageCode.ParameterUpdate, buff)
 
 
 if __name__ == "__main__":
