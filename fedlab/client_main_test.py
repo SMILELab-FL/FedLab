@@ -8,12 +8,14 @@ import torch.distributed as dist
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab_core.models.lenet import LeNet
-from fedlab_core.utils.messaging import recv_message, send_message, MessageCode
-from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
+from fedlab.fedlab_core.models.lenet import LeNet
+from fedlab.fedlab_core.utils.messaging import recv_message, send_message, MessageCode
+from fedlab.fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
+
 
 
 if __name__ == "__main__":
+    """
     parser = argparse.ArgumentParser(description='Distbelief training example')
     parser.add_argument('--server_ip', type=str, default="127.0.0.1")
     parser.add_argument('--server_port', type=int, default=3001)
@@ -39,3 +41,5 @@ if __name__ == "__main__":
     buff[:] = 0
 
     local_buff = send_message(MessageCode.ParameterUpdate, buff, dst=0)
+    """
+    print("test")

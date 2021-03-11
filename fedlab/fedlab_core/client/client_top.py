@@ -1,10 +1,10 @@
-import os
 
 import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from FLTB_core.utils.messaging import send_message, recv_message, MessageCode
+from fedlab.fedlab_core.utils.messaging import send_message, recv_message, MessageCode
+
 
 class ClientTop(Process):
     def __init__(self, worker, args):
@@ -22,14 +22,13 @@ class ClientTop(Process):
         process
         """
         while(True):
-            recv_message(self._buff, src=0) # 阻塞式
+            recv_message(self._buff, src=0)  # 阻塞式
             sender = int(self._buff[0].item())
             message_code = MessageCode(self._buff[1].item())
             parameter = self._buff[2:]
 
             self.receive(sender, message_code, parameter)
             self.sync(self._worker.get_buff())
-        
 
     def receive(self, sender, message_code, parameter):
         """
@@ -42,3 +41,7 @@ class ClientTop(Process):
         开放接口 
         """
         raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    print("test")

@@ -4,9 +4,9 @@ import os
 import torch.distributed as dist
 from torch.multiprocessing import Process, Lock, Value
 
-from FLTB_core.server import SSGDParameterServer
-from FLTB_core.server import PramsServer
-from FLTB_core.utils.messaging import MessageCode, send_message, recv_message
+from fedlab.fedlab_core.server import SSGDParameterServer
+from fedlab.fedlab_core.server import PramsServer
+from fedlab.fedlab_core.utils.messaging import MessageCode, send_message, recv_message
 
 _LOGGER = logging.getLogger(__name__)
 handler = logging.FileHandler("log.txt")

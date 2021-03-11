@@ -5,8 +5,8 @@ import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from FLTB_core.server import PramsServer
-from FLTB_core.utils.messaging import MessageCode, recv_message, send_message
+from fedlab.fedlab_core.server import PramsServer
+from fedlab.fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 
 
 class ServerTop(Process):
