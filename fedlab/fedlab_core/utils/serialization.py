@@ -1,9 +1,5 @@
 import torch
 
-"""
-压缩模型参数
-"""
-
 
 def ravel_model_params(model, grads=False, cuda=False):
     """

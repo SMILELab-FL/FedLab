@@ -29,7 +29,8 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")
-            num_replicas = dist.get_world_size() - 1
+            #num_replicas = dist.get_world_size() - 1
+            num_replicas = 2
         if rank is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")

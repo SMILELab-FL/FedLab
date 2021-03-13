@@ -7,14 +7,14 @@ class ExRecorder:
         self._records = []
 
     def add_log(self, record):
-        # print(record)
+        print(record)
         temp = []
         for key in record:
             temp.append(record[key].detach().item())
         self._records.append(temp)
 
     def add_log_direct(self, record):
-        # print(record)
+        print(record)
         temp = []
         for key in record:
             temp.append(record[key])

@@ -5,8 +5,7 @@ import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from fedlab.fedlab_core.server import PramsServer
-from fedlab.fedlab_core.utils.messaging import MessageCode, recv_message, send_message
+from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 
 
 class ServerTop(Process):
@@ -28,11 +27,15 @@ class ServerTop(Process):
                                 rank=0, world_size=self._params_server.client_num+1)
         print("TPS|Connect to client successfully!")
 
-        act_clients = threading.Thread(target=self.activate)
-        wait_info = threading.Thread(target=self.receive)
+        #act_clients = threading.Thread(target=self.activate)
+        #wait_info = threading.Thread(target=self.receive)
         self.running = True
         while self.running:
             print("TPS|Polling for message...")
+
+            self.activate()
+            self.receive()
+            """
             # 开启选取参与者线程
             act_clients.start()
             # 开启接收回信线程
@@ -40,6 +43,7 @@ class ServerTop(Process):
 
             act_clients.join()
             wait_info.join()
+            """
 
 
     def activate(self):
@@ -52,7 +56,7 @@ class ServerTop(Process):
             send_message(MessageCode.ParameterUpdate, payload, dst=index)
 
 
-    def receive(self, sender, message_code, parameter):
+    def receive(self):
         """
         开放接口
         """

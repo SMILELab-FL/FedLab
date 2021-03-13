@@ -1,4 +1,3 @@
-# Customer By Congjian
 
 class ExRecorder:
     def __init__(self, filename):

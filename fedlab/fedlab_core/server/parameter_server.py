@@ -4,8 +4,8 @@ import torch
 import torch.distributed as dist
 
 from torch.multiprocessing import Process
-from fedlab.fedlab_core.utils.messaging import MessageCode, send_message
-from fedlab.fedlab_core.utils.serialization import ravel_model_params
+from fedlab_core.utils.messaging import MessageCode, send_message
+from fedlab_core.utils.serialization import ravel_model_params
 
 _LOGGER = logging.getLogger(__name__)
 handler = logging.FileHandler("log.txt")
