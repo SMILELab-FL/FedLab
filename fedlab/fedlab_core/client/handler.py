@@ -65,9 +65,7 @@ class ClientSGDHandler:
 
         for epoch in range(args.epochs):
             self._model.train()
-            i = 0
             for inputs, labels in self._data_loader:
-                i += 1
                 if args.cuda:
                     inputs, labels = inputs.cuda(), labels.cuda()
 
@@ -80,10 +78,11 @@ class ClientSGDHandler:
                 _, predicted = torch.max(outputs, 1)
                 accuracy = accuracy_score(predicted, labels)
 
-                train_recorder.add_log_direct({'iteration': i,
-                                               'time': time.time(),
-                                               'training_loss': loss.detach().item(),
-                                               'training_accuracy': accuracy.item()})
+            train_recorder.add_log_direct({'epoch': epoch,
+                                            'time': time.time(),
+                                            'training_loss': loss.detach().item(),
+                                            'training_accuracy': accuracy.item()})
+                                            
         self._buff = ravel_model_params(self._model, cuda=True)
 
     def update_model(self, buff):

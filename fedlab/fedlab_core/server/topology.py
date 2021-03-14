@@ -50,6 +50,7 @@ class ServerTop(Process):
         """
         开放接口
         """
+        print("activating...")
         usr_list = self._params_server.select_clients()
         payload = self._params_server.get_buff()
         for index in usr_list:
@@ -60,6 +61,7 @@ class ServerTop(Process):
         """
         开放接口
         """
+        self._params_server.start_round()
         while(True):
             recv_message(self.buff)
             sender = int(self.buff[0].item())

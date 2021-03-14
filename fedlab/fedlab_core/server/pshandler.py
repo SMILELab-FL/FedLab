@@ -18,6 +18,7 @@ class SSGDParameterServer():
         ParameterServer
         同步参数服务器
     """
+
     def __init__(self, model, cuda=False, client_num=10):
         _LOGGER.info("Creating ParameterServer")
         self._model = model     # pytorch model
@@ -34,13 +35,14 @@ class SSGDParameterServer():
         # setup
         self.update_flag = False
         self.cuda = cuda
-        
+
     def receive(self, sender, message_code, parameter) -> None:
         """
         上层调用
         开放接口
         """
-        print("Processing message: {} from sender {}".format(message_code.name, sender))
+        print("Processing message: {} from sender {}".format(
+            message_code.name, sender))
         #_LOGGER.info("Processing message: {} from sender {}".format(message_code.name, sender))
         if message_code == MessageCode.ParameterUpdate:
             # 更新参数
@@ -76,6 +78,9 @@ class SSGDParameterServer():
 
     def is_updated(self) -> bool:
         return self.update_flag
+
+    def start_round(self):
+        self.update_flag = False
 
     def select_clients(self):
         """

@@ -37,15 +37,16 @@ class ClientSyncTop(Process):
         process
         """
         while(True):
+            print("waiting message from server...")
             recv_message(self._buff, src=0)  # 阻塞式
             sender = int(self._buff[0].item())
             message_code = MessageCode(self._buff[1].item())
             parameter = self._buff[2:]
 
             # need logger
-
             self.receive(sender, message_code, parameter)
             self.synchronise(self._worker.get_buff())
+            print("synchronized...")
 
     def receive(self, sender, message_code, parameter):
         """

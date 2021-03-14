@@ -25,19 +25,22 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         shuffle (optional): If true (default), sampler will shuffle the indices
     """
 
-    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
+    def __init__(self, dataset, rank, num_replicas, shuffle=True):
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")
             #num_replicas = dist.get_world_size() - 1
-            num_replicas = 2
+            num_replicas = num_replicas
+        """
         if rank is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")
             rank = dist.get_rank() - 1
+        """
+        
         self.dataset = dataset
         self.num_replicas = num_replicas
-        self.rank = rank
+        self.rank = rank-1
         self.epoch = 0
         self.num_samples = int(math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas

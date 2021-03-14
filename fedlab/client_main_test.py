@@ -17,7 +17,7 @@ from fedlab_core.client.handler import ClientSGDHandler
 from fedlab_core.client.topology import ClientSyncTop
 
 
-def get_dataset(dataset='MNIST', transform=None, root='../../datasets/mnist/'):
+def get_dataset(args, dataset='MNIST', transform=None, root='../../datasets/mnist/'):
     """
     :param dataset_name:
     :param transform:
@@ -56,7 +56,7 @@ def get_dataset(dataset='MNIST', transform=None, root='../../datasets/mnist/'):
         testset = torchvision.datasets.CIFAR10(
             root=root, train=False, download=True, transform=test_transform)
 
-    trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank),
+    trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank, num_replicas=args.world_size-1),
                                               batch_size=128,
                                               drop_last=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=len(testset),
@@ -81,14 +81,14 @@ if __name__ == "__main__":
 
     parser.add_argument('--server_ip', type=str, default="127.0.0.1")
     parser.add_argument('--server_port', type=int, default=3001)
-    parser.add_argument('--local_rank', type=int, default=1)
-    parser.add_argument('--world_size', type=int, default=2)
+    parser.add_argument('--local_rank', type=int)
+    parser.add_argument('--world_size', type=int, default=3)
     args = parser.parse_args()
     args.cuda = True
 
     model = LeNet()
 
-    trainloader, testloader = get_dataset()
+    trainloader, testloader = get_dataset(args)
 
     handler = ClientSGDHandler(model, trainloader, args)
     top = ClientSyncTop(handler, args)
