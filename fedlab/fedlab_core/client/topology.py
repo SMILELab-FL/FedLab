@@ -7,7 +7,7 @@ from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
 
 
 class ClientCommunicationTopology(Process):
-
+    """Abstract class"""
     def __init__(self, backend_handler) -> None:
         super().__init__()
         self._backend = backend_handler
@@ -22,20 +22,44 @@ class ClientCommunicationTopology(Process):
         pass
 
 
-class ClientSyncTop(Process):
-    def __init__(self, worker, args):
-        self._worker = worker
-        self._buff = torch.zeros(worker.get_buff().numel() + 2).cpu() # 需要修改
+class ClientSyncTop(ClientCommunicationTopology):
+    """Synchronise conmmunicate Class
+       This is the top class in our framework which is mainly responsible for network communication of CLIENT!
+       Synchronize with server following agreements defined in run().
+    """
+    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", args=None):
+        """ Constructor 
+        Args:
+            backend_handler: class derived from ClientBackendHandler
+            server_addr: (ip:port) address of server
+            world_size: world_size for torch.distributed initialization
+            rank: rank for torch.distributed initialization
+            args: other params
+        Returns:
+            None
+        Raises:
+            Errors raised by torch.distributed.init_process_group()
+        """
+        self._backend = backend_handler
+
+        # distributed init params
+        self.rank = rank
+        self.server_addr = server_addr
+        self.word_size = world_size
+        self.dist_backend = dist_backend
+
+        self._buff = torch.zeros(
+            self._backend.get_buff().numel() + 2).cpu()  # 需要修改
         self.args = args
-        dist.init_process_group(backend="gloo", init_method='tcp://{}:{}'
-                                .format(args.server_ip, args.server_port),
-                                rank=args.local_rank, world_size=args.world_size)
+
+        dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
+                                .format(self.server_addr[0], self.server_addr[1]),
+                                rank=self.rank, world_size=self.world_size)
+
         super().__init__()
 
     def run(self):
-        """
-        process
-        """
+        """Main process of client is defined here"""
         while(True):
             print("waiting message from server...")
             recv_message(self._buff, src=0)  # 阻塞式
@@ -45,18 +69,38 @@ class ClientSyncTop(Process):
 
             # need logger
             self.receive(sender, message_code, parameter)
-            self.synchronise(self._worker.get_buff())
+            self.synchronise(self._backend.get_buff())
             print("synchronized...")
 
-    def receive(self, sender, message_code, parameter):
-        """
-        开放接口
-        """
-        self._worker.update_model(parameter)
-        self._worker.train(self.args)
+            # 虚添加中止该进程的方法
 
-    def synchronise(self, buff):
+    def receive(self, sender, message_code, payload):
+        """Synchronise function: reaction of receive new message
+
+        Args:
+            sender: index in torch.distributed
+            message_code: agreements code defined in MessageCode class
+            payload: serialized network parameter (by ravel_model_params function)
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
-        开放接口 
+        self._backend.update_model(payload)
+        self._backend.train(self.args)
+
+    def synchronise(self, buffer):
+        """synchronise local network with server
+
+        Args:
+            buffer: serialized network parameters
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
-        send_message(MessageCode.ParameterUpdate, buff)
+        send_message(MessageCode.ParameterUpdate, buffer)

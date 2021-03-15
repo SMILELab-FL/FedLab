@@ -7,6 +7,15 @@ class ExRecorder:
         self._records = []
 
     def add_log(self, record):
+        """explaintion
+
+        Args:
+
+        Returns:
+
+        Raises:
+            
+        """
         print(record)
         temp = []
         for key in record:
@@ -14,6 +23,15 @@ class ExRecorder:
         self._records.append(temp)
 
     def add_log_direct(self, record):
+        """explaintion
+
+        Args:
+
+        Returns:
+
+        Raises:
+            
+        """
         print(record)
         temp = []
         for key in record:
@@ -21,6 +39,15 @@ class ExRecorder:
         self._records.append(temp)
 
     def save_to_file(self):
+        """explaintion
+
+        Args:
+
+        Returns:
+
+        Raises:
+            
+        """
         with open(self._filename, "w") as f:
             for item in self._records:
                 f.write(str(item) + "\n")

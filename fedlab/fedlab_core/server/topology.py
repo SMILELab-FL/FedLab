@@ -10,17 +10,32 @@ from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 
 class ServerTop(Process):
     """
-    仅负责网络通信的任务
-    底层参数的处理交给self._params_server, 因此需要初始化底层算法逻辑
+    Synchronise conmmunicate Class
+       This is the top class in our framework which is mainly responsible for network communication of SERVER!.
+       Synchronize with clients following agreements defined in run().
     """
-    def __init__(self, ParameterServer, args):
-        self._params_server = ParameterServer
+    def __init__(self, ParameterServerHandler, server_addr,args=None):
+        """constructor
+
+        Args:
+            ParameterServerHandler: a calss derived from ParameterServerHandler
+            args: params
+
+        Returns:
+            None
+        Raises:
+            None
+            
+    """
+        self._params_server = ParameterServerHandler
+
+        self.server_addr = server_addr
+
         self.buff = torch.zeros(self._params_server.get_buff().numel() + 2).cpu()  # 通信信息缓存 模型参数+2
+        self.args = args
 
     def run(self):
-        """
-        TopServer进程函数
-        """
+        """process function"""
         print("TPS|Waiting for the connection with clients!")
         dist.init_process_group(backend="gloo", init_method='tcp://{}:{}'
                                 .format("127.0.0.1", 3001),
@@ -45,10 +60,15 @@ class ServerTop(Process):
             wait_info.join()
             """
 
-
     def activate(self):
-        """
-        开放接口
+        """explaintion
+
+        Args:
+
+        Returns:
+
+        Raises:
+            
         """
         print("activating...")
         usr_list = self._params_server.select_clients()
@@ -56,10 +76,15 @@ class ServerTop(Process):
         for index in usr_list:
             send_message(MessageCode.ParameterUpdate, payload, dst=index)
 
-
     def receive(self):
-        """
-        开放接口
+        """explaintion
+
+        Args:
+
+        Returns:
+
+        Raises:
+            
         """
         self._params_server.start_round()
         while(True):
@@ -67,7 +92,7 @@ class ServerTop(Process):
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
             parameter = self.buff[2:]
-            
+
             # handler 交给下层处理
             self._params_server.receive(sender, message_code, parameter)
 

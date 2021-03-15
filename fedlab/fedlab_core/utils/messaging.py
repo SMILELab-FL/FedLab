@@ -7,6 +7,7 @@ import torch.distributed as dist
 
 class MessageCode(Enum):
     """Different types of messages between client and server that we support go here."""
+    
     ParameterRequest = 0
     GradientUpdate = 1
     ParameterUpdate = 2
@@ -17,6 +18,13 @@ class MessageCode(Enum):
 def send_message(message_code, payload, dst=0):
     """Sends a message to a destination
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
+
+    Args:
+
+    Returns:
+
+    Raises:
+        
     """
     #_LOGGER.info("SENDING MESSAGE: {} RANK: {}".format(message_code, dist.get_rank()))
     print("SENDING MESSAGE: {} RANK: {} => RANK: {}".format(
@@ -29,6 +37,15 @@ def send_message(message_code, payload, dst=0):
 
 
 def recv_message(payload, src=None):
+    """explaintion
+
+    Args:
+
+    Returns:
+
+    Raises:
+        
+    """
     #_LOGGER.info("RECV MESSAGE: RANK: {}".format(dist.get_rank()))
     print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))
     dist.recv(tensor=payload, src=src)
@@ -38,6 +55,13 @@ def recv_message(payload, src=None):
 def broadcast_message(message_code, payload):
     """broadcast a message to all workers
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
+
+    Args:
+
+    Returns:
+
+    Raises:
+        
     """
     #_LOGGER.info("SBROADCASTING MESSAGE: {} RANK: {} => ALL".format(message_code, dist.get_rank()))
     # print("BROADCASTING MESSAGE: {} RANK: {} => ALL ".format(message_code, dist.get_rank()))
@@ -49,6 +73,13 @@ def broadcast_message(message_code, payload):
 
 def recv_broadcast_message(recv_buff):
     """workers recv the message from the center
+    
+    Args:
+
+    Returns:
+
+    Raises:
+        
     """
     dist.broadcast(tensor=recv_buff, src=0)
     #message_code = MessageCode(recv_buff[1].item()),

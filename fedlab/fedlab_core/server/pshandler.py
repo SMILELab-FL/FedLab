@@ -13,19 +13,34 @@ handler.setLevel(logging.INFO)
 _LOGGER.addHandler(handler)
 
 
-class SSGDParameterServer():
-    """
-        ParameterServer
-        同步参数服务器
-    """
+class ParameterServerHandler():
+    """abstract class"""
+    def __init__(self) -> None:
+        pass
 
-    def __init__(self, model, cuda=False, client_num=10):
-        _LOGGER.info("Creating ParameterServer")
+class SyncSGDParameterServerHandler():
+    """Synchronize Parameter Server Handler
+        Backend of parameter sever
+    """
+    def __init__(self, model, cuda=False, client_num=10, select_ratio=1.0):
+        """constructor
+
+        Args:
+            model: torch.nn.Module
+            cuda: use GPUs or not
+            client_num: the number of client in this federation
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self._model = model     # pytorch model
         self._buff = ravel_model_params(self._model)    # 序列化后的模型参数
 
         self.client_num = client_num  # 每轮参与者数量 定义buffer大小
-        self.select_ratio = 1
+        self.select_ratio = select_ratio
         self.round_num = int(self.select_ratio*self.client_num)
 
         # buffer
@@ -36,10 +51,19 @@ class SSGDParameterServer():
         self.update_flag = False
         self.cuda = cuda
 
-    def receive(self, sender, message_code, parameter) -> None:
-        """
-        上层调用
-        开放接口
+    def receive(self, sender, message_code, payload) -> None:
+        """define what server do when receive client message
+
+        Args:
+            sender: index of client in distributed
+            message_code: agreements code defined in MessageCode class
+            payload: serialized model parameters
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         print("Processing message: {} from sender {}".format(
             message_code.name, sender))
@@ -50,7 +74,7 @@ class SSGDParameterServer():
             if self.grad_buffer[buffer_index] is not None:
                 return
             self.grad_buffer_cnt += 1
-            self.grad_buffer[buffer_index] = parameter.clone()
+            self.grad_buffer[buffer_index] = payload.clone()
 
             if self.grad_buffer_cnt == self.round_num:
                 print("server model updated")
@@ -77,34 +101,29 @@ class SSGDParameterServer():
             raise Exception("Undefined message type!")
 
     def is_updated(self) -> bool:
+        """"""
         return self.update_flag
 
     def start_round(self):
         self.update_flag = False
 
     def select_clients(self):
-        """
-        上层调用
-        """
+        """return a list of client indices"""
         # 随机选取
         id_list = [i+1 for i in range(self.client_num)]
         select = random.sample(id_list, self.round_num)
         return select
 
     def get_buff(self):
-        """
-        上层调用
-        """
+        """return serialized parameters buffer"""
         return self._buff
 
     def get_model(self):
-        """
-        上层调用
-        """
+        """return torch.nn.Module"""
         return self._model
 
 
-class ASGDParameterServer():
+class AsyncSGDParameterServer():
     """ParameterServer
         异步参数服务器
     """
