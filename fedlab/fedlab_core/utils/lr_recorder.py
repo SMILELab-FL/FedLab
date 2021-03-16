@@ -1,5 +1,6 @@
 
 class ExRecorder:
+    """Record information during training"""
     def __init__(self, filename):
         self._title = ["cross_entropy", "accuracy", "top5_accuracy"]
         self._filename = filename

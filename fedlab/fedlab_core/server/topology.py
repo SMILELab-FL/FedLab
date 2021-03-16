@@ -19,7 +19,7 @@ class ServerTop(Process):
         """constructor
 
         Args:
-            ParameterServerHandler: a calss derived from ParameterServerHandler
+            ParameterServerHandler: a class derived from ParameterServerHandler
             args: params
 
         Returns:

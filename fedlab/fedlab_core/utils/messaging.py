@@ -7,7 +7,6 @@ import torch.distributed as dist
 
 class MessageCode(Enum):
     """Different types of messages between client and server that we support go here."""
-    
     ParameterRequest = 0
     GradientUpdate = 1
     ParameterUpdate = 2
@@ -20,11 +19,15 @@ def send_message(message_code, payload, dst=0):
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
 
     Args:
+        message_code: defined in MessageCode
+        payload: serialized tensor
+        dst: destination this message go, default is 0 which means server
 
     Returns:
+        serialized message package
 
     Raises:
-        
+        None
     """
     #_LOGGER.info("SENDING MESSAGE: {} RANK: {}".format(message_code, dist.get_rank()))
     print("SENDING MESSAGE: {} RANK: {} => RANK: {}".format(
@@ -37,14 +40,18 @@ def send_message(message_code, payload, dst=0):
 
 
 def recv_message(payload, src=None):
-    """explaintion
+    """Receive meassage from src
+        when src is None, process will receive from whoever send message
 
     Args:
-
+        payload: given tensor to store the data this process received
+        src: sender index
+        
     Returns:
+        serialized model parameters
 
     Raises:
-        
+        None
     """
     #_LOGGER.info("RECV MESSAGE: RANK: {}".format(dist.get_rank()))
     print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))

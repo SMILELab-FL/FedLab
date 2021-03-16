@@ -7,26 +7,31 @@ from torch.multiprocessing import Process
 from fedlab_core.utils.messaging import MessageCode, send_message
 from fedlab_core.utils.serialization import ravel_model_params
 
-_LOGGER = logging.getLogger(__name__)
-handler = logging.FileHandler("log.txt")
-handler.setLevel(logging.INFO)
-_LOGGER.addHandler(handler)
-
 
 class ParameterServerHandler():
     """abstract class"""
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, model, cuda=False) -> None:
+        self._model = model
+        self._buffer = ravel_model_params(self._model)
+
+    def receive(self):
+        raise NotImplementedError()
+
+    def get_buffer(self):
+        return self._buffer
+
+    def get_model(self):
+        return self._model
 
 
 class SyncSGDParameterServerHandler():
     """Synchronize Parameter Server Handler
-        Backend of parameter sever
+        Backend of parameter server
     """
 
     def __init__(self, model, cuda=False, client_num=10, select_ratio=1.0):
-        """constructor
+        """Constructor
 
         Args:
             model: torch.nn.Module
@@ -132,14 +137,13 @@ class AsyncSGDParameterServer():
     """
 
     def __init__(self, model):
-        _LOGGER.info("Creating ParameterServer")
+        #_LOGGER.info("Creating ParameterServer")
         print("Creating ParameterServer")
         self._model = model
         self.exit_flag = 0
 
     def receive(self, sender, message_code, parameter):
-        _LOGGER.info("Processing message: {} from sender {}".format(
-            message_code.name, sender))
+        #_LOGGER.info("Processing message: {} from sender {}".format(message_code.name, sender))
         # print("Processing message: {} from sender {}".format(message_code.name, sender))
 
         if message_code == MessageCode.ParameterUpdate:
