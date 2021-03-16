@@ -53,7 +53,7 @@ class ClientSGDHandler(ClientBackendHandler):
         else:
             self._model = model.cpu()
 
-        self._buff = ravel_model_params(model, cuda=True)
+        self._buff = ravel_model_params(model, cuda=cuda)
         self._data_loader = data_loader
         self.cuda = cuda
 
@@ -81,6 +81,7 @@ class ClientSGDHandler(ClientBackendHandler):
         train_recorder = ExRecorder(
             os.path.join(output_dir, "train_history_rank_%d" % self.args.local_rank))
 
+        print("start train process...")
         for epoch in range(epochs):
             self._model.train()
             for inputs, labels in self._data_loader:

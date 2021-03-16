@@ -15,13 +15,16 @@ _LOGGER.addHandler(handler)
 
 class ParameterServerHandler():
     """abstract class"""
+
     def __init__(self) -> None:
         pass
+
 
 class SyncSGDParameterServerHandler():
     """Synchronize Parameter Server Handler
         Backend of parameter sever
     """
+
     def __init__(self, model, cuda=False, client_num=10, select_ratio=1.0):
         """constructor
 

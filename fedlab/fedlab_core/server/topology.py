@@ -14,7 +14,8 @@ class ServerTop(Process):
        This is the top class in our framework which is mainly responsible for network communication of SERVER!.
        Synchronize with clients following agreements defined in run().
     """
-    def __init__(self, ParameterServerHandler, server_addr,args=None):
+
+    def __init__(self, ParameterServerHandler, server_addr, dist_backend="gloo", args=None):
         """constructor
 
         Args:
@@ -25,20 +26,21 @@ class ServerTop(Process):
             None
         Raises:
             None
-            
-    """
+        """
         self._params_server = ParameterServerHandler
 
         self.server_addr = server_addr
-
-        self.buff = torch.zeros(self._params_server.get_buff().numel() + 2).cpu()  # 通信信息缓存 模型参数+2
+        self.dist_backend = dist_backend
+        self.buff = torch.zeros(
+            self._params_server.get_buff().numel() + 2).cpu()  # 通信信息缓存 模型参数+2
         self.args = args
 
     def run(self):
         """process function"""
         print("TPS|Waiting for the connection with clients!")
-        dist.init_process_group(backend="gloo", init_method='tcp://{}:{}'
-                                .format("127.0.0.1", 3001),
+        # ip 127.0.0.1 port 3001
+        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
+                                .format(self.server_addr[0], self.server_addr[1]), 
                                 rank=0, world_size=self._params_server.client_num+1)
         print("TPS|Connect to client successfully!")
 
@@ -47,9 +49,8 @@ class ServerTop(Process):
         self.running = True
         while self.running:
             print("TPS|Polling for message...")
-
-            self.activate()
-            self.receive()
+            self.activate_clients()
+            self.listen2clients()
             """
             # 开启选取参与者线程
             act_clients.start()
@@ -60,32 +61,16 @@ class ServerTop(Process):
             wait_info.join()
             """
 
-    def activate(self):
-        """explaintion
-
-        Args:
-
-        Returns:
-
-        Raises:
-            
-        """
+    def activate_clients(self):
+        """activate some of clients to join this FL round"""
         print("activating...")
         usr_list = self._params_server.select_clients()
         payload = self._params_server.get_buff()
         for index in usr_list:
             send_message(MessageCode.ParameterUpdate, payload, dst=index)
 
-    def receive(self):
-        """explaintion
-
-        Args:
-
-        Returns:
-
-        Raises:
-            
-        """
+    def listen2clients(self):
+        """listen messages from clients"""
         self._params_server.start_round()
         while(True):
             recv_message(self.buff)

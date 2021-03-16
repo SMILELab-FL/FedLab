@@ -45,7 +45,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         # distributed init params
         self.rank = rank
         self.server_addr = server_addr
-        self.word_size = world_size
+        self.world_size = world_size
         self.dist_backend = dist_backend
 
         self._buff = torch.zeros(
@@ -56,7 +56,7 @@ class ClientSyncTop(ClientCommunicationTopology):
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=self.rank, world_size=self.world_size)
 
-        super().__init__()
+        #super().__init__()
 
     def run(self):
         """Main process of client is defined here"""
@@ -89,7 +89,7 @@ class ClientSyncTop(ClientCommunicationTopology):
             None
         """
         self._backend.update_model(payload)
-        self._backend.train(self.args)
+        self._backend.train(epochs=2)
 
     def synchronise(self, buffer):
         """synchronise local network with server
