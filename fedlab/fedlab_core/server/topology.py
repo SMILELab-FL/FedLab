@@ -38,7 +38,6 @@ class ServerTop(Process):
     def run(self):
         """process function"""
         print("TPS|Waiting for the connection with clients!")
-        # ip 127.0.0.1 port 3001
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]), 
                                 rank=0, world_size=self._params_server.client_num+1)

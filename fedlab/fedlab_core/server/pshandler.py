@@ -8,7 +8,7 @@ from fedlab_core.utils.messaging import MessageCode, send_message
 from fedlab_core.utils.serialization import ravel_model_params
 
 
-class ParameterServerHandler():
+class ParameterServerHandler(object):
     """abstract class"""
 
     def __init__(self, model, cuda=False) -> None:
@@ -30,7 +30,7 @@ class SyncSGDParameterServerHandler():
         Backend of parameter server
     """
 
-    def __init__(self, model, cuda=False, client_num=10, select_ratio=1.0):
+    def __init__(self, model, cuda=False, client_num, select_ratio=1.0):
         """Constructor
 
         Args:
@@ -93,14 +93,6 @@ class SyncSGDParameterServerHandler():
                 self.grad_buffer = [None for _ in range(self.client_num)]
 
                 self.update_flag = True
-
-        elif message_code == MessageCode.ParameterRequest:
-            # 请求参数
-            raise Exception("SSGD should not be pull!!")
-
-        elif message_code == MessageCode.GradientUpdate:
-            # 梯度更新
-            print("client update its gradient")
 
         elif message_code == MessageCode.Exit:
             exit(0)

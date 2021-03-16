@@ -1,10 +1,11 @@
 import logging
 
 
+class logger(object):
+    """record cmd info to file"""
 
-class logger():
-    """
-    事件记录类
-    """
-    def __init__(self):
-        pass
+    def __init__(self, log_file):
+        raise NotImplementedError()
+
+    def log(self, log_str):
+        raise NotImplementedError()

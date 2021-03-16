@@ -11,23 +11,30 @@ from fedlab_core.utils.ex_recorder import ExRecorder
 class ClientBackendHandler(object):
     """Abstract class"""
 
-    def __init__(self) -> None:
-        raise NotImplementedError()
+    def __init__(self, model, cuda):
+        self._model = model
+        self._buffer = ravel_model_params(model)
 
+    # abc
     def train(self):
         raise NotImplementedError()
 
-    def update_model(self):
-        pass
+    def update_model(self, buffer):
+        """update local model using serialized parameters"""
+        unravel_model_params(self._model, buffer)
+        self._buff[:] = buffer
 
     def get_model(self):
-        pass
+        """get torch.nn.Module"""
+        return self._model
 
     def get_buffer(self):
-        pass
+        """get serizlized parameters"""
+        return self._buffer
 
     def evaluate(self):
-        pass
+        """evaluate local model based on given test torch.DataLoader"""
+        raise NotImplementedError()
 
 
 class ClientSGDHandler(ClientBackendHandler):
@@ -73,6 +80,9 @@ class ClientSGDHandler(ClientBackendHandler):
     def train(self, epochs):
         """
         client train its local model based on local dataset.
+
+        Args:
+            epochs: the number of epoch for local train
         """
         def accuracy_score(predicted, labels):
             return predicted.eq(labels).sum().float() / labels.shape[0]
