@@ -24,8 +24,22 @@ class ClientCommunicationTopology(Process):
 
 class ClientSyncTop(ClientCommunicationTopology):
     """Synchronise conmmunicate Class
+
        This is the top class in our framework which is mainly responsible for network communication of CLIENT!
        Synchronize with server following agreements defined in run().
+
+        Args:
+            backend_handler: class derived from ClientBackendHandler
+            server_addr: (ip:port) address of server
+            world_size: world_size for torch.distributed initialization
+            rank: rank for torch.distributed initialization
+            args: other params
+
+        Returns:
+            None
+            
+        Raises:
+            Errors raised by torch.distributed.init_process_group()
     """
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", args=None):
         """ Constructor 

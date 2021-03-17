@@ -29,8 +29,7 @@ class SyncSGDParameterServerHandler():
     """Synchronize Parameter Server Handler
         Backend of parameter server
     """
-
-    def __init__(self, model, cuda=False, client_num, select_ratio=1.0):
+    def __init__(self, model, client_num, cuda=False, select_ratio=1.0):
         """Constructor
 
         Args:
@@ -43,6 +42,7 @@ class SyncSGDParameterServerHandler():
 
         Raises:
             None
+            
         """
         self._model = model     # pytorch model
         self._buff = ravel_model_params(self._model)    # 序列化后的模型参数
