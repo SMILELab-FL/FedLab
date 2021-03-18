@@ -94,4 +94,22 @@ class PipeTop(process):
     """
 
     def __init__(self):
-        pass
+        raise NotImplementedError()
+
+
+class ConnectClient(process):
+
+    def __init__(self, local_addr, world_size, rank=0):
+        super().__init__()
+
+    def run():
+        raise NotImplementedError()
+
+
+class ConnectServer(process):
+
+    def __init__(self, server_addr, world_size, rank):
+        super().__init__()
+
+    def run():
+        raise NotImplementedError()
