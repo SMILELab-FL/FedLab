@@ -1,3 +1,4 @@
+from multiprocessing import process
 import os
 import threading
 
@@ -8,29 +9,30 @@ from torch.multiprocessing import Process
 from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 
 
-class ServerTop(Process):
+class EndTop(Process):
     """
     Synchronise conmmunicate Class
        This is the top class in our framework which is mainly responsible for network communication of SERVER!.
        Synchronize with clients following agreements defined in run().
+
+    Args:
+        ParameterServerHandler: a class derived from ParameterServerHandler
+        args: params
+
+    Returns:
+        None
+    Raises:
+        None
+
     """
 
     def __init__(self, ParameterServerHandler, server_addr, dist_backend="gloo", args=None):
-        """constructor
 
-        Args:
-            ParameterServerHandler: a class derived from ParameterServerHandler
-            args: params
-
-        Returns:
-            None
-        Raises:
-            None
-        """
         self._params_server = ParameterServerHandler
 
         self.server_addr = server_addr
         self.dist_backend = dist_backend
+
         self.buff = torch.zeros(
             self._params_server.get_buff().numel() + 2).cpu()  # 通信信息缓存 模型参数+2
         self.args = args
@@ -39,7 +41,7 @@ class ServerTop(Process):
         """process function"""
         print("TPS|Waiting for the connection with clients!")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
-                                .format(self.server_addr[0], self.server_addr[1]), 
+                                .format(self.server_addr[0], self.server_addr[1]),
                                 rank=0, world_size=self._params_server.client_num+1)
         print("TPS|Connect to client successfully!")
 
@@ -64,7 +66,7 @@ class ServerTop(Process):
         """activate some of clients to join this FL round"""
         print("activating...")
         usr_list = self._params_server.select_clients()
-        payload = self._params_server.get_buff()
+        payload = self._params_server.buffer
         for index in usr_list:
             send_message(MessageCode.ParameterUpdate, payload, dst=index)
 
@@ -82,3 +84,14 @@ class ServerTop(Process):
 
             if self._params_server.is_updated():
                 break
+
+
+class PipeTop(process):
+    """
+    This process help implement hierarchical parameter server
+    it connects clients and Top Server directly, collecting information from clients and sending to Top Server
+
+    """
+
+    def __init__(self):
+        pass

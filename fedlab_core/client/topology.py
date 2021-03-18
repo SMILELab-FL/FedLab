@@ -8,22 +8,39 @@ from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
 
 class ClientCommunicationTopology(Process):
     """Abstract class"""
-    def __init__(self, backend_handler) -> None:
-        super().__init__()
+
+    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
         self._backend = backend_handler
 
+        self.rank = rank
+        self.server_addr = server_addr
+        self.world_size = world_size
+        self.dist_backend = dist_backend
+
+        dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
+                                .format(self.server_addr[0], self.server_addr[1]),
+                                rank=self.rank, world_size=self.world_size)
+
     def run(self):
-        pass
+        "please override this function"
+        raise NotImplementedError()
 
     def receive(self, sender, message_code, payload):
-        pass
+        "please override this function"
+        raise NotImplementedError()
 
     def synchronise(self, payload):
-        pass
+        "please override this function"
+        raise NotImplementedError()
+
+    def network_params(self):
+        info_str = ("server address {}:{}; Distributed info {}/{}; backend {};").format(
+            self.server_addr[0], self.server_addr[1], self.rank, self.world_size, self.dist_backend)
+        print(info_str)
 
 
 class ClientSyncTop(ClientCommunicationTopology):
-    """Synchronise conmmunicate Class
+    """Synchronise conmmunicate class
 
        This is the top class in our framework which is mainly responsible for network communication of CLIENT!
        Synchronize with server following agreements defined in run().
@@ -37,40 +54,34 @@ class ClientSyncTop(ClientCommunicationTopology):
 
         Returns:
             None
-            
+
         Raises:
             Errors raised by torch.distributed.init_process_group()
     """
-    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", args=None):
-        """ Constructor 
-        Args:
-            backend_handler: class derived from ClientBackendHandler
-            server_addr: (ip:port) address of server
-            world_size: world_size for torch.distributed initialization
-            rank: rank for torch.distributed initialization
-            args: other params
-        Returns:
-            None
-        Raises:
-            Errors raised by torch.distributed.init_process_group()
-        """
-        self._backend = backend_handler
+
+    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
+
+        super(self, ClientSyncTop).__init__(backend_handler,
+                                            server_addr, world_size, rank, dist_backend)
+
+        self._buff = torch.zeros(
+            self._backend.get_buff().numel() + 2).cpu()  # 需要修改
+
+        #self._backend = backend_handler
 
         # distributed init params
+        """
         self.rank = rank
         self.server_addr = server_addr
         self.world_size = world_size
         self.dist_backend = dist_backend
+        """
 
-        self._buff = torch.zeros(
-            self._backend.get_buff().numel() + 2).cpu()  # 需要修改
-        self.args = args
-
+        """
         dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=self.rank, world_size=self.world_size)
-
-        #super().__init__()
+        """
 
     def run(self):
         """Main process of client is defined here"""

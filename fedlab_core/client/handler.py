@@ -10,57 +10,60 @@ from fedlab_core.utils.ex_recorder import ExRecorder
 
 class ClientBackendHandler(object):
     """Abstract class"""
-
     def __init__(self, model, cuda):
-        self._model = model
-        self._buffer = ravel_model_params(model)
-
-    # abc
-    def train(self):
-        raise NotImplementedError()
-
-    def update_model(self, buffer):
-        """update local model using serialized parameters"""
-        unravel_model_params(self._model, buffer)
-        self._buff[:] = buffer
-
-    def get_model(self):
-        """get torch.nn.Module"""
-        return self._model
-
-    def get_buffer(self):
-        """get serizlized parameters"""
-        return self._buffer
-
-    def evaluate(self):
-        """evaluate local model based on given test torch.DataLoader"""
-        raise NotImplementedError()
-
-
-class ClientSGDHandler(ClientBackendHandler):
-    def __init__(self, model, data_loader, args, optimizer=None, criterion=None, cuda=False):
-        """client backend handler
-           this class provides data process method to upper layer.  
-
-            Args:
-                model: torch.nn.Module
-                data_loader: torch.Dataloader for this client
-                optimizer: optimizer for this client's model
-                criterion: loss function used in local training process
-                cuda: use GPUs or not
-
-            Returns: 
-                None
-
-            Raises:
-                None
-        """
         if cuda:
             self._model = model.cuda()
         else:
             self._model = model.cpu()
 
-        self._buff = ravel_model_params(model, cuda=cuda)
+        self._buffer = ravel_model_params(model, cuda)
+
+    @property
+    def model(self):
+        """get torch.nn.Module"""
+        return self._model
+
+    @property
+    def buffer(self):
+        """get serizlized parameters"""
+        return self._buffer
+
+    @buffer.setter
+    def buffer(self, buffer):
+        """update local model using serialized parameters"""
+        unravel_model_params(self._model, buffer)
+        self._buff[:] = buffer
+
+    def train(self):
+        """please override this function. This function should manipulate self._model and self._buffer"""
+        raise NotImplementedError()
+
+    def evaluate(self, test_loader):
+        """please override this function. Evaluate local model based on given test torch.DataLoader"""
+        raise NotImplementedError()
+
+
+class ClientSGDHandler(ClientBackendHandler):
+    """client backend handler, this class provides data process method to upper layer.  
+
+        Args:
+            model: torch.nn.Module
+            data_loader: torch.Dataloader for this client
+            optimizer: optimizer for this client's model
+            criterion: loss function used in local training process
+            cuda: use GPUs or not
+
+        Returns: 
+            None
+
+        Raises:
+            None
+    """
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=False):
+        super(self, ClientSGDHandler).__init__(model, cuda)
+
+
+        #self._buff = ravel_model_params(model, cuda=cuda)
         self._data_loader = data_loader
         self.cuda = cuda
 
@@ -74,8 +77,6 @@ class ClientSGDHandler(ClientBackendHandler):
             self.criterion = nn.CrossEntropyLoss()
         else:
             self.criterion = criterion
-
-        self.args = args
 
     def train(self, epochs):
         """
@@ -113,19 +114,6 @@ class ClientSGDHandler(ClientBackendHandler):
                                            'training_accuracy': accuracy.item()})
 
         self._buff = ravel_model_params(self._model, cuda=True)
-
-    def update_model(self, buff):
-        """update local model using serialized parameters"""
-        unravel_model_params(self._model, buff)
-        self._buff[:] = buff
-
-    def get_buff(self):
-        """get serizlized parameters"""
-        return self._buff
-
-    def get_model(self):
-        """get torch.nn.Module"""
-        return self._model
 
     def evaluate(self, test_loader):
         """evaluate local model based on given test torch.DataLoader"""
