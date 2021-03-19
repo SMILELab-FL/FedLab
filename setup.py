@@ -21,7 +21,7 @@ def get_readme():
 setup(
     name="FedLab",
     version="0.1",
-    author="Dun Zeng, Siqi Liang",
+    author="Dun Zeng, Siqi Liang, Congjian Luo",
     author_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
     description="A framework for simulation in federated setting implemented in PyTorch",
     long_description=get_readme(),
