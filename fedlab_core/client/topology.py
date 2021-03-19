@@ -1,4 +1,3 @@
-
 import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
@@ -22,15 +21,15 @@ class ClientCommunicationTopology(Process):
                                 rank=self.rank, world_size=self.world_size)
 
     def run(self):
-        "please override this function"
+        # TODO: please override this function
         raise NotImplementedError()
 
     def receive(self, sender, message_code, payload):
-        "please override this function"
+        # TODO: please override this function
         raise NotImplementedError()
 
     def synchronise(self, payload):
-        "please override this function"
+        # TODO: please override this function
         raise NotImplementedError()
 
     def network_params(self):
@@ -42,32 +41,31 @@ class ClientCommunicationTopology(Process):
 class ClientSyncTop(ClientCommunicationTopology):
     """Synchronise conmmunicate class
 
-       This is the top class in our framework which is mainly responsible for network communication of CLIENT!
-       Synchronize with server following agreements defined in run().
+    This is the top class in our framework which is mainly responsible for network communication of CLIENT!
+    Synchronize with server following agreements defined in run().
 
-        Args:
-            backend_handler: class derived from ClientBackendHandler
-            server_addr: (ip:port) address of server
-            world_size: world_size for torch.distributed initialization
-            rank: rank for torch.distributed initialization
-            args: other params
+    Args:
+        backend_handler: class derived from ClientBackendHandler
+        server_addr: (ip:port) address of server
+        world_size: world_size for `torch.distributed` initialization
+        rank: rank for `torch.distributed` initialization
+        dist_backend: other params #TODO: add explanation for this param
 
-        Returns:
-            None
+    Returns:
+        None
 
-        Raises:
-            Errors raised by torch.distributed.init_process_group()
+    Raises:
+        Errors raised by `torch.distributed.init_process_group()`
     """
 
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
-
         super(self, ClientSyncTop).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
 
         self._buff = torch.zeros(
             self._backend.get_buff().numel() + 2).cpu()  # 需要修改
 
-        #self._backend = backend_handler
+        # self._backend = backend_handler
 
         # distributed init params
         """
@@ -85,7 +83,7 @@ class ClientSyncTop(ClientCommunicationTopology):
 
     def run(self):
         """Main process of client is defined here"""
-        while(True):
+        while (True):
             print("waiting message from server...")
             recv_message(self._buff, src=0)  # 阻塞式
             sender = int(self._buff[0].item())

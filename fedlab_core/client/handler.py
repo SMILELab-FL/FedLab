@@ -20,44 +20,46 @@ class ClientBackendHandler(object):
 
     @property
     def model(self):
-        """get torch.nn.Module"""
+        """Get `torch.nn.Module`"""
         return self._model
 
     @property
     def buffer(self):
-        """get serizlized parameters"""
+        """Get serialized parameters"""
         return self._buffer
 
     @buffer.setter
     def buffer(self, buffer):
-        """update local model using serialized parameters"""
+        """Update local model using serialized parameters"""
         unravel_model_params(self._model, buffer)
         self._buff[:] = buffer
 
     def train(self):
-        """please override this function. This function should manipulate self._model and self._buffer"""
+        # TODO: please override this function. This
+        #  function should manipulate self._model and self._buffer
         raise NotImplementedError()
 
     def evaluate(self, test_loader):
-        """please override this function. Evaluate local model based on given test torch.DataLoader"""
+        # TODO: please override this function. Evaluate local model
+        #  based on given test torch.DataLoader
         raise NotImplementedError()
 
 
 class ClientSGDHandler(ClientBackendHandler):
-    """client backend handler, this class provides data process method to upper layer.  
+    """Client backend handler, this class provides data process method to upper layer.
 
-        Args:
-            model: torch.nn.Module
-            data_loader: torch.Dataloader for this client
-            optimizer: optimizer for this client's model
-            criterion: loss function used in local training process
-            cuda: use GPUs or not
+    Args:
+        model (torch.nn.Module):
+        data_loader: torch.Dataloader for this client
+        optimizer: optimizer for this client's model
+        criterion: loss function used in local training process
+        cuda (bool): use GPUs or not
 
-        Returns: 
-            None
+    Returns:
+        None
 
-        Raises:
-            None
+    Raises:
+        None
     """
     def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=False):
         super(self, ClientSGDHandler).__init__(model, cuda)
@@ -80,10 +82,10 @@ class ClientSGDHandler(ClientBackendHandler):
 
     def train(self, epochs):
         """
-        client train its local model based on local dataset.
+        Client train its local model based on local dataset.
 
         Args:
-            epochs: the number of epoch for local train
+            epochs (int): the number of epoch for local train
         """
         def accuracy_score(predicted, labels):
             return predicted.eq(labels).sum().float() / labels.shape[0]
@@ -116,5 +118,5 @@ class ClientSGDHandler(ClientBackendHandler):
         self._buff = ravel_model_params(self._model, cuda=True)
 
     def evaluate(self, test_loader):
-        """evaluate local model based on given test torch.DataLoader"""
+        # TODO: Evaluate local model based on given test `torch.DataLoader`
         raise NotImplementedError()

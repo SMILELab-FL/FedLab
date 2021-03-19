@@ -10,10 +10,10 @@ from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 
 
 class EndTop(Process):
-    """
-    Synchronise conmmunicate Class
-       This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-       Synchronize with clients following agreements defined in run().
+    """Synchronise communicate Class
+
+    This is the top class in our framework which is mainly responsible for network communication of SERVER!.
+    Synchronize with clients following agreements defined in run().
 
     Args:
         ParameterServerHandler: a class derived from ParameterServerHandler
@@ -38,15 +38,15 @@ class EndTop(Process):
         self.args = args
 
     def run(self):
-        """process function"""
+        """Process function"""
         print("TPS|Waiting for the connection with clients!")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
-                                rank=0, world_size=self._params_server.client_num+1)
+                                rank=0, world_size=self._params_server.client_num + 1)
         print("TPS|Connect to client successfully!")
 
-        #act_clients = threading.Thread(target=self.activate)
-        #wait_info = threading.Thread(target=self.receive)
+        # act_clients = threading.Thread(target=self.activate)
+        # wait_info = threading.Thread(target=self.receive)
         self.running = True
         while self.running:
             print("TPS|Polling for message...")
@@ -73,7 +73,7 @@ class EndTop(Process):
     def listen2clients(self):
         """listen messages from clients"""
         self._params_server.start_round()
-        while(True):
+        while (True):
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
@@ -111,5 +111,5 @@ class ConnectServer(process):
     def __init__(self, server_addr, world_size, rank):
         super().__init__()
 
-    def run():
+    def run(self):
         raise NotImplementedError()
