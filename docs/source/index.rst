@@ -12,8 +12,8 @@ Welcome to FedLab's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   quickstart
-   userguide
+   quick_start
+   user_guide
 
 
 
