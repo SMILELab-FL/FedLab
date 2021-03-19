@@ -19,7 +19,7 @@ def get_readme():
 
 
 setup(
-    name="DocsExp",
+    name="FedLab",
     version="0.1",
     author="Dun Zeng, Siqi Liang",
     author_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
