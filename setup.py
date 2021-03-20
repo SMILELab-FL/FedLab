@@ -27,7 +27,7 @@ setup(
     maintainer_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
     description="A framework for simulation in federated setting implemented in PyTorch",
     long_description=get_readme(),
-    url="https://github.com/Zengdun-cs/FedLab",
+    url="https://github.com/SMILELab-FL/FedLab",
     packages=find_packages(exclude=['docs']),  # TODO: add things in 'exclude'
     install_requires=['torch',
                       'torchvision',
