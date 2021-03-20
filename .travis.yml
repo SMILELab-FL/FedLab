@@ -14,7 +14,7 @@ cache: pip
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
+  - pip install codecov
   - pip install coverage
 
 script: true  # trying to add real test script
@@ -23,7 +23,7 @@ script: true  # trying to add real test script
 # script:
 #   coverage run --source=fedlab_core setup.py test
 # after_success:
-#   coveralls
+#   codecov
 
 notifications:
   email:
