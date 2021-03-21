@@ -74,7 +74,7 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
 
 class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     """
-    This is a copy of torch.utils.data.distributed.DistributedSampler (28 March 2019)
+    This is a copy of :class:`torch.utils.data.distributed.DistributedSampler` (28 March 2019)
     with the option to turn off adding extra samples to divide the work evenly.
     """
 

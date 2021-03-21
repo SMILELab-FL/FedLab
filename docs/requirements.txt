@@ -1,2 +1,4 @@
 sphinx
-sphinx-typo3-theme
+furo
+sphinxcontrib-napoleon
+sphinx-autoapi

@@ -16,6 +16,7 @@ class MessageCode(Enum):
 
 def send_message(message_code, payload, dst=0):
     """Sends a message to a destination
+
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
 
     Args:
@@ -60,7 +61,8 @@ def recv_message(payload, src=None):
 
 
 def broadcast_message(message_code, payload):
-    """broadcast a message to all workers
+    """Broadcast a message to all workers
+
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
 
     Args:
@@ -79,7 +81,7 @@ def broadcast_message(message_code, payload):
 
 
 def recv_broadcast_message(recv_buff):
-    """workers recv the message from the center
+    """Workers recv the message from the center
     
     Args:
 
