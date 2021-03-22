@@ -9,7 +9,7 @@ from fedlab_core.utils.serialization import ravel_model_params
 
 
 class ParameterServerHandler(object):
-    """abstract class"""
+    """Abstract class"""
 
     def __init__(self, model, cuda=False) -> None:
         if cuda:
@@ -33,20 +33,21 @@ class ParameterServerHandler(object):
 
 class SyncSGDParameterServerHandler(ParameterServerHandler):
     """Synchronize Parameter Server Handler
-        Backend of parameter server
 
-        Args:
-            model: torch.nn.Module
-            cuda: use GPUs or not
-            client_num: the number of client in this federation
+    Backend of parameter server
 
-        Returns:
-            None
+    Args:
+        model: torch.nn.Module
+        cuda: use GPUs or not
+        client_num: the number of client in this federation
 
-        Raises:
-            None
+    Returns:
+        None
 
+    Raises:
+        None
     """
+
     def __init__(self, model, client_num, cuda=False, select_ratio=1.0):
         super(self, SyncSGDParameterServerHandler).__init__(model, cuda)
 
@@ -57,7 +58,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
 
         self.client_num = client_num  # 每轮参与者数量 定义buffer大小
         self.select_ratio = select_ratio
-        self.round_num = int(self.select_ratio*self.client_num)
+        self.round_num = int(self.select_ratio * self.client_num)
 
         # client buffer
         self.grad_buffer = [None for _ in range(self.client_num)]
@@ -67,7 +68,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
         self.update_flag = False
 
     def receive(self, sender, message_code, payload) -> None:
-        """define what server do when receive client message
+        """Define what server do when receive client message
 
         Args:
             sender: index of client in distributed
@@ -116,11 +117,12 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
         self.update_flag = False
 
     def select_clients(self):
-        """return a list of client rank indices"""
+        """Return a list of client rank indices"""
         # 随机选取
-        id_list = [i+1 for i in range(self.client_num)]
+        id_list = [i + 1 for i in range(self.client_num)]
         select = random.sample(id_list, self.round_num)
         return select
+
 
 class AsyncSGDParameterServer():
     """ParameterServer
@@ -128,7 +130,7 @@ class AsyncSGDParameterServer():
     """
 
     def __init__(self, model):
-        #_LOGGER.info("Creating ParameterServer")
+        # _LOGGER.info("Creating ParameterServer")
         raise NotImplementedError()
         print("Creating ParameterServer")
         self._model = model

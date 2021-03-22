@@ -20,8 +20,8 @@ def ravel_model_params(model, grads=False, cuda=False):
 def unravel_model_params(model, parameter_update):
     """
     Assigns grad_update params to model.parameters.
-    This is done by iterating through model.parameters() and assigning the relevant params in grad_update.
-    NOTE: this function manipulates model.parameters.
+    This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
+    NOTE: this function manipulates `model.parameters`.
     """
     current_index = 0  # keep track of where to read from grad_update
     for parameter in model.parameters():
@@ -34,8 +34,8 @@ def unravel_model_params(model, parameter_update):
 def unravel_model_grad(model, grad_update):
     """
     Assigns grad_update params to model.parameters.
-    This is done by iterating through model.parameters() and assigning the relevant params in grad_update.
-    NOTE: this function manipulates model.parameters.
+    This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
+    NOTE: this function manipulates `model.parameters`.
     """
     current_index = 0  # keep track of where to read from grad_update
     for parameter in model.parameters():
