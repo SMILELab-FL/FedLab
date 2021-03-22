@@ -98,7 +98,8 @@ class PipeTop(process):
 
 
 class ConnectClient(process):
-
+    """Provide service as a middle server
+    """
     def __init__(self, local_addr, world_size, rank=0):
         super().__init__()
 
@@ -107,7 +108,7 @@ class ConnectClient(process):
 
 
 class ConnectServer(process):
-
+    """Provide"""
     def __init__(self, server_addr, world_size, rank):
         super().__init__()
 
