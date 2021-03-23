@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/home/zengdun/FedLab')
 
 from fedlab_core.server.handler import SyncSGDParameterServerHandler
 from fedlab_core.models.lenet import LeNet
