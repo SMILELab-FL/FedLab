@@ -62,7 +62,7 @@ class ClientSGDHandler(ClientBackendHandler):
         None
     """
     def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=False):
-        super(self, ClientSGDHandler).__init__(model, cuda)
+        super(ClientSGDHandler, self).__init__(model, cuda)
 
 
         #self._buff = ravel_model_params(model, cuda=cuda)

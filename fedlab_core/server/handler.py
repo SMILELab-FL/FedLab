@@ -1,16 +1,13 @@
-import logging
 import random
 import torch
 import torch.distributed as dist
 
-from torch.multiprocessing import Process
 from fedlab_core.utils.messaging import MessageCode, send_message
 from fedlab_core.utils.serialization import ravel_model_params
 
 
 class ParameterServerHandler(object):
     """Abstract class"""
-
     def __init__(self, model, cuda=False) -> None:
         if cuda:
             self._model = model.cuda()
@@ -49,12 +46,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
     """
 
     def __init__(self, model, client_num, cuda=False, select_ratio=1.0):
-        super(self, SyncSGDParameterServerHandler).__init__(model, cuda)
-
-        """
-        self._model = model     # pytorch model
-        self._buff = ravel_model_params(self._model)    # 序列化后的模型参数
-        """
+        super(SyncSGDParameterServerHandler, self).__init__(model, cuda)
 
         self.client_num = client_num  # 每轮参与者数量 定义buffer大小
         self.select_ratio = select_ratio
@@ -86,7 +78,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
             message_code.name, sender))
 
         if message_code == MessageCode.ParameterUpdate:
-            # 更新参数
+            # update model parameters
             buffer_index = sender - 1
             if self.grad_buffer[buffer_index] is not None:
                 return
@@ -118,7 +110,6 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
 
     def select_clients(self):
         """Return a list of client rank indices"""
-        # 随机选取
         id_list = [i + 1 for i in range(self.client_num)]
         select = random.sample(id_list, self.round_num)
         return select
@@ -126,7 +117,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
 
 class AsyncSGDParameterServer():
     """ParameterServer
-        异步参数服务器
+        TODO: this class is not implemented yet
     """
 
     def __init__(self, model):

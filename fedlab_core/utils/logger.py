@@ -13,10 +13,13 @@ class logger(object):
         self.logger.addHandler(handler)
 
     def info(self, log_str):
+        """"""
         self.logger.info(log_str)
 
     def error(self, error_str, log_str):
+        """"""
         raise NotImplementedError()
 
     def warning(self, warning_str):
+        """"""
         raise NotImplementedError()

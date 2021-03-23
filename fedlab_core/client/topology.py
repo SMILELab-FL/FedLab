@@ -59,30 +59,18 @@ class ClientSyncTop(ClientCommunicationTopology):
     """
 
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
-        super(self, ClientSyncTop).__init__(backend_handler,
+        super(ClientSyncTop,self).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
 
         self._buff = torch.zeros(
             self._backend.get_buff().numel() + 2).cpu()  # 需要修改
 
-        # self._backend = backend_handler
-
-        # distributed init params
-        """
-        self.rank = rank
-        self.server_addr = server_addr
-        self.world_size = world_size
-        self.dist_backend = dist_backend
-        """
-
-        """
-        dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
-                                .format(self.server_addr[0], self.server_addr[1]),
-                                rank=self.rank, world_size=self.world_size)
-        """
-
     def run(self):
-        """Main process of client is defined here"""
+        """Main process of client is defined here:
+            1. client waits for data from server
+            2. after receiving data, client will train local model
+            3. client will synchronize with server actively
+        """
         while (True):
             print("waiting message from server...")
             recv_message(self._buff, src=0)  # 阻塞式
@@ -90,12 +78,11 @@ class ClientSyncTop(ClientCommunicationTopology):
             message_code = MessageCode(self._buff[1].item())
             parameter = self._buff[2:]
 
-            # need logger
             self.receive(sender, message_code, parameter)
             self.synchronise(self._backend.get_buff())
             print("synchronized...")
 
-            # 虚添加中止该进程的方法
+            # 需添加中止该进程的方法
 
     def receive(self, sender, message_code, payload):
         """Synchronise function: reaction of receive new message
@@ -115,7 +102,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._backend.train(epochs=2)
 
     def synchronise(self, buffer):
-        """synchronise local network with server
+        """synchronise local network with server actively
 
         Args:
             buffer: serialized network parameters
