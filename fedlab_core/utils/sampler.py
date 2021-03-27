@@ -5,7 +5,7 @@ import torch
 import torch.distributed as dist
 import math
 
-##!!!!! 如果使用HiPT的参数服务器架构，请务必使用此Sampler，否则会导致样本分布异常；也可以根据代码自定义
+
 class DistributedSampler(torch.utils.data.distributed.Sampler):
     """Sampler that restricts data loading to a subset of the dataset.
 
@@ -28,7 +28,8 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
     def __init__(self, dataset, rank, num_replicas, shuffle=True):
         if num_replicas is None:
             if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
+                raise RuntimeError(
+                    "Requires distributed package to be available")
             #num_replicas = dist.get_world_size() - 1
             num_replicas = num_replicas
         """
@@ -37,12 +38,13 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
                 raise RuntimeError("Requires distributed package to be available")
             rank = dist.get_rank() - 1
         """
-        
+
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank-1
         self.epoch = 0
-        self.num_samples = int(math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
+        self.num_samples = int(
+            math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas
         self.shuffle = shuffle
 
@@ -92,7 +94,8 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
         self._epoch = 0
 
         if add_extra_samples:
-            self._num_samples = int(math.ceil(len(self._dataset) * 1.0 / self._num_replicas))
+            self._num_samples = int(
+                math.ceil(len(self._dataset) * 1.0 / self._num_replicas))
             self._total_size = self._num_samples * self._num_replicas
         else:
             self._total_size = len(self._dataset)
@@ -114,11 +117,13 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
             self._indices += l
 
         if self._add_extra_samples:
-            self._indices += self._indices[: (self._total_size - len(self._indices))]
+            self._indices += self._indices[: (self._total_size -
+                                              len(self._indices))]
         assert len(self._indices) == self._total_size
 
     def __iter__(self):
-        indices = deepcopy(self._indices[self._num_samples * self._rank:self._num_samples * (self._rank + 1)])
+        indices = deepcopy(
+            self._indices[self._num_samples * self._rank:self._num_samples * (self._rank + 1)])
         random.seed(self._epoch)
         random.shuffle(indices)
         assert len(indices) == self._num_samples

@@ -3,11 +3,12 @@ import torch
 import torch.distributed as dist
 
 from fedlab_core.utils.messaging import MessageCode, send_message
-from fedlab_core.utils.serialization import ravel_model_params
+from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
 
 
 class ParameterServerHandler(object):
     """Abstract class"""
+
     def __init__(self, model, cuda=False) -> None:
         if cuda:
             self._model = model.cuda()
@@ -18,6 +19,10 @@ class ParameterServerHandler(object):
 
     def receive(self):
         raise NotImplementedError()
+
+    def load(self, payload):
+        self._buffer = payload
+        unravel_model_params(self._model, self._buffer)
 
     @property
     def buffer(self):
@@ -72,7 +77,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
 
         Raises:
             None
-            
+
         """
         print("Processing message: {} from sender {}".format(
             message_code.name, sender))

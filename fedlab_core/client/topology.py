@@ -1,8 +1,11 @@
+from math import log
 import torch
 import torch.distributed as dist
+from torch.distributed.distributed_c10d import send
 from torch.multiprocessing import Process
 
 from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
+from fedlab_core.utils.logger import logger
 
 
 class ClientCommunicationTopology(Process):
@@ -15,6 +18,12 @@ class ClientCommunicationTopology(Process):
         self.server_addr = server_addr
         self.world_size = world_size
         self.dist_backend = dist_backend
+
+        self._LOGGER = logger("log"+str(rank)+".txt",
+                              client_name="client"+str(rank))
+        logstr = "Initializing --- connecting to server:{},  world_size:{}, rank:{}, backend:{}".format(
+            server_addr, world_size, rank, dist_backend)
+        self._LOGGER.info(logstr)
 
         dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
@@ -59,11 +68,11 @@ class ClientSyncTop(ClientCommunicationTopology):
     """
 
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
-        super(ClientSyncTop,self).__init__(backend_handler,
+        super(ClientSyncTop, self).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
 
         self._buff = torch.zeros(
-            self._backend.get_buff().numel() + 2).cpu()  # 需要修改
+            self._backend.buffer.numel() + 2).cpu()  # 需要修改
 
     def run(self):
         """Main process of client is defined here:
@@ -72,15 +81,17 @@ class ClientSyncTop(ClientCommunicationTopology):
             3. client will synchronize with server actively
         """
         while (True):
-            print("waiting message from server...")
+            self._LOGGER.info("waiting message from server")
             recv_message(self._buff, src=0)  # 阻塞式
             sender = int(self._buff[0].item())
             message_code = MessageCode(self._buff[1].item())
             parameter = self._buff[2:]
 
+            if message_code == MessageCode.Exit:
+                break
+            
             self.receive(sender, message_code, parameter)
-            self.synchronise(self._backend.get_buff())
-            print("synchronized...")
+            self.synchronise(self._backend.buffer)
 
             # 需添加中止该进程的方法
 
@@ -98,7 +109,10 @@ class ClientSyncTop(ClientCommunicationTopology):
         Raises:
             None
         """
-        self._backend.update_model(payload)
+        logstr = "receiving message from {}, message code {}".format(sender, message_code)
+        self._LOGGER.info(logstr)
+
+        self._backend.buffer = payload
         self._backend.train(epochs=2)
 
     def synchronise(self, buffer):
@@ -113,4 +127,5 @@ class ClientSyncTop(ClientCommunicationTopology):
         Raises:
             None
         """
+        self._LOGGER.info("synchronise model prameters with server")
         send_message(MessageCode.ParameterUpdate, buffer)

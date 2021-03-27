@@ -32,7 +32,6 @@ class ExRecorder:
         Raises:
             
         """
-        print(record)
         temp = []
         for key in record:
             temp.append(record[key])

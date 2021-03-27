@@ -25,7 +25,7 @@ class EndTop(Process):
 
     """
 
-    def __init__(self, ParameterServerHandler, server_addr, dist_backend="gloo", args=None):
+    def __init__(self, ParameterServerHandler, server_addr, logger, dist_backend="gloo"):
 
         self._params_server = ParameterServerHandler
 
@@ -35,37 +35,47 @@ class EndTop(Process):
         self.buff = torch.zeros(
             self._params_server.buffer.numel() + 2).cpu()  # 通信信息缓存 模型参数+2
 
-        self.args = args
+        self._LOGGER = logger
+
+        self._LOGGER.info("Server initailize with ip address {} and distributed backend {}".format(
+            server_addr, dist_backend))
 
     def run(self):
         """Process function"""
-        print("Server|Waiting for the connection with clients!")
+        self._LOGGER.info(
+            "Waiting for the connection request from clients!")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=0, world_size=self._params_server.client_num + 1)
-        print("Server|Connect to client successfully!")
+        self._LOGGER.info("Connect to client successfully!")
 
-        act_clients = threading.Thread(target=self.activate)
-        wait_info = threading.Thread(target=self.receive)
-        self.running = True
-        while self.running:
-            print("TPS|Polling for message...")
+        act_clients = threading.Thread(target=self.activate_clients)
+        wait_info = threading.Thread(target=self.listen_clients)
 
-            # self.activate_clients()
-            # self.listen_clients()
+        self.running = 3
+        for i in range(self.running):
+            self._LOGGER.info(
+                "Global FL round {}/{}".format(i, self.running))
 
             # 开启选取参与者线程
             act_clients.start()
-            act_clients.join()
-
             # 开启接收回信线程
             wait_info.start()
+
+            # join 方法阻塞主线程
+            act_clients.join()
             wait_info.join()
+
+        for index in range(self._params_server.client_num):
+            send_message(MessageCode.Exit, payload=None, dst=index)
 
     def activate_clients(self):
         """activate some of clients to join this FL round"""
         usr_list = self._params_server.select_clients()
         payload = self._params_server.buffer
+
+        self._LOGGER.info(
+            "client id list for this FL round: {}".format(usr_list))
         for index in usr_list:
             send_message(MessageCode.ParameterUpdate, payload, dst=index)
 
@@ -112,7 +122,7 @@ class PipeTop(Process):
 
         locks = []
         [locks.append(Lock()) for _ in range(client_num)]
-        
+
         self.upper_p = ConnectServer(
             locks, server_dist_info["address"], server_dist_info["world_size"], server_dist_info["rank"], server_dist_info["backend"])
 

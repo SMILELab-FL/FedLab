@@ -1,0 +1,5 @@
+2021-03-27 23:07:46,869 - server - INFO - Server initailize with ip address ('127.0.0.1', '3001') and distributed backend gloo
+2021-03-27 23:07:46,869 - server - INFO - Waiting for the connection request from clients!
+2021-03-27 23:07:51,679 - server - INFO - Connect to client successfully!
+2021-03-27 23:07:51,680 - server - INFO - Global FL round 0/3
+2021-03-27 23:07:51,707 - server - INFO - client id list for this FL round: [1, 2]
