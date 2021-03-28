@@ -93,7 +93,7 @@ class EndTop(Process):
             if self._params_server.is_updated():
                 break
 
-
+# PipeTop(EndTop)
 class PipeTop(Process):
     """
     the frame of PipeTop is not settled!!!

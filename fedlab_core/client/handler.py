@@ -59,10 +59,7 @@ class ClientSGDHandler(ClientBackendHandler):
         optimizer: optimizer for this client's model
         criterion: loss function used in local training process
         cuda (bool): use GPUs or not
-        LOGGER: assigned by Top module
-
-    Returns:
-        None
+        LOGGER: utils class to output debuf information to file and command line
 
     Raises:
         None

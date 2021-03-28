@@ -9,8 +9,13 @@ from fedlab_core.utils.logger import logger
 
 
 class ClientCommunicationTopology(Process):
-    """Abstract class"""
+    """Abstract class
+        if you want to define your own Network Topology
+        please be sure your class is derived from this abstract class and OVERRIDE its methods!
 
+        Example:
+            please read the code of `ClientSyncTop`
+    """
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
         self._backend = backend_handler
 
@@ -21,9 +26,9 @@ class ClientCommunicationTopology(Process):
 
         self._LOGGER = logger("log"+str(rank)+".txt",
                               client_name="client"+str(rank))
-        logstr = "Initializing --- connecting to server:{},  world_size:{}, rank:{}, backend:{}".format(
-            server_addr, world_size, rank, dist_backend)
-        self._LOGGER.info(logstr)
+
+        self._LOGGER.info("Initializing --- connecting to server:{},  world_size:{}, rank:{}, backend:{}".format(
+            server_addr, world_size, rank, dist_backend))
 
         dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
@@ -41,11 +46,6 @@ class ClientCommunicationTopology(Process):
         # TODO: please override this function
         raise NotImplementedError()
 
-    def network_params(self):
-        info_str = ("server address {}:{}; Distributed info {}/{}; backend {};").format(
-            self.server_addr[0], self.server_addr[1], self.rank, self.world_size, self.dist_backend)
-        print(info_str)
-
 
 class ClientSyncTop(ClientCommunicationTopology):
     """Synchronise conmmunicate class
@@ -58,7 +58,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         server_addr: (ip:port) address of server
         world_size: world_size for `torch.distributed` initialization
         rank: rank for `torch.distributed` initialization
-        dist_backend: other params #TODO: add explanation for this param
+        dist_backend: backend of `torch.distributed` (gloo, mpi and ncll) and gloo is default
 
     Returns:
         None
@@ -66,7 +66,6 @@ class ClientSyncTop(ClientCommunicationTopology):
     Raises:
         Errors raised by `torch.distributed.init_process_group()`
     """
-
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
         super(ClientSyncTop, self).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
@@ -80,6 +79,7 @@ class ClientSyncTop(ClientCommunicationTopology):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
+
         while (True):
             self._LOGGER.info("waiting message from server")
             recv_message(self._buff, src=0)  # 阻塞式
@@ -89,11 +89,9 @@ class ClientSyncTop(ClientCommunicationTopology):
 
             if message_code == MessageCode.Exit:
                 break
-            
+
             self.receive(sender, message_code, parameter)
             self.synchronise(self._backend.buffer)
-
-            # 需添加中止该进程的方法
 
     def receive(self, sender, message_code, payload):
         """Synchronise function: reaction of receive new message
@@ -109,8 +107,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         Raises:
             None
         """
-        logstr = "receiving message from {}, message code {}".format(sender, message_code)
-        self._LOGGER.info(logstr)
+        self._LOGGER.info("receiving message from {}, message code {}".format(
+            sender, message_code))
 
         self._backend.buffer = payload
         self._backend.train(epochs=2)

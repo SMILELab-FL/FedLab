@@ -120,6 +120,7 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
         return select
 
 
+# TODO: finish Async class
 class AsyncSGDParameterServer():
     """ParameterServer
         TODO: this class is not implemented yet
