@@ -1,3 +1,0 @@
-2021-03-27 23:07:49,338 - client1 - INFO - Initializing --- connecting to server:('127.0.0.1', '3001'),  world_size:3, rank:1, backend:gloo
-2021-03-27 23:07:51,699 - client1 - INFO - waiting message from server
-2021-03-27 23:07:51,722 - client1 - INFO - receiving message from 0, message code MessageCode.ParameterUpdate

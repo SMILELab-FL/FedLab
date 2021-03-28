@@ -1,2 +1,0 @@
-2021-03-27 23:07:51,777 - handler - INFO - starting local train pocess
-2021-03-27 23:11:10,024 - handler - INFO - {'epoch': 0, 'time': 1616857870.0241141, 'training_loss': 0.05169154703617096, 'training_accuracy': 0.984375}
