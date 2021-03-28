@@ -20,9 +20,9 @@ def send_message(message_code, payload, dst=0):
     Concatenates both the message code and destination with the payload into a single tensor and then sends that as a tensor
 
     Args:
-        message_code: defined in MessageCode
+        message_code (int): defined in MessageCode
         payload: serialized tensor
-        dst: destination this message go, default is 0 which means server
+        dst: destination of message, default is 0 which means the server
 
     Returns:
         serialized message package
