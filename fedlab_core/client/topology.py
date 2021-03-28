@@ -16,6 +16,7 @@ class ClientCommunicationTopology(Process):
         Example:
             please read the code of `ClientSyncTop`
     """
+
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
         self._backend = backend_handler
 
@@ -23,12 +24,6 @@ class ClientCommunicationTopology(Process):
         self.server_addr = server_addr
         self.world_size = world_size
         self.dist_backend = dist_backend
-
-        self._LOGGER = logger("log"+str(rank)+".txt",
-                              client_name="client"+str(rank))
-
-        self._LOGGER.info("Initializing --- connecting to server:{},  world_size:{}, rank:{}, backend:{}".format(
-            server_addr, world_size, rank, dist_backend))
 
         dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
@@ -59,19 +54,27 @@ class ClientSyncTop(ClientCommunicationTopology):
         world_size: world_size for `torch.distributed` initialization
         rank: rank for `torch.distributed` initialization
         dist_backend: backend of `torch.distributed` (gloo, mpi and ncll) and gloo is default
-
-    Returns:
-        None
+        logger_file: path to the log file for this class
+        logger_name: class name to initialize logger
 
     Raises:
         Errors raised by `torch.distributed.init_process_group()`
+
+    Example:
+        TODO
     """
-    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo"):
+
+    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog", logger_name=""):
+
         super(ClientSyncTop, self).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
 
+        self._LOGGER = logger(logger_file+str(rank)+".txt", logger_name)
+        self._LOGGER.info("Successfully Initialized --- connected to server:{},  world size:{}, rank:{}, backend:{}".format(
+            server_addr, world_size, rank, dist_backend))
+
         self._buff = torch.zeros(
-            self._backend.buffer.numel() + 2).cpu()  # 需要修改
+            self._backend.buffer.numel() + 2).cpu()  # TODO: need to be more formal
 
     def run(self):
         """Main process of client is defined here:
@@ -83,6 +86,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         while (True):
             self._LOGGER.info("waiting message from server")
             recv_message(self._buff, src=0)  # 阻塞式
+
+            #TODO: 通信消息解析可模块化
             sender = int(self._buff[0].item())
             message_code = MessageCode(self._buff[1].item())
             parameter = self._buff[2:]

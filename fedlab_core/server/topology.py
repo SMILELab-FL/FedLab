@@ -6,6 +6,7 @@ import torch.distributed as dist
 from torch.multiprocessing import Process, Lock
 
 from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
+from fedlab_core.utils.logger import logger
 
 
 class EndTop(Process):
@@ -16,63 +17,60 @@ class EndTop(Process):
 
     Args:
         ParameterServerHandler: a class derived from ParameterServerHandler
-        args: params
+        server_addr: (ip:port) ipadress for `torch.distributed` initialization, because this is a server, rank is set by 0.
+        dist_backend: backend of `torch.distributed` (gloo, mpi and ncll) and gloo is default
+        logger_file: path to the log file for this class
+        logger_name: class name to initialize logger
 
-    Returns:
-        None
     Raises:
         None
 
     """
 
-    def __init__(self, ParameterServerHandler, server_addr, logger, dist_backend="gloo"):
+    def __init__(self, ParameterServerHandler, server_addr, dist_backend="gloo", logger_path="server_top.txt", logger_name="ServerTop"):
 
-        self._params_server = ParameterServerHandler
+        self._server_handler = ParameterServerHandler
 
         self.server_addr = server_addr
         self.dist_backend = dist_backend
 
         self.buff = torch.zeros(
-            self._params_server.buffer.numel() + 2).cpu()  # 通信信息缓存 模型参数+2
+            self._server_handler.buffer.numel() + 2).cpu()  # 通信信息缓存 模型参数+2
 
-        self._LOGGER = logger
-
+        self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initailize with ip address {} and distributed backend {}".format(
             server_addr, dist_backend))
 
     def run(self):
-        """Process function"""
+        """Process"""
         self._LOGGER.info(
-            "Waiting for the connection request from clients!")
+            "Waiting for the connection request from clients")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
-                                rank=0, world_size=self._params_server.client_num + 1)
-        self._LOGGER.info("Connect to client successfully!")
-
-        act_clients = threading.Thread(target=self.activate_clients)
-        wait_info = threading.Thread(target=self.listen_clients)
+                                rank=0, world_size=self._server_handler.client_num + 1)
+        self._LOGGER.info("Connect to client successfully")
 
         self.running = 3
         for i in range(self.running):
             self._LOGGER.info(
                 "Global FL round {}/{}".format(i, self.running))
+            act_clients = threading.Thread(target=self.activate_clients)
+            wait_info = threading.Thread(target=self.listen_clients)
 
-            # 开启选取参与者线程
             act_clients.start()
-            # 开启接收回信线程
             wait_info.start()
 
-            # join 方法阻塞主线程
             act_clients.join()
             wait_info.join()
 
-        for index in range(self._params_server.client_num):
-            send_message(MessageCode.Exit, payload=None, dst=index)
+        for index in range(self._server_handler.client_num):
+            end_message = torch.Tensor([0])
+            send_message(MessageCode.Exit, payload=end_message, dst=index)
 
     def activate_clients(self):
         """activate some of clients to join this FL round"""
-        usr_list = self._params_server.select_clients()
-        payload = self._params_server.buffer
+        usr_list = self._server_handler.select_clients()
+        payload = self._server_handler.buffer
 
         self._LOGGER.info(
             "client id list for this FL round: {}".format(usr_list))
@@ -81,21 +79,24 @@ class EndTop(Process):
 
     def listen_clients(self):
         """listen messages from clients"""
-        self._params_server.start_round()
+        self._server_handler.start_round()  # flip the update_flag
         while (True):
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
             parameter = self.buff[2:]
 
-            self._params_server.receive(sender, message_code, parameter)
+            self._server_handler.receive(sender, message_code, parameter)
 
-            if self._params_server.is_updated():
+            if self._server_handler.update_flag:
+                # server_handler will turn this flag to True when model parameters updated
+                self._LOGGER("updated quit listen")
                 break
 
-# PipeTop(EndTop)
-class PipeTop(Process):
+
+class PipeTop(EndTop):
     """
+    TODO
     the frame of PipeTop is not settled!!!
     This process help implement hierarchical parameter server
     it connects clients and Top Server directly, collecting information from clients and sending to Top Server
@@ -117,28 +118,13 @@ class PipeTop(Process):
     """
 
     def __init__(self, model, client_num, server_dist_info, client_dist_info):
-
-        self._model = model
-
-        locks = []
-        [locks.append(Lock()) for _ in range(client_num)]
-
-        self.upper_p = ConnectServer(
-            locks, server_dist_info["address"], server_dist_info["world_size"], server_dist_info["rank"], server_dist_info["backend"])
-
-        self.lower_p = ConnectClient(
-            locks, client_dist_info["address"], server_dist_info["world_size"], server_dist_info["rank"], server_dist_info["backend"])
+        raise NotImplementedError()
 
     def run(self):
         """process function"""
-        self.upper_p.start()
-        self.lower_p.start()
-
-        self.upper_p.join()  # 阻塞主进程
-        self.lower_p.join()
+        raise NotImplementedError()
 
 
-# considering derived from EndTop
 class ConnectClient(Process):
     """Provide service to clients as a middle server"""
 

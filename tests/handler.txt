@@ -1,0 +1,9 @@
+2021-03-28 16:49:52,108 - handler - INFO - starting local train pocess
+2021-03-28 16:49:55,780 - handler - INFO - Epoch 1/2
+2021-03-28 16:49:59,364 - handler - INFO - Epoch 2/2
+2021-03-28 16:49:59,478 - handler - INFO - starting local train pocess
+2021-03-28 16:50:03,017 - handler - INFO - Epoch 1/2
+2021-03-28 16:50:06,619 - handler - INFO - Epoch 2/2
+2021-03-28 16:50:06,734 - handler - INFO - starting local train pocess
+2021-03-28 16:50:10,373 - handler - INFO - Epoch 1/2
+2021-03-28 16:50:13,973 - handler - INFO - Epoch 2/2

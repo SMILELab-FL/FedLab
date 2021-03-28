@@ -4,10 +4,15 @@ import torch.distributed as dist
 
 from fedlab_core.utils.messaging import MessageCode, send_message
 from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
+from fedlab_core.utils.logger import logger
 
 
 class ParameterServerHandler(object):
-    """Abstract class"""
+    """Abstract class
+        please make sure that you self defined server handler class is derived from this class
+        Example:
+            read sourcecode of `SyncSGDParameterServerHandler` below
+    """
 
     def __init__(self, model, cuda=False) -> None:
         if cuda:
@@ -18,11 +23,8 @@ class ParameterServerHandler(object):
         self.cuda = cuda
 
     def receive(self):
+        """override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
-
-    def load(self, payload):
-        self._buffer = payload
-        unravel_model_params(self._model, self._buffer)
 
     @property
     def buffer(self):
@@ -33,39 +35,39 @@ class ParameterServerHandler(object):
         return self._model
 
 
-class SyncSGDParameterServerHandler(ParameterServerHandler):
+class SyncParameterServerHandler(ParameterServerHandler):
     """Synchronize Parameter Server Handler
-
-    Backend of parameter server
+        Backend of parameter server: this class is responsible for backend computing
+        Synchronize ps(parameter server) will wait for every client finishing their local training process before the next FL round
 
     Args:
         model: torch.nn.Module
-        cuda: use GPUs or not
         client_num: the number of client in this federation
-
-    Returns:
-        None
+        cuda: use GPUs or not
+        select_ratio: select_ratio*client_num is the number of clients to join every FL round
 
     Raises:
         None
     """
 
-    def __init__(self, model, client_num, cuda=False, select_ratio=1.0):
-        super(SyncSGDParameterServerHandler, self).__init__(model, cuda)
+    def __init__(self, model, client_num, cuda=False, select_ratio=1.0, logger_path="server_handler.txt", logger_name="server handler"):
+        super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         self.client_num = client_num  # 每轮参与者数量 定义buffer大小
         self.select_ratio = select_ratio
         self.round_num = int(self.select_ratio * self.client_num)
 
+        self._LOGGER = logger(logger_path, logger_name)
+
         # client buffer
-        self.grad_buffer = [None for _ in range(self.client_num)]
-        self.grad_buffer_cnt = 0
+        self.client_buffer_cache = [None for _ in range(self.client_num)]
+        self.buffer_cnt = 0
 
         # setup
         self.update_flag = False
 
     def receive(self, sender, message_code, payload) -> None:
-        """Define what server do when receive client message
+        """Define what ps to do when receiving a single client message
 
         Args:
             sender: index of client in distributed
@@ -79,39 +81,33 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
             None
 
         """
-        print("Processing message: {} from sender {}".format(
+        self._LOGGER.info("Processing message: {} from sender {}".format(
             message_code.name, sender))
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
             buffer_index = sender - 1
-            if self.grad_buffer[buffer_index] is not None:
+            if self.client_buffer_cache[buffer_index] is not None:
+                self._LOGGER.info(
+                    "parameters from {} has exsited".format(sender))
                 return
-            self.grad_buffer_cnt += 1
-            self.grad_buffer[buffer_index] = payload.clone()
 
-            if self.grad_buffer_cnt == self.round_num:
-                print("server model updated")
-                self._buff[:] = torch.mean(
-                    torch.stack(self.grad_buffer), dim=0)
+            self.buffer_cnt += 1
+            self.client_buffer_cache[buffer_index] = payload.clone()
 
-                self.grad_buffer_cnt = 0
-                self.grad_buffer = [None for _ in range(self.client_num)]
+            if self.buffer_cnt == self.round_num:
+                """ if `client_buffer_cache` is full, then update server model"""
+                self._buffer[:] = torch.mean(
+                    torch.stack(self.client_buffer_cache), dim=0)
 
+                unravel_model_params(self._model, self._buffer)  # 通过buffer更新全局模型
+
+                self.buffer_cnt = 0
+                self.client_buffer_cache = [
+                    None for _ in range(self.client_num)]
                 self.update_flag = True
-
-        elif message_code == MessageCode.Exit:
-            exit(0)
-
         else:
             raise Exception("Undefined message type!")
-
-    def is_updated(self) -> bool:
-        """"""
-        return self.update_flag
-
-    def start_round(self):
-        self.update_flag = False
 
     def select_clients(self):
         """Return a list of client rank indices"""
@@ -119,9 +115,23 @@ class SyncSGDParameterServerHandler(ParameterServerHandler):
         select = random.sample(id_list, self.round_num)
         return select
 
+    def is_updated(self) -> bool:
+        return self.update_flag
+
+    def start_round(self):
+        self.update_flag = False
+
+
+
+
+
+
+
+
+
 
 # TODO: finish Async class
-class AsyncSGDParameterServer():
+class AsyncParameterServer():
     """ParameterServer
         TODO: this class is not implemented yet
     """

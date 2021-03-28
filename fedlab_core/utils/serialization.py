@@ -1,19 +1,19 @@
 import torch
 
 
-def ravel_model_params(model, grads=False, cuda=False):
+def ravel_model_params(model, cuda=False):
     """
     Squash model parameters or gradients into a single tensor.
     """
     if cuda:
         m_parameter = torch.Tensor([0]).cuda()
+
     else:
         m_parameter = torch.Tensor([0])
+
     for parameter in list(model.parameters()):
-        if grads:
-            m_parameter = torch.cat((m_parameter, parameter.grad.view(-1)))
-        else:
-            m_parameter = torch.cat((m_parameter, parameter.data.view(-1)))
+        m_parameter = torch.cat((m_parameter, parameter.data.view(-1)))
+
     return m_parameter[1:]
 
 

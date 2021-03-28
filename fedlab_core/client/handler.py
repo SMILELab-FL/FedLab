@@ -11,7 +11,12 @@ from fedlab_core.utils.logger import logger
 
 
 class ClientBackendHandler(object):
-    """Abstract class"""
+    """Abstract class
+        In our framework, we define that the backend of client handler show manage its local model and buffer
+        It should have a function to update its model called `train` and a function called `evaluate`
+
+        If you use our framework to define the activaties of client, please make sure that your self-defined class is derived from this class and override its functions. 
+    """
 
     def __init__(self, model, cuda):
         self.cuda = cuda
@@ -35,10 +40,17 @@ class ClientBackendHandler(object):
 
     @buffer.setter
     def buffer(self, buffer):
-        """Update local model using serialized parameters"""
+        """Update local model and buffer using serialized parameters"""
         unravel_model_params(self._model, buffer)
         self._buffer[:] = buffer[:]
 
+    @model.setter
+    def model(self, model):
+        """Update local model and buffer using serialized parameters"""
+        #TODO: untested
+        self._model[:] = model[:]
+        self._buffer = ravel_model_params(self._model, self.cuda)
+    
     def train(self):
         # TODO: please override this function. This
         #  function should manipulate self._model and self._buffer
@@ -65,11 +77,12 @@ class ClientSGDHandler(ClientBackendHandler):
         None
     """
 
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=False):
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt", logger_name="handler"):
         super(ClientSGDHandler, self).__init__(model, cuda)
+
         self._data_loader = data_loader
 
-        self._LOGGER = logger("clienthandler.txt", "handler")
+        self._LOGGER = logger(logger_file, logger_name)
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(
@@ -89,8 +102,6 @@ class ClientSGDHandler(ClientBackendHandler):
         Args:
             epochs (int): the number of epoch for local train
         """
-        def accuracy_score(predicted, labels):
-            return predicted.eq(labels).sum().float() / labels.shape[0]
 
         self._LOGGER.info("starting local train pocess")
         for epoch in range(epochs):
@@ -99,7 +110,6 @@ class ClientSGDHandler(ClientBackendHandler):
                 if self.cuda:
                     inputs, labels = inputs.cuda(), labels.cuda()
 
-                # TODO:可优化data_loader从而优化数据转移过程
                 self.optimizer.zero_grad()
 
                 outputs = self._model(inputs)
@@ -107,18 +117,24 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss.backward()
                 self.optimizer.step()
-
-                _, predicted = torch.max(outputs, 1)
-                accuracy = accuracy_score(predicted, labels)
-
-            log_str = {'epoch': epoch,
-                       'time': time.time(),
-                       'training_loss': loss.detach().item(),
-                       'training_accuracy': accuracy.item()}
+            log_str = "Epoch {}/{}".format(epoch+1, epochs)
             self._LOGGER.info(log_str)
 
         self._buffer = ravel_model_params(self._model, cuda=True)
 
-    def evaluate(self, test_loader):
+    def evaluate(self, test_loader, cuda):
         # TODO: Evaluate local model based on given test `torch.DataLoader`
-        raise NotImplementedError()
+
+        self._model.eval()
+        loss_sum = 0.0
+        for input, label in test_loader:
+            if cuda:
+                input = input.cuda()
+                label = label.cuda()
+
+            with torch.no_grad():
+                out = self._model(input)
+                loss = self.criterion(out, label)
+
+            loss_sum += loss.item()
+            # TODO: finish this
