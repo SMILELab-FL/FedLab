@@ -1,10 +1,12 @@
 import torch
 
-
 def ravel_model_params(model, cuda=False):
     """
     Squash model parameters or gradients into a single tensor.
     """
+    # TODO: WHY NOT:
+    # TODO: parameters = [param.data.view(-1) for param in model.parameters()]  # vectorize each model parameter
+    # TODO: m_parameters = torch.cat(parameters)
     if cuda:
         m_parameter = torch.Tensor([0]).cuda()
 
