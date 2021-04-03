@@ -100,7 +100,8 @@ class SyncParameterServerHandler(ParameterServerHandler):
                 self._buffer[:] = torch.mean(
                     torch.stack(self.client_buffer_cache), dim=0)
 
-                unravel_model_params(self._model, self._buffer)  # 通过buffer更新全局模型
+                unravel_model_params(
+                    self._model, self._buffer)  # 通过buffer更新全局模型
 
                 self.buffer_cnt = 0
                 self.client_buffer_cache = [
@@ -120,14 +121,6 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
     def start_round(self):
         self.update_flag = False
-
-
-
-
-
-
-
-
 
 
 # TODO: finish Async class

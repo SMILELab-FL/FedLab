@@ -1,0 +1,20 @@
+2021-04-03 13:11:14,914 - root - INFO - Successfully Initialized --- connected to server:('127.0.0.1', '3001'),  world size:3, rank:1, backend:gloo
+2021-04-03 13:11:14,947 - root - INFO - waiting message from server
+2021-04-03 13:11:14,959 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-03 13:11:14,963 - handler - INFO - starting local train pocess
+2021-04-03 13:11:16,131 - handler - INFO - Epoch 1/2
+2021-04-03 13:11:17,296 - handler - INFO - Epoch 2/2
+2021-04-03 13:11:17,298 - root - INFO - synchronise model prameters with server
+2021-04-03 13:11:17,307 - root - INFO - waiting message from server
+2021-04-03 13:11:17,406 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-03 13:11:17,410 - handler - INFO - starting local train pocess
+2021-04-03 13:11:18,567 - handler - INFO - Epoch 1/2
+2021-04-03 13:11:19,812 - handler - INFO - Epoch 2/2
+2021-04-03 13:11:19,812 - root - INFO - synchronise model prameters with server
+2021-04-03 13:11:19,816 - root - INFO - waiting message from server
+2021-04-03 13:11:19,831 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-03 13:11:19,835 - handler - INFO - starting local train pocess
+2021-04-03 13:11:21,090 - handler - INFO - Epoch 1/2
+2021-04-03 13:11:22,304 - handler - INFO - Epoch 2/2
+2021-04-03 13:11:22,305 - root - INFO - synchronise model prameters with server
+2021-04-03 13:11:22,313 - root - INFO - waiting message from server

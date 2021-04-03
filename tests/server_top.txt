@@ -1,9 +1,12 @@
-2021-03-28 16:49:26,337 - ServerTop - INFO - Server initailize with ip address ('127.0.0.1', '3001') and distributed backend gloo
-2021-03-28 16:49:26,337 - ServerTop - INFO - Waiting for the connection request from clients
-2021-03-28 16:49:51,986 - ServerTop - INFO - Connect to client successfully
-2021-03-28 16:49:51,986 - ServerTop - INFO - Global FL round 0/3
-2021-03-28 16:49:51,986 - ServerTop - INFO - client id list for this FL round: [2, 1]
-2021-03-28 16:49:59,413 - ServerTop - INFO - Global FL round 1/3
-2021-03-28 16:49:59,413 - ServerTop - INFO - client id list for this FL round: [2, 1]
-2021-03-28 16:50:06,671 - ServerTop - INFO - Global FL round 2/3
-2021-03-28 16:50:06,672 - ServerTop - INFO - client id list for this FL round: [1, 2]
+2021-04-03 13:11:05,718 - ServerTop - INFO - Server initailize with ip address ('127.0.0.1', '3001') and distributed backend gloo
+2021-04-03 13:11:05,718 - ServerTop - INFO - Waiting for the connection request from clients
+2021-04-03 13:11:14,913 - ServerTop - INFO - Connect to client successfully
+2021-04-03 13:11:14,914 - ServerTop - INFO - Global FL round 0/3
+2021-04-03 13:11:14,914 - ServerTop - INFO - client id list for this FL round: [1, 2]
+2021-04-03 13:11:17,398 - ServerTop - INFO - updated quit listen
+2021-04-03 13:11:17,399 - ServerTop - INFO - Global FL round 1/3
+2021-04-03 13:11:17,400 - ServerTop - INFO - client id list for this FL round: [1, 2]
+2021-04-03 13:11:19,819 - ServerTop - INFO - updated quit listen
+2021-04-03 13:11:19,820 - ServerTop - INFO - Global FL round 2/3
+2021-04-03 13:11:19,827 - ServerTop - INFO - client id list for this FL round: [2, 1]
+2021-04-03 13:11:22,319 - ServerTop - INFO - updated quit listen
