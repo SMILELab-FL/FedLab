@@ -101,12 +101,12 @@ class ClientSyncTop(ClientCommunicationTopology):
             self.synchronise(self._backend.buffer)
 
     def receive(self, sender, message_code, payload):
-        """Synchronise function: reaction of receive new message
+        """Synchronise function: reaction of receiving new message
 
         Args:
-            sender: index in torch.distributed
-            message_code: agreements code defined in MessageCode class
-            payload: serialized network parameter (by ravel_model_params function)
+            sender: Rank of sender
+            message_code: Agreements code defined in :class:`MessageCode` class
+            payload: Serialized model parameters obtained from :func:`ravel_model_params`
 
         Returns:
             None
@@ -118,13 +118,13 @@ class ClientSyncTop(ClientCommunicationTopology):
             sender, message_code))
 
         self._backend.buffer = payload
-        self._backend.train(epochs=2)
+        self._backend.train(epochs=2)  # TODO: why epochs=2??
 
     def synchronise(self, buffer):
-        """synchronise local network with server actively
+        """Synchronize local model with server actively
 
         Args:
-            buffer: serialized network parameters
+            buffer: Serialized model parameters
 
         Returns:
             None
@@ -132,5 +132,5 @@ class ClientSyncTop(ClientCommunicationTopology):
         Raises:
             None
         """
-        self._LOGGER.info("synchronise model prameters with server")
+        self._LOGGER.info("synchronize model parameters with server")
         send_message(MessageCode.ParameterUpdate, buffer)
