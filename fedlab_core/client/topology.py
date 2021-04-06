@@ -10,11 +10,12 @@ from fedlab_core.utils.logger import logger
 
 class ClientCommunicationTopology(Process):
     """Abstract class
-        if you want to define your own Network Topology
-        please be sure your class is derived from this abstract class and OVERRIDE its methods!
 
-        Example:
-            please read the code of `ClientSyncTop`
+    If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
+    methods.
+
+    Example:
+        please read the code of :class:`ClientSyncTop`
     """
 
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
@@ -30,35 +31,36 @@ class ClientCommunicationTopology(Process):
                                 rank=self.rank, world_size=self.world_size)
 
     def run(self):
-        # TODO: please override this function
+        """Please override this function"""
         raise NotImplementedError()
 
     def receive(self, sender, message_code, payload):
-        # TODO: please override this function
+        """Please override this function"""
         raise NotImplementedError()
 
     def synchronise(self, payload):
-        # TODO: please override this function
+        """Please override this function"""
         raise NotImplementedError()
 
 
 class ClientSyncTop(ClientCommunicationTopology):
-    """Synchronise conmmunicate class
+    """Synchronise communication class
 
     This is the top class in our framework which is mainly responsible for network communication of CLIENT!
-    Synchronize with server following agreements defined in run().
+    Synchronize with server following agreements defined in :meth:`run`.
 
     Args:
-        backend_handler: class derived from ClientBackendHandler
-        server_addr: (ip:port) address of server
-        world_size: world_size for `torch.distributed` initialization
-        rank: rank for `torch.distributed` initialization
-        dist_backend: backend of `torch.distributed` (gloo, mpi and ncll) and gloo is default
-        logger_file: path to the log file for this class
-        logger_name: class name to initialize logger
+        backend_handler: Subclass of ClientBackendHandler
+        server_addr (str): address of server in form of ``"[SERVER_ADDR]:[SERVER_IP]"``
+        world_size (int): Number of processes participating in the job for ``torch.distributed`` initialization
+        rank (int): Rank of the current process for ``torch.distributed`` initialization
+        dist_backend (str or Backend): The backend of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``. Default: ``"gloo"``
+        logger_file (str, optional): Path to the log file for this class. Default: ``"clientLog"``
+        logger_name (str, optional): Class name to initialize logger
 
     Raises:
-        Errors raised by `torch.distributed.init_process_group()`
+        Errors raised by :func:`torch.distributed.init_process_group`
 
     Example:
         TODO

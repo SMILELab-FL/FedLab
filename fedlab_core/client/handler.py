@@ -11,11 +11,13 @@ from fedlab_core.utils.logger import logger
 
 
 class ClientBackendHandler(object):
-    """Abstract class
-        In our framework, we define that the backend of client handler show manage its local model and buffer
-        It should have a function to update its model called `train` and a function called `evaluate`
+    """An abstract class representing handler for a client backend.
 
-        If you use our framework to define the activaties of client, please make sure that your self-defined class is derived from this class and override its functions. 
+    In our framework, we define the backend of client handler show manage its local model and buffer.
+    It should have a function to update its model called :meth:`train` and a function called :meth:`evaluate`.
+
+    If you use our framework to define the activities of client, please make sure that your self-defined class
+    should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
     """
 
     def __init__(self, model, cuda):
@@ -30,7 +32,7 @@ class ClientBackendHandler(object):
 
     @property
     def model(self):
-        """Get torch.nn.Module`"""
+        """Get :class:`torch.nn.Module`"""
         return self._model
 
     @property
@@ -47,18 +49,16 @@ class ClientBackendHandler(object):
     @model.setter
     def model(self, model):
         """Update local model and buffer using serialized parameters"""
-        #TODO: untested
+        # TODO: untested
         self._model[:] = model[:]
         self._buffer = ravel_model_params(self._model, self.cuda)
-    
+
     def train(self):
-        # TODO: please override this function. This
-        #  function should manipulate self._model and self._buffer
+        """Please override this method. This function should manipulate :attr:`self._model` and :attr:`self._buffer`"""
         raise NotImplementedError()
 
     def evaluate(self, test_loader):
-        # TODO: please override this function. Evaluate local model
-        #  based on given test torch.DataLoader
+        """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader"""
         raise NotImplementedError()
 
 
@@ -67,17 +67,21 @@ class ClientSGDHandler(ClientBackendHandler):
 
     Args:
         model (torch.nn.Module):
-        data_loader: torch.Dataloader for this client
-        optimizer: optimizer for this client's model
-        criterion: loss function used in local training process
-        cuda (bool): use GPUs or not
-        LOGGER: utils class to output debuf information to file and command line
+        data_loader (torch.Dataloader): :class:`DataLoader` for this client
+        optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use
+        :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
+        criterion (optional): loss function used in local training process. If set to ``None``, will use
+        :func:`nn.CrossEntropyLoss` as default.
+        cuda (bool, optional): use GPUs or not. Default: ``True``
+        LOGGER: utils class to output debug information to file and command line
 
     Raises:
         None
     """
+    # TODO: fix the logger parameter
 
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt", logger_name="handler"):
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt",
+                 logger_name="handler"):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
@@ -97,7 +101,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
     def train(self, epochs):
         """
-        Client train its local model based on local dataset.
+        Client trains its local model based on local dataset.
 
         Args:
             epochs (int): the number of epoch for local train
@@ -117,7 +121,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss.backward()
                 self.optimizer.step()
-            log_str = "Epoch {}/{}".format(epoch+1, epochs)
+            log_str = "Epoch {}/{}".format(epoch + 1, epochs)
             self._LOGGER.info(log_str)
 
         self._buffer = ravel_model_params(self._model, cuda=True)
