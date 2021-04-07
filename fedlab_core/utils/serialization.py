@@ -1,10 +1,12 @@
 import torch
 
-
 def ravel_model_params(model, cuda=False):
     """
     Squash model parameters or gradients into a single tensor.
     """
+    # TODO: WHY NOT:
+    # TODO: parameters = [param.data.view(-1) for param in model.parameters()]  # vectorize each model parameter
+    # TODO: m_parameters = torch.cat(parameters)
     if cuda:
         m_parameter = torch.Tensor([0]).cuda()
 
@@ -34,8 +36,8 @@ def unravel_model_params(model, parameter_update):
 def unravel_model_grad(model, grad_update):
     """
     Assigns grad_update params to model.parameters.
-    This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
-    NOTE: this function manipulates `model.parameters`.
+    This is done by iterating through :meth:`model.parameters` and assigning the relevant params in `grad_update`.
+    NOTE: this function manipulates :meth:`model.parameters`.
     """
     current_index = 0  # keep track of where to read from grad_update
     for parameter in model.parameters():

@@ -8,10 +8,12 @@ from fedlab_core.utils.logger import logger
 
 
 class ParameterServerHandler(object):
-    """Abstract class
-        please make sure that you self defined server handler class is derived from this class
-        Example:
-            read sourcecode of `SyncSGDParameterServerHandler` below
+    """An abstract class representing handler for parameter server.
+
+    Please make sure that you self-defined server handler class subclasses this class
+
+    Example:
+        read sourcecode of :class:`SyncSGDParameterServerHandler` below
     """
 
     def __init__(self, model, cuda=False) -> None:
@@ -23,7 +25,7 @@ class ParameterServerHandler(object):
         self.cuda = cuda
 
     def receive(self):
-        """override this function to define what the server to do when receiving message from client"""
+        """Override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
 
     def update(self, model_list):
@@ -58,7 +60,8 @@ class SyncParameterServerHandler(ParameterServerHandler):
         None
     """
 
-    def __init__(self, model, client_num, cuda=False, select_ratio=1.0, logger_path="server_handler.txt", logger_name="server handler"):
+    def __init__(self, model, client_num, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
+                 logger_name="server handler"):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         self.client_num = client_num  # 每轮参与者数量 定义buffer大小
@@ -75,12 +78,12 @@ class SyncParameterServerHandler(ParameterServerHandler):
         self.update_flag = False
 
     def receive(self, sender, message_code, payload) -> None:
-        """Define what ps to do when receiving a single client message
+        """Define what parameter server does when receiving a single client's message
 
         Args:
-            sender: index of client in distributed
-            message_code: agreements code defined in MessageCode class
-            payload: serialized model parameters
+            sender (int): Index of client in distributed
+            message_code: agreements code defined in :class:`MessageCode` class
+            payload (torch.Tensor): Serialized model parameters, obtained from :func:`ravel_model_params`
 
         Returns:
             None
@@ -130,6 +133,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
     def start_round(self):
         self.update_flag = False
+
 
 
 class AsyncParameterServerHandler(ParameterServerHandler):
