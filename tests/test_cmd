@@ -1,7 +1,0 @@
-
-
-python server_main_test.py
-
-
-CUDA_VISIBLE_DEVICES=2 python client_main_test.py --local_rank 1
-CUDA_VISIBLE_DEVICES=3 python client_main_test.py --local_rank 2

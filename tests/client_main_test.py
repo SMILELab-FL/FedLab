@@ -72,19 +72,10 @@ def module_test(topology, backend_worker):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
-    parser.add_argument('--batch_size', type=int, default=128, metavar='N',
-                        help='input batch size for training (default: 64)')
-    parser.add_argument('--epochs', type=int, default=1, metavar='N',
-                        help='number of epochs to train (default: 20)')
-    parser.add_argument('--lr', type=float, default=0.1,
-                        metavar='LR', help='learning rate (default: 0.1)')
-    parser.add_argument('--momentum', type=float, default=0.9,
-                        metavar='N', help='how often to pull params (default: 5)')
-
-    parser.add_argument('--server_ip', type=str, default="127.0.0.1")
-    parser.add_argument('--server_port', type=int, default=3001)
+    parser.add_argument('--server_ip', type=str)
+    parser.add_argument('--server_port', type=str)
     parser.add_argument('--local_rank', type=int)
-    parser.add_argument('--world_size', type=int, default=3)
+    parser.add_argument('--world_size', type=int)
     args = parser.parse_args()
     args.cuda = True
 
@@ -94,5 +85,5 @@ if __name__ == "__main__":
 
     handler = ClientSGDHandler(model, trainloader)
     top = ClientSyncTop(backend_handler=handler, server_addr=(
-        '127.0.0.1', '3001'), world_size=3, rank=args.local_rank)
+        args.server_ip, args.server_port), world_size=3, rank=args.local_rank)
     top.run()
