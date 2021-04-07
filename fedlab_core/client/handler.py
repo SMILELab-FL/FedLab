@@ -101,13 +101,13 @@ class ClientSGDHandler(ClientBackendHandler):
 
     def train(self, epochs):
         """
-        Client trains its local model based on local dataset.
+        Client trains its local model on local dataset.
 
         Args:
-            epochs (int): the number of epoch for local train
+            epochs (int): number of epoch for local training
         """
 
-        self._LOGGER.info("starting local train pocess")
+        self._LOGGER.info("starting local train process")
         for epoch in range(epochs):
             self._model.train()
             for inputs, labels in self._data_loader:
@@ -121,7 +121,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss.backward()
                 self.optimizer.step()
-            log_str = "Epoch {}/{}".format(epoch + 1, epochs)
+            log_str = "Epoch {}/{}".format(epoch + 1, epochs)  # TODO: loss record?
             self._LOGGER.info(log_str)
 
         self._buffer = ravel_model_params(self._model, cuda=True)
@@ -142,3 +142,4 @@ class ClientSGDHandler(ClientBackendHandler):
 
             loss_sum += loss.item()
             # TODO: finish this
+            # TODO: why not use `with torch.no_grad():` to wrap all other loops?
