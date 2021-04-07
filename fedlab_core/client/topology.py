@@ -1,7 +1,5 @@
-from math import log
 import torch
 import torch.distributed as dist
-from torch.distributed.distributed_c10d import send
 from torch.multiprocessing import Process
 
 from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
@@ -33,6 +31,7 @@ class ClientCommunicationTopology(Process):
         # TODO: please override this function
         raise NotImplementedError()
 
+    # on_receive
     def receive(self, sender, message_code, payload):
         # TODO: please override this function
         raise NotImplementedError()
@@ -93,7 +92,7 @@ class ClientSyncTop(ClientCommunicationTopology):
             parameter = self._buff[2:]
 
             if message_code == MessageCode.Exit:
-                break
+                exit(0)
 
             self.receive(sender, message_code, parameter)
             self.synchronise(self._backend.buffer)
@@ -118,9 +117,9 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._backend.buffer = payload
         self._backend.train(epochs=2)
 
-    def synchronise(self, buffer):
+    def synchronize(self, buffer):
         """synchronise local network with server actively
-
+            send local model parameters to server
         Args:
             buffer: serialized network parameters
 

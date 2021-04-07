@@ -72,27 +72,26 @@ class ServerSyncTop(EndTop):
 
     def run(self):
         """Process"""
-        self._LOGGER.info(
-            "Waiting for the connection request from clients")
+        self._LOGGER.info("Initializing pytorch distributed group")
+        self._LOGGER.info("Waiting for the connection request from clients")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_address[0], self.server_address[1]),
                                 rank=0, world_size=self._handler.client_num + 1)
         self._LOGGER.info("Connect to client successfully")
 
-        self.running = 3
-        for i in range(self.running):
+        global_epoch = 3    # test TODO 
+        for i in range(global_epoch):
             self._LOGGER.info(
-                "Global FL round {}/{}".format(i, self.running))
+                "Global FL round {}/{}".format(i, global_epoch))
 
-            # this part could be better
-            act_clients = threading.Thread(target=self.activate_clients)
-            wait_info = threading.Thread(target=self.listen_clients)
+            activate = threading.Thread(target=self.activate_clients)
+            listen = threading.Thread(target=self.listen_clients)
 
-            act_clients.start()
-            wait_info.start()
+            activate.start()
+            listen.start()
 
-            act_clients.join()
-            wait_info.join()
+            activate.join()
+            listen.join()
 
         for index in range(self._handler.client_num):
             end_message = torch.Tensor([0])

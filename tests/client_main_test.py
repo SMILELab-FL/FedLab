@@ -1,22 +1,13 @@
+from fedlab_core.client.topology import ClientSyncTop
+from fedlab_core.client.handler import ClientSGDHandler
+from fedlab_core.utils.sampler import DistributedSampler
+from fedlab_core.models.lenet import LeNet
+import torchvision.transforms as transforms
+import torchvision
+import torch
 import argparse
-import os
-import time
 import sys
 sys.path.append('/home/zengdun/FedLab')
-
-import torch
-from torch import nn
-import torch.nn.functional as F
-import torch.distributed as dist
-import torchvision
-import torchvision.transforms as transforms
-
-from fedlab_core.models.lenet import LeNet
-from fedlab_core.utils.messaging import recv_message, send_message, MessageCode
-from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
-from fedlab_core.utils.sampler import DistributedSampler
-from fedlab_core.client.handler import ClientSGDHandler
-from fedlab_core.client.topology import ClientSyncTop
 
 
 def get_dataset(args, dataset='MNIST', transform=None, root='../../datasets/mnist/'):
@@ -64,10 +55,6 @@ def get_dataset(args, dataset='MNIST', transform=None, root='../../datasets/mnis
     testloader = torch.utils.data.DataLoader(testset, batch_size=len(testset),
                                              drop_last=False, num_workers=2, shuffle=False)
     return trainloader, testloader
-
-
-def module_test(topology, backend_worker):
-    pass
 
 
 if __name__ == "__main__":
