@@ -106,8 +106,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         """Actions to perform on receiving new message, including local training
 
         Args:
-            sender (int): Rank of sender
-            message_code: Agreements code defined in :class:`MessageCode` class
+            sender (int): Index of sender
+            message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
             payload: Serialized model parameters
 
         Returns:

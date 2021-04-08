@@ -26,9 +26,6 @@ def send_message(message_code, payload, dst=0):
 
     Returns:
         Serialized message package, including rank of current process rank, message code, and the payload
-
-    Raises:
-        None
     """
     # _LOGGER.info("SENDING MESSAGE: {} RANK: {}".format(message_code, dist.get_rank()))
     print("SENDING MESSAGE: {} RANK: {} => RANK: {}".format(
