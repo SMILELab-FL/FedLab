@@ -12,19 +12,19 @@ from fedlab_core.client.topology import ClientCommunicationTopology
 
 
 class EndTop(Process):
+    """Abstract class for server network topology
+
+    If you want to define your own topology agreements, please subclass it.
+
+    Args:
+        server_handler: Parameter server backend handler derived from :class:`ParameterServerHandler`
+        server_address (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
+        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``
     """
-    Abstract class for server network topology
 
-    If you want to define your own topology agreements, please overide this class.
-
-    args:
-        handler: back-end of server
-        server_address: (ip,port) to init `torch`
-        dist_backend: parameter to init `torch.distributed`
-    """
-
-    def __init__(self, handler, server_address, dist_backend):
-        self._handler = handler
+    def __init__(self, server_handler, server_address, dist_backend):
+        self._handler = server_handler
         self.server_address = server_address  # ip:port
         self.dist_backend = dist_backend
 
@@ -33,53 +33,54 @@ class EndTop(Process):
         raise NotImplementedError()
 
     def activate_clients(self):
-        """activate some of clients to join this FL round"""
+        """Activate some of clients to join this FL round"""
         raise NotImplementedError()
 
     def listen_clients(self):
-        """listen messages from clients"""
+        """Listen messages from clients"""
         raise NotImplementedError()
 
 
 class ServerSyncTop(EndTop):
-    """Synchronise communicate Class
+    """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-    Synchronize with clients following agreements defined in run().
+    Synchronize with clients following agreements defined in :meth:`run`.
 
     Args:
-        ParameterServerHandler: a class derived from ParameterServerHandler
-        server_address: (ip:port) ipadress for `torch.distributed` initialization, because this is a server, rank is set by 0.
-        dist_backend: backend of `torch.distributed` (gloo, mpi and ncll) and gloo is default
-        logger_file: path to the log file for this class
-        logger_name: class name to initialize logger
+        server_handler: Subclass of :class:`ParameterServerHandler`
+        server_address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
+        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``. Default: ``"gloo"``
+        logger_path (str, optional): path to the log file for this class. Default: ``"server_top.txt"``
+        logger_name (str, optional): class name to initialize logger. Default: ``"ServerTop"``
 
     Raises:
         None
-
     """
 
-    def __init__(self, ParameterServerHandler, server_address, dist_backend="gloo", logger_path="server_top.txt", logger_name="ServerTop"):
+    def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
+                 logger_name="ServerTop"):
 
-        super(ServerSyncTop, self).__init__(handler=ParameterServerHandler,
+        super(ServerSyncTop, self).__init__(server_handler=server_handler,
                                             server_address=server_address, dist_backend=dist_backend)
         self.buff = torch.zeros(
-            self._handler.buffer.numel() + 2).cpu()  # 通信信息缓存 模型参数+2个控制参数位
+            self._handler.buffer.numel() + 2).cpu()  # TODO: 通信信息缓存 模型参数+2个控制参数位，need to be more formal
 
         self._LOGGER = logger(logger_path, logger_name)
-        self._LOGGER.info("Server initailize with ip address {} and distributed backend {}".format(
-            server_address, dist_backend))
+        self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
+            server_address[0], server_address[1], dist_backend))
 
     def run(self):
         """Process"""
         self._LOGGER.info("Initializing pytorch distributed group")
-        self._LOGGER.info("Waiting for the connection request from clients")
+        self._LOGGER.info("Waiting for connection requests from clients")
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_address[0], self.server_address[1]),
-                                rank=0, world_size=self._handler.client_num + 1)
-        self._LOGGER.info("Connect to client successfully")
+                                rank=0, world_size=self._handler.client_num_in_total + 1)
+        self._LOGGER.info("Connect to clients successfully")
 
-        global_epoch = 3    # test TODO 
+        global_epoch = 3  # test TODO
         for i in range(global_epoch):
             self._LOGGER.info(
                 "Global FL round {}/{}".format(i, global_epoch))
@@ -110,7 +111,7 @@ class ServerSyncTop(EndTop):
     def listen_clients(self):
         """listen messages from clients"""
         self._handler.start_round()  # flip the update_flag
-        while (True):
+        while True:
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
