@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
@@ -71,7 +73,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         super(ClientSyncTop, self).__init__(backend_handler,
                                             server_addr, world_size, rank, dist_backend)
 
-        self._LOGGER = logger(logger_file + str(rank) + ".txt", logger_name)
+        self._LOGGER = logger(os.path.join(
+            "log", logger_file + str(rank) + ".txt"), logger_name)
         self._LOGGER.info(
             "Successfully Initialized --- connected to server:{},  world size:{}, rank:{}, backend:{}".format(
                 server_addr, world_size, rank, dist_backend))

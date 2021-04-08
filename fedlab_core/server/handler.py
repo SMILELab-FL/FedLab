@@ -110,7 +110,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
                 """ if `client_buffer_cache` is full, then update server model"""
                 self._buffer[:] = torch.mean(
                     torch.stack(self.client_buffer_cache), dim=0)  # FedAvg 这里可抽象为接口给用户
-                
+
                 # self.update(self.client_buffer_cache)
 
                 unravel_model_params(
@@ -129,13 +129,12 @@ class SyncParameterServerHandler(ParameterServerHandler):
         select = random.sample(id_list, self.round_num)
         return select
 
-    # 下列可优化 
+    # 下列可优化
     def is_updated(self) -> bool:
         return self.update_flag
 
     def start_round(self):
         self.update_flag = False
-
 
 
 class AsyncParameterServerHandler(ParameterServerHandler):
@@ -172,6 +171,6 @@ class AsyncParameterServerHandler(ParameterServerHandler):
 
         elif message_code == MessageCode.Exit:
             pass
-        
+
         else:
             pass

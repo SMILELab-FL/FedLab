@@ -80,7 +80,7 @@ class ClientSGDHandler(ClientBackendHandler):
     """
     # TODO: fix the logger parameter
 
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt",
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="log/handler.txt",
                  logger_name="handler"):
         super(ClientSGDHandler, self).__init__(model, cuda)
 

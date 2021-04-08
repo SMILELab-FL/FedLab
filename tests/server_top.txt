@@ -1,3 +1,0 @@
-2021-04-06 17:43:42,378 - ServerTop - INFO - Server initailize with ip address ('113.54.158.81', '2334') and distributed backend gloo
-2021-04-06 17:43:42,378 - ServerTop - INFO - Initializing pytorch distributed group
-2021-04-06 17:43:42,378 - ServerTop - INFO - Waiting for the connection request from clients
