@@ -36,7 +36,7 @@ class ClientCommunicationTopology(Process):
         """Please override this function"""
         raise NotImplementedError()
 
-    def synchronize(self, payload):
+    def synchronize(self):
         """Please override this function"""
         raise NotImplementedError()
 
@@ -87,17 +87,9 @@ class ClientSyncTop(ClientCommunicationTopology):
         """
 
         while True:
+
             # waits for data from
-            # TODO: whether this step can be wrapped?
-            self._LOGGER.info("waiting message from server")
-            recv_message(self._buff, src=0)  # 阻塞式
-
-            # parse the received data
-            # TODO: 通信消息解析可模块化
-            sender = int(self._buff[0].item())
-            message_code = MessageCode(self._buff[1].item())
-            parameter = self._buff[2:]
-
+            sender, message_code, parameter = self._waiting()
             if message_code == MessageCode.Exit:
                 exit(0)
 
@@ -105,7 +97,7 @@ class ClientSyncTop(ClientCommunicationTopology):
             self.on_receive(sender, message_code, parameter)
 
             # synchronize with server
-            self.synchronize(self._backend.buffer)
+            self.synchronize()
 
     def on_receive(self, sender, message_code, payload):
         """Actions to perform on receiving new message, including local training
@@ -127,7 +119,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._backend.buffer = payload
         self._backend.train(epochs=2)
 
-    def synchronize(self, buffer):
+    def synchronize(self):
         """Synchronize local model with server actively
 
         Args:
@@ -140,4 +132,12 @@ class ClientSyncTop(ClientCommunicationTopology):
             None
         """
         self._LOGGER.info("synchronize model parameters with server")
-        send_message(MessageCode.ParameterUpdate, buffer)
+        send_message(MessageCode.ParameterUpdate, self._backend.buffer)
+
+    def _waiting(self):
+        def parse_message(buffer):
+            return int(self._buff[0].item()), MessageCode(self._buff[1].item()), self._buff[2:]
+
+        recv_message(self._buff, src=0)  # recv message from server(rank=0)
+
+        return parse_message(self._buff)

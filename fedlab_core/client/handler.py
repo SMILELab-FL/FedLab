@@ -106,10 +106,11 @@ class ClientSGDHandler(ClientBackendHandler):
         Args:
             epochs (int): number of epoch for local training
         """
-
         self._LOGGER.info("starting local train process")
+
         for epoch in range(epochs):
             self._model.train()
+            loss_sum = 0.0
             for inputs, labels in self._data_loader:
                 if self.cuda:
                     inputs, labels = inputs.cuda(), labels.cuda()
@@ -121,25 +122,37 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss.backward()
                 self.optimizer.step()
-            log_str = "Epoch {}/{}".format(epoch + 1, epochs)  # TODO: loss record?
+
+                loss_sum += loss.detach().item()
+
+            log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
+                epoch + 1, epochs, loss_sum, time.time())
             self._LOGGER.info(log_str)
 
         self._buffer = ravel_model_params(self._model, cuda=True)
 
     def evaluate(self, test_loader, cuda):
-        # TODO: Evaluate local model based on given test `torch.DataLoader`
-
+        """
+        Evaluate local model based on given test `torch.DataLoader`
+        """
+        def accuracy_score(predicted, labels):
+            return predicted.eq(labels).sum().float() / labels.shape[0]
         self._model.eval()
         loss_sum = 0.0
-        for input, label in test_loader:
-            if cuda:
-                input = input.cuda()
-                label = label.cuda()
+        accuracy = 0.0
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+                if cuda:
+                    inputs = inputs.cuda()
+                    labels = labels.cuda()
 
-            with torch.no_grad():
-                out = self._model(input)
-                loss = self.criterion(out, label)
+                    outputs = self._model(input)
+                    loss = self.criterion(outputs, labels)
 
-            loss_sum += loss.item()
-            # TODO: finish this
-            # TODO: why not use `with torch.no_grad():` to wrap all other loops?
+                _, predicted = torch.max(outputs, 1)
+                accuracy += accuracy_score(predicted, labels)
+                loss_sum += loss.item()
+
+        accuracy = accuracy/len(test_loader)
+        log_str = "Evaluate, Loss {}, accuracy: {}".format(loss_sum, accuracy)
+        self._LOGGER.info(log_str)
