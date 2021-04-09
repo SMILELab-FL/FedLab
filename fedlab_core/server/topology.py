@@ -67,6 +67,8 @@ class ServerBasicTop(EndTop):
         self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
+        
+        self.global_round = 3  # for test
 
     def run(self):
         """Process"""
@@ -77,11 +79,9 @@ class ServerBasicTop(EndTop):
                                 rank=0, world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
 
-        # TODO: 把 global_epoch 重新命名成 global_round
-        global_round = 3  # test TODO: 将这个作为参数传入吧
-        for round_idx in range(global_round):
+        for round_idx in range(self.global_round):
             self._LOGGER.info(
-                "Global FL round {}/{}".format(round_idx+1, global_round))
+                "Global FL round {}/{}".format(round_idx+1, self.global_round))
 
             activate = threading.Thread(target=self.activate_clients)
             listen = threading.Thread(target=self.listen_clients)

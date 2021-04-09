@@ -95,7 +95,8 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
         self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
-        self.client_num_per_round = int(self.select_ratio * self.client_num_in_total)
+        self.client_num_per_round = max(
+            1, int(self.select_ratio * self.client_num_in_total))
 
         self._LOGGER = logger(logger_path, logger_name)
 
@@ -114,8 +115,6 @@ class SyncParameterServerHandler(ParameterServerHandler):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
             payload (torch.Tensor): Serialized model parameters
         """
-        # TODO: 解藕单个client的buffer接收处理和global model的更新操作
-        # TODO: client buffer cache用dict()后很多操作需要修改
         self._LOGGER.info("Processing message: {} from sender {}".format(
             message_code.name, sender))
 

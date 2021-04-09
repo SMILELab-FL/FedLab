@@ -91,6 +91,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         while True:
             # waits for data from
             sender, message_code, parameter = self._waiting()
+
+            # exit
             if message_code == MessageCode.Exit:
                 exit(0)
 
@@ -115,21 +117,13 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._backend.train(epochs=2)
 
     def synchronize(self):
-        """Synchronize local model with server actively
+        """Synchronize local model with server actively"""
 
-        Args:
-            buffer: Serialized model parameters
-
-        Returns:
-            None
-
-        Raises:
-            None
-        """
         self._LOGGER.info("synchronize model parameters with server")
         send_message(MessageCode.ParameterUpdate, self._backend.buffer)
 
     def _waiting(self):
+        """waiting for server message"""
         def parse_message(buffer):
             return int(self._buff[0].item()), MessageCode(self._buff[1].item()), self._buff[2:]
 
