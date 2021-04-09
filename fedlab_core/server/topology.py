@@ -110,16 +110,13 @@ class ServerSyncTop(EndTop):
 
     def listen_clients(self):
         """listen messages from clients"""
-        self._handler.start_round()  # flip the update_flag
-        while True:
+        self._handler.train()  # flip the update_flag
+
+        # server_handler will turn this flag to True when model parameters updated
+        while self._handler.update_flag:
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
             parameter = self.buff[2:]
 
             self._handler.receive(sender, message_code, parameter)
-
-            if self._handler.update_flag:
-                # server_handler will turn this flag to True when model parameters updated
-                self._LOGGER.info("updated quit listen")
-                break

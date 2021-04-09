@@ -28,7 +28,16 @@ class ParameterServerHandler(object):
         """Override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
 
-    def update(self, model_list):
+    def add_model(self, sender, payload):
+        """Override this function to deal with incomming model
+
+            Args:
+                sender (int): the index of sender
+                payload (): serialized model parameters
+        """
+        raise NotImplementedError()
+
+    def update_model(self, model_list):
         """Override this function to update global model
 
         Args:
@@ -79,20 +88,21 @@ class SyncParameterServerHandler(ParameterServerHandler):
             raise ValueError("Invalid select ratio: {}".format(select_ratio))
 
         if client_num_in_total < 1:
-            raise ValueError("Invalid total client number: {}".format(client_num_in_total))
+            raise ValueError(
+                "Invalid total client number: {}".format(client_num_in_total))
 
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
-        self.client_num_per_round = min(int(self.select_ratio * self.client_num_in_total), self.client_num_in_total)
+        self.client_num_per_round = min(
+            int(self.select_ratio * self.client_num_in_total), self.client_num_in_total)
 
         self._LOGGER = logger(logger_path, logger_name)
 
         # client buffer
-        # TODO: try to use dict() for client buffer cache: cache[buffer_index] = payload.copy()
-        self.client_buffer_cache = [None for _ in range(self.client_num_in_total)]
-        self.buffer_cnt = 0
+        self.client_buffer_cache = {}
+        self.cache_cnt = 0
 
         # setup
         self.update_flag = False
@@ -118,23 +128,14 @@ class SyncParameterServerHandler(ParameterServerHandler):
                     "parameters from {} has existed".format(sender))
                 return
 
-            self.buffer_cnt += 1
+            self.cache_cnt += 1
             self.client_buffer_cache[buffer_index] = payload.clone()
 
             # update server model when client_buffer_cache is full
-            if self.buffer_cnt == self.client_num_per_round:
-                self._buffer[:] = torch.mean(
-                    torch.stack(self.client_buffer_cache), dim=0)  # FedAvg 这里可抽象为接口给用户
+            if self.cache_cnt == self.client_num_per_round:
+                # TODO: try to override self.update()
+                self.update(self.client_buffer_cache.values())
 
-                # self.update(self.client_buffer_cache)  # TODO: try to override self.update()
-
-                unravel_model_params(
-                    self._model, self._buffer)  # update global model using buffer
-
-                self.buffer_cnt = 0
-                self.client_buffer_cache = [
-                    None for _ in range(self.client_num_in_total)]
-                self.update_flag = True
         else:
             raise Exception("Undefined message type!")
 
@@ -144,11 +145,28 @@ class SyncParameterServerHandler(ParameterServerHandler):
         select = random.sample(id_list, self.client_num_per_round)
         return select
 
-    # 下列可优化
-    def is_updated(self) -> bool:
-        return self.update_flag
+    def add_model(self, sender, payload):
+        """deal with the model parameters"""
+        buffer_index = sender - 1
+        if self.client_buffer_cache[buffer_index] is not None:
+            self._LOGGER.info("parameters from {} has existed".format(sender))
+            return
 
-    def start_round(self):
+        self.cache_cnt += 1
+        self.client_buffer_cache[buffer_index] = payload.clone()
+
+    def update_model(self, model_list):
+        """update global model"""
+        self._buffer[:] = torch.mean(
+            torch.stack(model_list), dim=0)
+        unravel_model_params(
+            self._model, self._buffer)
+
+        self.cache_cnt = 0
+        self.client_buffer_cache = {}
+        self.update_flag = True
+
+    def train(self):
         self.update_flag = False
 
 
@@ -171,7 +189,8 @@ class AsyncParameterServerHandler(ParameterServerHandler):
 
     def update(self, model_list):
         params = model_list[0]
-        self._buffer[:] = (1 - self.alpha) * self._buffer[:] + self.alpha * params
+        self._buffer[:] = (1 - self.alpha) * \
+            self._buffer[:] + self.alpha * params
         unravel_model_params(self._model, self._buffer)  # load
 
     def on_receive(self, sender, message_code, parameter):
