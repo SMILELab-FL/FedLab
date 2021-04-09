@@ -80,10 +80,11 @@ class ServerSyncTop(EndTop):
                                 rank=0, world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
 
-        global_epoch = 3  # test TODO
-        for i in range(global_epoch):
+        # TODO: 把 global_epoch 重新命名成 global_round
+        global_round = 3  # test TODO: 将这个作为参数传入吧
+        for round_idx in range(global_round):  # TODO: 把for i in改成了for round_idx
             self._LOGGER.info(
-                "Global FL round {}/{}".format(i, global_epoch))
+                "Global FL round {}/{}".format(round_idx, global_round))
 
             activate = threading.Thread(target=self.activate_clients)
             listen = threading.Thread(target=self.listen_clients)
@@ -94,19 +95,20 @@ class ServerSyncTop(EndTop):
             activate.join()
             listen.join()
 
-        for index in range(self._handler.client_num):
+        # TODO: 用于循环的index重新命名成client_idx
+        for client_idx in range(self._handler.client_num_in_total):
             end_message = torch.Tensor([0])
-            send_message(MessageCode.Exit, payload=end_message, dst=index)
+            send_message(MessageCode.Exit, payload=end_message, dst=client_idx)  # TODO: 检查一下是用client_idx还是client_idx+1
 
     def activate_clients(self):
-        """activate some of clients to join this FL round"""
-        usr_list = self._handler.select_clients()
+        """Activate some of clients to join this FL round"""
+        clients_this_round = self._handler.select_clients()  # TODO: 修改了变量名
         payload = self._handler.buffer
 
         self._LOGGER.info(
-            "client id list for this FL round: {}".format(usr_list))
-        for index in usr_list:
-            send_message(MessageCode.ParameterUpdate, payload, dst=index)
+            "client id list for this FL round: {}".format(clients_this_round))
+        for client_idx in clients_this_round:  # TODO: 修改了循环用的index名
+            send_message(MessageCode.ParameterUpdate, payload, dst=client_idx)
 
     def listen_clients(self):
         """listen messages from clients"""
@@ -117,6 +119,6 @@ class ServerSyncTop(EndTop):
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
-            parameter = self.buff[2:]
+            parameter = self.buff[2:]    # TODO: buffer解析需要模块化
 
             self._handler.receive(sender, message_code, parameter)
