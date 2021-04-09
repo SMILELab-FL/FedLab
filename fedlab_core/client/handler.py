@@ -133,7 +133,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
     def evaluate(self, test_loader, cuda):
         """
-        Evaluate local model based on given test `torch.DataLoader`
+        Evaluate local model based on given test :class:`torch.DataLoader`
         """
         def accuracy_score(predicted, labels):
             return predicted.eq(labels).sum().float() / labels.shape[0]

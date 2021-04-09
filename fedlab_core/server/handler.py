@@ -24,15 +24,15 @@ class ParameterServerHandler(object):
         self._buffer = ravel_model_params(self._model, cuda)
         self.cuda = cuda
 
-    def receive(self):
+    def on_receive(self):
         """Override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
 
     def update(self, model_list):
-        """override this function to update global model
+        """Override this function to update global model
 
-        args: 
-            model_list: a list of model parameters serialized by `ravel_model_params`
+        Args:
+            model_list (list): a list of model parameters serialized by :func:`ravel_model_params`
         """
         raise NotImplementedError()
 
@@ -44,54 +44,69 @@ class ParameterServerHandler(object):
     def model(self):
         return self._model
 
+    @buffer.setter
+    def buffer(self, buffer):
+        """Update server model and buffer using serialized parameters"""
+        unravel_model_params(self._model, buffer)
+        self._buffer[:] = buffer[:]
+
+    @model.setter
+    def model(self, model):
+        """Update server model and buffer using serialized parameters"""
+        # TODO: untested
+        self._model[:] = model[:]
+        self._buffer = ravel_model_params(self._model, self.cuda)
+
 
 class SyncParameterServerHandler(ParameterServerHandler):
-    """Synchronize Parameter Server Handler
-        Backend of parameter server: this class is responsible for backend computing
-        Synchronize ps(parameter server) will wait for every client finishing their local training process before the next FL round
+    """Synchronous Parameter Server Handler
+
+    Backend of synchronous parameter server: this class is responsible for backend computing.
+
+    Synchronous parameter server will wait for every client to finish local training process before the
+    next FL round.
 
     Args:
-        model: torch.nn.Module
-        client_num: the number of client in this federation
-        cuda: use GPUs or not
-        select_ratio: select_ratio*client_num is the number of clients to join every FL round
-
-    Raises:
-        None
+        model (torch.nn.Module): Model used in this federation
+        client_num_in_total (int): Total number of clients in this federation
+        cuda (bool): Use GPUs or not
+        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round
     """
 
-    def __init__(self, model, client_num, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
+    def __init__(self, model, client_num_in_total, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
                  logger_name="server handler"):
+        if select_ratio <= 0.0 or select_ratio > 1.0:
+            raise ValueError("Invalid select ratio: {}".format(select_ratio))
+
+        if client_num_in_total < 1:
+            raise ValueError("Invalid total client number: {}".format(client_num_in_total))
+
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
-        self.client_num = client_num  # 每轮参与者数量 定义buffer大小
+        self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
-        self.round_num = int(self.select_ratio * self.client_num)
+        self.client_num_per_round = min(int(self.select_ratio * self.client_num_in_total), self.client_num_in_total)
 
         self._LOGGER = logger(logger_path, logger_name)
 
         # client buffer
-        self.client_buffer_cache = [None for _ in range(self.client_num)]
+        # TODO: try to use dict() for client buffer cache: cache[buffer_index] = payload.copy()
+        self.client_buffer_cache = [None for _ in range(self.client_num_in_total)]
         self.buffer_cnt = 0
 
         # setup
         self.update_flag = False
 
-    def receive(self, sender, message_code, payload) -> None:
+    def on_receive(self, sender, message_code, payload) -> None:
         """Define what parameter server does when receiving a single client's message
 
         Args:
             sender (int): Index of client in distributed
-            message_code: agreements code defined in :class:`MessageCode` class
-            payload (torch.Tensor): Serialized model parameters, obtained from :func:`ravel_model_params`
-
-        Returns:
-            None
-
-        Raises:
-            None
-
+            message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
+            payload (torch.Tensor): Serialized model parameters
         """
+        # TODO: 解藕单个client的buffer接收处理和global model的更新操作
+        # TODO: client buffer cache用dict()后很多操作需要修改
         self._LOGGER.info("Processing message: {} from sender {}".format(
             message_code.name, sender))
 
@@ -100,33 +115,33 @@ class SyncParameterServerHandler(ParameterServerHandler):
             buffer_index = sender - 1
             if self.client_buffer_cache[buffer_index] is not None:
                 self._LOGGER.info(
-                    "parameters from {} has exsited".format(sender))
+                    "parameters from {} has existed".format(sender))
                 return
 
             self.buffer_cnt += 1
             self.client_buffer_cache[buffer_index] = payload.clone()
 
-            if self.buffer_cnt == self.round_num:
-                """ if `client_buffer_cache` is full, then update server model"""
+            # update server model when client_buffer_cache is full
+            if self.buffer_cnt == self.client_num_per_round:
                 self._buffer[:] = torch.mean(
                     torch.stack(self.client_buffer_cache), dim=0)  # FedAvg 这里可抽象为接口给用户
 
-                # self.update(self.client_buffer_cache)
+                # self.update(self.client_buffer_cache)  # TODO: try to override self.update()
 
                 unravel_model_params(
-                    self._model, self._buffer)  # 通过buffer更新全局模型
+                    self._model, self._buffer)  # update global model using buffer
 
                 self.buffer_cnt = 0
                 self.client_buffer_cache = [
-                    None for _ in range(self.client_num)]
+                    None for _ in range(self.client_num_in_total)]
                 self.update_flag = True
         else:
             raise Exception("Undefined message type!")
 
     def select_clients(self):
-        """Return a list of client rank indices"""
-        id_list = [i + 1 for i in range(self.client_num)]
-        select = random.sample(id_list, self.round_num)
+        """Return a list of client rank indices selected randomly"""
+        id_list = [i + 1 for i in range(self.client_num_in_total)]
+        select = random.sample(id_list, self.client_num_per_round)
         return select
 
     # 下列可优化
@@ -138,13 +153,14 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
 
 class AsyncParameterServerHandler(ParameterServerHandler):
-    """Asynchronize ParameterServer Handler
-        update global model imediately after receving a ParameterUpdate message
-        paper: https://arxiv.org/abs/1903.03934
+    """Asynchronous ParameterServer Handler
 
-        args:
-            model: torch.nn.Module
-            cuda: use GPUs or not
+    Update global model immediately after receiving a ParameterUpdate message
+    paper: https://arxiv.org/abs/1903.03934
+
+    Args:
+        model (torch.nn.Module): Global model in server
+        cuda (bool): Use GPUs or not
     """
 
     def __init__(self, model, cuda):
@@ -155,10 +171,10 @@ class AsyncParameterServerHandler(ParameterServerHandler):
 
     def update(self, model_list):
         params = model_list[0]
-        self._buffer[:] = (1-self.alpha)*self._buffer[:] + self.alpha*params
+        self._buffer[:] = (1 - self.alpha) * self._buffer[:] + self.alpha * params
         unravel_model_params(self._model, self._buffer)  # load
 
-    def receive(self, sender, message_code, parameter):
+    def on_receive(self, sender, message_code, parameter):
 
         if message_code == MessageCode.ParameterUpdate:
             self.update([parameter])

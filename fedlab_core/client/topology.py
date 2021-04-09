@@ -52,7 +52,7 @@ class ClientSyncTop(ClientCommunicationTopology):
     Args:
         backend_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
         client.
-        server_addr (str): address of server in form of ``"[SERVER_ADDR]:[SERVER_IP]"``
+        server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
         world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
         rank (int): Rank of the current client process for ``torch.distributed`` initialization
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
@@ -76,8 +76,8 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._LOGGER = logger(os.path.join(
             "log", logger_file + str(rank) + ".txt"), logger_name)
         self._LOGGER.info(
-            "Successfully Initialized --- connected to server:{},  world size:{}, rank:{}, backend:{}".format(
-                server_addr, world_size, rank, dist_backend))
+            "Successfully Initialized --- connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
+                server_addr[0], server_addr[1], world_size, rank, dist_backend))
 
         self._buff = torch.zeros(
             self._backend.buffer.numel() + 2).cpu()  # TODO: need to be more formal
@@ -106,15 +106,9 @@ class ClientSyncTop(ClientCommunicationTopology):
         """Actions to perform on receiving new message, including local training
 
         Args:
-            sender (int): Rank of sender
-            message_code: Agreements code defined in :class:`MessageCode` class
-            payload: Serialized model parameters
-
-        Returns:
-            None
-
-        Raises:
-            None
+            sender (int): Index of sender
+            message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
+            payload (torch.Tensor): Serialized model parameters
         """
         self._LOGGER.info("receiving message from {}, message code {}".format(
             sender, message_code))
