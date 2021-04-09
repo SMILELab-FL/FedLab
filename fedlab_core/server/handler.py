@@ -84,7 +84,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
     def __init__(self, model, client_num_in_total, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
                  logger_name="server handler"):
-        if select_ratio <= 0.0 or select_ratio > 1.0:
+        if select_ratio < 0.0 or select_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(select_ratio))
 
         if client_num_in_total < 1:
@@ -95,8 +95,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
         self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
-        self.client_num_per_round = min(
-            int(self.select_ratio * self.client_num_in_total), self.client_num_in_total)
+        self.client_num_per_round = int(self.select_ratio * self.client_num_in_total)
 
         self._LOGGER = logger(logger_path, logger_name)
 
@@ -105,7 +104,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
         self.cache_cnt = 0
 
         # setup
-        self.update_flag = False
+        self.train_flag = False
 
     def on_receive(self, sender, message_code, payload) -> None:
         """Define what parameter server does when receiving a single client's message
@@ -122,20 +121,10 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
-            buffer_index = sender - 1
-            if self.client_buffer_cache[buffer_index] is not None:
-                self._LOGGER.info(
-                    "parameters from {} has existed".format(sender))
-                return
-
-            self.cache_cnt += 1
-            self.client_buffer_cache[buffer_index] = payload.clone()
-
+            self.add_model(sender, payload)
             # update server model when client_buffer_cache is full
             if self.cache_cnt == self.client_num_per_round:
-                # TODO: try to override self.update()
-                self.update(self.client_buffer_cache.values())
-
+                self.update_model(list(self.client_buffer_cache.values()))
         else:
             raise Exception("Undefined message type!")
 
@@ -148,7 +137,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
     def add_model(self, sender, payload):
         """deal with the model parameters"""
         buffer_index = sender - 1
-        if self.client_buffer_cache[buffer_index] is not None:
+        if self.client_buffer_cache.get(buffer_index) is not None:
             self._LOGGER.info("parameters from {} has existed".format(sender))
             return
 
@@ -164,10 +153,10 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
         self.cache_cnt = 0
         self.client_buffer_cache = {}
-        self.update_flag = True
+        self.train_flag = False
 
     def train(self):
-        self.update_flag = False
+        self.train_flag = True
 
 
 class AsyncParameterServerHandler(ParameterServerHandler):
@@ -187,7 +176,7 @@ class AsyncParameterServerHandler(ParameterServerHandler):
         self.alpha = 0.5
         self.decay = 0.9
 
-    def update(self, model_list):
+    def update_model(self, model_list):
         params = model_list[0]
         self._buffer[:] = (1 - self.alpha) * \
             self._buffer[:] + self.alpha * params
@@ -196,7 +185,7 @@ class AsyncParameterServerHandler(ParameterServerHandler):
     def on_receive(self, sender, message_code, parameter):
 
         if message_code == MessageCode.ParameterUpdate:
-            self.update([parameter])
+            self.update_model([parameter])
 
         elif message_code == MessageCode.ParameterRequest:
             send_message(MessageCode.ParameterUpdate, self._model, dst=sender)

@@ -88,9 +88,7 @@ class ClientSyncTop(ClientCommunicationTopology):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
-
         while True:
-
             # waits for data from
             sender, message_code, parameter = self._waiting()
             if message_code == MessageCode.Exit:
