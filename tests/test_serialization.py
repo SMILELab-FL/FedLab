@@ -4,6 +4,7 @@
 # @Contact : zszxlsq@gmail.com
 # @File    : test_serialization.py
 # @Software: PyCharm
+import os
 import unittest
 import torch
 import torch.nn as nn
@@ -28,11 +29,13 @@ class SerializationTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         # DO NOT change the setting below, the model is pretrained
-        self.input_size = 784
-        self.hidden_size = 250
-        self.num_classes = 10
-        self.model = Net(self.input_size, self.hidden_size, self.num_classes)
-        self.model.load_state_dict(torch.load('./data/nnModel.ckpt'))
+        input_size = 784
+        hidden_size = 250
+        num_classes = 10
+        test_path = os.path.dirname(os.path.realpath(__file__))
+        model_path = os.path.join(test_path, 'data/nnModel.ckpt')
+        self.model = Net(input_size, hidden_size, num_classes)
+        self.model.load_state_dict(torch.load(model_path))
 
     def test_ravel_model_params_cpu(self):
         cpu_params = serialization.ravel_model_params(self.model, cuda=False)
