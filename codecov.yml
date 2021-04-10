@@ -1,7 +1,4 @@
 codecov:
-  token: 1a85424a-8aaa-475c-bdf7-48c2925ad12b
-  ci:
-    - "travis.org"
   require_ci_to_pass: yes
 
 coverage:

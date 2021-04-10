@@ -1,11 +1,11 @@
-'''ResNet in PyTorch.
+"""ResNet in PyTorch.
 
 For Pre-activation ResNet, see 'preact_resnet.py'.
 
 Reference:
 [1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
     Deep Residual Learning for Image Recognition. arXiv:1512.03385
-'''
+"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -27,10 +27,10 @@ class BasicBlock(nn.Module):
             self.bn1 = self.bn2 = nn.Sequential()
 
         self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
+        if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*planes) if use_batchnorm else nn.Sequential()
+                nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion * planes) if use_batchnorm else nn.Sequential()
             )
 
     def forward(self, x):
@@ -50,17 +50,17 @@ class Bottleneck(nn.Module):
         self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, self.expansion*planes, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm2d(self.expansion*planes)
+        self.conv3 = nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(self.expansion * planes)
 
         if not use_batchnorm:
             self.bn1 = self.bn2 = self.bn3 = nn.Sequential()
 
         self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
+        if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*planes) if use_batchnorm else nn.Sequential()
+                nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion * planes) if use_batchnorm else nn.Sequential()
             )
 
     def forward(self, x):
@@ -83,10 +83,10 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block.expansion, num_classes)
+        self.linear = nn.Linear(512 * block.expansion, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1]*(num_blocks-1)
+        strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
             layers.append(block(self.in_planes, planes, stride, self.use_batchnorm))
@@ -106,24 +106,28 @@ class ResNet(nn.Module):
 
 
 def ResNet18(use_batchnorm=True):
-    return ResNet(BasicBlock, [2,2,2,2], use_batchnorm=use_batchnorm)
+    return ResNet(BasicBlock, [2, 2, 2, 2], use_batchnorm=use_batchnorm)
+
 
 def ResNet34(use_batchnorm=True):
-    return ResNet(BasicBlock, [3,4,6,3], use_batchnorm=use_batchnorm)
+    return ResNet(BasicBlock, [3, 4, 6, 3], use_batchnorm=use_batchnorm)
+
 
 def ResNet50(use_batchnorm=True):
-    return ResNet(Bottleneck, [3,4,6,3], use_batchnorm=use_batchnorm)
+    return ResNet(Bottleneck, [3, 4, 6, 3], use_batchnorm=use_batchnorm)
+
 
 def ResNet101(use_batchnorm=True):
-    return ResNet(Bottleneck, [3,4,23,3], use_batchnorm=use_batchnorm)
+    return ResNet(Bottleneck, [3, 4, 23, 3], use_batchnorm=use_batchnorm)
+
 
 def ResNet152(use_batchnorm=True):
-    return ResNet(Bottleneck, [3,8,36,3], use_batchnorm=use_batchnorm)
+    return ResNet(Bottleneck, [3, 8, 36, 3], use_batchnorm=use_batchnorm)
 
 
 def test():
     net = ResNet18()
-    y = net(Variable(torch.randn(1,3,32,32)))
+    y = net(Variable(torch.randn(1, 3, 32, 32)))
     print(y.size())
 
 # test()
