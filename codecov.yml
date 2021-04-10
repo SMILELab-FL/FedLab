@@ -2,6 +2,6 @@ codecov:
   require_ci_to_pass: yes
 
 coverage:
-  precision: 5
+  precision: 1
   round: up
   range: "50...100"  # value range where you want the value to be green
