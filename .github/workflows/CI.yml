@@ -32,15 +32,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-#      - name: Test with coverage
-#        run: |
-#          pip install coverage
-#          pip install codecov
-#          coverage run --source=fedlab_core setup.py test
-#      - name: Upload Coverage to Codecov
-#        uses: codecov/codecov-action@v1
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}
-#          name: codecov-umbrella
-#          fail_ci_if_error: true
-#          verbose: true
+      - name: Test with coverage
+        run: |
+          pip install coverage
+          pip install codecov
+          coverage run --source=fedlab_core setup.py test
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true
