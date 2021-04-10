@@ -8,9 +8,8 @@ import unittest
 
 
 def get_tests():
-    # from .models_test import ModelsTestCase
-    #
-    # modelssuite = unittest.TestLoader().loadTestsFromTestCase(ModelsTestCase)
-    #
-    # return unittest.TestSuite([modelssuite])
-    pass
+    from .test_serialization import SerializationTestCase
+
+    serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
+
+    return unittest.TestSuite([serialization_suite])
