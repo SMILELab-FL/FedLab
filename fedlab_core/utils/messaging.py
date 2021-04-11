@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 
 import torch
@@ -12,6 +11,52 @@ class MessageCode(Enum):
     ParameterUpdate = 2
     EvaluateParams = 3
     Exit = 4
+
+
+# 提供用户自定义控制变量的接口， 其中payload固定为序列化后的模型参数
+def send_message_tmp(s_parameters, control_codes, dst):
+    """Sends a message to destination.
+
+    Concatenates destination rank, message code and payload into a single tensor, then sends it.
+
+    Args:
+        s_parameters (tensor): Serialized model parameters
+        control_codes (tensor or int/float): Control message defined by user and its shape should be (1,)
+        dst (int, optional): Destination rank. Default is 0 which means the server
+
+    Returns:
+        Serialized message package: [current process rank, control codes, serialized model parameters]
+    """
+    message = torch.cat(
+        (torch.Tensor([dist.get_rank()]), torch.tensor(control_codes)))
+
+    # message is used in communication, therefor use .cpu()
+    message = torch.cat((message, s_parameters.cpu()))
+    dist.send(tensor=message, dst=dst)
+
+    return message
+
+
+def recv_message_tmp(sp_size, control_code_size, src=0):
+    """Receives message from source.
+
+    Args:
+        sp_size (int): the size of serialized model parameters. This varies help function to create correct size of cache tensor
+        control_code_size (int): the size of control code. This varies help function to create correct size of cache tensor
+        src (int, optional): Source rank. Will receive from any process if unspecified.
+
+    Returns:
+        (rank of sender, list of contro codes, serialized model parameters)
+    """
+    print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))  # debug
+
+    # create a tensor to save recieved information
+    cache_tensor = torch.zeros(size=(control_code_size+sp_size,))
+    dist.recv(tensor=cache_tensor, src=src)
+
+    # this function dose not manipulate model prameters!
+    # return parsed information: sender rank, control codes, serialized model parameters
+    return cache_tensor[0], cache_tensor[1:control_code_size+1], cache_tensor[control_code_size+1:]
 
 
 def send_message(message_code, payload, dst=0):
@@ -30,8 +75,10 @@ def send_message(message_code, payload, dst=0):
     # _LOGGER.info("SENDING MESSAGE: {} RANK: {}".format(message_code, dist.get_rank()))
     print("SENDING MESSAGE: {} RANK: {} => RANK: {}".format(
         message_code, dist.get_rank(), dst))
-    m_parameter = torch.Tensor([dist.get_rank(), message_code.value])  # tensor shape is torch.Size([2])
-    m_parameter = torch.cat((m_parameter, payload.cpu()))  # TODO: why force to use cpu()?
+    # tensor shape is torch.Size([2])
+    m_parameter = torch.Tensor([dist.get_rank(), message_code.value])
+    # use cpu to improve IO efficiency
+    m_parameter = torch.cat((m_parameter, payload.cpu()))
     # 使用isend，线程退出或者其他原因，将导致发送失败
     dist.send(tensor=m_parameter, dst=dst)
     return m_parameter
@@ -44,50 +91,10 @@ def recv_message(payload, src=None):
         payload: Tensor to fill with received data. The first element is the source rank, and the second element is
         message code.
         src (int, optional): Source rank. Will receive from any process if unspecified.
-        
+
     Returns:
         Serialized model parameters
-
-    Raises:
-        None
     """
-    # _LOGGER.info("RECV MESSAGE: RANK: {}".format(dist.get_rank()))
-    print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))
+    print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))  # debug
     dist.recv(tensor=payload, src=src)
     return payload[2:]
-
-
-def broadcast_message(message_code, payload):
-    """Broadcast a message to all workers.
-
-    Concatenates destination rank, message code and payload into a single tensor, then broadcasts the tensor to the
-    whole group.
-
-    Args:
-
-    Returns:
-
-    Raises:
-        
-    """
-    # _LOGGER.info("SBROADCASTING MESSAGE: {} RANK: {} => ALL".format(message_code, dist.get_rank()))
-    # print("BROADCASTING MESSAGE: {} RANK: {} => ALL ".format(message_code, dist.get_rank()))
-    m_parameter = torch.Tensor([dist.get_rank(), message_code.value])
-    m_parameter = torch.cat((m_parameter, payload))
-    # 使用isend，线程退出或者其他原因，将导致发送失败
-    dist.broadcast(tensor=m_parameter, src=0)
-
-
-def recv_broadcast_message(recv_buff):
-    """Workers recv the message from the center
-    
-    Args:
-
-    Returns:
-
-    Raises:
-        
-    """
-    dist.broadcast(tensor=recv_buff, src=0)
-    # message_code = MessageCode(recv_buff[1].item()),
-    # _LOGGER.info("RECVING BROADCAST MESSAGE: {} FROM RANK: {}".format(message_code, dist.get_rank()))
