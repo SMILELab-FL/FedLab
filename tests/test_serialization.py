@@ -44,3 +44,12 @@ class SerializationTestCase(unittest.TestCase):
             m_params = torch.cat((m_params, param.data.view(-1)))
         m_params = m_params[1:]
         self.assertTrue(torch.equal(cpu_params, m_params))
+
+    @unittest.skipUnless(torch.cuda.is_available(), 'No GPU was detected')
+    def test_ravel_model_params_gpu(self):
+        gpu_params = serialization.ravel_model_params(self.model, cuda=True)
+        m_params = torch.Tensor([0]).cuda()
+        for param in self.model.parameters():
+            m_params = torch.cat((m_params, param.data.view(-1)))
+        m_params = m_params[1:]
+        self.assertTrue(torch.equal(gpu_params, m_params))

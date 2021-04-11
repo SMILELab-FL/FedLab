@@ -17,8 +17,8 @@ def ravel_model_params(model, cuda=False):
 
 def unravel_model_params(model, serialized_parameters):
     """
-    Assigns grad_update params to model.parameters.
-    This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
+    Assigns ``serialized_parameters`` params to `model.parameters`.
+    This is done by iterating through `model.parameters` and assigning the relevant params in ``serialized_parameters``.
     NOTE: this function manipulates `model.parameters`.
     """
     current_index = 0  # keep track of where to read from grad_update
