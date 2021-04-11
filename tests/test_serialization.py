@@ -26,16 +26,16 @@ class Net(nn.Module):
 
 
 class SerializationTestCase(unittest.TestCase):
-
-    def setUp(self) -> None:
-        # DO NOT change the setting below, the model is pretrained
+    @classmethod
+    def setUpClass(cls) -> None:
+        # DO NOT change the setting below, the model is pretrained on MNIST
         input_size = 784
         hidden_size = 250
         num_classes = 10
         test_path = os.path.dirname(os.path.realpath(__file__))
         model_path = os.path.join(test_path, 'data/nnModel.ckpt')
-        self.model = Net(input_size, hidden_size, num_classes)
-        self.model.load_state_dict(torch.load(model_path))
+        cls.model = Net(input_size, hidden_size, num_classes)
+        cls.model.load_state_dict(torch.load(model_path))
 
     def test_ravel_model_params_cpu(self):
         cpu_params = serialization.ravel_model_params(self.model, cuda=False)
