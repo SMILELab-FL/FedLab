@@ -59,12 +59,14 @@ class ParameterServerHandler(object):
         unravel_model_params(self._model, buffer)
         self._buffer[:] = buffer[:]
 
+    """
     @model.setter
     def model(self, model):
-        """Update server model and buffer using serialized parameters"""
+        #Update server model and buffer using serialized parameters
         # TODO: untested
         self._model[:] = model[:]
         self._buffer = ravel_model_params(self._model, self.cuda)
+    """
 
 
 class SyncParameterServerHandler(ParameterServerHandler):
@@ -169,6 +171,7 @@ class AsyncParameterServerHandler(ParameterServerHandler):
         cuda (bool): Use GPUs or not
     """
 
+    # TODO: unfinished
     def __init__(self, model, cuda):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
         self.client_buffer_cache = []

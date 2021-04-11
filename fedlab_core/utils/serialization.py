@@ -1,22 +1,18 @@
 import torch
 
+
 def ravel_model_params(model, cuda=False):
     """
     Squash model parameters or gradients into a single tensor.
     """
-    # TODO: WHY NOT:
-    # TODO: parameters = [param.data.view(-1) for param in model.parameters()]  # vectorize each model parameter
-    # TODO: m_parameters = torch.cat(parameters)
+    parameters = [param.data.view(-1) for param in model.parameters()
+                  ]  # vectorize each model parameter
+    m_parameters = torch.cat(parameters)
+
     if cuda:
-        m_parameter = torch.Tensor([0]).cuda()
+        m_parameters = m_parameters.cuda()
 
-    else:
-        m_parameter = torch.Tensor([0])
-
-    for parameter in list(model.parameters()):
-        m_parameter = torch.cat((m_parameter, parameter.data.view(-1)))
-
-    return m_parameter[1:]
+    return m_parameters
 
 
 def unravel_model_params(model, parameter_update):
@@ -29,7 +25,8 @@ def unravel_model_params(model, parameter_update):
     for parameter in model.parameters():
         numel = parameter.data.numel()
         size = parameter.data.size()
-        parameter.data.copy_(parameter_update[current_index:current_index + numel].view(size))
+        parameter.data.copy_(
+            parameter_update[current_index:current_index + numel].view(size))
         current_index += numel
 
 
@@ -43,5 +40,6 @@ def unravel_model_grad(model, grad_update):
     for parameter in model.parameters():
         numel = parameter.data.numel()
         size = parameter.data.size()
-        parameter.grad.copy_(grad_update[current_index:current_index + numel].view(size))
+        parameter.grad.copy_(
+            grad_update[current_index:current_index + numel].view(size))
         current_index += numel

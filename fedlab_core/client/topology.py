@@ -26,7 +26,7 @@ class ClientCommunicationTopology(Process):
         self.world_size = world_size
         self.dist_backend = dist_backend
 
-        dist.init_process_group(backend=dist_backend, init_method='tcp://{}:{}'
+        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=self.rank, world_size=self.world_size)
 
@@ -62,9 +62,6 @@ class ClientSyncTop(ClientCommunicationTopology):
 
     Raises:
         Errors raised by :func:`torch.distributed.init_process_group`
-
-    Example:
-        TODO
     """
 
     def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog",
@@ -112,7 +109,6 @@ class ClientSyncTop(ClientCommunicationTopology):
         """
         self._LOGGER.info("receiving message from {}, message code {}".format(
             sender, message_code))
-
         self._backend.buffer = payload
         self._backend.train(epochs=2)
 
@@ -123,7 +119,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         send_message(MessageCode.ParameterUpdate, self._backend.buffer)
 
     def _waiting(self):
-        """waiting for server message"""
+        """waiting for server's message"""
         def parse_message(buffer):
             return int(self._buff[0].item()), MessageCode(self._buff[1].item()), self._buff[2:]
 
