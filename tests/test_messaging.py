@@ -27,7 +27,6 @@ class MessageCodeTestCase(unittest.TestCase):
         num = len(self.message_codes)
         for i in range(num):
             self.assertEqual(self.message_codes[i], MessageCode[self.code_names[i]])
-            self.assertEqual(self.message_codes[i], MessageCode[i])
 
     def test_message_code_name(self):
         num = len(self.message_codes)
@@ -38,4 +37,3 @@ class MessageCodeTestCase(unittest.TestCase):
         num = len(self.message_codes)
         for i in range(num):
             self.assertEqual(i, self.message_codes[i].value)
-
