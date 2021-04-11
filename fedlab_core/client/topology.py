@@ -119,7 +119,7 @@ class ClientSyncTop(ClientCommunicationTopology):
         send_message(MessageCode.ParameterUpdate, self._backend.buffer)
 
     def _waiting(self):
-        """waiting for server message"""
+        """waiting for server's message"""
         def parse_message(buffer):
             return int(self._buff[0].item()), MessageCode(self._buff[1].item()), self._buff[2:]
 

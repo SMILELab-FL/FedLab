@@ -22,7 +22,6 @@ class ClientBackendHandler(object):
 
     def __init__(self, model, cuda):
         self.cuda = cuda
-
         if self.cuda:
             self._model = model.cuda()
         else:
@@ -46,13 +45,17 @@ class ClientBackendHandler(object):
         unravel_model_params(self._model, buffer)
         self._buffer[:] = buffer[:]
 
+    """
+    #禁止直接更新torch.module
+    仅允许通过buffer更新buffer更新模型参数
     @model.setter
     def model(self, model):
-        """Update local model and buffer using serialized parameters"""
+        #Update local model and buffer using serialized parameters
         # TODO: untested
         self._model[:] = model[:]
         self._buffer = ravel_model_params(self._model, self.cuda)
-
+    """
+            
     def train(self):
         """Please override this method. This function should manipulate :attr:`self._model` and :attr:`self._buffer`"""
         raise NotImplementedError()

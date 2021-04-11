@@ -18,7 +18,7 @@ class PipeTop(ClientCommunicationTopology):
     向上屏蔽局部的rank （通过全局rank到局部rank的映射解决）
 
 
-    双进程架构：
+    双进程：
         server进程，用于管理本地组的子FL系统
         Pipe主进程，做消息通信和中继
 
@@ -26,7 +26,6 @@ class PipeTop(ClientCommunicationTopology):
         考虑Queue 队列消息传递同步
 
     """
-
     def __init__(self, model, args):
 
         self._model = model
