@@ -20,8 +20,8 @@ def send_message_tmp(s_parameters, control_codes, dst):
     Concatenates destination rank, message code and payload into a single tensor, then sends it.
 
     Args:
-        s_parameters (tensor): Serialized model parameters
-        control_codes (tensor or int/float): Control message defined by user and its shape should be (1,)
+        s_parameters (torch.Tensor): Serialized model parameters
+        control_codes (torch.Tensor, int/float): Control message defined by user and its shape should be (1,)
         dst (int, optional): Destination rank. Default is 0 which means the server
 
     Returns:
@@ -46,7 +46,7 @@ def recv_message_tmp(sp_size, control_code_size, src=0):
         src (int, optional): Source rank. Will receive from any process if unspecified.
 
     Returns:
-        (rank of sender, list of contro codes, serialized model parameters)
+        (rank of sender, list of control codes, serialized model parameters)
     """
     print("RECV MESSAGE: RANK: {}".format(dist.get_rank()))  # debug
 
@@ -88,8 +88,8 @@ def recv_message(payload, src=None):
     """Receives message from source.
 
     Args:
-        payload: Tensor to fill with received data. The first element is the source rank, and the second element is
-        message code.
+        payload (torch.Tensor): Tensor to fill with received data. The first element is the source rank, and the second element is
+    message code.
         src (int, optional): Source rank. Will receive from any process if unspecified.
 
     Returns:
