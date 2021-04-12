@@ -1,13 +1,10 @@
 import threading
 
-import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 from fedlab_core.utils.logger import logger
-
-from fedlab_core.message_processor import MessageProcessor
+from fedlab_core.message_processor import MessageProcessor, MessageCode
 
 
 class EndTop(Process):
@@ -65,8 +62,6 @@ class ServerBasicTop(EndTop):
 
         super(ServerBasicTop, self).__init__(server_handler=server_handler,
                                              server_address=server_address, dist_backend=dist_backend)
-        self.buff = torch.zeros(
-            self._handler.buffer.numel() + 2).cpu()  # TODO: 通信信息缓存 模型参数+2个控制参数位，need to be more formal
 
         self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
@@ -101,29 +96,25 @@ class ServerBasicTop(EndTop):
     def activate_clients(self):
         """Activate some of clients to join this FL round"""
         clients_this_round = self._handler.select_clients()
-        payload = self._handler.buffer.clone()
-
+        
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
+
         for client_idx in clients_this_round:
-            send_message(MessageCode.ParameterUpdate, payload, dst=client_idx)
+            payload = self.msg_processor.pack(control_codes=[MessageCode.ParameterUpdate.value], model=self._handler.model)
+            self.msg_processor.send_package(payload=payload, dst=client_idx)
 
     def listen_clients(self):
         """listen messages from clients"""
         self._handler.train()  # turn train_flag to True
-
         # server_handler will turn off train_flag
         while self._handler.train_flag:
-            sender, message_code, s_parameters = self.msg_processor.recv_message()
-            """
-            recv_message(self.buff)
-            sender = int(self.buff[0].item())
-            message_code = MessageCode(self.buff[1].item())
-            parameter = self.buff[2:]    # TODO: buffer解析需要模块化
-            """
+            package = self.msg_processor.recv_package()
+            sender, message_code, s_parameters = self.msg_processor.unpack(payload=package)
+
             self._handler.on_receive(sender, message_code, s_parameters)
 
     def shutdown(self):
         for client_idx in range(self._handler.client_num_in_total):
-            self.msg_processor.send_message(s_parameters=torch.Tensor([0]), control_codes=MessageCode.Exit, dst=client_idx+1)
-            #send_message(MessageCode.Exit,payload=end_message, dst=client_idx+1)
+            package = self.msg_processor.pack(control_codes=[MessageCode.Exit.value], model=None)
+            self.msg_processor.send_package(payload=package, dst=client_idx+1)

@@ -4,15 +4,6 @@ import torch
 import torch.distributed as dist
 
 
-class MessageCode(Enum):
-    """Different types of messages between client and server that we support go here."""
-    ParameterRequest = 0
-    GradientUpdate = 1
-    ParameterUpdate = 2
-    EvaluateParams = 3
-    Exit = 4
-
-
 # 提供用户自定义控制变量的接口， 其中payload固定为序列化后的模型参数
 def send_message_tmp(s_parameters, control_codes, dst):
     """Sends a message to destination.
