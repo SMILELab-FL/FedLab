@@ -1,6 +1,5 @@
 import torch
 
-
 def ravel_model_params(model, cuda=False):
     """
     Squash model parameters or gradients into a single tensor.

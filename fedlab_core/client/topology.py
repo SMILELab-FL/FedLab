@@ -1,12 +1,10 @@
 import os
 
-import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
 from fedlab_core.utils.logger import logger
-from fedlab_core.message_processor import MessageProcessor
+from fedlab_core.message_processor import MessageProcessor, MessageCode, SerializationTool
 
 
 class ClientCommunicationTopology(Process):
@@ -80,9 +78,6 @@ class ClientSyncTop(ClientCommunicationTopology):
             "Successfully Initialized --- connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
                 server_addr[0], server_addr[1], world_size, rank, dist_backend))
 
-        self._buff = torch.zeros(
-            self._backend.buffer.numel() + 2).cpu()  # TODO: need to be more formal
-
     def run(self):
         """Main procedure of each client is defined here:
             1. client waits for data from server
@@ -91,16 +86,19 @@ class ClientSyncTop(ClientCommunicationTopology):
         """
         while True:
             # waits for data from
-            #sender, message_code, parameter = self._waiting()
-            sender, message_code, s_parameters = self.msg_processor.recv_message(
-                src=0)
+            # sender, message_code, parameter = self._waiting()
+            package = self.msg_processor.recv_package(src=0)
+            sender, message_code, s_parameters = self.msg_processor.unpack(
+                payload=package)
+
+            #control_codes, s_parameters = self.msg_processor.recv_message(src=0)
 
             # exit
-            if message_code[0] == MessageCode.Exit:
+            if message_code == MessageCode.Exit:
                 exit(0)
 
             # perform local training
-            self.on_receive(sender, message_code[0], s_parameters)
+            self.on_receive(sender, message_code, s_parameters)
 
             # synchronize with server
             self.synchronize()
@@ -115,21 +113,13 @@ class ClientSyncTop(ClientCommunicationTopology):
         """
         self._LOGGER.info("receiving message from {}, message code {}".format(
             sender, message_code))
-        #self._backend.buffer = s_parameters
-        self._backend.model = s_parameters
+
+        self._backend.load_parameters(s_parameters)
         self._backend.train(epochs=2)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        self.msg_processor.send_message(self._backend.buffer, MessageCode.ParameterUpdate)
-        #send_message(MessageCode.ParameterUpdate, self._backend.buffer)
-
-    def _waiting(self):
-        """waiting for server's message"""
-        def parse_message(buffer):
-            return int(self._buff[0].item()), MessageCode(self._buff[1].item()), self._buff[2:]
-
-        recv_message(self._buff, src=0)  # recv message from server(rank=0)
-
-        return parse_message(self._buff)
+        payload = self.msg_processor.pack(
+            control_codes=[MessageCode.ParameterUpdate.value], model=self._backend.model)
+        self.msg_processor.send_package(payload=payload, dst=0)

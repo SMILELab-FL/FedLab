@@ -1,14 +1,10 @@
-from math import log
-import os
-from random import triangular
 import time
+from copy import deepcopy
 
 import torch
 from torch import nn
-from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
-from fedlab_core.utils.ex_recorder import ExRecorder
 from fedlab_core.utils.logger import logger
-
+from fedlab_core.message_processor import SerializationTool
 
 class ClientBackendHandler(object):
     """An abstract class representing handler for a client backend.
@@ -19,7 +15,6 @@ class ClientBackendHandler(object):
     If you use our framework to define the activities of client, please make sure that your self-defined class
     should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
     """
-
     def __init__(self, model, cuda):
         self.cuda = cuda
         if self.cuda:
@@ -27,40 +22,23 @@ class ClientBackendHandler(object):
         else:
             self._model = model.cpu()
 
-        #self._buffer = ravel_model_params(model, self.cuda)
-
-    @property
-    def model(self):
-        """Get :class:`torch.nn.Module`"""
-        #return self._model.state_dict()
-        return self._model.clone()
-
-    @model.setter
-    def model(self, serialized_parameters):
-        #Update local model and buffer using serialized parameters
-        unravel_model_params(self._model, serialized_parameters)
-
     def train(self):
-        """Please override this method. This function should manipulate :attr:`self._model` and :attr:`self._buffer`"""
+        """Please override this method. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
     def evaluate(self, test_loader):
         """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader"""
         raise NotImplementedError()
-    
-    """
-    @property
-    def buffer(self):
-        #Get serialized parameters
-        return self._buffer
 
-    @buffer.setter
-    def buffer(self, buffer):
-        #Update local model and buffer using serialized parameters
-        unravel_model_params(self._model, buffer)
-        self._buffer[:] = buffer[:]
-    """
-    
+    # something wrong with setter
+    def load_parameters(self, serialized_parameters):
+        SerializationTool.resotre_model(self._model, serialized_parameters)
+
+    @property
+    def model(self):
+        return self._model
+
+
 class ClientSGDHandler(ClientBackendHandler):
     """Client backend handler, this class provides data process method to upper layer.
 
@@ -73,11 +51,7 @@ class ClientSGDHandler(ClientBackendHandler):
         :func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
         LOGGER: utils class to output debug information to file and command line
-
-    Raises:
-        None
     """
-    # TODO: fix the logger parameter
 
     def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="log/handler.txt",
                  logger_name="handler"):
@@ -127,7 +101,6 @@ class ClientSGDHandler(ClientBackendHandler):
             log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
                 epoch + 1, epochs, loss_sum, time.time())
             self._LOGGER.info(log_str)
-        #self._buffer = ravel_model_params(self._model, cuda=True)
 
     def evaluate(self, test_loader, cuda):
         """

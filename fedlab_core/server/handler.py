@@ -1,11 +1,9 @@
+import os
 import random
 import torch
-from torch import serialization
-import torch.distributed as dist
 
-from fedlab_core.utils.messaging import MessageCode, send_message
-from fedlab_core.utils.serialization import ravel_model_params, unravel_model_params
 from fedlab_core.utils.logger import logger
+from fedlab_core.message_processor import MessageCode, SerializationTool
 
 
 class ParameterServerHandler(object):
@@ -24,8 +22,7 @@ class ParameterServerHandler(object):
         else:
             self._model = model.cpu()
 
-        #self._buffer = ravel_model_params(self._model, cuda)
-        
+        #self.client_num_in_total = client_num_in_total
 
     def on_receive(self):
         """Override this function to define what the server to do when receiving message from client"""
@@ -48,26 +45,13 @@ class ParameterServerHandler(object):
         """
         raise NotImplementedError()
 
+    def select_clients(self) -> list:
+        raise NotImplementedError()
+
     @property
     def model(self):
         return self._model
-    
-    @model.setter
-    def model(self, serialized_parameters):
-        #Update server model and buffer using serialized parameters
-        unravel_model_params(self._model, serialized_parameters)
 
-    """
-    @property
-    def buffer(self):
-        return self._buffer
-        
-    @buffer.setter
-    def buffer(self, buffer):
-        #Update server model and buffer using serialized parameters
-        unravel_model_params(self._model, buffer)
-        self._buffer[:] = buffer[:]
-    """
 
 class SyncParameterServerHandler(ParameterServerHandler):
     """Synchronous Parameter Server Handler
@@ -86,6 +70,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
     def __init__(self, model, client_num_in_total, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
                  logger_name="server handler"):
+
         if select_ratio < 0.0 or select_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(select_ratio))
 
@@ -100,7 +85,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
         self.client_num_per_round = max(
             1, int(self.select_ratio * self.client_num_in_total))
 
-        self._LOGGER = logger(logger_path, logger_name)
+        self._LOGGER = logger(os.path.join("log", logger_path), logger_name)
 
         # client buffer
         self.client_buffer_cache = {}
@@ -117,8 +102,9 @@ class SyncParameterServerHandler(ParameterServerHandler):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
             payload (torch.Tensor): Serialized model parameters
         """
+
         self._LOGGER.info("Processing message: {} from sender {}".format(
-            message_code.name, sender))
+            message_code.name, int(sender)))
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
@@ -148,9 +134,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
     def update_model(self, model_list):
         """update global model"""
         serialized_parameters = torch.mean(torch.stack(model_list), dim=0)
-        self._model = serialized_parameters
-
-        #unravel_model_params(self._model, self._buffer)
+        SerializationTool.resotre_model(self._model, serialized_parameters)
 
         # reset
         self.cache_cnt = 0
@@ -188,7 +172,8 @@ class AsyncParameterServerHandler(ParameterServerHandler):
             self.update_model([parameter])
 
         elif message_code == MessageCode.ParameterRequest:
-            send_message(MessageCode.ParameterUpdate, self._model, dst=sender)
+            #send_message(MessageCode.ParameterUpdate, self._model, dst=sender)
+            pass
 
         elif message_code == MessageCode.GradientUpdate:
             raise NotImplementedError()
