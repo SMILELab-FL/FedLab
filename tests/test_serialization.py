@@ -48,7 +48,7 @@ class SerializationTestCase(unittest.TestCase):
         self.assertIn(False, flags)  # at least one False in flags
 
     @torch.no_grad()
-    def test_ravel_model_params(self):
+    def test_serialize_model(self):
         serialized_params = SerializationTool.serialize_model(self.model)
         m_params = torch.Tensor([0])
         for param in self.model.parameters():
@@ -57,7 +57,7 @@ class SerializationTestCase(unittest.TestCase):
         self.assertTrue(torch.equal(serialized_params, m_params))
 
     @torch.no_grad()
-    def test_unravel_model_params(self):
+    def test_restore_model(self):
         model = Net(self.input_size, self.hidden_size, self.num_classes)
         self._model_params_neq(self.model, model)
         serialized_params = SerializationTool.serialize_model(self.model)
