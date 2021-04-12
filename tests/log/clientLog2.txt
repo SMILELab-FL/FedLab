@@ -1,16 +1,16 @@
-2021-04-09 14:51:54,912 - root - INFO - Successfully Initialized --- connected to server:127.0.0.1:3002,  world size:3, rank:2, backend:gloo
-2021-04-09 14:51:54,978 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
-2021-04-09 14:51:55,016 - handler - INFO - starting local train process
-2021-04-09 14:51:57,771 - handler - INFO - Epoch 1/2, Loss: 67.65305075608194, Time: 1617951117.7718177
-2021-04-09 14:52:00,540 - handler - INFO - Epoch 2/2, Loss: 14.755970888305455, Time: 1617951120.5403922
-2021-04-09 14:52:00,541 - root - INFO - synchronize model parameters with server
-2021-04-09 14:52:00,592 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
-2021-04-09 14:52:00,622 - handler - INFO - starting local train process
-2021-04-09 14:52:03,417 - handler - INFO - Epoch 1/2, Loss: 573.9875589609146, Time: 1617951123.4170647
-2021-04-09 14:52:06,273 - handler - INFO - Epoch 2/2, Loss: 545.8319733142853, Time: 1617951126.2730322
-2021-04-09 14:52:06,274 - root - INFO - synchronize model parameters with server
-2021-04-09 14:52:06,311 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
-2021-04-09 14:52:06,354 - handler - INFO - starting local train process
-2021-04-09 14:52:09,146 - handler - INFO - Epoch 1/2, Loss: 540.8943777084351, Time: 1617951129.1468892
-2021-04-09 14:52:11,907 - handler - INFO - Epoch 2/2, Loss: 540.7552053928375, Time: 1617951131.907565
-2021-04-09 14:52:11,909 - root - INFO - synchronize model parameters with server
+2021-04-12 20:01:21,627 - root - INFO - Successfully Initialized --- connected to server:127.0.0.1:3002,  world size:3, rank:2, backend:gloo
+2021-04-12 20:01:21,632 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-12 20:01:21,639 - handler - INFO - starting local train process
+2021-04-12 20:01:24,193 - handler - INFO - Epoch 1/2, Loss: 87.97651899792254, Time: 1618228884.1937556
+2021-04-12 20:01:26,852 - handler - INFO - Epoch 2/2, Loss: 16.53450055466965, Time: 1618228886.8522072
+2021-04-12 20:01:26,852 - root - INFO - synchronize model parameters with server
+2021-04-12 20:01:26,895 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-12 20:01:26,922 - handler - INFO - starting local train process
+2021-04-12 20:01:29,640 - handler - INFO - Epoch 1/2, Loss: 32.27113086916506, Time: 1618228889.6401753
+2021-04-12 20:01:32,293 - handler - INFO - Epoch 2/2, Loss: 13.139907028526068, Time: 1618228892.2932115
+2021-04-12 20:01:32,293 - root - INFO - synchronize model parameters with server
+2021-04-12 20:01:32,341 - root - INFO - receiving message from 0, message code MessageCode.ParameterUpdate
+2021-04-12 20:01:32,367 - handler - INFO - starting local train process
+2021-04-12 20:01:35,022 - handler - INFO - Epoch 1/2, Loss: 11.94251492107287, Time: 1618228895.0221915
+2021-04-12 20:01:37,622 - handler - INFO - Epoch 2/2, Loss: 8.455594323808327, Time: 1618228897.6227257
+2021-04-12 20:01:37,623 - root - INFO - synchronize model parameters with server

@@ -1,6 +1,6 @@
-2021-04-03 13:11:17,307 - server handler - INFO - Processing message: ParameterUpdate from sender 1
-2021-04-03 13:11:17,391 - server handler - INFO - Processing message: ParameterUpdate from sender 2
-2021-04-03 13:11:19,775 - server handler - INFO - Processing message: ParameterUpdate from sender 2
-2021-04-03 13:11:19,816 - server handler - INFO - Processing message: ParameterUpdate from sender 1
-2021-04-03 13:11:22,147 - server handler - INFO - Processing message: ParameterUpdate from sender 2
-2021-04-03 13:11:22,313 - server handler - INFO - Processing message: ParameterUpdate from sender 1
+2021-04-12 20:01:24,780 - server handler - INFO - Processing message: ParameterUpdate from sender 1
+2021-04-12 20:01:26,872 - server handler - INFO - Processing message: ParameterUpdate from sender 2
+2021-04-12 20:01:30,045 - server handler - INFO - Processing message: ParameterUpdate from sender 1
+2021-04-12 20:01:32,315 - server handler - INFO - Processing message: ParameterUpdate from sender 2
+2021-04-12 20:01:35,478 - server handler - INFO - Processing message: ParameterUpdate from sender 1
+2021-04-12 20:01:37,634 - server handler - INFO - Processing message: ParameterUpdate from sender 2
