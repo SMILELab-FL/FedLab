@@ -14,7 +14,7 @@ class MessageCode(Enum):
 
 class SerializationTool(object):
     @staticmethod
-    def serlialize_model(model):
+    def serialize_model(model):
         """
         vectorize each model parameter
         """
@@ -25,7 +25,7 @@ class SerializationTool(object):
         return m_parameters
 
     @staticmethod
-    def resotre_model(model, serialized_parameters):
+    def restore_model(model, serialized_parameters):
         """
         Assigns grad_update params to model.parameters.
         This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
@@ -46,14 +46,16 @@ class MessageProcessor(object):
         if u want to define communication agreements, override `pack` and `unpack`
         """
         # TODO: add assert
-        serialized_parameters = SerializationTool.serlialize_model(model=model)
-        self.cc_size = control_code_size
-        self.sp_size = serialized_parameters.numel()
-        self.msg_cache = torch.zeros(size=(self.cc_size+self.sp_size,)).cpu()
+        serialized_parameters = SerializationTool.serialize_model(model=model)
+        self.id_size = 1
+        self.control_codes_size = control_code_size
+        self.serialized_param_size = serialized_parameters.numel()
+        self.msg_cache = torch.zeros(
+            size=(self.id_size + self.control_codes_size + self.serialized_param_size,)).cpu()
 
-        class payload(object):
-            def __init__(self, control_codes, model) -> None:
-                super().__init__()
+        # class payload(object):
+        #     def __init__(self, control_codes, model) -> None:
+        #         super().__init__()
 
     def send_package(self, payload, dst):
         # send package
@@ -65,16 +67,23 @@ class MessageProcessor(object):
         return self.msg_cache
 
     def pack(self, control_codes, model):
+        """
+        Args:
+            control_codes (list): a list of integer numbers, with each integer as control code
+            model (torch.nn.Module)
+        """
         # pack up Tensor
         payload = torch.Tensor([dist.get_rank()] + control_codes).cpu()
         if model is not None:
             payload = torch.cat(
-                (payload, SerializationTool.serlialize_model(model)))
+                (payload, SerializationTool.serialize_model(model)))
         return payload
 
     def unpack(self, payload):
-        sender = int(payload[0])
-        message_code = MessageCode(int(payload[1]))
-        s_parameters = payload[2:]
+        sender = int(payload[self.id_size - 1])  # id_size=1 as default
+        control_codes = [MessageCode(int(code)) for code in
+                         payload[self.id_size:self.id_size + self.control_codes_size]]
+        serialized_parameters = payload[self.id_size + self.control_codes_size:]
 
-        return sender, message_code, s_parameters
+        # TODO:  control_codes_size = 1 as default, so only return the first control code
+        return sender, control_codes[0], serialized_parameters
