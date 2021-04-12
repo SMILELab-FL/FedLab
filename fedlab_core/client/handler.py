@@ -27,35 +27,19 @@ class ClientBackendHandler(object):
         else:
             self._model = model.cpu()
 
-        self._buffer = ravel_model_params(model, self.cuda)
+        #self._buffer = ravel_model_params(model, self.cuda)
 
     @property
     def model(self):
         """Get :class:`torch.nn.Module`"""
-        return self._model
+        #return self._model.state_dict()
+        return self._model.clone()
 
-    @property
-    def buffer(self):
-        """Get serialized parameters"""
-        return self._buffer
-
-    @buffer.setter
-    def buffer(self, buffer):
-        """Update local model and buffer using serialized parameters"""
-        unravel_model_params(self._model, buffer)
-        self._buffer[:] = buffer[:]
-
-    """
-    #禁止直接更新torch.module
-    仅允许通过buffer更新buffer更新模型参数
     @model.setter
-    def model(self, model):
+    def model(self, serialized_parameters):
         #Update local model and buffer using serialized parameters
-        # TODO: untested
-        self._model[:] = model[:]
-        self._buffer = ravel_model_params(self._model, self.cuda)
-    """
-            
+        unravel_model_params(self._model, serialized_parameters)
+
     def train(self):
         """Please override this method. This function should manipulate :attr:`self._model` and :attr:`self._buffer`"""
         raise NotImplementedError()
@@ -63,8 +47,20 @@ class ClientBackendHandler(object):
     def evaluate(self, test_loader):
         """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader"""
         raise NotImplementedError()
+    
+    """
+    @property
+    def buffer(self):
+        #Get serialized parameters
+        return self._buffer
 
-
+    @buffer.setter
+    def buffer(self, buffer):
+        #Update local model and buffer using serialized parameters
+        unravel_model_params(self._model, buffer)
+        self._buffer[:] = buffer[:]
+    """
+    
 class ClientSGDHandler(ClientBackendHandler):
     """Client backend handler, this class provides data process method to upper layer.
 
@@ -131,8 +127,7 @@ class ClientSGDHandler(ClientBackendHandler):
             log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
                 epoch + 1, epochs, loss_sum, time.time())
             self._LOGGER.info(log_str)
-
-        self._buffer = ravel_model_params(self._model, cuda=True)
+        #self._buffer = ravel_model_params(self._model, cuda=True)
 
     def evaluate(self, test_loader, cuda):
         """

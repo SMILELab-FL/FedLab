@@ -1,10 +1,10 @@
-2021-04-09 14:51:38,159 - ServerTop - INFO - Server initializes with ip address 127.0.0.1:3002 and distributed backend gloo
-2021-04-09 14:51:38,159 - ServerTop - INFO - Initializing pytorch distributed group
-2021-04-09 14:51:38,159 - ServerTop - INFO - Waiting for connection requests from clients
-2021-04-09 14:51:54,912 - ServerTop - INFO - Connect to clients successfully
-2021-04-09 14:51:54,912 - ServerTop - INFO - Global FL round 1/3
-2021-04-09 14:51:54,951 - ServerTop - INFO - client id list for this FL round: [2, 1]
-2021-04-09 14:52:00,583 - ServerTop - INFO - Global FL round 2/3
-2021-04-09 14:52:00,587 - ServerTop - INFO - client id list for this FL round: [1, 2]
-2021-04-09 14:52:06,307 - ServerTop - INFO - Global FL round 3/3
-2021-04-09 14:52:06,308 - ServerTop - INFO - client id list for this FL round: [2, 1]
+2021-04-12 20:01:12,314 - ServerTop - INFO - Server initializes with ip address 127.0.0.1:3002 and distributed backend gloo
+2021-04-12 20:01:12,315 - ServerTop - INFO - Initializing pytorch distributed group
+2021-04-12 20:01:12,315 - ServerTop - INFO - Waiting for connection requests from clients
+2021-04-12 20:01:21,591 - ServerTop - INFO - Connect to clients successfully
+2021-04-12 20:01:21,592 - ServerTop - INFO - Global FL round 1/3
+2021-04-12 20:01:21,592 - ServerTop - INFO - client id list for this FL round: [2, 1]
+2021-04-12 20:01:26,888 - ServerTop - INFO - Global FL round 2/3
+2021-04-12 20:01:26,889 - ServerTop - INFO - client id list for this FL round: [2, 1]
+2021-04-12 20:01:32,333 - ServerTop - INFO - Global FL round 3/3
+2021-04-12 20:01:32,333 - ServerTop - INFO - client id list for this FL round: [1, 2]

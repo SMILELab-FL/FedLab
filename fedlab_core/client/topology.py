@@ -6,6 +6,7 @@ from torch.multiprocessing import Process
 
 from fedlab_core.utils.messaging import send_message, recv_message, MessageCode
 from fedlab_core.utils.logger import logger
+from fedlab_core.message_processor import MessageProcessor
 
 
 class ClientCommunicationTopology(Process):
@@ -29,6 +30,9 @@ class ClientCommunicationTopology(Process):
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=self.rank, world_size=self.world_size)
+
+        self.msg_processor = MessageProcessor(
+            control_code_size=2, model=self._backend.model)
 
     def run(self):
         """Please override this function"""
@@ -87,36 +91,39 @@ class ClientSyncTop(ClientCommunicationTopology):
         """
         while True:
             # waits for data from
-            sender, message_code, parameter = self._waiting()
+            #sender, message_code, parameter = self._waiting()
+            sender, message_code, s_parameters = self.msg_processor.recv_message(
+                src=0)
 
             # exit
-            if message_code == MessageCode.Exit:
+            if message_code[0] == MessageCode.Exit:
                 exit(0)
 
             # perform local training
-            self.on_receive(sender, message_code, parameter)
+            self.on_receive(sender, message_code[0], s_parameters)
 
             # synchronize with server
             self.synchronize()
 
-    def on_receive(self, sender, message_code, payload):
+    def on_receive(self, sender, message_code, s_parameters):
         """Actions to perform on receiving new message, including local training
 
         Args:
             sender (int): Index of sender
             message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
-            payload (torch.Tensor): Serialized model parameters
+            s_parameters (torch.Tensor): Serialized model parameters
         """
         self._LOGGER.info("receiving message from {}, message code {}".format(
             sender, message_code))
-        self._backend.buffer = payload
+        #self._backend.buffer = s_parameters
+        self._backend.model = s_parameters
         self._backend.train(epochs=2)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
-
         self._LOGGER.info("synchronize model parameters with server")
-        send_message(MessageCode.ParameterUpdate, self._backend.buffer)
+        self.msg_processor.send_message(self._backend.buffer, MessageCode.ParameterUpdate)
+        #send_message(MessageCode.ParameterUpdate, self._backend.buffer)
 
     def _waiting(self):
         """waiting for server's message"""

@@ -7,6 +7,8 @@ from torch.multiprocessing import Process
 from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
 from fedlab_core.utils.logger import logger
 
+from fedlab_core.message_processor import MessageProcessor
+
 
 class EndTop(Process):
     """Abstract class for server network topology
@@ -24,6 +26,8 @@ class EndTop(Process):
         self._handler = server_handler
         self.server_address = server_address  # ip:port
         self.dist_backend = dist_backend
+
+        self.msg_processor = MessageProcessor(control_code_size=2, model=self._handler.model)
 
     def run(self):
         """Process"""
@@ -67,7 +71,7 @@ class ServerBasicTop(EndTop):
         self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
-        
+
         self.global_round = 3  # for test
 
     def run(self):
@@ -110,15 +114,16 @@ class ServerBasicTop(EndTop):
 
         # server_handler will turn off train_flag
         while self._handler.train_flag:
+            sender, message_code, s_parameters = self.msg_processor.recv_message()
+            """
             recv_message(self.buff)
             sender = int(self.buff[0].item())
             message_code = MessageCode(self.buff[1].item())
             parameter = self.buff[2:]    # TODO: buffer解析需要模块化
-
-            self._handler.on_receive(sender, message_code, parameter)
+            """
+            self._handler.on_receive(sender, message_code, s_parameters)
 
     def shutdown(self):
         for client_idx in range(self._handler.client_num_in_total):
-            end_message = torch.Tensor([0])
-            send_message(MessageCode.Exit,
-                         payload=end_message, dst=client_idx+1)
+            self.msg_processor.send_message(s_parameters=torch.Tensor([0]), control_codes=MessageCode.Exit, dst=client_idx+1)
+            #send_message(MessageCode.Exit,payload=end_message, dst=client_idx+1)

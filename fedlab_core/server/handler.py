@@ -1,5 +1,6 @@
 import random
 import torch
+from torch import serialization
 import torch.distributed as dist
 
 from fedlab_core.utils.messaging import MessageCode, send_message
@@ -17,12 +18,14 @@ class ParameterServerHandler(object):
     """
 
     def __init__(self, model, cuda=False) -> None:
+        self.cuda = cuda
         if cuda:
             self._model = model.cuda()
         else:
             self._model = model.cpu()
-        self._buffer = ravel_model_params(self._model, cuda)
-        self.cuda = cuda
+
+        #self._buffer = ravel_model_params(self._model, cuda)
+        
 
     def on_receive(self):
         """Override this function to define what the server to do when receiving message from client"""
@@ -46,28 +49,25 @@ class ParameterServerHandler(object):
         raise NotImplementedError()
 
     @property
-    def buffer(self):
-        return self._buffer
-
-    @property
     def model(self):
         return self._model
+    
+    @model.setter
+    def model(self, serialized_parameters):
+        #Update server model and buffer using serialized parameters
+        unravel_model_params(self._model, serialized_parameters)
 
+    """
+    @property
+    def buffer(self):
+        return self._buffer
+        
     @buffer.setter
     def buffer(self, buffer):
-        """Update server model and buffer using serialized parameters"""
+        #Update server model and buffer using serialized parameters
         unravel_model_params(self._model, buffer)
         self._buffer[:] = buffer[:]
-
     """
-    @model.setter
-    def model(self, model):
-        #Update server model and buffer using serialized parameters
-        # TODO: untested
-        self._model[:] = model[:]
-        self._buffer = ravel_model_params(self._model, self.cuda)
-    """
-
 
 class SyncParameterServerHandler(ParameterServerHandler):
     """Synchronous Parameter Server Handler
@@ -147,11 +147,12 @@ class SyncParameterServerHandler(ParameterServerHandler):
 
     def update_model(self, model_list):
         """update global model"""
-        self._buffer[:] = torch.mean(
-            torch.stack(model_list), dim=0)
-        unravel_model_params(
-            self._model, self._buffer)
+        serialized_parameters = torch.mean(torch.stack(model_list), dim=0)
+        self._model = serialized_parameters
 
+        #unravel_model_params(self._model, self._buffer)
+
+        # reset
         self.cache_cnt = 0
         self.client_buffer_cache = {}
         self.train_flag = False
@@ -179,10 +180,7 @@ class AsyncParameterServerHandler(ParameterServerHandler):
         self.decay = 0.9
 
     def update_model(self, model_list):
-        params = model_list[0]
-        self._buffer[:] = (1 - self.alpha) * \
-            self._buffer[:] + self.alpha * params
-        unravel_model_params(self._model, self._buffer)  # load
+        raise NotImplementedError()
 
     def on_receive(self, sender, message_code, parameter):
 
