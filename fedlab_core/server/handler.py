@@ -31,7 +31,7 @@ class ServerBackendHandler(object):
         """Override this function to deal with incomming model
 
             Args:
-                sender (int): the index of sender
+                sender (int): rank of sender in distributed
                 payload (): serialized model parameters
         """
         raise NotImplementedError()
@@ -97,8 +97,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
         """Define what parameter server does when receiving a single client's message
 
         Args:
-            sender (int): Index of client in distributed
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
+            sender (int): Rank of client in distributed
+            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             payload (torch.Tensor): Serialized model parameters
         """
 

@@ -14,6 +14,11 @@ class ClientBackendHandler(object):
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
     should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
+
+    args:
+        model (torch.nn.Module): Model used in this federation
+        cuda (bool): Use GPUs or not
+
     """
 
     def __init__(self, model, cuda):
@@ -24,14 +29,15 @@ class ClientBackendHandler(object):
             self._model = model.cpu()
 
     def train(self):
-        """Please override this method. This function should manipulate :attr:`self._model`"""
+        """Please override this method. This function should manipulate: attr:`self._model`"""
         raise NotImplementedError()
 
     def evaluate(self, test_loader):
-        """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader"""
+        """Please override this method. Evaluate local model based on given test: class:`torch.DataLoader`"""
         raise NotImplementedError()
 
     def load_parameters(self, serialized_parameters):
+        """Restore model from serialized model parameters"""
         SerializationTool.restore_model(self._model, serialized_parameters)
 
     @property
@@ -43,7 +49,7 @@ class ClientSGDHandler(ClientBackendHandler):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
-        model (torch.nn.Module):
+        model (torch.nn.Module): model used in federation
         data_loader (torch.Dataloader): :class:`DataLoader` for this client
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use
         :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
@@ -105,6 +111,10 @@ class ClientSGDHandler(ClientBackendHandler):
     def evaluate(self, test_loader, cuda):
         """
         Evaluate local model based on given test :class:`torch.DataLoader`
+
+        args:
+            test_loader (torch.Dataloader): Class:`DataLoader` for evaluation
+            cuda (bool): Use GPUs or not
         """
         def accuracy_score(predicted, labels):
             return predicted.eq(labels).sum().float() / labels.shape[0]
