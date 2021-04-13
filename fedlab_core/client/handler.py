@@ -15,7 +15,7 @@ class ClientBackendHandler(object):
     If you use our framework to define the activities of client, please make sure that your self-defined class
     should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
 
-    args:
+    Args:
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
 
@@ -29,11 +29,11 @@ class ClientBackendHandler(object):
             self._model = model.cpu()
 
     def train(self):
-        """Please override this method. This function should manipulate: attr:`self._model`"""
+        """Please override this method. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
     def evaluate(self, test_loader):
-        """Please override this method. Evaluate local model based on given test: class:`torch.DataLoader`"""
+        """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader`"""
         raise NotImplementedError()
 
     def load_parameters(self, serialized_parameters):
@@ -104,6 +104,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss_sum += loss.detach().item()
 
+            # TODO: is it proper to use loss_sum here?? CrossEntropyLoss is averaged over each sample
             log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
                 epoch + 1, epochs, loss_sum, time.time())
             self._LOGGER.info(log_str)
@@ -112,28 +113,30 @@ class ClientSGDHandler(ClientBackendHandler):
         """
         Evaluate local model based on given test :class:`torch.DataLoader`
 
-        args:
-            test_loader (torch.Dataloader): Class:`DataLoader` for evaluation
+        Args:
+            test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
             cuda (bool): Use GPUs or not
         """
-        def accuracy_score(predicted, labels):
-            return predicted.eq(labels).sum().float() / labels.shape[0]
         self._model.eval()
         loss_sum = 0.0
-        accuracy = 0.0
+        correct = 0.0
+        total = 0.0
         with torch.no_grad():
             for inputs, labels in test_loader:
                 if cuda:
                     inputs = inputs.cuda()
                     labels = labels.cuda()
 
-                    outputs = self._model(input)
-                    loss = self.criterion(outputs, labels)
+                outputs = self._model(inputs)
+                loss = self.criterion(outputs, labels)
 
                 _, predicted = torch.max(outputs, 1)
-                accuracy += accuracy_score(predicted, labels)
+                correct += torch.sum(predicted.eq(labels)).item()
+                total += len(labels)
                 loss_sum += loss.item()
 
-        accuracy = accuracy/len(test_loader)
-        log_str = "Evaluate, Loss {}, accuracy: {}".format(loss_sum, accuracy)
+        accuracy = correct / total
+        # TODO: is it proper to use loss_sum here?? CrossEntropyLoss is averaged over each sample
+        log_str = "Evaluate, Loss {}, accuracy: {}".format(loss_sum,
+                                                           accuracy)
         self._LOGGER.info(log_str)

@@ -27,20 +27,20 @@ class ServerBackendHandler(object):
         """Override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
 
-    def add_model(self, sender, payload):
-        """Override this function to deal with incomming model
+    def add_model(self, sender, serialized_params):
+        """Override this function to deal with incoming model
 
-            Args:
-                sender (int): rank of sender in distributed
-                payload (): serialized model parameters
+        Args:
+            sender (int): rank of sender in distributed
+            serialized_params (torch.Tensor): serialized model parameters
         """
         raise NotImplementedError()
 
-    def update_model(self, model_list):
+    def update_model(self, serialized_params_list):
         """Override this function to update global model
 
         Args:
-            model_list (list): a list of model parameters serialized by :func:`ravel_model_params`
+            serialized_params_list (list): a list of serialized model parameters
         """
         raise NotImplementedError()
 
@@ -93,13 +93,13 @@ class SyncParameterServerHandler(ServerBackendHandler):
         # setup
         self.train_flag = False
 
-    def on_receive(self, sender, message_code, payload) -> None:
+    def on_receive(self, sender, message_code, serialized_params) -> None:
         """Define what parameter server does when receiving a single client's message
 
         Args:
-            sender (int): Rank of client in distributed
-            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
-            payload (torch.Tensor): Serialized model parameters
+            sender (int): Rank of client sending this local model
+            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
+            serialized_params (torch.Tensor): Serialized local model parameters from client
         """
 
         self._LOGGER.info("Processing message: {} from sender {}".format(
@@ -107,7 +107,7 @@ class SyncParameterServerHandler(ServerBackendHandler):
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
-            self.add_model(sender, payload)
+            self.add_model(sender, serialized_params)
             # update server model when client_buffer_cache is full
             if self.cache_cnt == self.client_num_per_round:
                 self.update_model(list(self.client_buffer_cache.values()))
@@ -120,7 +120,7 @@ class SyncParameterServerHandler(ServerBackendHandler):
         select = random.sample(id_list, self.client_num_per_round)
         return select
 
-    def add_model(self, sender, payload):
+    def add_model(self, sender, serialized_params):
         """deal with the model parameters"""
         buffer_index = sender - 1
         if self.client_buffer_cache.get(buffer_index) is not None:
@@ -128,11 +128,11 @@ class SyncParameterServerHandler(ServerBackendHandler):
             return
 
         self.cache_cnt += 1
-        self.client_buffer_cache[buffer_index] = payload.clone()
+        self.client_buffer_cache[buffer_index] = serialized_params.clone()
 
-    def update_model(self, model_list):
+    def update_model(self, serialized_params_list):
         """update global model"""
-        serialized_parameters = torch.mean(torch.stack(model_list), dim=0)
+        serialized_parameters = torch.mean(torch.stack(serialized_params_list), dim=0)
         SerializationTool.restore_model(self._model, serialized_parameters)
 
         # reset
@@ -171,7 +171,7 @@ class AsyncParameterServerHandler(ServerBackendHandler):
             self.update_model([parameter])
 
         elif message_code == MessageCode.ParameterRequest:
-            #send_message(MessageCode.ParameterUpdate, self._model, dst=sender)
+            # send_message(MessageCode.ParameterUpdate, self._model, dst=sender)
             pass
 
         elif message_code == MessageCode.GradientUpdate:
