@@ -6,7 +6,7 @@
 # @Software: PyCharm
 import os
 import unittest
-from fedlab_core.utils.messaging import MessageCode
+from fedlab_core.message_processor import MessageCode
 
 
 class MessageCodeTestCase(unittest.TestCase):

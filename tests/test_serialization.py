@@ -8,7 +8,7 @@ import os
 import unittest
 import torch
 import torch.nn as nn
-from fedlab_core.utils import serialization
+from fedlab_core.message_processor import SerializationTool
 
 
 class Net(nn.Module):
@@ -48,28 +48,18 @@ class SerializationTestCase(unittest.TestCase):
         self.assertIn(False, flags)  # at least one False in flags
 
     @torch.no_grad()
-    def test_ravel_model_params_cpu(self):
-        cpu_s_params = serialization.ravel_model_params(self.model, cuda=False)
+    def test_serialize_model(self):
+        serialized_params = SerializationTool.serialize_model(self.model)
         m_params = torch.Tensor([0])
         for param in self.model.parameters():
             m_params = torch.cat((m_params, param.data.view(-1)))
         m_params = m_params[1:]
-        self.assertTrue(torch.equal(cpu_s_params, m_params))
+        self.assertTrue(torch.equal(serialized_params, m_params))
 
     @torch.no_grad()
-    @unittest.skipUnless(torch.cuda.is_available(), 'No GPU was detected')
-    def test_ravel_model_params_gpu(self):
-        gpu_s_params = serialization.ravel_model_params(self.model, cuda=True)
-        m_params = torch.Tensor([0]).cuda()
-        for param in self.model.parameters():
-            m_params = torch.cat((m_params, param.data.view(-1)))
-        m_params = m_params[1:]
-        self.assertTrue(torch.equal(gpu_s_params, m_params))
-
-    @torch.no_grad()
-    def test_unravel_model_params(self):
+    def test_restore_model(self):
         model = Net(self.input_size, self.hidden_size, self.num_classes)
         self._model_params_neq(self.model, model)
-        s_params = serialization.ravel_model_params(self.model, cuda=False)
-        serialization.unravel_model_params(model, s_params)
+        serialized_params = SerializationTool.serialize_model(self.model)
+        SerializationTool.restore_model(model, serialized_params)
         self._model_params_eq(self.model, model)
