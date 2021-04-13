@@ -7,6 +7,7 @@ from fedlab_core.utils.logger import logger
 from fedlab_core.message_processor import MessageProcessor
 from fedlab_core.utils.message_code import MessageCode
 
+
 class ClientBasicTop(Process):
     """Abstract class
 
@@ -76,7 +77,7 @@ class ClientSyncTop(ClientBasicTop):
                 server_addr[0], server_addr[1], world_size, rank, dist_backend))
 
         self.msg_processor = MessageProcessor(
-            control_code_size=2, model=self._backend.model)
+            header_size=2, model=self._backend.model)
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -90,9 +91,7 @@ class ClientSyncTop(ClientBasicTop):
             package = self.msg_processor.recv_package(src=0)
             sender, message_code, s_parameters = self.msg_processor.unpack(
                 payload=package)
-
-            #control_codes, s_parameters = self.msg_processor.recv_message(src=0)
-
+            
             # exit
             if message_code == MessageCode.Exit:
                 exit(0)
@@ -107,8 +106,8 @@ class ClientSyncTop(ClientBasicTop):
         """Actions to perform on receiving new message, including local training
 
         Args:
-            sender (int): Index of sender
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode` class
+            sender (int): Rank of sender
+            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             s_parameters (torch.Tensor): Serialized model parameters
         """
         self._LOGGER.info("receiving message from {}, message code {}".format(
@@ -121,5 +120,5 @@ class ClientSyncTop(ClientBasicTop):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
         payload = self.msg_processor.pack(
-            control_codes=[MessageCode.ParameterUpdate.value], model=self._backend.model)
+            header=[MessageCode.ParameterUpdate.value], model=self._backend.model)
         self.msg_processor.send_package(payload=payload, dst=0)
