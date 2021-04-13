@@ -73,6 +73,6 @@ if __name__ == "__main__":
     trainloader, testloader = get_dataset(args)
 
     handler = ClientSGDHandler(model, trainloader)
-    top = ClientSyncTop(backend_handler=handler, server_addr=(
+    top = ClientSyncTop(client_handler=handler, server_addr=(
         args.server_ip, args.server_port), world_size=3, rank=args.local_rank)
     top.run()

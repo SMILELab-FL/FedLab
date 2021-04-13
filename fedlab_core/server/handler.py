@@ -3,10 +3,11 @@ import random
 import torch
 
 from fedlab_core.utils.logger import logger
-from fedlab_core.message_processor import MessageCode, SerializationTool
+from fedlab_core.utils.message_code import MessageCode
+from fedlab_core.utils.serialization import SerializationTool
 
 
-class ParameterServerHandler(object):
+class ServerBackendHandler(object):
     """An abstract class representing handler for parameter server.
 
     Please make sure that you self-defined server handler class subclasses this class
@@ -21,8 +22,6 @@ class ParameterServerHandler(object):
             self._model = model.cuda()
         else:
             self._model = model.cpu()
-
-        #self.client_num_in_total = client_num_in_total
 
     def on_receive(self):
         """Override this function to define what the server to do when receiving message from client"""
@@ -53,7 +52,7 @@ class ParameterServerHandler(object):
         return self._model
 
 
-class SyncParameterServerHandler(ParameterServerHandler):
+class SyncParameterServerHandler(ServerBackendHandler):
     """Synchronous Parameter Server Handler
 
     Backend of synchronous parameter server: this class is responsible for backend computing.
@@ -134,7 +133,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
     def update_model(self, model_list):
         """update global model"""
         serialized_parameters = torch.mean(torch.stack(model_list), dim=0)
-        SerializationTool.resotre_model(self._model, serialized_parameters)
+        SerializationTool.restore_model(self._model, serialized_parameters)
 
         # reset
         self.cache_cnt = 0
@@ -145,7 +144,7 @@ class SyncParameterServerHandler(ParameterServerHandler):
         self.train_flag = True
 
 
-class AsyncParameterServerHandler(ParameterServerHandler):
+class AsyncParameterServerHandler(ServerBackendHandler):
     """Asynchronous ParameterServer Handler
 
     Update global model immediately after receiving a ParameterUpdate message

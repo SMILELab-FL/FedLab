@@ -7,7 +7,7 @@ from fedlab_core.utils.logger import logger
 from fedlab_core.message_processor import MessageProcessor, MessageCode
 
 
-class EndTop(Process):
+class ServerBasicTop(Process):
     """Abstract class for server network topology
 
     If you want to define your own topology agreements, please subclass it.
@@ -21,10 +21,11 @@ class EndTop(Process):
 
     def __init__(self, server_handler, server_address, dist_backend):
         self._handler = server_handler
-        self.server_address = server_address  # ip:port
+        self.server_address = server_address
         self.dist_backend = dist_backend
 
-        self.msg_processor = MessageProcessor(control_code_size=2, model=self._handler.model)
+        self.msg_processor = MessageProcessor(
+            control_code_size=2, model=self._handler.model)
 
     def run(self):
         """Process"""
@@ -39,7 +40,7 @@ class EndTop(Process):
         raise NotImplementedError()
 
 
-class ServerBasicTop(EndTop):
+class ServerSyncTop(ServerBasicTop):
     """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -60,8 +61,8 @@ class ServerBasicTop(EndTop):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 
-        super(ServerBasicTop, self).__init__(server_handler=server_handler,
-                                             server_address=server_address, dist_backend=dist_backend)
+        super(ServerSyncTop, self).__init__(server_handler=server_handler,
+                                            server_address=server_address, dist_backend=dist_backend)
 
         self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
@@ -96,12 +97,13 @@ class ServerBasicTop(EndTop):
     def activate_clients(self):
         """Activate some of clients to join this FL round"""
         clients_this_round = self._handler.select_clients()
-        
+
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
-            payload = self.msg_processor.pack(control_codes=[MessageCode.ParameterUpdate.value], model=self._handler.model)
+            payload = self.msg_processor.pack(
+                control_codes=[MessageCode.ParameterUpdate.value], model=self._handler.model)
             self.msg_processor.send_package(payload=payload, dst=client_idx)
 
     def listen_clients(self):
@@ -110,11 +112,13 @@ class ServerBasicTop(EndTop):
         # server_handler will turn off train_flag
         while self._handler.train_flag:
             package = self.msg_processor.recv_package()
-            sender, message_code, s_parameters = self.msg_processor.unpack(payload=package)
+            sender, message_code, s_parameters = self.msg_processor.unpack(
+                payload=package)
 
             self._handler.on_receive(sender, message_code, s_parameters)
 
     def shutdown(self):
         for client_idx in range(self._handler.client_num_in_total):
-            package = self.msg_processor.pack(control_codes=[MessageCode.Exit.value], model=None)
+            package = self.msg_processor.pack(
+                control_codes=[MessageCode.Exit.value], model=None)
             self.msg_processor.send_package(payload=package, dst=client_idx+1)
