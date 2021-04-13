@@ -1,10 +1,10 @@
 import time
-from copy import deepcopy
 
 import torch
 from torch import nn
 from fedlab_core.utils.logger import logger
 from fedlab_core.message_processor import SerializationTool
+
 
 class ClientBackendHandler(object):
     """An abstract class representing handler for a client backend.
@@ -15,6 +15,7 @@ class ClientBackendHandler(object):
     If you use our framework to define the activities of client, please make sure that your self-defined class
     should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
     """
+
     def __init__(self, model, cuda):
         self.cuda = cuda
         if self.cuda:
@@ -30,9 +31,8 @@ class ClientBackendHandler(object):
         """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader"""
         raise NotImplementedError()
 
-    # something wrong with setter
     def load_parameters(self, serialized_parameters):
-        SerializationTool.resotre_model(self._model, serialized_parameters)
+        SerializationTool.restore_model(self._model, serialized_parameters)
 
     @property
     def model(self):

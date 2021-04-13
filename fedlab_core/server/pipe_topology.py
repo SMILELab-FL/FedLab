@@ -1,15 +1,39 @@
 from multiprocessing import Lock
 import torch.distributed as dist
+from torch.functional import meshgrid
 from torch.multiprocessing import Process
 
-from fedlab_core.utils.messaging import MessageCode, recv_message, send_message
+from fedlab_core.client.topology import ClientBasicTop
+from fedlab_core.server.topology import ServerBasicTop
 
-from fedlab_core.client.topology import ClientCommunicationTopology
-from fedlab_core.server.handler import SyncParameterServerHandler
-from fedlab_core.server.topology import EndTop, ServerBasicTop
+from fedlab_core.message_processor import MessageProcessor
 
 
-class PipeTop(ClientCommunicationTopology):
+class PipeToServer(ServerBasicTop):
+    """
+    """
+
+    def __init__(self, msg_processor, locks, server_handler, server_address, dist_backend, logger_path, logger_name):
+        super().__init__(server_handler, server_address, dist_backend=dist_backend,
+                         logger_path=logger_path, logger_name=logger_name)
+
+        self.msg_processor = msg_processor
+        self.locks = locks
+
+
+class PipeToClient(ClientBasicTop):
+    """
+
+    """
+
+    def __init__(self, msg_processor, locks, backend_handler, server_addr, world_size, rank, dist_backend):
+        super().__init__(backend_handler, server_addr, world_size, rank, dist_backend)
+
+        self.msg_processor = msg_processor
+        self.locks = locks
+
+
+class PipeTop(ClientBasicTop):
     """
     Abstract class for server Pipe topology
     simple example
@@ -26,18 +50,20 @@ class PipeTop(ClientCommunicationTopology):
         考虑Queue 队列消息传递同步
 
     """
-    def __init__(self, model, args):
 
-        self._model = model
-        self._model.share_memory_()
+    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
+        super().__init__(backend_handler, server_addr, world_size, rank, dist_backend)
+
+        self.msg_processor = MessageProcessor(
+            control_code_size=2, model=backend_handler.model)
 
     def run(self):
         """process function"""
-        raise NotImplementedError()
+        pass
 
     def on_receive(self, sender, message_code, payload):
         """
-        接收上层server的激活信息
+        接收上层server的模型信息和id
         """
         return super().receive(sender, message_code, payload)
 

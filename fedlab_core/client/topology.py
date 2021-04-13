@@ -4,10 +4,10 @@ import torch.distributed as dist
 from torch.multiprocessing import Process
 
 from fedlab_core.utils.logger import logger
-from fedlab_core.message_processor import MessageProcessor, MessageCode, SerializationTool
+from fedlab_core.message_processor import MessageProcessor
+from fedlab_core.utils.message_code import MessageCode
 
-
-class ClientCommunicationTopology(Process):
+class ClientBasicTop(Process):
     """Abstract class
 
     If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
@@ -17,8 +17,8 @@ class ClientCommunicationTopology(Process):
         please read the code of :class:`ClientSyncTop`
     """
 
-    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
-        self._backend = backend_handler
+    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend):
+        self._backend = client_handler
 
         self.rank = rank
         self.server_addr = server_addr
@@ -28,9 +28,6 @@ class ClientCommunicationTopology(Process):
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_addr[0], self.server_addr[1]),
                                 rank=self.rank, world_size=self.world_size)
-
-        self.msg_processor = MessageProcessor(
-            control_code_size=2, model=self._backend.model)
 
     def run(self):
         """Please override this function"""
@@ -45,14 +42,14 @@ class ClientCommunicationTopology(Process):
         raise NotImplementedError()
 
 
-class ClientSyncTop(ClientCommunicationTopology):
+class ClientSyncTop(ClientBasicTop):
     """Synchronise communication class
 
     This is the top class in our framework which is mainly responsible for network communication of CLIENT!
     Synchronize with server following agreements defined in :meth:`run`.
 
     Args:
-        backend_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
+        client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
         client.
         server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
         world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
@@ -66,10 +63,10 @@ class ClientSyncTop(ClientCommunicationTopology):
         Errors raised by :func:`torch.distributed.init_process_group`
     """
 
-    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog",
+    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog",
                  logger_name=""):
 
-        super(ClientSyncTop, self).__init__(backend_handler,
+        super(ClientSyncTop, self).__init__(client_handler,
                                             server_addr, world_size, rank, dist_backend)
 
         self._LOGGER = logger(os.path.join(
@@ -77,6 +74,9 @@ class ClientSyncTop(ClientCommunicationTopology):
         self._LOGGER.info(
             "Successfully Initialized --- connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
                 server_addr[0], server_addr[1], world_size, rank, dist_backend))
+
+        self.msg_processor = MessageProcessor(
+            control_code_size=2, model=self._backend.model)
 
     def run(self):
         """Main procedure of each client is defined here:

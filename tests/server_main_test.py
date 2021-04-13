@@ -2,13 +2,12 @@ import argparse
 import sys
 sys.path.append('/home/zengdun/FedLab')
 
-from fedlab_core.server.topology import ServerBasicTop
+from fedlab_core.server.topology import ServerSyncTop
 from fedlab_core.models.lenet import LeNet
 from fedlab_core.server.handler import SyncParameterServerHandler
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description='Distbelief training example')
 
     parser.add_argument('--server_ip', type=str)
@@ -18,5 +17,5 @@ if __name__ == "__main__":
 
     model = LeNet().cpu()
     ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)  # client = world_size-1
-    top = ServerBasicTop(ps, server_address=(args.server_ip, args.server_port))
+    top = ServerSyncTop(server_handler=ps, server_address=(args.server_ip, args.server_port))
     top.run()
