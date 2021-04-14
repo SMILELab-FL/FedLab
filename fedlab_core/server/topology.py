@@ -79,7 +79,7 @@ class ServerSyncTop(ServerBasicTop):
 
         for round_idx in range(self.global_round):
             self._LOGGER.info(
-                "Global FL round {}/{}".format(round_idx+1, self.global_round))
+                "Global FL round {}/{}".format(round_idx + 1, self.global_round))
 
             activate = threading.Thread(target=self.activate_clients)
             listen = threading.Thread(target=self.listen_clients)
@@ -110,14 +110,15 @@ class ServerSyncTop(ServerBasicTop):
         # server_handler will turn off train_flag
         while self._handler.train_flag:
             package = self.msg_processor.recv_package()
-            sender, message_code, s_parameters = self.msg_processor.unpack(
+            sender, message_code, serialized_params = self.msg_processor.unpack(
                 payload=package)
 
-            self._handler.on_receive(sender, message_code, s_parameters)
+            self._handler.on_receive(sender, message_code, serialized_params)
 
     def shutdown_clients(self):
         """Shutdown all clients"""
         for client_idx in range(self._handler.client_num_in_total):
             package = self.msg_processor.pack(
-                header=[MessageCode.Exit.value], model=None)
-            self.msg_processor.send_package(payload=package, dst=client_idx+1)
+                header=[MessageCode.Exit.value],
+                model=None)  # TODO: model=None cannot be serialized by SerializationTool
+            self.msg_processor.send_package(payload=package, dst=client_idx + 1)
