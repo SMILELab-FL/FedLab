@@ -1,4 +1,4 @@
-from multiprocessing import Lock
+from multiprocessing import Lock, process
 import torch.distributed as dist
 from torch.functional import meshgrid
 from torch.multiprocessing import Process
@@ -9,66 +9,110 @@ from fedlab_core.server.topology import ServerBasicTop
 from fedlab_core.message_processor import MessageProcessor
 
 
-class PipeToServer(ServerBasicTop):
+class MessageQueue(object):
+    def __init__(self, message_instance) -> None:
+        self.write_lock = None
+        self.read_lock = None
+
+    def empty(self):
+        raise NotImplementedError()
+
+    def push(self, message):
+        raise NotImplementedError()
+
+    def front(self):
+        raise NotImplementedError()
+
+    def pop(self):
+        raise NotImplementedError()
+
+
+class PipeToClient(ServerBasicTop):
     """
+    向下面向clinet担任mid server的角色，整合参数
+    """
+    def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
+        super(PipeToClient, self).__init__(server_addr, world_size, rank, dist_backend)
+
+        self.msg_processor = message_processor
+
+        self.msg_queue_write = None
+        self.msg_queue_read = None
+
+    def run(self):
+        raise NotImplementedError()
+
+    def activate_clients(self):
+        raise NotImplementedError()
+
+    def listen_clients(self):
+        raise NotImplementedError()
+
+    def load_message_queue(self, write_queue, read_queue):
+        self.msg_queue_read = read_queue
+        self.msg_queue_write = write_queue
+
+
+class PipeToServer(ClientBasicTop):
+    """
+    向topserver担任client的角色，处理和解析消息
     """
 
-    def __init__(self, msg_processor, locks, server_handler, server_address, dist_backend, logger_path, logger_name):
-        super().__init__(server_handler, server_address, dist_backend=dist_backend,
-                         logger_path=logger_path, logger_name=logger_name)
+    def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
+        super(PipeToServer, self).__init__(server_addr, world_size, rank, dist_backend)
 
-        self.msg_processor = msg_processor
-        self.locks = locks
+        self.msg_processor = message_processor
+
+        self.msg_queue_write = None
+        self.msg_queue_read = None
+
+    def run(self):
+        return super().run()
+
+    def on_receive(self, sender, message_code, payload):
+        raise NotImplementedError()
+
+    def synchronize(self):
+        raise NotImplementedError()
+
+    def load_message_queue(self, write_queue, read_queue):
+        self.msg_queue_read = read_queue
+        self.msg_queue_write = write_queue
 
 
-class PipeToClient(ClientBasicTop):
-    """
-
-    """
-
-    def __init__(self, msg_processor, locks, backend_handler, server_addr, world_size, rank, dist_backend):
-        super().__init__(backend_handler, server_addr, world_size, rank, dist_backend)
-
-        self.msg_processor = msg_processor
-        self.locks = locks
-
-
-class PipeTop(ClientBasicTop):
+class PipeTop(Process):
     """
     Abstract class for server Pipe topology
     simple example
 
-
     向上屏蔽局部的rank （通过全局rank到局部rank的映射解决）
 
-
-    双进程：
+    主副进程：
         server进程，用于管理本地组的子FL系统
         Pipe主进程，做消息通信和中继
 
     难点：进程间通信和同步
         考虑Queue 队列消息传递同步
 
+        采用消息双队列同步和激活进程
+
+    功能规划：
+        rank映射
+        子联邦合并
+
     """
 
-    def __init__(self, backend_handler, server_addr, world_size, rank, dist_backend):
-        super().__init__(backend_handler, server_addr, world_size, rank, dist_backend)
+    def __init__(self, pipe2c, pipe2s, message_queues):
+        self.pipe2c = pipe2c
+        self.pipe2s = pipe2s
 
-        self.msg_processor = MessageProcessor(
-            control_code_size=2, model=backend_handler.model)
+        self.pipe2c.load_message_queue(message_queues[0], message_queues[1])
+        self.pipe2s.load_message_queue(message_queues[1], message_queues[0])
 
     def run(self):
         """process function"""
-        pass
+        self.pipe2C.run()
+        self.pipe2s.run()
 
-    def on_receive(self, sender, message_code, payload):
-        """
-        接收上层server的模型信息和id
-        """
-        return super().receive(sender, message_code, payload)
-
-    def synchronise(self, payload):
-        """
-        将本组内的局部合并后的模型上传上层服务器
-        """
-        return super().synchronise(payload)
+        self.pipe2c.join()
+        self.pipe2s.join()

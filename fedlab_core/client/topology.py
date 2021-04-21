@@ -18,17 +18,11 @@ class ClientBasicTop(Process):
         please read the code of :class:`ClientSyncTop`
     """
 
-    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend):
-        self._backend = client_handler
-
+    def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
         self.world_size = world_size
         self.dist_backend = dist_backend
-
-        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
-                                .format(self.server_addr[0], self.server_addr[1]),
-                                rank=self.rank, world_size=self.world_size)
 
     def run(self):
         """Please override this function"""
@@ -41,6 +35,11 @@ class ClientBasicTop(Process):
     def synchronize(self):
         """Please override this function"""
         raise NotImplementedError()
+
+    def init_network_connection(self):
+        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
+                                .format(self.server_addr[0], self.server_addr[1]),
+                                rank=self.rank, world_size=self.world_size)
 
 
 class ClientSyncTop(ClientBasicTop):
@@ -67,8 +66,10 @@ class ClientSyncTop(ClientBasicTop):
     def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog",
                  logger_name=""):
 
-        super(ClientSyncTop, self).__init__(client_handler,
-                                            server_addr, world_size, rank, dist_backend)
+        super(ClientSyncTop, self).__init__(
+            server_addr, world_size, rank, dist_backend)
+
+        self._backend = client_handler
 
         self._LOGGER = logger(os.path.join(
             "log", logger_file + str(rank) + ".txt"), logger_name)
@@ -85,13 +86,14 @@ class ClientSyncTop(ClientBasicTop):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
+        self.init_connection()
         while True:
             # waits for data from
             # sender, message_code, parameter = self._waiting()
             package = self.msg_processor.recv_package(src=0)
             sender, message_code, s_parameters = self.msg_processor.unpack(
                 payload=package)
-            
+
             # exit
             if message_code == MessageCode.Exit:
                 exit(0)
