@@ -4,6 +4,27 @@ from fedlab_core.utils.serialization import SerializationTool
 from fedlab_core.utils.message_code import MessageCode
 
 
+class Package(object):
+    """
+    """
+    def __init__(self, header, model) -> None:
+        self.header = header
+        self.content = SerializationTool.serialize_model(model)
+
+    def pack(self, header, model):
+        """
+        Args:
+            header (list): a list of numbers(int/float), and the meaning of each number should be define in unpack
+            model (torch.nn.Module)
+        """
+        # pack up Tensor
+        header = torch.Tensor([dist.get_rank()] + header).cpu()
+        if model is not None:
+            payload = torch.cat(
+                (header, SerializationTool.serialize_model(model)))
+        return payload
+
+
 class MessageProcessor(object):
     def __init__(self, header_size, model) -> None:
         """Define the details of how the topology module to deal with network communication
@@ -15,11 +36,10 @@ class MessageProcessor(object):
             model (torch.nn.Module): Model used in federation
         """
         serialized_parameters = SerializationTool.serialize_model(model=model)
-        self.id_size = 1
-        self.header_size = header_size
+        self.header_size = max(1, header_size)
         self.serialized_param_size = serialized_parameters.numel()
         self.msg_cache = torch.zeros(
-            size=(self.id_size + self.header_size + self.serialized_param_size,)).cpu()
+            size=(self.header_size + self.serialized_param_size,)).cpu()
 
     def send_package(self, payload, dst):
         # send package
@@ -37,17 +57,14 @@ class MessageProcessor(object):
             model (torch.nn.Module)
         """
         # pack up Tensor
-        payload = torch.Tensor([dist.get_rank()] + header).cpu()
+        header = torch.Tensor([dist.get_rank()] + header).cpu()
         if model is not None:
             payload = torch.cat(
-                (payload, SerializationTool.serialize_model(model)))
+                (header, SerializationTool.serialize_model(model)))
         return payload
 
     def unpack(self, payload):
-        sender = int(payload[self.id_size - 1])  # id_size=1 as default
-        header = MessageCode(int(payload[1]))
-        serialized_parameters = payload[self.id_size +
-                                        self.header_size:]
-
-        # TODO:  header_size = 1 as default, so only return the first header
+        sender = int(payload[0])
+        header = MessageCode(int(payload[1:self.header_size]))
+        serialized_parameters = payload[self.header_size:]
         return sender, header, serialized_parameters

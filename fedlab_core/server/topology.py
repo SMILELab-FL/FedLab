@@ -13,19 +13,14 @@ class ServerBasicTop(Process):
     If you want to define your own topology agreements, please subclass it.
 
     Args:
-        server_handler: Parameter server backend handler derived from :class:`ParameterServerHandler`
         server_address (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``
     """
 
-    def __init__(self, server_handler, server_address, dist_backend):
-        self._handler = server_handler
+    def __init__(self, server_address, dist_backend):
         self.server_address = server_address
         self.dist_backend = dist_backend
-
-        self.msg_processor = MessageProcessor(
-            header_size=2, model=self._handler.model)
 
     def run(self):
         """Main process"""
@@ -39,7 +34,11 @@ class ServerBasicTop(Process):
         """Listen messages from clients"""
         raise NotImplementedError()
 
-
+    def init_network_connection(self, world_size):
+        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
+                                .format(self.server_address[0], self.server_address[1]),
+                                rank=0, world_size=world_size)
+        
 class ServerSyncTop(ServerBasicTop):
     """Synchronous communication class
 
@@ -59,9 +58,13 @@ class ServerSyncTop(ServerBasicTop):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 
-        super(ServerSyncTop, self).__init__(server_handler=server_handler,
-                                            server_address=server_address, dist_backend=dist_backend)
+        super(ServerSyncTop, self).__init__(server_address=server_address, dist_backend=dist_backend)
 
+        self._handler = server_handler
+
+        self.msg_processor = MessageProcessor(
+            header_size=2, model=self._handler.model)
+            
         self._LOGGER = logger(logger_path, logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
@@ -72,9 +75,7 @@ class ServerSyncTop(ServerBasicTop):
         """Process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
-        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
-                                .format(self.server_address[0], self.server_address[1]),
-                                rank=0, world_size=self._handler.client_num_in_total + 1)
+        self.init_network_connection(world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
 
         for round_idx in range(self.global_round):
