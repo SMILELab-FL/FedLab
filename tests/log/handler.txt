@@ -1,7 +1,6 @@
-2021-04-22 13:25:13,062 - handler - INFO - starting local train process
-2021-04-22 13:25:14,337 - handler - INFO - Epoch 1/2, Loss: 73.91216619499028, Time: 1619069114.3373144
-2021-04-22 13:25:15,555 - handler - INFO - Epoch 2/2, Loss: 14.941946911625564, Time: 1619069115.555804522021-04-22 13:25:15,585 - handler - INFO - starting local train process22021-04-22 13:25:16,812 - handler - INFO - Epoch 1/2, Loss: 48.734639223665, Time: 1619069116.8127744
-2021-04-22 13:25:18,052 - handler - INFO - Epoch 2/2, Loss: 15.471974518615752, Time: 1619069118.0524263
-2021-04-22 13:25:18,084 - handler - INFO - starting local train process
-22021-04-22 13:25:19,336 - handler - INFO - Epoch 1/2, Loss: 37.2316650878638, Time: 1619069119.3368316
-2021-04-22 13:25:20,580 - handler - INFO - Epoch 2/2, Loss: 13.299056953983381, Time: 1619069120.5800703
+2021-04-22 15:27:35,433 - handler - INFO - starting local train process
+2021-04-22 15:27:37,159 - handler - INFO - Epoch 1/2, Loss: 69.5851089656353, Time: 1619076457.1593797
+2021-04-22 15:27:38,892 - handler - INFO - Epoch 2/2, Loss: 15.034344539046288, Time: 1619076458.89239172021-04-22 15:27:39,311 - handler - INFO - starting local train process
+2021-04-22 15:27:40,873 - handler - INFO - Epoch 1/2, Loss: 17.697636272758245, Time: 1619076460.8729446
+2021-04-22 15:27:42,541 - handler - INFO - Epoch 2/2, Loss: 11.116837271780241, Time: 1619076462.54114
+202021-04-22 15:27:42,900 - handler - INFO - starting local train proces202021-04-22 15:27:44,487 - handler - INFO - Epoch 1/2, Loss: 8.786444165743887, Time: 1619076464.486920212021-04-22 15:27:46,129 - handler - INFO - Epoch 2/2, Loss: 6.527486881474033, Time: 1619076466.1297011

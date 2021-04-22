@@ -1,56 +1,98 @@
 from multiprocessing import Lock, process
+import torch
 import torch.distributed as dist
 from torch.functional import meshgrid
 from torch.multiprocessing import Process
 
 from fedlab_core.client.topology import ClientBasicTop
 from fedlab_core.server.topology import ServerBasicTop
-
+from fedlab_core.utils.serialization import SerializationTool
 from fedlab_core.message_processor import MessageProcessor
+
+from queue import Queue
+
+
+class Message(object):
+    """
+    use for message queue
+    """
+
+    def __init__(self, header, content) -> None:
+        self.header = header
+        self.content = content
+
+    def pack(self, header, model):
+        """
+        Args:
+            header (list): a list of numbers(int/float), and the meaning of each number should be define in unpack
+            model (torch.nn.Module)
+        """
+        # pack up Tensor
+        header = torch.Tensor([dist.get_rank()] + header,).cpu()
+        if model is not None:
+            payload = torch.cat(
+                (header, SerializationTool.serialize_model(model)))
+        return payload
+
+    def unpack(self):
+        raise NotImplementedError()
 
 
 class MessageQueue(object):
-    def __init__(self, message_instance) -> None:
-        self.write_lock = None
-        self.read_lock = None
+    def __init__(self) -> None:
+        self.MQ = Queue(maxsize=10)
 
     def empty(self):
-        raise NotImplementedError()
+        return self.MQ.empty()
 
-    def push(self, message):
-        raise NotImplementedError()
+    def put(self, message):
+        self.MQ.put(message)
 
-    def front(self):
-        raise NotImplementedError()
-
-    def pop(self):
-        raise NotImplementedError()
+    def get(self):
+        return self.MQ.get(block=True)
 
 
 class PipeToClient(ServerBasicTop):
     """
     向下面向clinet担任mid server的角色，整合参数
     """
+
     def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
-        super(PipeToClient, self).__init__(server_addr, world_size, rank, dist_backend)
+        super(PipeToClient, self).__init__(
+            server_addr, world_size, rank, dist_backend)
 
         self.msg_processor = message_processor
 
-        self.msg_queue_write = None
-        self.msg_queue_read = None
+        self.mq_read = None
+        self.mq_write = None
+
+        self.model_cache = torch.zeros(
+            size=(self.msg_processor.serialized_param_size)).cpu()
+        self.cache_cnt = 0
+
+        self.rank_map = {}  # 上层rank到下层rank的映射
 
     def run(self):
-        raise NotImplementedError()
+        if self.mq_write is None or self.mq_read is NotImplemented:
+            raise ValueError("invalid MQs")
+        while True:
+            message = self.mq_read.get()
+            sender, message_code, parameters = self.msg_processor.unpack(message)
 
-    def activate_clients(self):
-        raise NotImplementedError()
+    def activate_clients(self, payload):
+        clients_this_round = []
+        for client_idx in clients_this_round:
+            payload = payload
+            self.msg_processor.send_package(payload=payload, dst=client_idx)
 
     def listen_clients(self):
-        raise NotImplementedError()
+        package = self.msg_processor.recv_package()
+        sender, message_code, serialized_params = self.msg_processor.unpack(
+            payload=package)
 
     def load_message_queue(self, write_queue, read_queue):
-        self.msg_queue_read = read_queue
-        self.msg_queue_write = write_queue
+        self.mq_read = read_queue
+        self.mq_write = write_queue
 
 
 class PipeToServer(ClientBasicTop):
@@ -59,15 +101,18 @@ class PipeToServer(ClientBasicTop):
     """
 
     def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
-        super(PipeToServer, self).__init__(server_addr, world_size, rank, dist_backend)
+        super(PipeToServer, self).__init__(
+            server_addr, world_size, rank, dist_backend)
 
         self.msg_processor = message_processor
 
-        self.msg_queue_write = None
-        self.msg_queue_read = None
+        self.mq_write = None
+        self.mq_read = None
 
     def run(self):
-        return super().run()
+        if self.mq_write is None or self.mq_read is NotImplemented:
+            raise ValueError("invalid MQs")
+        self.init_network_connection()
 
     def on_receive(self, sender, message_code, payload):
         raise NotImplementedError()
@@ -76,8 +121,8 @@ class PipeToServer(ClientBasicTop):
         raise NotImplementedError()
 
     def load_message_queue(self, write_queue, read_queue):
-        self.msg_queue_read = read_queue
-        self.msg_queue_write = write_queue
+        self.mq_read = read_queue
+        self.mq_write = write_queue
 
 
 class PipeTop(Process):
@@ -102,12 +147,13 @@ class PipeTop(Process):
 
     """
 
-    def __init__(self, pipe2c, pipe2s, message_queues):
+    def __init__(self, pipe2c, pipe2s):
         self.pipe2c = pipe2c
         self.pipe2s = pipe2s
 
-        self.pipe2c.load_message_queue(message_queues[0], message_queues[1])
-        self.pipe2s.load_message_queue(message_queues[1], message_queues[0])
+        self.MQs = [MessageQueue(), MessageQueue()]
+        self.pipe2c.load_message_queue(self.MQs[0], self.MQs[1])
+        self.pipe2s.load_message_queue(self.MQs[1], self.MQs[0])
 
     def run(self):
         """process function"""
