@@ -1,4 +1,5 @@
 import threading
+import os
 
 import torch.distributed as dist
 from torch.multiprocessing import Process
@@ -38,7 +39,8 @@ class ServerBasicTop(Process):
         dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
                                 .format(self.server_address[0], self.server_address[1]),
                                 rank=0, world_size=world_size)
-        
+
+
 class ServerSyncTop(ServerBasicTop):
     """Synchronous communication class
 
@@ -58,14 +60,15 @@ class ServerSyncTop(ServerBasicTop):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 
-        super(ServerSyncTop, self).__init__(server_address=server_address, dist_backend=dist_backend)
+        super(ServerSyncTop, self).__init__(
+            server_address=server_address, dist_backend=dist_backend)
 
         self._handler = server_handler
 
         self.msg_processor = MessageProcessor(
             header_size=2, model=self._handler.model)
-            
-        self._LOGGER = logger(logger_path, logger_name)
+
+        self._LOGGER = logger(os.path.join("log", logger_path), logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
 
@@ -75,7 +78,8 @@ class ServerSyncTop(ServerBasicTop):
         """Process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
-        self.init_network_connection(world_size=self._handler.client_num_in_total + 1)
+        self.init_network_connection(
+            world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
 
         for round_idx in range(self.global_round):
@@ -121,5 +125,6 @@ class ServerSyncTop(ServerBasicTop):
         for client_idx in range(self._handler.client_num_in_total):
             package = self.msg_processor.pack(
                 header=[MessageCode.Exit.value],
-                model=None)  # TODO: model=None cannot be serialized by SerializationTool
-            self.msg_processor.send_package(payload=package, dst=client_idx + 1)
+                model=self._handler.model)
+            self.msg_processor.send_package(
+                payload=package, dst=client_idx + 1)

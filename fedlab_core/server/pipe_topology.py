@@ -111,7 +111,7 @@ class PipeTop(Process):
 
     def run(self):
         """process function"""
-        self.pipe2C.run()
+        self.pipe2c.run()
         self.pipe2s.run()
 
         self.pipe2c.join()

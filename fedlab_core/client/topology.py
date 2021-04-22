@@ -86,7 +86,7 @@ class ClientSyncTop(ClientBasicTop):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
-        self.init_connection()
+        self.init_network_connection()
         while True:
             # waits for data from
             # sender, message_code, parameter = self._waiting()

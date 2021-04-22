@@ -36,7 +36,7 @@ class MessageProcessor(object):
             model (torch.nn.Module): Model used in federation
         """
         serialized_parameters = SerializationTool.serialize_model(model=model)
-        self.header_size = max(1, header_size)
+        self.header_size = max(1, header_size+1)
         self.serialized_param_size = serialized_parameters.numel()
         self.msg_cache = torch.zeros(
             size=(self.header_size + self.serialized_param_size,)).cpu()
@@ -56,6 +56,7 @@ class MessageProcessor(object):
             header (list): a list of numbers(int/float), and the meaning of each number should be define in unpack
             model (torch.nn.Module)
         """
+        #TODO: when model is none
         # pack up Tensor
         header = torch.Tensor([dist.get_rank()] + header).cpu()
         if model is not None:
@@ -65,6 +66,6 @@ class MessageProcessor(object):
 
     def unpack(self, payload):
         sender = int(payload[0])
-        header = MessageCode(int(payload[1:self.header_size]))
+        header = MessageCode(int(payload[1]))
         serialized_parameters = payload[self.header_size:]
         return sender, header, serialized_parameters
