@@ -7,8 +7,7 @@ from torch.multiprocessing import Process
 from fedlab_core.client.topology import ClientBasicTop
 from fedlab_core.server.topology import ServerBasicTop
 from fedlab_core.utils.serialization import SerializationTool
-from fedlab_core.message_processor import MessageProcessor
-
+from fedlab_core.utils.message_code import MessageCode
 from queue import Queue
 
 
@@ -75,10 +74,16 @@ class PipeToClient(ServerBasicTop):
     def run(self):
         if self.mq_write is None or self.mq_read is NotImplemented:
             raise ValueError("invalid MQs")
+        self.init_network_connection()
+        
         while True:
             message = self.mq_read.get()
-            sender, message_code, parameters = self.msg_processor.unpack(message)
-
+            sender, recver, header, parameters = self.msg_processor.unpack(message)
+            message_code = header 
+            if message_code == MessageCode.ParameterUpdate:
+                self.model_cache += parameters
+                self.cache_cnt += 1
+            
     def activate_clients(self, payload):
         clients_this_round = []
         for client_idx in clients_this_round:
@@ -87,19 +92,17 @@ class PipeToClient(ServerBasicTop):
 
     def listen_clients(self):
         package = self.msg_processor.recv_package()
-        sender, message_code, serialized_params = self.msg_processor.unpack(
+        sender, recver, header, parameters = self.msg_processor.unpack(
             payload=package)
 
     def load_message_queue(self, write_queue, read_queue):
         self.mq_read = read_queue
         self.mq_write = write_queue
 
-
 class PipeToServer(ClientBasicTop):
     """
     向topserver担任client的角色，处理和解析消息
     """
-
     def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
         super(PipeToServer, self).__init__(
             server_addr, world_size, rank, dist_backend)

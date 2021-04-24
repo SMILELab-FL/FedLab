@@ -117,8 +117,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
     def select_clients(self):
         """Return a list of client rank indices selected randomly"""
         id_list = [i + 1 for i in range(self.client_num_in_total)]
-        select = random.sample(id_list, self.client_num_per_round)
-        return select
+        selection = random.sample(id_list, self.client_num_per_round)
+        return selection
 
     def add_model(self, sender, serialized_params):
         """deal with the model parameters"""
