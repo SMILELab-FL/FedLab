@@ -8,6 +8,10 @@ from fedlab_core.message_processor import MessageProcessor
 from fedlab_core.utils.message_code import MessageCode
 
 
+# list or tensor, for this example header = [message code]
+HEADER_INSTANCE = [1]
+
+
 class ClientBasicTop(Process):
     """Abstract class
 
@@ -78,7 +82,7 @@ class ClientSyncTop(ClientBasicTop):
                 server_addr[0], server_addr[1], world_size, rank, dist_backend))
 
         self.msg_processor = MessageProcessor(
-            header_size=2, model=self._backend.model)
+            header_instance=HEADER_INSTANCE, model=self._backend.model)
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -86,12 +90,12 @@ class ClientSyncTop(ClientBasicTop):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
+        self._LOGGER.info("connecting with server")
         self.init_network_connection()
         while True:
             # waits for data from
-            # sender, message_code, parameter = self._waiting()
             package = self.msg_processor.recv_package(src=0)
-            sender, message_code, s_parameters = self.msg_processor.unpack(
+            sender, _, message_code, s_parameters = self.msg_processor.unpack(
                 payload=package)
 
             # exit

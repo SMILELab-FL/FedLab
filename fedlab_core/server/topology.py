@@ -8,6 +8,10 @@ from fedlab_core.utils.logger import logger
 from fedlab_core.message_processor import MessageProcessor, MessageCode
 
 
+# list or tensor, for this example header = [message code]
+HEADER_INSTANCE = [0]
+
+
 class ServerBasicTop(Process):
     """Abstract class for server network topology
 
@@ -66,13 +70,13 @@ class ServerSyncTop(ServerBasicTop):
         self._handler = server_handler
 
         self.msg_processor = MessageProcessor(
-            header_size=2, model=self._handler.model)
+            header_instance=HEADER_INSTANCE, model=self._handler.model)
 
         self._LOGGER = logger(os.path.join("log", logger_path), logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
 
-        self.global_round = 3  # for test
+        self.global_round = 3  # for current test
 
     def run(self):
         """Process"""
@@ -115,7 +119,7 @@ class ServerSyncTop(ServerBasicTop):
         # server_handler will turn off train_flag
         while self._handler.train_flag:
             package = self.msg_processor.recv_package()
-            sender, message_code, serialized_params = self.msg_processor.unpack(
+            sender, _, message_code, serialized_params = self.msg_processor.unpack(
                 payload=package)
 
             self._handler.on_receive(sender, message_code, serialized_params)
