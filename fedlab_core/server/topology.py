@@ -52,12 +52,12 @@ class ServerSyncTop(ServerBasicTop):
         server_address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``. Default: ``"gloo"``
-        logger_path (str, optional): path to the log file for this class. Default: ``"server_top.txt"``
+        logger_path (str, optional): path to the log file for this class. Default: ``"log/server_top.txt"``
         logger_name (str, optional): class name to initialize logger. Default: ``"ServerTop"``
 
     """
 
-    def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
+    def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="log/server_top.txt",
                  logger_name="ServerTop"):
 
         super(ServerSyncTop, self).__init__(
@@ -108,7 +108,7 @@ class ServerSyncTop(ServerBasicTop):
     def listen_clients(self):
         """Listen messages from clients"""
         self._handler.train()  # turn train_flag to True
-        # server_handler will turn off train_flag
+        # server_handler will turn off train_flag once the global model is updated
         while self._handler.train_flag:
             sender, message_code, s_parameters = MessageProcessor.recv_package(
                 self._handler.model)

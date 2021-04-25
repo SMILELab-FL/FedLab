@@ -3,28 +3,29 @@ import torch.distributed as dist
 from fedlab_core.utils.serialization import SerializationTool
 from fedlab_core.utils.message_code import MessageCode
 
-SENDER_IDX = 0
-RECVER_IDX = 1
-CONTENTSIZE_IDX = 2
-MESSAGECODE_IDX = 3
+HEADER_SENDER_RANK_IDX = 0
+HEADER_RECVER_RANK_IDX = 1
+HEADER_CONTENT_SIZE_IDX = 2
+HEADER_MESSAGE_CODE_IDX = 3
 
-DEFAULT_RANK = -1
-DEFAULT_CS = -1
+DEFAULT_RECV_RANK = -1
+DEFAULT_CONTENT_SIZE = -1
 DEFAULT_MC = -1
 
 HEADER_SIZE = 4
 
 
 class Package(object):
-    """
-    FedLab网络包的基本单位
+    """FedLab网络包的基本单位
+
     由两部分序列tensor构成
-        header : [sender_rank, recver_rank, content_size, message_code]
-        content : [[offset,info]]
+        header : [sender_rank, recv_rank, content_size, message_code]
+        content : [offset_1, tensor_1, offset_2, tensor_2, ...]
     """
+
     def __init__(self, message_code) -> None:
-        self.header = [dist.get_rank(), DEFAULT_RANK, DEFAULT_CS,
-                       message_code] 
+        self.header = [dist.get_rank(), DEFAULT_RECV_RANK, DEFAULT_CONTENT_SIZE,
+                       message_code]
         self.content = torch.zeros(size=(1,))
         self.content_flag = False
 
@@ -38,15 +39,13 @@ class Package(object):
             self.content = torch.cat(
                 (self.content, torch.Tensor([offset]), tensor))
 
-        self.header[CONTENTSIZE_IDX] = self.content.shape[0]
+        self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
 
     def append_tensor_list(self, tensor_list):
         for tensor in tensor_list:
-            offset = tensor.shape[0]
-            cache_tensor = torch.cat((torch.Tensor([offset]), tensor))
-            self.append(cache_tensor)
+            self.append_tensor(tensor)
 
-        self.header[CONTENTSIZE_IDX] = self.content.shape[0]
+        self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
 
     @property
     def header(self):
@@ -63,7 +62,7 @@ class Package(object):
         while index < content.shape[0]:
             offset = int(content[index])
             index += 1
-            segment = content[index:index+offset]
+            segment = content[index:index + offset]
             parse_result.append(segment)
             index += offset
         return parse_result
@@ -73,72 +72,75 @@ class PackageProcessor(object):
     # TODO： 添加包内容合法检测
     @staticmethod
     def recv_package(src=None):
-
         def recv_header(src=src):
             cache = torch.zeros(size=(HEADER_SIZE,))
             dist.recv(cache, src=src)
-            return int(cache[SENDER_IDX]), int(cache[RECVER_IDX]), int(cache[CONTENTSIZE_IDX]), MessageCode(int(cache[MESSAGECODE_IDX]))
+            return int(cache[HEADER_SENDER_RANK_IDX]), int(cache[HEADER_RECVER_RANK_IDX]), int(
+                cache[HEADER_CONTENT_SIZE_IDX]), MessageCode(
+                int(cache[HEADER_MESSAGE_CODE_IDX]))
 
         def recv_content(cache_size, src):
             cache = torch.zeros(size=(cache_size,))
             dist.recv(cache, src=src)
-            return Package.unpack_content(cache)
+            return Package.parse_content(cache)
 
-        sender, recver, content_size, message_code = recv_header(src=src)
+        sender_rank, recv_rank, content_size, message_code = recv_header(src=src)
 
         # 收到第一段包，第二段包指定来源rank
-        content = recv_content(content_size, src=sender)
+        content = recv_content(content_size, src=sender_rank)
 
-        return message_code, sender, content
+        return message_code, sender_rank, content
 
     @staticmethod
     def send_package(package, dst):
         def send_header(header, dst):
-            header[RECVER_IDX] = dst
+            header[HEADER_RECVER_RANK_IDX] = dst
             dist.send(header, dst=dst)
 
         def send_content(content, dst):
             dist.send(content, dst=dst)
 
-        header = package.header
-
-        send_header(header, dst=dst)
-
+        send_header(header=package.header, dst=dst)
         send_content(content=package.content, dst=dst)
 
 
 class MessageProcessor(object):
     """Define the details of how the topology module to deal with network communication
-    if u want to define communication agreements, override `pack` and `unpack`
+    if u want to define communication agreements, override :func:`pack` and :func:`unpack`
 
-    `class: MessageProcessor` will create message cache according to args
-    args:
-        header_instance (int): a instance of header (rank of sender and recver is not included)
-        model (torch.nn.Module): Model used in federation
+    :class:`MessageProcessor` will create message cache according to args.
+
+    # Args:
+        # header_instance (int): a instance of header (rank of sender and recv is not included)
+        # model (torch.nn.Module): Model used in federation
     """
+
     @staticmethod
     def send_package(model, message_code, dst):
+        def pack(dst, content_size, message_code, s_params):
+            return torch.cat((torch.Tensor([dist.get_rank(), dst, content_size, message_code]), s_params))
+
         # send package
-        s_parameters = SerializationTool.serialize_model(model)
-        content_size = s_parameters.shape[0]
-        package = torch.cat((torch.Tensor([dist.get_rank(), int(dst), content_size, message_code]), s_parameters))
+        serialized_params = SerializationTool.serialize_model(model)
+        content_size = serialized_params.shape[0]
+        package = pack(dst, content_size, message_code, serialized_params)
         dist.send(tensor=package, dst=dst)
 
     @staticmethod
     def recv_package(model, src=None):
-        def unpack(payload):
-            sender = int(payload[SENDER_IDX])
-            recver = int(payload[RECVER_IDX])
-            content_size = int(payload[CONTENTSIZE_IDX])
-            
-            message_code = MessageCode(int(payload[MESSAGECODE_IDX]))
-            serialized_parameters = payload[HEADER_SIZE:]
+        def unpack(package):
+            sender_rank = int(package[HEADER_SENDER_RANK_IDX])
+            recv_rank = int(package[HEADER_RECVER_RANK_IDX])
+            content_size = int(package[HEADER_CONTENT_SIZE_IDX])
 
-            return sender, recver, content_size, message_code, serialized_parameters
+            message_code = MessageCode(int(package[HEADER_MESSAGE_CODE_IDX]))
+            s_params = package[HEADER_SIZE:]
 
-        s_parameters = SerializationTool.serialize_model(model)
-        pkg_cache = torch.zeros(size=(HEADER_SIZE + s_parameters.shape[0],)).cpu()
+            return sender_rank, recv_rank, content_size, message_code, s_params
+
+        serialized_params = SerializationTool.serialize_model(model)
+        pkg_cache = torch.zeros(size=(HEADER_SIZE + serialized_params.shape[0],)).cpu()
         dist.recv(tensor=pkg_cache, src=src)
 
-        sender, _, _, message_code, s_parameters = unpack(pkg_cache)
-        return sender, message_code, s_parameters
+        sender, _, _, message_code, serialized_params = unpack(pkg_cache)
+        return sender, message_code, serialized_params

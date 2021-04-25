@@ -27,7 +27,7 @@ class ServerBackendHandler(object):
         """Override this function to define what the server to do when receiving message from client"""
         raise NotImplementedError()
 
-    def add_model(self, sender, serialized_params):
+    def add_single_model(self, sender, serialized_params):
         """Override this function to deal with incoming model
 
         Args:
@@ -40,7 +40,8 @@ class ServerBackendHandler(object):
         """Override this function to update global model
 
         Args:
-            serialized_params_list (list): a list of serialized model parameters
+            serialized_params_list (list[torch.Tensor]): a list of serialized model parameters collected from different
+        clients
         """
         raise NotImplementedError()
 
@@ -63,8 +64,11 @@ class SyncParameterServerHandler(ServerBackendHandler):
     Args:
         model (torch.nn.Module): Model used in this federation
         client_num_in_total (int): Total number of clients in this federation
-        cuda (bool): Use GPUs or not
-        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round
+        cuda (bool): Use GPUs or not. Default: ``False``
+        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default:
+    ``1.0``
+        logger_file (str, optional): Path to the log file for client handler. Default: ``"server_handler.txt"``
+        logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"server handler"``
     """
 
     def __init__(self, model, client_num_in_total, cuda=False, select_ratio=1.0, logger_path="server_handler.txt",
@@ -97,17 +101,17 @@ class SyncParameterServerHandler(ServerBackendHandler):
         """Define what parameter server does when receiving a single client's message
 
         Args:
-            sender (int): Rank of client sending this local model
+            sender (int): Rank of client process sending this local model
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
             serialized_params (torch.Tensor): Serialized local model parameters from client
         """
 
-        self._LOGGER.info("Processing message: {} from sender {}".format(
+        self._LOGGER.info("Processing message: {} from rank {}".format(
             message_code.name, int(sender)))
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
-            self.add_model(sender, serialized_params)
+            self.add_single_model(sender, serialized_params)
             # update server model when client_buffer_cache is full
             if self.cache_cnt == self.client_num_per_round:
                 self.update_model(list(self.client_buffer_cache.values()))
@@ -120,8 +124,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
         selection = random.sample(id_list, self.client_num_per_round)
         return selection
 
-    def add_model(self, sender, serialized_params):
-        """deal with the model parameters"""
+    def add_single_model(self, sender, serialized_params):
+        """deal with single model's parameters"""
         buffer_index = sender - 1
         if self.client_buffer_cache.get(buffer_index) is not None:
             self._LOGGER.info("parameters from {} has existed".format(sender))
