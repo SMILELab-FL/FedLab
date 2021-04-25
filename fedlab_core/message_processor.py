@@ -22,27 +22,19 @@ class Package(object):
         header : [sender_rank, recver_rank, content_size, message_code]
         content : [[offset,info]]
     """
-
-    def __init__(self, recver_rank=None, message_code=None) -> None:
+    def __init__(self, message_code) -> None:
         self.header = [dist.get_rank(), DEFAULT_RANK, DEFAULT_CS,
-                       DEFAULT_MC]  # header固定4位
+                       message_code] 
         self.content = torch.zeros(size=(1,))
         self.content_flag = False
-        self.header_flag = False
-
-        if message_code is not None:
-            self.header[MESSAGECODE_IDX] = message_code.value
-
-        if recver_rank is not None:
-            self.header[RECVER_IDX] = recver_rank
 
     def append_tensor(self, tensor):
+        offset = tensor.shape[0]
         if self.content_flag is False:
-            self.content[0] = tensor.shape[0]
+            self.content[0] = offset
             self.content = torch.cat((self.content, tensor))
             self.content_flag = True
         else:
-            offset = tensor.shape[0]
             self.content = torch.cat(
                 (self.content, torch.Tensor([offset]), tensor))
 
@@ -102,14 +94,13 @@ class PackageProcessor(object):
     @staticmethod
     def send_package(package, dst):
         def send_header(header, dst):
-            header = torch.cat((torch.Tensor([dist.get_rank(), dst]), header))
+            header[RECVER_IDX] = dst
             dist.send(header, dst=dst)
 
         def send_content(content, dst):
             dist.send(content, dst=dst)
 
         header = package.header
-        header[RECVER_IDX] = dst        # 接收者rank写入
 
         send_header(header, dst=dst)
 

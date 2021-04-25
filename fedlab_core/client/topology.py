@@ -17,7 +17,6 @@ class ClientBasicTop(Process):
     Example:
         please read the code of :class:`ClientSyncTop`
     """
-
     def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
