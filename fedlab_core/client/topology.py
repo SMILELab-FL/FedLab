@@ -17,6 +17,7 @@ class ClientBasicTop(Process):
     Example:
         please read the code of :class:`ClientSyncTop`
     """
+
     def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
@@ -56,13 +57,14 @@ class ClientSyncTop(ClientBasicTop):
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``. Default: ``"gloo"``
         logger_file (str, optional): Path to the log file for all clients of :class:`ClientSyncTop` class. Default: ``"clientLog"``
-        logger_name (str, optional): Class name to initialize logger
+        logger_name (str, optional): Class name to initialize logger. Default: ``""``
 
     Raises:
         Errors raised by :func:`torch.distributed.init_process_group`
     """
 
-    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo", logger_file="clientLog",
+    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo",
+                 logger_file="clientLog",
                  logger_name=""):
 
         super(ClientSyncTop, self).__init__(
@@ -72,9 +74,10 @@ class ClientSyncTop(ClientBasicTop):
 
         self._LOGGER = logger(os.path.join(
             "log", logger_file + str(rank) + ".txt"), logger_name)
+
         self._LOGGER.info(
-            "Successfully Initialized --- connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
-                server_addr[0], server_addr[1], world_size, rank, dist_backend))
+            "Successfully Initialized --- server:{}:{},  world size:{}, rank:{}, backend:{}".format(
+                self.server_addr[0], self.server_addr[1], self.world_size, self.rank, self.dist_backend))
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -84,6 +87,9 @@ class ClientSyncTop(ClientBasicTop):
         """
         self._LOGGER.info("connecting with server")
         self.init_network_connection()
+        self._LOGGER.info(
+            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
+                self.server_addr[0], self.server_addr[1], self.world_size, self.rank, self.dist_backend))
         while True:
             # waits for data from
             sender, message_code, s_parameters = MessageProcessor.recv_package(self._handler.model, src=0)

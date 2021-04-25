@@ -56,7 +56,8 @@ class ClientSGDHandler(ClientBackendHandler):
         criterion (optional): loss function used in local training process. If set to ``None``, will use
         :func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
-        LOGGER: utils class to output debug information to file and command line
+        logger_file (str, optional): Path to the log file for client handler. Default: ``"log/handler.txt"``
+        logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"handler"``
     """
 
     def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="log/handler.txt",
