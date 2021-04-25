@@ -10,7 +10,6 @@ from fedlab_core.utils.serialization import SerializationTool
 from fedlab_core.utils.message_code import MessageCode
 from queue import Queue
 
-
 class Message(object):
     """
     use for message queue

@@ -8,10 +8,6 @@ from fedlab_core.utils.logger import logger
 from fedlab_core.message_processor import MessageProcessor, MessageCode
 
 
-# list or tensor, for this example header = [message code]
-HEADER_INSTANCE = [0]
-
-
 class ServerBasicTop(Process):
     """Abstract class for server network topology
 
@@ -69,9 +65,6 @@ class ServerSyncTop(ServerBasicTop):
 
         self._handler = server_handler
 
-        self.msg_processor = MessageProcessor(
-            header_instance=HEADER_INSTANCE, model=self._handler.model)
-
         self._LOGGER = logger(os.path.join("log", logger_path), logger_name)
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
@@ -109,26 +102,20 @@ class ServerSyncTop(ServerBasicTop):
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
-            payload = self.msg_processor.pack(
-                header=[MessageCode.ParameterUpdate.value], model=self._handler.model)
-            self.msg_processor.send_package(payload=payload, dst=client_idx)
+            MessageProcessor.send_package(
+                self._handler.model, MessageCode.ParameterUpdate.value, dst=client_idx)
 
     def listen_clients(self):
         """Listen messages from clients"""
         self._handler.train()  # turn train_flag to True
         # server_handler will turn off train_flag
         while self._handler.train_flag:
-            package = self.msg_processor.recv_package()
-            sender, _, message_code, serialized_params = self.msg_processor.unpack(
-                payload=package)
-
-            self._handler.on_receive(sender, message_code, serialized_params)
+            sender, message_code, s_parameters = MessageProcessor.recv_package(
+                self._handler.model)
+            self._handler.on_receive(sender, message_code, s_parameters)
 
     def shutdown_clients(self):
         """Shutdown all clients"""
         for client_idx in range(self._handler.client_num_in_total):
-            package = self.msg_processor.pack(
-                header=[MessageCode.Exit.value],
-                model=self._handler.model)
-            self.msg_processor.send_package(
-                payload=package, dst=client_idx + 1)
+            MessageProcessor.send_package(
+                self._handler.model, MessageCode.Exit.value, dst=client_idx+1)
