@@ -8,33 +8,24 @@ from fedlab_core.client.topology import ClientBasicTop
 from fedlab_core.server.topology import ServerBasicTop
 from fedlab_core.utils.serialization import SerializationTool
 from fedlab_core.utils.message_code import MessageCode
+from fedlab_core.message_processor import Package
 from queue import Queue
 
-class Message(object):
-    """
-    use for message queue
-    """
-
-    def __init__(self, header, content) -> None:
-        self.header = header
-        self.content = content
-
-    def pack(self, header, model):
-        """
-        Args:
-            header (list): a list of numbers(int/float), and the meaning of each number should be define in unpack
-            model (torch.nn.Module)
-        """
-        # pack up Tensor
-        header = torch.Tensor([dist.get_rank()] + header,).cpu()
-        if model is not None:
-            payload = torch.cat(
-                (header, SerializationTool.serialize_model(model)))
-        return payload
-
-    def unpack(self):
-        raise NotImplementedError()
-
+"""
+pipe top双进程采用低耦合消息队列同步模式
+    启动流程:
+        1. Pipe2Client(下称进程P2C)开启接受参与者网络请求，构成下层group  
+           Pipe2Server(下称进程P2S)与上层server通信，构成上层group
+        2. P2C与client连接成功后，向管道发送网络包 MessageCode.Registration，汇报当前组Worker数量
+           P2S收到P2C的Registration，向上层server转发汇报，与上层Server通信构建转发表（worker_id -> group_rank）
+        3. 开启联邦学习进程：
+            server向下层通信[client_list, parameters]
+            pipeTop 做id->rank映射包转发
+            client将模型上传pipe
+            pipeTop 做合并 mid model并上传[parameters, client_num]
+            server获得mid model合并 global model
+            
+"""
 
 class MessageQueue(object):
     def __init__(self) -> None:
@@ -43,8 +34,8 @@ class MessageQueue(object):
     def empty(self):
         return self.MQ.empty()
 
-    def put(self, message):
-        self.MQ.put(message)
+    def put(self, package):
+        self.MQ.put(package)
 
     def get(self):
         return self.MQ.get(block=True)
@@ -55,11 +46,9 @@ class PipeToClient(ServerBasicTop):
     向下面向clinet担任mid server的角色，整合参数
     """
 
-    def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
+    def __init__(self, server_addr, world_size, rank, dist_backend):
         super(PipeToClient, self).__init__(
             server_addr, world_size, rank, dist_backend)
-
-        self.msg_processor = message_processor
 
         self.mq_read = None
         self.mq_write = None
@@ -74,15 +63,16 @@ class PipeToClient(ServerBasicTop):
         if self.mq_write is None or self.mq_read is NotImplemented:
             raise ValueError("invalid MQs")
         self.init_network_connection()
-        
+
         while True:
             message = self.mq_read.get()
-            sender, recver, header, parameters = self.msg_processor.unpack(message)
-            message_code = header 
+            sender, recver, header, parameters = self.msg_processor.unpack(
+                message)
+            message_code = header
             if message_code == MessageCode.ParameterUpdate:
                 self.model_cache += parameters
                 self.cache_cnt += 1
-            
+
     def activate_clients(self, payload):
         clients_this_round = []
         for client_idx in clients_this_round:
@@ -98,15 +88,14 @@ class PipeToClient(ServerBasicTop):
         self.mq_read = read_queue
         self.mq_write = write_queue
 
+
 class PipeToServer(ClientBasicTop):
     """
     向topserver担任client的角色，处理和解析消息
     """
-    def __init__(self, message_processor, server_addr, world_size, rank, dist_backend):
+    def __init__(self, server_addr, world_size, rank, dist_backend):
         super(PipeToServer, self).__init__(
             server_addr, world_size, rank, dist_backend)
-
-        self.msg_processor = message_processor
 
         self.mq_write = None
         self.mq_read = None
