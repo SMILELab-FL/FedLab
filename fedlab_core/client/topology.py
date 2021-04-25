@@ -8,10 +8,6 @@ from fedlab_core.message_processor import MessageProcessor
 from fedlab_core.utils.message_code import MessageCode
 
 
-# list or tensor, for this example header = [message code]
-HEADER_INSTANCE = [1]
-
-
 class ClientBasicTop(Process):
     """Abstract class
 
@@ -21,7 +17,6 @@ class ClientBasicTop(Process):
     Example:
         please read the code of :class:`ClientSyncTop`
     """
-
     def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
@@ -73,16 +68,13 @@ class ClientSyncTop(ClientBasicTop):
         super(ClientSyncTop, self).__init__(
             server_addr, world_size, rank, dist_backend)
 
-        self._backend = client_handler
+        self._handler = client_handler
 
         self._LOGGER = logger(os.path.join(
             "log", logger_file + str(rank) + ".txt"), logger_name)
         self._LOGGER.info(
             "Successfully Initialized --- connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
                 server_addr[0], server_addr[1], world_size, rank, dist_backend))
-
-        self.msg_processor = MessageProcessor(
-            header_instance=HEADER_INSTANCE, model=self._backend.model)
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -94,10 +86,9 @@ class ClientSyncTop(ClientBasicTop):
         self.init_network_connection()
         while True:
             # waits for data from
-            package = self.msg_processor.recv_package(src=0)
-            sender, _, message_code, s_parameters = self.msg_processor.unpack(
-                payload=package)
+            sender, message_code, s_parameters = MessageProcessor.recv_package(self._handler.model, src=0)
 
+            print(message_code)
             # exit
             if message_code == MessageCode.Exit:
                 exit(0)
@@ -119,12 +110,10 @@ class ClientSyncTop(ClientBasicTop):
         self._LOGGER.info("receiving message from {}, message code {}".format(
             sender, message_code))
 
-        self._backend.load_parameters(s_parameters)
-        self._backend.train(epochs=2)
+        self._handler.load_parameters(s_parameters)
+        self._handler.train(epochs=2)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        payload = self.msg_processor.pack(
-            header=[MessageCode.ParameterUpdate.value], model=self._backend.model)
-        self.msg_processor.send_package(payload=payload, dst=0)
+        MessageProcessor.send_package(self._handler.model, MessageCode.ParameterUpdate.value, dst=0)
