@@ -27,6 +27,7 @@ class Package(object):
             header (list, optional): Details shows above.
             content (torch.Tensor, optional): Details shows above.
     """
+
     def __init__(self, message_code, header=None, content=None) -> None:
         if header is not None:
             self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECV_RANK, DEFAULT_CONTENT_SIZE,
@@ -79,13 +80,14 @@ class Package(object):
 
     @staticmethod
     def parse_content(content):
-        """parse serialized tensor
+        """Parse package content into a list of tensors
 
-            args:
-                content (Package.tensor):
+        Args:
+            content (torch.Tensor): :attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and their
+        corresponding offsets. For more details about :class:`Package`, refer TODO: Package design
 
-            return:
-                a tensor_list that you append in Package.content
+        Returns:
+            [torch.Tensor]: a list of 1-D tensors parsed from ``content``
         """
         index = 0
         parse_result = []
@@ -99,13 +101,15 @@ class Package(object):
 
     @staticmethod
     def parse_header(header):
-        """parse serialized tensor
+        """Parse header to get information of current package
 
-            args:
-                header (Package.header):
-            
-            return:
-                a parsed header tuple: (sender_rank, recv_rank, content_size, message_code)
+        Args:
+            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements:
+        ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``. For more details about :class:`Package`,
+        refer TODO: Package design
+
+        Returns:
+            tuple: a tuple containing 4 elements ``(sender_rank, recv_rank, content_size, message_code)``
         """
         sender_rank = int(header[HEADER_SENDER_RANK_IDX])
         recver_rank = int(header[HEADER_RECVER_RANK_IDX])
@@ -115,7 +119,9 @@ class Package(object):
 
 
 class PackageProcessor(object):
-    """Provide more flexible distributed tensor communication functions based on `torch.distributed.send` `and torch.distributed.recv`"""
+    """Provide more flexible distributed tensor communication functions based on :func:`torch.distributed.send` and
+    :func:`torch.distributed.recv`"""
+
     @staticmethod
     def recv_package(src=None):
         def recv_header(src=src, parse=False):
@@ -141,14 +147,15 @@ class PackageProcessor(object):
 
     @staticmethod
     def send_package(package, dst):
-        """two segment tensor communication pattern based on torch.distributed
+        """Two-segment tensor communication pattern based on ``torch.distributed``
             
-            pattern shows as follows:
-                1. sender: send a header (the first tensor) contains content_size to dst
-                2. receiver: get the value of content_size and create a temp buffer to fill coming content
-                3. sender: send a content (the seconde tensor) contains user define tensor list
-                4. receiver: restore tensor list by using given functions
+        Pattern is shown as follows:
+            1.1 sender: send a header tensor containing ``content_size`` to receiver
+            1.2 receiver: receive the header, and get the value of ``content_size`` and create a buffer for incoming content
+            2.1 sender: send a content tensor composed of a list of tensors and their offsets
+            2.2 receiver: receive the content tensor, and parse it to obtain a tensor list using parser function
         """
+
         def send_header(header, dst):
             header[HEADER_RECVER_RANK_IDX] = dst
             dist.send(header, dst=dst)
@@ -162,6 +169,7 @@ class PackageProcessor(object):
     @staticmethod
     def send_model(model, message_code, dst):
         """Directely send serialized model parameters to dst"""
+
         def pack(dst, content_size, message_code, s_params):
             return torch.cat((torch.Tensor([dist.get_rank(), dst, content_size, message_code]), s_params))
 
@@ -174,6 +182,7 @@ class PackageProcessor(object):
     @staticmethod
     def recv_model(model, src=None):
         """Receive serialized model parameters from src"""
+
         def unpack(package):
             sender_rank = int(package[HEADER_SENDER_RANK_IDX])
             recv_rank = int(package[HEADER_RECVER_RANK_IDX])
@@ -203,6 +212,7 @@ class MessageProcessor(object):
         # header_instance (int): a instance of header (rank of sender and recv is not included)
         # model (torch.nn.Module): Model used in federation
     """
+
     @staticmethod
     def send_model(model, message_code, dst):
         def pack(dst, content_size, message_code, s_params):
@@ -216,7 +226,6 @@ class MessageProcessor(object):
 
     @staticmethod
     def recv_model(model, src=None):
-        
         def unpack(package):
             sender_rank = int(package[HEADER_SENDER_RANK_IDX])
             recv_rank = int(package[HEADER_RECVER_RANK_IDX])
