@@ -1,7 +1,7 @@
 import torch
 import torch.distributed as dist
-from fedlab_core.utils.serialization import SerializationTool
-from fedlab_core.utils.message_code import MessageCode
+from ...fedlab_utils.serialization import SerializationTool
+from ...fedlab_utils.message_code import MessageCode
 
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECVER_RANK_IDX = 1

@@ -1,15 +1,16 @@
-from multiprocessing import Lock, process
+
+from queue import Queue
 import torch
 import torch.distributed as dist
 from torch.functional import meshgrid
 from torch.multiprocessing import Process
 
-from fedlab_core.client.topology import ClientBasicTop
-from fedlab_core.server.topology import ServerBasicTop
-from fedlab_core.utils.serialization import SerializationTool
-from fedlab_core.utils.message_code import MessageCode
-from fedlab_core.message_processor import Package
-from queue import Queue
+from ...fedlab_core.client.topology import ClientBasicTop
+from ...fedlab_core.server.topology import ServerBasicTop
+from ...fedlab_utils.serialization import SerializationTool
+from ...fedlab_utils.message_code import MessageCode
+from ...fedlab_core.communicator import Package
+
 
 """
 pipe top双进程采用低耦合消息队列同步模式

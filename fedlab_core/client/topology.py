@@ -4,9 +4,10 @@ from abc import ABC, abstractmethod
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from fedlab_core.utils.logger import logger
-from fedlab_core.communicator.processor import PackageProcessor
-from fedlab_core.utils.message_code import MessageCode
+from ...fedlab_utils.logger import logger
+from ...fedlab_utils.message_code import MessageCode
+from ...fedlab_core.communicator.processor import PackageProcessor
+
 
 
 class ClientBasicTop(Process, ABC):
