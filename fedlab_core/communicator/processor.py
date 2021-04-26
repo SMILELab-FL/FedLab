@@ -149,11 +149,11 @@ class PackageProcessor(object):
     def send_package(package, dst):
         """Two-segment tensor communication pattern based on ``torch.distributed``
             
-        Pattern shows as follows:
-            1. sender: send a header (the first tensor) containing ``content_size`` to receiver
-            2. receiver: get the value of ``content_size`` and create a buffer to fill coming content
-            3. sender: send a content (the second tensor) contains user define tensor list
-            4. receiver: restore tensor list by using given functions
+        Pattern is shown as follows:
+            1.1 sender: send a header tensor containing ``content_size`` to receiver
+            1.2 receiver: receive the header, and get the value of ``content_size`` and create a buffer for incoming content
+            2.1 sender: send a content tensor composed of a list of tensors and their offsets
+            2.2 receiver: receive the content tensor, and parse it to obtain a tensor list using parser function
         """
 
         def send_header(header, dst):
