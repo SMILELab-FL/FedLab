@@ -1,0 +1,13 @@
+2021-04-26 14:40:06,835 - client2 - INFO - connecting with server
+2021-04-26 14:40:07,614 - client2 - INFO - connected to server:127.0.0.1:3002,  world size:3, rank:2, backend:gloo
+2021-04-26 14:40:07,614 - client2 - INFO - Waiting for server...
+2021-04-26 14:40:07,694 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-04-26 14:40:10,937 - client2 - INFO - synchronize model parameters with server
+2021-04-26 14:40:10,948 - client2 - INFO - Waiting for server...
+2021-04-26 14:40:11,131 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-04-26 14:40:14,379 - client2 - INFO - synchronize model parameters with server
+2021-04-26 14:40:14,386 - client2 - INFO - Waiting for server...
+2021-04-26 14:40:14,465 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-04-26 14:40:17,739 - client2 - INFO - synchronize model parameters with server
+2021-04-26 14:40:17,748 - client2 - INFO - Waiting for server...
+2021-04-26 14:40:17,804 - client2 - INFO - Recv MessageCode.Exit, Process exiting
