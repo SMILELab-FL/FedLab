@@ -34,11 +34,6 @@ class ClientBackendHandler(ABC):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
-    # I think this function can be deleted
-    def evaluate(self, test_loader):
-        """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader`"""
-        raise NotImplementedError()
-
     def load_parameters(self, serialized_parameters):
         """Restore model from serialized model parameters"""
         SerializationTool.restore_model(self._model, serialized_parameters)
@@ -112,35 +107,3 @@ class ClientSGDHandler(ClientBackendHandler):
             log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
                 epoch + 1, epochs, loss_sum, time.time())
             self._LOGGER.info(log_str)
-
-    def evaluate(self, test_loader, cuda):
-        """
-        Evaluate local model based on given test :class:`torch.DataLoader`
-
-        Args:
-            test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
-            cuda (bool): Use GPUs or not
-        """
-        self._model.eval()
-        loss_sum = 0.0
-        correct = 0.0
-        total = 0.0
-        with torch.no_grad():
-            for inputs, labels in test_loader:
-                if cuda:
-                    inputs = inputs.cuda()
-                    labels = labels.cuda()
-
-                outputs = self._model(inputs)
-                loss = self.criterion(outputs, labels)
-
-                _, predicted = torch.max(outputs, 1)
-                correct += torch.sum(predicted.eq(labels)).item()
-                total += len(labels)
-                loss_sum += loss.item()
-
-        accuracy = correct / total
-        # TODO: is it proper to use loss_sum here?? CrossEntropyLoss is averaged over each sample
-        log_str = "Evaluate, Loss {}, accuracy: {}".format(loss_sum,
-                                                           accuracy)
-        self._LOGGER.info(log_str)
