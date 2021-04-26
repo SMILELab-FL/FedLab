@@ -1,15 +1,17 @@
 import time
+import os
 
 import torch
 from torch import nn
 from fedlab_core.utils.logger import logger
-from fedlab_core.message_processor import SerializationTool
+from fedlab_core.utils.serialization import SerializationTool
+from abc import ABC, abstractmethod
 
 
-class ClientBackendHandler(object):
+class ClientBackendHandler(ABC):
     """An abstract class representing handler for a client backend.
 
-    In our framework, we define the backend of client handler show manage its local model and buffer.
+    In our framework, we define the backend of client handler show manage its local model.
     It should have a function to update its model called :meth:`train` and a function called :meth:`evaluate`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
@@ -18,7 +20,6 @@ class ClientBackendHandler(object):
     Args:
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
-
     """
 
     def __init__(self, model, cuda):
@@ -28,10 +29,12 @@ class ClientBackendHandler(object):
         else:
             self._model = model.cpu()
 
+    @abstractmethod
     def train(self):
-        """Please override this method. This function should manipulate :attr:`self._model`"""
+        """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
+    # I think this function can be deleted
     def evaluate(self, test_loader):
         """Please override this method. Evaluate local model based on given test :class:`torch.DataLoader`"""
         raise NotImplementedError()
@@ -66,7 +69,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
         self._data_loader = data_loader
 
-        self._LOGGER = logger(logger_file, logger_name)
+        self._LOGGER = logger(os.path.join("log", "client_handler.txt"), logger_name)
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(
