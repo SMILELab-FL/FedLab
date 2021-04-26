@@ -1,11 +1,13 @@
 import time
 import os
+from abc import ABC, abstractmethod
 
 import torch
 from torch import nn
-from fedlab_core.utils.logger import logger
-from fedlab_core.utils.serialization import SerializationTool
-from abc import ABC, abstractmethod
+
+from ...fedlab_utils.logger import logger
+from ...fedlab_utils.serialization import SerializationTool
+
 
 
 class ClientBackendHandler(ABC):

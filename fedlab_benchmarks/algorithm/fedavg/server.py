@@ -1,11 +1,8 @@
 import argparse
-import sys
-sys.path.append('/home/zengdun/FedLab')
 
-from fedlab_core.server.topology import ServerSyncTop
-from fedlab_core.models.lenet import LeNet
-from fedlab_core.server.handler import SyncParameterServerHandler
-
+from ....fedlab_core.server.topology import ServerSyncTop
+from ....fedlab_core.models.lenet import LeNet
+from ....fedlab_core.server.handler import SyncParameterServerHandler
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
