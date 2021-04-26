@@ -1,37 +1,40 @@
 import os
+from abc import ABC, abstractmethod
 
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
 from fedlab_core.utils.logger import logger
-from fedlab_core.message_processor import MessageProcessor
+from fedlab_core.communicator.processor import PackageProcessor
 from fedlab_core.utils.message_code import MessageCode
 
 
-class ClientBasicTop(Process):
+class ClientBasicTop(Process, ABC):
     """Abstract class
 
     If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
     methods.
 
     Example:
-        please read the code of :class:`ClientSyncTop`
+        Read the code of :class:`ClientSyncTop` to learn how to use this class.
     """
-
     def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
         self.world_size = world_size
         self.dist_backend = dist_backend
 
+    @abstractmethod
     def run(self):
         """Please override this function"""
         raise NotImplementedError()
 
-    def on_receive(self, sender, message_code, payload):
+    @abstractmethod
+    def on_receive(self, sender_rank, message_code, payload):
         """Please override this function"""
         raise NotImplementedError()
 
+    @abstractmethod
     def synchronize(self):
         """Please override this function"""
         raise NotImplementedError()
@@ -43,7 +46,7 @@ class ClientBasicTop(Process):
 
 
 class ClientSyncTop(ClientBasicTop):
-    """Synchronise communication class
+    """Synchronize communication class
 
     This is the top class in our framework which is mainly responsible for network communication of CLIENT!
     Synchronize with server following agreements defined in :meth:`run`.
@@ -56,7 +59,7 @@ class ClientSyncTop(ClientBasicTop):
         rank (int): Rank of the current client process for ``torch.distributed`` initialization
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``. Default: ``"gloo"``
-        logger_file (str, optional): Path to the log file for all clients of :class:`ClientSyncTop` class. Default: ``"clientLog"``
+        logger_file (str, optional): Path to the log file for all clients of :class:`ClientSyncTop` class. Default: ``"client_log"``
         logger_name (str, optional): Class name to initialize logger. Default: ``""``
 
     Raises:
@@ -64,20 +67,18 @@ class ClientSyncTop(ClientBasicTop):
     """
 
     def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo",
-                 logger_file="clientLog",
-                 logger_name=""):
+                 logger_file="client_log",
+                 logger_name="client"):
 
         super(ClientSyncTop, self).__init__(
             server_addr, world_size, rank, dist_backend)
 
         self._handler = client_handler
 
+        self.epochs = 2  # epochs for local training
+        
         self._LOGGER = logger(os.path.join(
-            "log", logger_file + str(rank) + ".txt"), logger_name)
-
-        self._LOGGER.info(
-            "Successfully Initialized --- server:{}:{},  world size:{}, rank:{}, backend:{}".format(
-                self.server_addr[0], self.server_addr[1], self.world_size, self.rank, self.dist_backend))
+            "log", logger_file + str(rank) + ".txt"), logger_name+str(rank))
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -91,35 +92,38 @@ class ClientSyncTop(ClientBasicTop):
             "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
                 self.server_addr[0], self.server_addr[1], self.world_size, self.rank, self.dist_backend))
         while True:
+            self._LOGGER.info("Waiting for server...")
             # waits for data from
-            sender, message_code, s_parameters = MessageProcessor.recv_package(self._handler.model, src=0)
+            sender_rank, message_code, s_parameters = PackageProcessor.recv_model(
+                self._handler.model, src=0)
 
-            print(message_code)
             # exit
             if message_code == MessageCode.Exit:
+                self._LOGGER.info("Recv {}, Process exiting".format(message_code))
                 exit(0)
 
             # perform local training
-            self.on_receive(sender, message_code, s_parameters)
+            self.on_receive(sender_rank, message_code, s_parameters)
 
             # synchronize with server
             self.synchronize()
 
-    def on_receive(self, sender, message_code, s_parameters):
+    def on_receive(self, sender_rank, message_code, s_parameters):
         """Actions to perform on receiving new message, including local training
 
         Args:
-            sender (int): Rank of sender
+            sender_rank (int): Rank of sender
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             s_parameters (torch.Tensor): Serialized model parameters
         """
-        self._LOGGER.info("receiving message from {}, message code {}".format(
-            sender, message_code))
+        self._LOGGER.info("Package received from {}, message code {}".format(
+            sender_rank, message_code))
 
         self._handler.load_parameters(s_parameters)
-        self._handler.train(epochs=2)
+        self._handler.train(epochs=self.epochs)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        MessageProcessor.send_package(self._handler.model, MessageCode.ParameterUpdate.value, dst=0)
+        PackageProcessor.send_model(
+            self._handler.model, MessageCode.ParameterUpdate.value, dst=0)
