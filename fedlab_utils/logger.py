@@ -18,13 +18,9 @@ class logger(object):
         self.logger.addHandler(handler)
 
     def info(self, log_str):
-        """"""
+        """Print information to logger"""
         self.logger.info(log_str)
 
-    def error(self, error_str, log_str):
-        """"""
-        raise NotImplementedError()
-
     def warning(self, warning_str):
-        """"""
-        raise NotImplementedError()
+        """Print warning to logger"""
+        self.logger.warning(warning_str)
