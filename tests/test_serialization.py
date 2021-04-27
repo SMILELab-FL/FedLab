@@ -8,7 +8,7 @@ import os
 import unittest
 import torch
 import torch.nn as nn
-from fedlab_core.message_processor import SerializationTool
+from fedlab_utils.serialization import SerializationTool
 
 
 class Net(nn.Module):
