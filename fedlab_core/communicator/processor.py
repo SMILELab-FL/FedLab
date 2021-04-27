@@ -8,7 +8,7 @@ HEADER_RECVER_RANK_IDX = 1
 HEADER_CONTENT_SIZE_IDX = 2
 HEADER_MESSAGE_CODE_IDX = 3
 
-DEFAULT_RECV_RANK = -1
+DEFAULT_RECVER_RANK = -1
 DEFAULT_CONTENT_SIZE = -1
 DEFAULT_MC = -1
 
@@ -18,19 +18,20 @@ HEADER_SIZE = 4
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in FedLab.
 
-        this class maintains 2 variables:
-            header : torch.Tensor([sender_rank, recv_rank, content_size, message_code])
-            content : torch.Tensor([offset_1, tensor_1, offset_2, tensor_2, ...])
+    :class:`Package` maintains 2 variables:
+        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``
+        :attr:`content` : ``torch.Tensor([offset_1, tensor_1, offset_2, tensor_2, ...])``
 
-        args:
-            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
-            header (list, optional): Details shows above.
-            content (torch.Tensor, optional): Details shows above.
+    Args:
+        message_code (MessageCode): Agreements code defined in :class:`MessageCode`
+        header (list, optional): A list containing 4 elements representing sender rank (int), receiver rank (int),
+    content size (int), message code (:class:`MessageCode`) respectively.
+        content (torch.Tensor, optional): Details shows above.
     """
 
     def __init__(self, message_code, header=None, content=None) -> None:
         if header is not None:
-            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECV_RANK, DEFAULT_CONTENT_SIZE,
+            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECVER_RANK, DEFAULT_CONTENT_SIZE,
                                         message_code])
         else:
             self.header = torch.Tensor(header)
@@ -43,10 +44,10 @@ class Package(object):
         self.content_flag = False
 
     def append_tensor(self, tensor):
-        """Append new tensor to content
+        """Append new tensor to :attr:`Package.content`
             
-            args:
-                tensor (torch.Tensor): The tensor to append.
+        Args:
+            tensor (torch.Tensor): Tensor to append.
         """
         offset = tensor.shape[0]
         if self.content_flag is False:
@@ -60,10 +61,10 @@ class Package(object):
         self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
 
     def append_tensor_list(self, tensor_list):
-        """Append a list of tensors to content:
+        """Append a list of tensors to :attr:`Package.content`.
 
-            args:
-                tensor (list): a list of tensor
+        Args:
+            tensor_list (list[torch.Tensor]): a list of tensors to append to :attr:`Package.content`
         """
         for tensor in tensor_list:
             self.append_tensor(tensor)
