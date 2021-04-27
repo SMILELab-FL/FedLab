@@ -2,12 +2,11 @@ import os
 import random
 import torch
 from abc import ABC, abstractmethod
-from fedlab_core.utils.logger import logger
-from fedlab_core.utils.message_code import MessageCode
-from fedlab_core.utils.serialization import SerializationTool
+from fedlab_utils.logger import logger
+from fedlab_utils.message_code import MessageCode
+from fedlab_utils.serialization import SerializationTool
 
-
-class ServerBackendHandler(object):
+class ServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
 
     Please make sure that you self-defined server handler class subclasses this class

@@ -2,52 +2,35 @@ import torchvision.transforms as transforms
 import torchvision
 import torch
 import argparse
+import sys
 
-from ....fedlab_core.client.topology import ClientSyncTop
-from ....fedlab_core.client.handler import ClientSGDHandler
-from ....fedlab_core.utils.sampler import DistributedSampler
-from ....fedlab_core.models.lenet import LeNet
+sys.path.append('/home/zengdun/FedLab/')
+
+from fedlab_core.client.topology import ClientSyncTop
+from fedlab_core.client.handler import ClientSGDHandler
+from fedlab_utils.sampler import DistributedSampler
+from models.lenet import LeNet
 
 
-def get_dataset(args, dataset='MNIST', transform=None, root='../../datasets/mnist/'):
+def get_dataset(args, dataset='MNIST', transform=None, root='/home/zengdun/datasets/mnist/'):
     """
     :param dataset_name:
     :param transform:
     :param batch_size:
     :return: iterators for the datasetaccuracy_score
     """
-    data_mean = (0.4914, 0.4822, 0.4465)
-    data_stddev = (0.2023, 0.1994, 0.2010)
+    train_transform = transforms.Compose([
+        transforms.ToTensor(),
+    ])
 
-    if dataset == 'MNIST':
-        train_transform = transforms.Compose([
-            transforms.ToTensor(),
-        ])
-
-        test_transform = transforms.Compose([
-            transforms.ToTensor(),
-        ])
-        trainset = torchvision.datasets.MNIST(
-            root=root, train=True, download=True, transform=train_transform)
-        testset = torchvision.datasets.MNIST(
-            root=root, train=False, download=True, transform=test_transform)
-    else:
-        train_transform = transforms.Compose([
-            torchvision.transforms.RandomCrop(32, padding=4),
-            torchvision.transforms.RandomHorizontalFlip(),
-            torchvision.transforms.ToTensor(),
-            torchvision.transforms.Normalize(data_mean, data_stddev),
-        ])
-
-        test_transform = transforms.Compose([
-            torchvision.transforms.ToTensor(),
-            torchvision.transforms.Normalize(data_mean, data_stddev),
-        ])
-        trainset = torchvision.datasets.CIFAR10(
-            root=root, train=True, download=True, transform=train_transform)
-        testset = torchvision.datasets.CIFAR10(
-            root=root, train=False, download=True, transform=test_transform)
-
+    test_transform = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+    trainset = torchvision.datasets.MNIST(
+        root=root, train=True, download=True, transform=train_transform)
+    testset = torchvision.datasets.MNIST(
+        root=root, train=False, download=True, transform=test_transform)
+   
     trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank, num_replicas=args.world_size-1),
                                               batch_size=128,
                                               drop_last=True, num_workers=2)
