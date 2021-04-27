@@ -9,7 +9,6 @@ from ...fedlab_utils.message_code import MessageCode
 from ...fedlab_core.communicator.processor import PackageProcessor
 
 
-
 class ClientBasicTop(Process, ABC):
     """Abstract class
 
@@ -19,6 +18,7 @@ class ClientBasicTop(Process, ABC):
     Example:
         Read the code of :class:`ClientSyncTop` to learn how to use this class.
     """
+
     def __init__(self, server_addr, world_size, rank, dist_backend):
         self.rank = rank
         self.server_addr = server_addr
@@ -77,7 +77,7 @@ class ClientSyncTop(ClientBasicTop):
         self._handler = client_handler
 
         self.epochs = 2  # epochs for local training
-        
+
         self._LOGGER = logger(os.path.join(
             "log", logger_file + str(rank) + ".txt"), logger_name+str(rank))
 
@@ -100,7 +100,8 @@ class ClientSyncTop(ClientBasicTop):
 
             # exit
             if message_code == MessageCode.Exit:
-                self._LOGGER.info("Recv {}, Process exiting".format(message_code))
+                self._LOGGER.info(
+                    "Recv {}, Process exiting".format(message_code))
                 exit(0)
 
             # perform local training
