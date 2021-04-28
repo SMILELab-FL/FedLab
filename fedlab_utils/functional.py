@@ -1,5 +1,6 @@
-import torch
+# unfinished
 
+import torch
 
 def evaluate(model, criterion, test_loader, cuda):
     """

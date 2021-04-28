@@ -28,23 +28,26 @@ class Package(object):
             content (torch.Tensor, optional): Details shows above.
     """
 
-    def __init__(self, message_code, header=None, content=None) -> None:
-        if header is not None:
+    def __init__(self, message_code=0, header=None, content=None) -> None:
+        if header is None:
             self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECV_RANK, DEFAULT_CONTENT_SIZE,
-                                        message_code])
+                                        message_code]).cpu()
         else:
             self.header = torch.Tensor(header)
 
-        if content is not None:
+        if content is None:
             self.content = torch.zeros(size=(1,))
         else:
             self.content = content
+
+        if message_code is not None:
+            self.header[HEADER_MESSAGE_CODE_IDX] = message_code
 
         self.content_flag = False
 
     def append_tensor(self, tensor):
         """Append new tensor to content
-            
+
             args:
                 tensor (torch.Tensor): The tensor to append.
         """
@@ -70,6 +73,7 @@ class Package(object):
 
         self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
 
+    """
     @property
     def header(self):
         return self.header
@@ -77,6 +81,7 @@ class Package(object):
     @property
     def content(self):
         return self.content
+    """
 
     @staticmethod
     def parse_content(content):
@@ -124,7 +129,7 @@ class PackageProcessor(object):
 
     @staticmethod
     def recv_package(src=None):
-        def recv_header(src=src, parse=False):
+        def recv_header(src=src, parse=True):
             cache = torch.zeros(size=(HEADER_SIZE,))
             dist.recv(cache, src=src)
             if parse is True:
@@ -148,7 +153,7 @@ class PackageProcessor(object):
     @staticmethod
     def send_package(package, dst):
         """Two-segment tensor communication pattern based on ``torch.distributed``
-            
+
         Pattern is shown as follows:
             1.1 sender: send a header tensor containing ``content_size`` to receiver
             1.2 receiver: receive the header, and get the value of ``content_size`` and create a buffer for incoming content
