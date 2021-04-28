@@ -2,6 +2,17 @@
 functions associated with data and dataset operations
 
 暂时放着，未修改
+
+work list
+1. random_cutting(dataset, num_clients, file_path)
+    将dataset随机切分为num_clients份，存到file_path
+2. noniid_cutting(dataset, num_clients, file_path)
+    将dataset随机切分为num_clients份，存到file_path
+3. 实现上述函数切割的文件的读取和相应dataset的创建，目前仅考虑分类数据即cifar10和mnist等数据集（参考torch.utils.data.Dataset类的重写）
+    
+实现参考思路：
+    *** 1.完整数据集的切割、存储、读取
+    *   2.数据集index的切割、index存储、index映射到完整数据集的读取
 """
 import warnings
 

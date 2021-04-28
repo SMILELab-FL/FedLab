@@ -10,8 +10,8 @@ from fedlab_core.communicator.processor import Package, PackageProcessor
 class recver(Process):
     def run(self):
         print("server waiting")
-        dist.init_process_group(backend='nccl', init_method='tcp://{}:{}'
-                                .format('113.54.158.81', '23456'),
+        dist.init_process_group(backend='gloo', init_method='tcp://{}:{}'
+                                .format('127.0.0.1', '3000'),
                                 rank=0, world_size=2)
         print("server connected")
         mc, sr, content = PackageProcessor.recv_package()
@@ -22,5 +22,3 @@ class recver(Process):
 if __name__ == "__main__":
     p = recver()
     p.run()
-
-   
