@@ -22,5 +22,3 @@ class recver(Process):
 if __name__ == "__main__":
     p = recver()
     p.run()
-
-   

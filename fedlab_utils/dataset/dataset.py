@@ -32,7 +32,6 @@ class DistillDataset(Dataset):
 
 class BaseDataset(Dataset):
     """ Basic Dataset Class """
-
     def __init__(self, data, targets, transform=None):
         self.data = data
         self.targets = targets

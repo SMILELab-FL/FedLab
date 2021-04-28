@@ -141,17 +141,17 @@ class PackageProcessor(object):
     @staticmethod
     def recv_package(src=None):
         def recv_header(src=src, parse=True):
-            cache = torch.zeros(size=(HEADER_SIZE,))
-            dist.recv(cache, src=src)
+            buffer = torch.zeros(size=(HEADER_SIZE,))
+            dist.recv(buffer, src=src)
             if parse is True:
-                return Package.parse_header(cache)
+                return Package.parse_header(buffer)
             else:
-                return cache
+                return buffer
 
         def recv_content(cache_size, src):
-            cache = torch.zeros(size=(cache_size,))
-            dist.recv(cache, src=src)
-            return Package.parse_content(cache)
+            buffer = torch.zeros(size=(cache_size,))
+            dist.recv(buffer, src=src)
+            return Package.parse_content(buffer)
 
         sender_rank, recv_rank, content_size, message_code = recv_header(
             src=src)
@@ -222,7 +222,7 @@ class MessageProcessor(object):
     """Define the details of how the topology module to deal with network communication
     if u want to define communication agreements, override :func:`pack` and :func:`unpack`
 
-    :class:`MessageProcessor` will create message cache according to args.
+    :class:`MessageProcessor` will create message buffer according to args.
 
     # Args:
         # header_instance (int): a instance of header (rank of sender and recv is not included)
