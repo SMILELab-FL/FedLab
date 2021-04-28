@@ -49,6 +49,7 @@ def dataset_noniid(dataset, num_clients, num_shards):
     return dict_users
 
 
+
 def dataset_random(dataset, num_clients):
     """
     将dataset随机划分分配给num_clients数量的参与者
