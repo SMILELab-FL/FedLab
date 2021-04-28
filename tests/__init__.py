@@ -9,10 +9,13 @@ import unittest
 
 def get_tests():
     from .test_serialization import SerializationTestCase
-    from .test_messaging import MessageCodeTestCase
+    from .test_message_code import MessageCodeTestCase
+    from .test_processor import PackageTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
+    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
 
     return unittest.TestSuite([serialization_suite,
-                               message_code_suite])
+                               message_code_suite,
+                               package_suite])
