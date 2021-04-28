@@ -29,17 +29,10 @@ class Package(object):
         content (torch.Tensor, optional): Details shows above.
     """
 
-<<<<<<< HEAD
-    def __init__(self, message_code, header=None, content=None) -> None:
-        if header is not None:
-            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECVER_RANK, DEFAULT_CONTENT_SIZE,
-                                        message_code])
-=======
     def __init__(self, message_code=0, header=None, content=None) -> None:
         if header is None:
-            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECV_RANK, DEFAULT_CONTENT_SIZE,
+            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECVER_RANK, DEFAULT_CONTENT_SIZE,
                                         message_code]).cpu()
->>>>>>> main
         else:
             self.header = torch.Tensor(header)
 
@@ -54,17 +47,10 @@ class Package(object):
         self.content_flag = False
 
     def append_tensor(self, tensor):
-<<<<<<< HEAD
         """Append new tensor to :attr:`Package.content`
             
         Args:
             tensor (torch.Tensor): Tensor to append.
-=======
-        """Append new tensor to content
-
-            args:
-                tensor (torch.Tensor): The tensor to append.
->>>>>>> main
         """
         offset = tensor.shape[0]
         if self.content_flag is False:
