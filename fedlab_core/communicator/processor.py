@@ -10,7 +10,7 @@ HEADER_MESSAGE_CODE_IDX = 3
 
 DEFAULT_RECVER_RANK = -1
 DEFAULT_CONTENT_SIZE = -1
-DEFAULT_MC = -1
+DEFAULT_MESSAGE_CODE_VALUE = -1
 
 HEADER_SIZE = 4
 
@@ -29,22 +29,33 @@ class Package(object):
         content (torch.Tensor, optional): Details shows above.
     """
 
-    def __init__(self, message_code=0, header=None, content=None) -> None:
-        if header is None:
-            self.header = torch.Tensor([dist.get_rank(), DEFAULT_RECVER_RANK, DEFAULT_CONTENT_SIZE,
-                                        message_code]).cpu()
+    def __init__(self, recver_rank=None, message_code=None, content=None):
+        if recver_rank is None:
+            recver_rank = DEFAULT_RECVER_RANK
+        assert isinstance(recver_rank, int), 'recver_rank should be integer, not {}'.format(type(recver_rank))
+
+        if message_code is None:
+            message_code = DEFAULT_MESSAGE_CODE_VALUE
         else:
-            self.header = torch.Tensor(header)
+            if isinstance(message_code, MessageCode):
+                message_code = message_code.value
+        assert isinstance(message_code, int), 'message_code can only be MessageCode or integer, not {}'.format(
+            type(message_code))
 
-        if content is None:
-            self.content = torch.zeros(size=(1,))
-        else:
-            self.content = content
+        # initialize header
+        self.header = torch.Tensor(size=(HEADER_SIZE,))
+        self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
+        self.header[HEADER_RECVER_RANK_IDX] = recver_rank
+        self.header[HEADER_MESSAGE_CODE_IDX] = message_code
+        self.header[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
 
-        if message_code is not None:
-            self.header[HEADER_MESSAGE_CODE_IDX] = message_code
-
+        # initialize content
         self.content_flag = False
+        self.content = torch.zeros(size=(1,))
+        if content is not None:
+            if isinstance(content, torch.Tensor):
+                content = [content]
+            self.append_tensor_list(content)
 
     def append_tensor(self, tensor):
         """Append new tensor to :attr:`Package.content`
@@ -72,8 +83,6 @@ class Package(object):
         for tensor in tensor_list:
             self.append_tensor(tensor)
 
-        self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
-
     """
     @property
     def header(self):
@@ -97,12 +106,13 @@ class Package(object):
         """
         index = 0
         parse_result = []
-        while index < content.shape[0]:
-            offset = int(content[index])
-            index += 1
-            segment = content[index:index + offset]
-            parse_result.append(segment)
-            index += offset
+        if content.shape[0] >= 2:
+            while index < content.shape[0]:
+                offset = int(content[index])
+                index += 1
+                segment = content[index:index + offset]
+                parse_result.append(segment)
+                index += offset
         return parse_result
 
     @staticmethod
