@@ -45,6 +45,7 @@ def dataset_noniid(dataset, num_clients, num_shards):
         for rand in rand_set:
             dict_users[i] = np.concatenate(
                 (dict_users[i], idxs[rand*size_of_shards:(rand+1)*size_of_shards]), axis=0)
+    
     return dict_users
 
 

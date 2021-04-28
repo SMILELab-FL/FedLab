@@ -7,8 +7,8 @@ sys.path.append('/home/zengdun/FedLab')
 
 from fedlab_core.client.topology import ClientSyncTop
 from fedlab_core.client.handler import ClientSGDHandler
-from fedlab_core.utils.sampler import DistributedSampler
-from fedlab_core.models.lenet import LeNet
+from fedlab_utils.dataset.sampler import DistributedSampler
+from models.lenet import LeNet
 
 
 
