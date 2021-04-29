@@ -1,6 +1,6 @@
 import threading
 import os
-
+from queue import Queue
 from abc import ABC, abstractmethod
 import torch.distributed as dist
 from torch.multiprocessing import Process
@@ -9,7 +9,7 @@ from fedlab_utils.logger import logger
 from fedlab_core.communicator.processor import PackageProcessor, MessageCode
 
 
-class ServerBasicTop(Process, ABC):
+class ServerBasicTopology(Process, ABC):
     """Abstract class for server network topology
 
     If you want to define your own topology agreements, please subclass it.
@@ -25,9 +25,7 @@ class ServerBasicTop(Process, ABC):
 
     @abstractmethod
     def run(self):
-        """Main process
-            define your server's behavior
-        """
+        """Main process, define your server's behavior"""
         raise NotImplementedError()
 
     @abstractmethod
@@ -46,7 +44,7 @@ class ServerBasicTop(Process, ABC):
                                 rank=0, world_size=world_size)
 
 
-class ServerSyncTop(ServerBasicTop):
+class ServerSyncTop(ServerBasicTopology):
     """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -74,11 +72,10 @@ class ServerSyncTop(ServerBasicTop):
             server_address[0], server_address[1], dist_backend))
 
         self.global_round = 3  # for current test
+        # TODO 考虑通过KV store实现。
 
     def run(self):
-        """Main Process
-            
-        """
+        """Main Process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
         self.init_network_connection(
@@ -119,6 +116,33 @@ class ServerSyncTop(ServerBasicTop):
             sender, message_code, s_parameters = PackageProcessor.recv_model(
                 self._handler.model)
             self._handler.on_receive(sender, message_code, s_parameters)
+
+    def shutdown_clients(self):
+        """Shutdown all clients"""
+        for client_idx in range(self._handler.client_num_in_total):
+            PackageProcessor.send_model(
+                self._handler.model, MessageCode.Exit.value, dst=client_idx+1)
+
+
+class ServerAsyncTop(ServerBasicTopology):
+    """
+        TODO: unfinished
+        异步网络拓扑
+        维护网络请求队列（缓存），不提供即时响应
+    """
+    def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
+                 logger_name="ServerTop"):
+        super().__init__(server_address, dist_backend)
+
+        self._handler = server_handler
+ 
+        self.pack_queue = Queue()
+
+    def activate_clients(self):
+        return super().activate_clients()
+
+    def listen_clients(self):
+        return super().listen_clients()
 
     def shutdown_clients(self):
         """Shutdown all clients"""

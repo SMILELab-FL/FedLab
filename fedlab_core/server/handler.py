@@ -6,6 +6,7 @@ from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 
+
 class ServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
 
@@ -167,9 +168,7 @@ class AsyncParameterServerHandler(ServerBackendHandler):
         self.client_buffer_cache = []
         self.alpha = 0.5
         self.decay = 0.9
-
-        # need a Queue
-
+    
     def update_model(self, model_list):
         raise NotImplementedError()
 
