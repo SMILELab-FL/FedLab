@@ -168,7 +168,9 @@ class AsyncParameterServerHandler(ServerBackendHandler):
         self.alpha = 0.5
         self.decay = 0.9
 
+        # package: [model, T]
         # need a Queue
+        # 
 
     def update_model(self, model_list):
         raise NotImplementedError()

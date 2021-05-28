@@ -9,7 +9,7 @@ from fedlab_utils.logger import logger
 from fedlab_core.communicator.processor import PackageProcessor, MessageCode
 
 
-class ServerBasicTop(Process, ABC):
+class ServerBasicTopology(Process, ABC):
     """Abstract class for server network topology
 
     If you want to define your own topology agreements, please subclass it.
@@ -46,7 +46,7 @@ class ServerBasicTop(Process, ABC):
                                 rank=0, world_size=world_size)
 
 
-class ServerSyncTop(ServerBasicTop):
+class ServerSyncTop(ServerBasicTopology):
     """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -125,3 +125,6 @@ class ServerSyncTop(ServerBasicTop):
         for client_idx in range(self._handler.client_num_in_total):
             PackageProcessor.send_model(
                 self._handler.model, MessageCode.Exit.value, dst=client_idx+1)
+
+
+# class ServerAsyncTop(ServerBasicTop)

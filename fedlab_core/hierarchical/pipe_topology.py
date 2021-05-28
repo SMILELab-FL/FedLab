@@ -24,8 +24,7 @@ pipe top双进程采用低耦合消息队列同步模式
             pipeTop 做id->rank映射包转发
             client将模型上传pipe
             pipeTop 做合并 mid model并上传[parameters, client_num]
-            server获得mid model合并 global model
-            
+            server获得mid model合并 global model  
 """
 
 class MessageQueue(object):

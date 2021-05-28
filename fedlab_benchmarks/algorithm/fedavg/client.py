@@ -1,5 +1,5 @@
-import torchvision.transforms as transforms
 import torchvision
+import torchvision.transforms as transforms
 import torch
 import argparse
 import sys
@@ -8,7 +8,7 @@ sys.path.append('/home/zengdun/FedLab/')
 
 from fedlab_core.client.topology import ClientSyncTop
 from fedlab_core.client.handler import ClientSGDHandler
-from fedlab_utils.sampler import DistributedSampler
+from fedlab_utils.dataset.sampler import DistributedSampler
 from models.lenet import LeNet
 
 

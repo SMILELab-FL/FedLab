@@ -3,7 +3,7 @@
 import torch
 
 class Aggregators(object):
-
+    # 合并模型
     @staticmethod
     def fedavg_aggregate(serialized_params_list):
         serialized_parameters = torch.mean(
