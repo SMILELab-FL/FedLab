@@ -12,7 +12,7 @@ from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor, MessageCode
 
 
-class ServerBasicTop(Process, ABC):
+class ServerBasicTopology(Process, ABC):
     """Abstract class for server network topology
 
     If you want to define your own topology agreements, please subclass it.
@@ -49,7 +49,7 @@ class ServerBasicTop(Process, ABC):
                                 rank=0, world_size=world_size)
 
 
-class ServerSyncTop(ServerBasicTop):
+class ServerSyncTop(ServerBasicTopology):
     """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -76,7 +76,7 @@ class ServerSyncTop(ServerBasicTop):
         self._LOGGER.info("Server initializes with ip address {}:{} and distributed backend {}".format(
             server_address[0], server_address[1], dist_backend))
 
-        self.global_round = 1  # for current test
+        self.global_round = 3  # for current test
 
     def run(self):
         """Main Process
@@ -130,7 +130,7 @@ class ServerSyncTop(ServerBasicTop):
                 self._handler.model, MessageCode.Exit.value, dst=client_idx+1)
 
 
-class ServerAsyncTop(ServerBasicTop):
+class ServerAsyncTop(ServerBasicTopology):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 

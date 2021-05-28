@@ -1,13 +1,13 @@
-2021-04-27 16:41:37,505 - client2 - INFO - connecting with server
-2021-04-27 16:41:37,538 - client2 - INFO - connected to server:127.0.0.1:3002,  world size:3, rank:2, backend:gloo
-2021-04-27 16:41:37,538 - client2 - INFO - Waiting for server...
-2021-04-27 16:41:37,609 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
-2021-04-27 16:41:40,869 - client2 - INFO - synchronize model parameters with server
-2021-04-27 16:41:40,880 - client2 - INFO - Waiting for server...
-2021-04-27 16:41:41,085 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
-2021-04-27 16:41:44,462 - client2 - INFO - synchronize model parameters with server
-2021-04-27 16:41:44,471 - client2 - INFO - Waiting for server...
-2021-04-27 16:41:44,553 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
-2021-04-27 16:41:47,774 - client2 - INFO - synchronize model parameters with server
-2021-04-27 16:41:47,781 - client2 - INFO - Waiting for server...
-2021-04-27 16:41:47,946 - client2 - INFO - Recv MessageCode.Exit, Process exiting
+2021-05-28 11:53:13,814 - client2 - INFO - connecting with server
+2021-05-28 11:53:13,851 - client2 - INFO - connected to server:127.0.0.1:3002,  world size:3, rank:2, backend:gloo
+2021-05-28 11:53:13,851 - client2 - INFO - Waiting for server...
+2021-05-28 11:53:13,877 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-05-28 11:53:18,143 - client2 - INFO - synchronize model parameters with server
+2021-05-28 11:53:18,151 - client2 - INFO - Waiting for server...
+2021-05-28 11:53:18,166 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-05-28 11:53:22,305 - client2 - INFO - synchronize model parameters with server
+2021-05-28 11:53:22,311 - client2 - INFO - Waiting for server...
+2021-05-28 11:53:22,417 - client2 - INFO - Package received from 0, message code MessageCode.ParameterUpdate
+2021-05-28 11:53:26,564 - client2 - INFO - synchronize model parameters with server
+2021-05-28 11:53:26,570 - client2 - INFO - Waiting for server...
+2021-05-28 11:53:26,591 - client2 - INFO - Recv MessageCode.Exit, Process exiting

@@ -10,7 +10,7 @@ from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
 
 
-class ClientBasicTop(Process, ABC):
+class ClientBasicTopology(Process, ABC):
     """Abstract class
 
     If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
@@ -47,7 +47,7 @@ class ClientBasicTop(Process, ABC):
                                 rank=self.rank, world_size=self.world_size)
 
 
-class ClientSyncTop(ClientBasicTop):
+class ClientSyncTop(ClientBasicTopology):
     """Synchronize communication class
 
     This is the top class in our framework which is mainly responsible for network communication of CLIENT!
