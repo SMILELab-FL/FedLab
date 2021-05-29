@@ -6,13 +6,14 @@ import random
 
 import torch
 
+"""
 import horovod.torch as hvd
 from horovod.torch.mpi_ops import Average
 from horovod.torch.mpi_ops import allreduce_async_
 from horovod.torch.mpi_ops import allgather_async as allgather_async_
 from horovod.torch.mpi_ops import synchronize as synchronize_
-
-from memory import Memory
+"""
+from fedlab_benchmarks.algorithm.dgc.memory import Memory
 
 __all__ = ['DGCCompressor']
 
@@ -23,8 +24,8 @@ class DGCCompressor:
                  compress_upper_bound=1.3, compress_lower_bound=0.8, max_adaptation_iters=10, resample=True,
                  fp16_values=False, int32_indices=False,
                  warmup_epochs=-1, warmup_coeff=None):
-        self.world_size = hvd.size()
-        self.op = Average
+        #self.world_size = hvd.size()
+        #self.op = Average
         self.fp16_values = fp16_values
         self.int32_indices = int32_indices
 
@@ -57,8 +58,10 @@ class DGCCompressor:
         self.attributes = {}
 
     def initialize(self, named_parameters):
+        """
         if hvd.rank() == 0:
             print("=> initializing dgc compressor")
+        """
         for name, param in named_parameters:
             if torch.is_tensor(param):
                 numel = param.numel()
@@ -70,8 +73,10 @@ class DGCCompressor:
                 pct_numel = int(math.ceil(numel * self.sample_ratio))
                 cpr_numel = int(math.ceil(2 / self.compress_ratio))
                 if numel <= cpr_numel:
+                    """
                     if hvd.rank() == 0:
                         print(f'Warning: {name} with {numel} elements transmits 1 gradient element')
+                    """
                     sample_stride = 1
                     num_samples = numel
                 else:
@@ -86,10 +91,12 @@ class DGCCompressor:
             top_k_samples = int(math.ceil(num_samples * self.compress_ratio))
             num_selects = int(math.ceil(numel * self.compress_ratio))
             self.attributes[name] = (numel, shape, num_selects, num_samples, top_k_samples, sample_stride)
+            """
             if hvd.rank() == 0:
                 print(f'   {name:<25}: transmit {num_selects} / {numel} elements of shape {shape}\n'
                       f'   {" " * 25}  threshold {top_k_samples} / {num_samples} samples'
                       f' {f"at stride {sample_stride}" if self.strided_sample else "uniformly"}')
+            """
     
     def warmup_compress_ratio(self, epoch):
         if self.warmup_epochs > 0:
@@ -192,14 +199,17 @@ class DGCCompressor:
             if self.int32_indices and not idtype.is_floating_point:
                 indices = indices.type(idtype)
             grad.zero_().index_put_([indices], values, accumulate=True)
+            """
             if self.op == Average:
                 grad.mul_(1. / self.world_size)
+            """
             return grad.view(shape)
         else:
             if self.fp16_values and vdtype.is_floating_point:
                 tensor = tensor.type(vdtype)
             return self.memory.compensate(tensor, name, accumulate=False)
 
+    """
     def communicate(self, tensor_compressed, name, op):
         self.op = op
         if self.compress_ratio < 1.0 and name in self.attributes:
@@ -213,3 +223,4 @@ class DGCCompressor:
             return [synchronize_(h) for h in handle]
         else:
             return synchronize_(handle)
+    """

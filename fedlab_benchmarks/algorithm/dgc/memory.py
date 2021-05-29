@@ -1,7 +1,4 @@
 import torch
-
-import horovod.torch as hvd
-
 __all__ = ['Memory', 'DGCSGDMemory']
 
 
@@ -41,8 +38,10 @@ class DGCSGDMemory(Memory):
         self.velocities = {}
     
     def initialize(self, named_parameters):
+        """
         if hvd.rank() == 0:
             print("=> initializing dgc sgd memory")
+        """
         for name, param in named_parameters:
             self.momentums[name] = torch.zeros_like(param.data)
             self.velocities[name] = torch.zeros_like(param.data)
