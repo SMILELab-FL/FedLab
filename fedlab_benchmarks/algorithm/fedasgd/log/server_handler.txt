@@ -1,12 +1,6 @@
-2021-05-31 15:08:08,268 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 0.0, 
-the handle's current model time is 0
-2021-05-31 15:08:08,695 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 0.0, 
-the handle's current model time is 1
-2021-05-31 15:09:21,743 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 1.0, 
-the handle's current model time is 2
-2021-05-31 15:09:21,977 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 1.0, 
-the handle's current model time is 3
-2021-05-31 15:10:32,245 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 2.0, 
-the handle's current model time is 4
-2021-05-31 15:10:32,429 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 2.0, 
-the handle's current model time is 5
+2021-05-31 17:35:50,408 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 0, the handle's current model time is 0
+2021-05-31 17:35:55,422 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 0, the handle's current model time is 1
+2021-05-31 17:37:18,697 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 1, the handle's current model time is 2
+2021-05-31 17:37:25,783 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 1, the handle's current model time is 3
+2021-05-31 17:38:32,358 - server handler - INFO - Processing message: ParameterUpdate from rank 1, the received updated model time is 2, the handle's current model time is 4
+2021-05-31 17:38:36,428 - server handler - INFO - Processing message: ParameterUpdate from rank 2, the received updated model time is 2, the handle's current model time is 5

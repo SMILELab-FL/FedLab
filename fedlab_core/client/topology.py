@@ -132,7 +132,7 @@ class ClientSyncTop(ClientBasicTopology):
             self._handler.model, MessageCode.ParameterUpdate.value, dst=0)
 
 
-class ClientAsyncTop(ClientBasicTop):
+class ClientAsyncTop(ClientBasicTopology):
     """Asynchronize communication class
 
     This is the top class in our framework which is mainly responsible for network communication of CLIENT!
