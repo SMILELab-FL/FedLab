@@ -1,6 +1,9 @@
 import os
 import random
 import torch
+import copy
+from queue import Queue
+
 from abc import ABC, abstractmethod
 from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
@@ -162,24 +165,34 @@ class AsyncParameterServerHandler(ServerBackendHandler):
     """
 
     # TODO: unfinished
-    def __init__(self, model, cuda):
+    def __init__(self, model, client_num_in_total, cuda=False, logger_path="server_handler",
+                 logger_name="server handler"):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
-        self.client_buffer_cache = []
         self.alpha = 0.5
-        self.decay = 0.9
+        self.client_num_in_total = client_num_in_total
+        self.client_num_per_round = 2  # test
 
-        # need a Queue
+        self.model_update_time = 0  # record the current model's updated time
+        # need a Queue to receive the updated model from each client, not useful?
+        self.client_model_queue = Queue()
 
-    def update_model(self, model_list):
-        raise NotImplementedError()
+        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"), logger_name)
 
-    def on_receive(self, sender_rank, message_code, parameter):
+    def on_receive(self, sender_rank, message_code, content_list):
+        """Define what parameter server does when receiving a single client's message
+        """
+
+        self._LOGGER.info("Processing message: {} from rank {}, the received updated model time is {}, "
+                          "the handle's current model time is {}".format(
+            message_code.name, int(sender_rank), int(content_list[1].item()), self.model_update_time))
 
         if message_code == MessageCode.ParameterUpdate:
-            self.update_model([parameter])
+            # update local model parameters, and update server model async
+            self.add_single_model(sender_rank, content_list)
+            self.update_model()
 
         elif message_code == MessageCode.ParameterRequest:
-            # send_message(MessageCode.ParameterUpdate, self._model, dst=sender_rank)
+            # self.send_message(MessageCode.ParameterUpdate, self._model, dst=sender_rank)
             pass
 
         elif message_code == MessageCode.GradientUpdate:
@@ -190,3 +203,28 @@ class AsyncParameterServerHandler(ServerBackendHandler):
 
         else:
             pass
+
+    def add_single_model(self, sender_rank, content_list):
+        """deal with single model's parameters"""
+        self.client_model_queue.put(copy.deepcopy(content_list))
+
+    def update_model(self, serialized_params_list=None):
+        """"update global model from client_model_queue"""
+        while not self.client_model_queue.empty():
+            content_list = self.client_model_queue.get()
+            self.adapt_alpha(content_list[1])
+            receive_serialized_parameters = content_list[0]
+            latest_serialized_parameters = SerializationTool.serialize_model(self.model)
+            new_serialized_parameters = torch.mul(1 - self.alpha, latest_serialized_parameters) + \
+                                        torch.mul(self.alpha, receive_serialized_parameters)
+            SerializationTool.restore_model(self._model, new_serialized_parameters)
+
+    def select_clients(self):
+        """Return a list of client rank indices selected randomly"""
+        id_list = [i + 1 for i in range(self.client_num_in_total)]
+        selection = random.sample(id_list, self.client_num_per_round)
+        return selection
+
+    def adapt_alpha(self, receive_model_time):
+        """update the alpha according to staleness"""
+        self.alpha = torch.mul(self.alpha, 1)
