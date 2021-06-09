@@ -111,8 +111,10 @@ class DGCCompressor:
         else:
             compress_ratio = self.base_compress_ratio
         if compress_ratio != self.compress_ratio:
+            """
             if hvd.rank() == 0:
                 print(f'update compress ratio: {compress_ratio}')
+            """
             self.compress_ratio = compress_ratio
             self.initialize(self.attributes.items())
 
@@ -163,6 +165,7 @@ class DGCCompressor:
         return values, indices, numel, shape, num_selects
 
     def compress(self, tensor, name):
+        # 对于已注册的数据结构/模型参数压缩
         if self.compress_ratio < 1.0 and name in self.attributes:
             # compress
             tensor_compensated = self.memory.compensate(
@@ -180,6 +183,7 @@ class DGCCompressor:
             if self.int32_indices and not indices.dtype.is_floating_point:
                 indices = indices.type(torch.int32)
             return (values, indices), ctx
+        # 对未注册不进行操作 返回置空数据
         else:
             ctx = (name, None, None, tensor.dtype, None, None)
             if self.fp16_values and tensor.dtype.is_floating_point:

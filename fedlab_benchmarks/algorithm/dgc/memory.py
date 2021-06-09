@@ -72,7 +72,7 @@ class DGCSGDMemory(Memory):
         """Update the momentums."""
         indices = ctx[0]
         if self.momentum_masking:
-            self.momentums[name].view(-1).index_fill_(0, indices, 0)
+            self.momentums[name].view(-1).index_fill_(0, indices, 0) # index_fill_(dim,index,val)按照参数index总的索引数确定的顺序，将原tensor用参数val值填充
         self.velocities[name].view(-1).index_fill_(0, indices, 0)
 
     def state_dict(self):
