@@ -2,7 +2,6 @@
 
 import torch
 
-
 class Aggregators(object):
     # 合并模型
     @staticmethod
