@@ -190,7 +190,11 @@ class PackageProcessor(object):
             return torch.cat((torch.Tensor([dist.get_rank(), dst, content_size, message_code]), s_params))
 
         # send package
-        serialized_params = SerializationTool.serialize_model(model)
+        if isinstance(torch.nn.Module):
+            serialized_params = SerializationTool.serialize_model(model)
+        else:
+            serialized_params = model
+        
         content_size = serialized_params.shape[0]
         package = pack(dst, content_size, message_code, serialized_params)
         dist.send(tensor=package, dst=dst)

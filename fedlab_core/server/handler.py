@@ -68,6 +68,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
     Synchronous parameter server will wait for every client to finish local training process before the
     next FL round.
 
+    details in paper: http://proceedings.mlr.press/v54/mcmahan17a.html
+
     Args:
         model (torch.nn.Module): Model used in this federation
         client_num_in_total (int): Total number of clients in this federation
@@ -169,13 +171,14 @@ class AsyncParameterServerHandler(ServerBackendHandler):
     def __init__(self, model, client_num_in_total, cuda=False, logger_path="server_handler",
                  logger_name="server handler"):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
+        
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
         self.client_num_per_round = 2  # test
 
         # package: [model, T]
         # need a Queue
-        
+
         self.model_update_time = 0  # record the current model's updated time
         # need a Queue to receive the updated model from each client, not useful?
         self.client_model_queue = Queue()
@@ -207,7 +210,7 @@ class AsyncParameterServerHandler(ServerBackendHandler):
 
         else:
             pass
-
+    
     def add_single_model(self, sender_rank, content_list):
         """deal with single model's parameters"""
         self.client_model_queue.put(copy.deepcopy(content_list))

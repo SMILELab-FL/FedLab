@@ -9,7 +9,6 @@ from fedlab_utils.logger import logger
 from  fedlab_utils.serialization import SerializationTool
 
 
-
 class ClientBackendHandler(ABC):
     """An abstract class representing handler for a client backend.
 
