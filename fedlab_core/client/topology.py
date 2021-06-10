@@ -47,6 +47,26 @@ class ClientBasicTopology(Process, ABC):
                                 rank=self.rank, world_size=self.world_size)
 
 
+"""
+client的架构不应该被分为同步和异步，而是应该按照被调用算力的方式分为
+    主动网络拓扑： 完成计算就上传并开启下一轮训练
+    被动网络拓扑： 等待上层网络调用，才开始训练
+根据上述两种分类，添加两个新的架构类ClientActiveTopology、ClientPassiveTopology
+原有的同步和异步类将在之后被弃用
+"""
+class ClientActiveTopology(ClientBasicTopology):
+    def __init__(self, server_addr, world_size, rank, dist_backend):
+        super().__init__(server_addr, world_size, rank, dist_backend)
+
+
+class ClientPassiveTopology(ClientBasicTopology):
+    def __init__(self, server_addr, world_size, rank, dist_backend):
+        super().__init__(server_addr, world_size, rank, dist_backend)
+
+
+
+
+# delete classes below
 class ClientSyncTop(ClientBasicTopology):
     """Synchronize communication class
 

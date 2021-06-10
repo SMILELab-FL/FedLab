@@ -2,6 +2,10 @@
 # 进程资源限制
 # serial_handler仅share一个网络topology模块
 # serial_handler对上层提供
+
+#untested
+
+
 import random
 
 from abc import ABC, abstractmethod
@@ -27,6 +31,7 @@ class SerialHandler(ABC):
         self.clients = client_handler_list
         self.serial_number = len(client_handler_list)
         self.aggregator = aggregator
+        self.model = deepcopy(self.clients[0].model)
 
     @abstractmethod
     def train(self, epochs, model_parameters, idx_list=None):
@@ -44,7 +49,12 @@ class SerialHandler(ABC):
 class SerialSGDHandler(SerialHandler):
     """an example of SerialHandler
         Every client in this Serial share the same shape of model. Each of them has different
-        datasets and 
+        datasets (differences shows in the init of ClientHandler)
+        
+        This class should be a perfect replace of ClientBackendHandler. Therefore, given the same methods to upper class.
+
+        Args：
+            client_handler_list (list): list of objects of ClientBackendHandler's subclass
     """
     def __init__(self, client_handler_list) -> None:
         super(SerialHandler, self).__init__()
@@ -65,8 +75,9 @@ class SerialSGDHandler(SerialHandler):
                 raise ValueError("Invalid idx of client: %d >= %d"%(idx, self.serial_number))
             self.clients[idx].train(epochs, model_parameters)
 
-        self.model = self._merge_models(idx_list)
-    
+        merged_parameters = self._merge_models(idx_list)
+        SerializationTool.deserialize_model(self.model, merged_parameters)
+
     def _merge_models(self, idx_list):
         parameter_list = [SerializationTool.serialize_model(self.clients[idx].model) for idx in idx_list]
         merged_parameters = self.aggregator(parameter_list)

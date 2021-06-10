@@ -90,7 +90,7 @@ class ClientSGDHandler(ClientBackendHandler):
         """
         self._LOGGER.info("starting local train process")
 
-        SerializationTool.restore_model(self._model, model_parameters) # load paramters
+        SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
 
         for epoch in range(epochs):
             start_time = time.time()

@@ -47,7 +47,7 @@ class ServerBasicTopology(Process, ABC):
                                 rank=0, world_size=world_size)
 
 
-class ServerSyncTop(ServerBasicTopology):
+class ServerSynchronousTopology(ServerBasicTopology):
     """Synchronous communication class
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -65,7 +65,7 @@ class ServerSyncTop(ServerBasicTopology):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 
-        super(ServerSyncTop, self).__init__(
+        super(ServerSynchronousTopology, self).__init__(
             server_address=server_address, dist_backend=dist_backend)
 
         self._handler = server_handler
@@ -127,11 +127,11 @@ class ServerSyncTop(ServerBasicTopology):
                 self._handler.model, MessageCode.Exit.value, dst=client_idx+1)
 
 
-class ServerAsyncTop(ServerBasicTopology):
+class ServerAsynchronousTopology(ServerBasicTopology):
     def __init__(self, server_handler, server_address, dist_backend="gloo", logger_path="server_top.txt",
                  logger_name="ServerTop"):
 
-        super(ServerAsyncTop, self).__init__(
+        super(ServerAsynchronousTopology, self).__init__(
             server_address=server_address, dist_backend=dist_backend)
 
         self._handler = server_handler
