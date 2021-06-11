@@ -35,12 +35,6 @@ class ClientBackendHandler(ABC):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
-    """
-    def load_parameters(self, serialized_parameters):
-        #Restore model from serialized model parameters
-        SerializationTool.restore_model(self._model, serialized_parameters)
-    """
-
     @property
     def model(self):
         return self._model
@@ -60,7 +54,6 @@ class ClientSGDHandler(ClientBackendHandler):
         logger_file (str, optional): Path to the log file for client handler. Default: ``"log/handler.txt"``
         logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"handler"``
     """
-
     def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt",
                  logger_name="handler"):
         super(ClientSGDHandler, self).__init__(model, cuda)

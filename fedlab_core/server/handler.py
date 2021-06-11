@@ -10,7 +10,7 @@ from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 
 
-class ServerBackendHandler(ABC):
+class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
 
     Please make sure that you self-defined server handler class subclasses this class
@@ -50,17 +50,12 @@ class ServerBackendHandler(ABC):
         """
         raise NotImplementedError()
 
-    @abstractmethod
-    def select_clients(self) -> list:
-        """return a list of client_id"""
-        raise NotImplementedError()
-
     @property
     def model(self):
         return self._model
 
 
-class SyncParameterServerHandler(ServerBackendHandler):
+class SyncParameterServerHandler(ParameterServerBackendHandler):
     """Synchronous Parameter Server Handler
 
     Backend of synchronous parameter server: this class is responsible for backend computing.
@@ -79,9 +74,14 @@ class SyncParameterServerHandler(ServerBackendHandler):
         logger_file (str, optional): Path to the log file for client handler. Default: ``"server_handler.txt"``
         logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"server handler"``
     """
-
-    def __init__(self, model, client_num_in_total, cuda=False, select_ratio=1.0, logger_path="server_handler",
+    def __init__(self,
+                 model,
+                 client_num_in_total,
+                 cuda=False,
+                 select_ratio=1.0,
+                 logger_path="server_handler",
                  logger_name="server handler"):
+        super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         if select_ratio < 0.0 or select_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(select_ratio))
@@ -90,14 +90,13 @@ class SyncParameterServerHandler(ServerBackendHandler):
             raise ValueError(
                 "Invalid total client number: {}".format(client_num_in_total))
 
-        super(SyncParameterServerHandler, self).__init__(model, cuda)
-
         self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
         self.client_num_per_round = max(
             1, int(self.select_ratio * self.client_num_in_total))
 
-        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"), logger_name)
+        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"),
+                              logger_name)
 
         # client buffer
         self.client_buffer_cache = {}
@@ -136,7 +135,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
     def add_single_model(self, sender_rank, serialized_params):
         """deal with single model's parameters"""
         if self.client_buffer_cache.get(sender_rank) is not None:
-            self._LOGGER.info("parameters from {} has existed".format(sender_rank))
+            self._LOGGER.info(
+                "parameters from {} has existed".format(sender_rank))
             return
 
         self.cache_cnt += 1
@@ -144,7 +144,8 @@ class SyncParameterServerHandler(ServerBackendHandler):
 
     def update_model(self, serialized_params_list):
         """update global model"""
-        serialized_parameters = torch.mean(torch.stack(serialized_params_list), dim=0)
+        serialized_parameters = torch.mean(torch.stack(serialized_params_list),
+                                           dim=0)
         SerializationTool.restore_model(self._model, serialized_parameters)
 
         # reset
@@ -156,7 +157,7 @@ class SyncParameterServerHandler(ServerBackendHandler):
         self.train_flag = True
 
 
-class AsyncParameterServerHandler(ServerBackendHandler):
+class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous ParameterServer Handler
 
     Update global model immediately after receiving a ParameterUpdate message
@@ -168,10 +169,14 @@ class AsyncParameterServerHandler(ServerBackendHandler):
     """
 
     # TODO: unfinished
-    def __init__(self, model, client_num_in_total, cuda=False, logger_path="server_handler",
+    def __init__(self,
+                 model,
+                 client_num_in_total,
+                 cuda=False,
+                 logger_path="server_handler",
                  logger_name="server handler"):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
-        
+
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
         self.client_num_per_round = 2  # test
@@ -183,34 +188,30 @@ class AsyncParameterServerHandler(ServerBackendHandler):
         # need a Queue to receive the updated model from each client, not useful?
         self.client_model_queue = Queue()
 
-        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"), logger_name)
+        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"),
+                              logger_name)
 
     def on_receive(self, sender_rank, message_code, content_list):
         """Define what parameter server does when receiving a single client's message
         """
 
-        self._LOGGER.info("Processing message: {} from rank {}, the received updated model time is {}, "
-                          "the handle's current model time is {}".format(
-            message_code.name, int(sender_rank), int(content_list[1].item()), self.model_update_time))
+        self._LOGGER.info(
+            "Processing message: {} from rank {}, the received updated model time is {}, "
+            "the handle's current model time is {}".format(
+                message_code.name, int(sender_rank),
+                int(content_list[1].item()), self.model_update_time))
 
         if message_code == MessageCode.ParameterUpdate:
             # update local model parameters, and update server model async
             self.add_single_model(sender_rank, content_list)
             self.update_model()
 
-        elif message_code == MessageCode.ParameterRequest:
-            # self.send_message(MessageCode.ParameterUpdate, self._model, dst=sender_rank)
-            pass
-
         elif message_code == MessageCode.GradientUpdate:
             raise NotImplementedError()
-
-        elif message_code == MessageCode.Exit:
-            pass
-
+            
         else:
             pass
-    
+
     def add_single_model(self, sender_rank, content_list):
         """deal with single model's parameters"""
         self.client_model_queue.put(copy.deepcopy(content_list))
@@ -221,10 +222,12 @@ class AsyncParameterServerHandler(ServerBackendHandler):
             content_list = self.client_model_queue.get()
             self.adapt_alpha(content_list[1])
             receive_serialized_parameters = content_list[0]
-            latest_serialized_parameters = SerializationTool.serialize_model(self.model)
+            latest_serialized_parameters = SerializationTool.serialize_model(
+                self.model)
             new_serialized_parameters = torch.mul(1 - self.alpha, latest_serialized_parameters) + \
                                         torch.mul(self.alpha, receive_serialized_parameters)
-            SerializationTool.restore_model(self._model, new_serialized_parameters)
+            SerializationTool.restore_model(self._model,
+                                            new_serialized_parameters)
 
     def select_clients(self):
         """Return a list of client rank indices selected randomly"""
