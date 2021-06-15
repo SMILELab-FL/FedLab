@@ -191,9 +191,11 @@ class PackageProcessor(object):
         if package.header[HEADER_CONTENT_SIZE_IDX] > 0:
             send_content(content=package.content, dst=dst)
 
+
+"""
+    # 暂时弃用
     @staticmethod
     def send_model(model, message_code, dst):
-        """Directely send serialized model parameters to dst"""
         def pack(dst, content_size, message_code, s_params):
             return torch.cat((torch.Tensor(
                 [dist.get_rank(), dst, content_size, message_code]), s_params))
@@ -210,7 +212,6 @@ class PackageProcessor(object):
 
     @staticmethod
     def recv_model(model, src=None):
-        """Receive serialized model parameters from src"""
         def unpack(package):
             sender_rank = int(package[HEADER_SENDER_RANK_IDX])
             recv_rank = int(package[HEADER_RECEIVER_RANK_IDX])
@@ -228,47 +229,4 @@ class PackageProcessor(object):
 
         sender_rank, _, _, message_code, serialized_params = unpack(pkg_cache)
         return sender_rank, message_code, serialized_params
-
-
-# abandoned
-class MessageProcessor(object):
-    """Define the details of how the topology module to deal with network communication
-    if u want to define communication agreements, override :func:`pack` and :func:`unpack`
-
-    :class:`MessageProcessor` will create message buffer according to args.
-
-    # Args:
-        # header_instance (int): a instance of header (rank of sender and recv is not included)
-        # model (torch.nn.Module): Model used in federation
-    """
-    @staticmethod
-    def send_model(model, message_code, dst):
-        def pack(dst, content_size, message_code, s_params):
-            return torch.cat((torch.Tensor(
-                [dist.get_rank(), dst, content_size, message_code]), s_params))
-
-        # send package
-        serialized_params = SerializationTool.serialize_model(model)
-        content_size = serialized_params.shape[0]
-        package = pack(dst, content_size, message_code, serialized_params)
-        dist.send(tensor=package, dst=dst)
-
-    @staticmethod
-    def recv_model(model, src=None):
-        def unpack(package):
-            sender_rank = int(package[HEADER_SENDER_RANK_IDX])
-            recv_rank = int(package[HEADER_RECEIVER_RANK_IDX])
-            content_size = int(package[HEADER_CONTENT_SIZE_IDX])
-
-            message_code = MessageCode(int(package[HEADER_MESSAGE_CODE_IDX]))
-            s_params = package[HEADER_SIZE:]
-
-            return sender_rank, recv_rank, content_size, message_code, s_params
-
-        serialized_params = SerializationTool.serialize_model(model)
-        pkg_cache = torch.zeros(size=(HEADER_SIZE +
-                                      serialized_params.shape[0], )).cpu()
-        dist.recv(tensor=pkg_cache, src=src)
-
-        sender_rank, _, _, message_code, serialized_params = unpack(pkg_cache)
-        return sender_rank, message_code, serialized_params
+"""

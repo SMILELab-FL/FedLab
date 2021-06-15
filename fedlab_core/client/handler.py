@@ -1,6 +1,7 @@
 import time
 import os
 from abc import ABC, abstractmethod
+import logging
 
 import torch
 from torch import nn
@@ -54,13 +55,12 @@ class ClientSGDHandler(ClientBackendHandler):
         logger_file (str, optional): Path to the log file for client handler. Default: ``"log/handler.txt"``
         logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"handler"``
     """
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="handler.txt",
-                 logger_name="handler"):
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
 
-        self._LOGGER = logger(os.path.join("log", logger_file), logger_name)
+        self._LOGGER = logging if logger is not None else logger
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(

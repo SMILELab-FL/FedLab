@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 import torch
@@ -8,7 +9,7 @@ from abc import ABC, abstractmethod
 from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
-
+from fedlab_utils.aggregator import Aggregators
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
@@ -26,18 +27,8 @@ class ParameterServerBackendHandler(ABC):
             self._model = model.cpu()
 
     @abstractmethod
-    def on_receive(self):
+    def on_receive(self, sender_rank, message_code, payload):
         """Override this function to define what the server to do when receiving message from client"""
-        raise NotImplementedError()
-
-    @abstractmethod
-    def add_single_model(self, sender_rank, serialized_params):
-        """Override this function to deal with incoming model
-
-        Args:
-            sender_rank (int): rank of sender in distributed
-            serialized_params (torch.Tensor): serialized model parameters
-        """
         raise NotImplementedError()
 
     @abstractmethod
@@ -79,9 +70,10 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                  client_num_in_total,
                  cuda=False,
                  select_ratio=1.0,
-                 logger_path="server_handler",
-                 logger_name="server handler"):
+                 logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
+
+        self._LOGGER = logging if logger is None else logger
 
         if select_ratio < 0.0 or select_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(select_ratio))
@@ -95,9 +87,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_num_per_round = max(
             1, int(self.select_ratio * self.client_num_in_total))
 
-        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"),
-                              logger_name)
-
         # client buffer
         self.client_buffer_cache = {}
         self.cache_cnt = 0
@@ -105,7 +94,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         # setup
         self.train_flag = False
 
-    def on_receive(self, sender_rank, message_code, serialized_params) -> None:
+    def on_receive(self, sender_rank, message_code, payload) -> None:
         """Define what parameter server does when receiving a single client's message
 
         Args:
@@ -119,6 +108,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         if message_code == MessageCode.ParameterUpdate:
             # update model parameters
+            serialized_params = payload[0]
             self.add_single_model(sender_rank, serialized_params)
             # update server model when client_buffer_cache is full
             if self.cache_cnt == self.client_num_per_round:
@@ -133,7 +123,12 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         return selection
 
     def add_single_model(self, sender_rank, serialized_params):
-        """deal with single model's parameters"""
+        """Deal with incoming model parameters
+
+        Args:
+            sender_rank (int): rank of sender in distributed
+            serialized_params (torch.Tensor): serialized model parameters
+        """
         if self.client_buffer_cache.get(sender_rank) is not None:
             self._LOGGER.info(
                 "parameters from {} has existed".format(sender_rank))
@@ -144,9 +139,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
     def update_model(self, serialized_params_list):
         """update global model"""
-        serialized_parameters = torch.mean(torch.stack(serialized_params_list),
-                                           dim=0)
-        SerializationTool.restore_model(self._model, serialized_parameters)
+        # use aggregator
+        serialized_parameters = Aggregators.fedavg_aggregate(serialized_params_list)
+        SerializationTool.deserialize_model(self._model, serialized_parameters)
 
         # reset
         self.cache_cnt = 0
@@ -167,15 +162,11 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Global model in server
         cuda (bool): Use GPUs or not
     """
-
     # TODO: unfinished
-    def __init__(self,
-                 model,
-                 client_num_in_total,
-                 cuda=False,
-                 logger_path="server_handler",
-                 logger_name="server handler"):
+    def __init__(self, model, client_num_in_total, cuda=False, logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
+
+        self._LOGGER = logging if logger is None else logger
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
@@ -188,13 +179,9 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         # need a Queue to receive the updated model from each client, not useful?
         self.client_model_queue = Queue()
 
-        self._LOGGER = logger(os.path.join("log", logger_path + ".txt"),
-                              logger_name)
-
     def on_receive(self, sender_rank, message_code, content_list):
         """Define what parameter server does when receiving a single client's message
         """
-
         self._LOGGER.info(
             "Processing message: {} from rank {}, the received updated model time is {}, "
             "the handle's current model time is {}".format(
@@ -205,10 +192,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
             # update local model parameters, and update server model async
             self.add_single_model(sender_rank, content_list)
             self.update_model()
-
         elif message_code == MessageCode.GradientUpdate:
             raise NotImplementedError()
-            
         else:
             pass
 

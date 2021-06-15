@@ -22,7 +22,7 @@ class ClientBasicTopology(Process, ABC):
     """
     def __init__(self, handler, server_addr, world_size, rank, dist_backend):
 
-        self.handler = handler
+        self._handler = handler
         self.rank = rank
         self.server_addr = server_addr
         self.world_size = world_size
@@ -56,10 +56,8 @@ client的架构不应该被分为同步和异步，而是应该按照被调用�
     主动网络拓扑： 完成计算就上传并开启下一轮训练
     被动网络拓扑： 等待上层网络调用，才开始训练
 根据上述两种分类，添加两个新的架构类ClientActiveTopology、ClientPassiveTopology
-原有的同步和异步类将在之后被弃用
+原有的同步和异步类被弃用
 """
-
-
 class ClientPassiveTopology(ClientBasicTopology):
     """Passive communication topology
 
@@ -80,8 +78,8 @@ class ClientPassiveTopology(ClientBasicTopology):
                  server_addr,
                  world_size,
                  rank,
-                 dist_backend,
-                 epochs=5,
+                 dist_backend='gloo',
+                 epochs=2,
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
 
@@ -105,21 +103,20 @@ class ClientPassiveTopology(ClientBasicTopology):
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from
-            sender_rank, message_code, s_parameters = self.wait_model()
-
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
             # exit
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
                     "Recv {}, Process exiting".format(message_code))
                 exit(0)
-
-            # perform local training
-            self.on_receive(sender_rank, message_code, s_parameters)
+            else:
+                # perform local training
+                self.on_receive(sender_rank, message_code, payload)
 
             # synchronize with server
             self.synchronize()
 
-    def on_receive(self, sender_rank, message_code, s_parameters):
+    def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform on receiving new message, including local training
 
         Args:
@@ -129,20 +126,22 @@ class ClientPassiveTopology(ClientBasicTopology):
         """
         self._LOGGER.info("Paeckage received from {}, message code {}".format(
             sender_rank, message_code))
-
+        s_parameters = payload[0]
         #self._handler.load_parameters(s_parameters)
         self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
+        model_params = SerializationTool.serialize_model(self._handler.model)
+        pack = Package(message_code=MessageCode.ParameterUpdate, content=model_params)
+        PackageProcessor.send_package(pack, dst=0)
+
+        """
         PackageProcessor.send_model(self._handler.model,
-                                    MessageCode.ParameterUpdate.value,
+                                MessageCode.ParameterUpdate.value,
                                     dst=0)
-
-    def wait_model(self):
-        return PackageProcessor.recv_model(self._handler.model, src=0)
-
+        """
 
 class ClientActiveTopology(ClientBasicTopology):
     """Active communication topology
@@ -167,7 +166,7 @@ class ClientActiveTopology(ClientBasicTopology):
                  world_size,
                  rank,
                  dist_backend,
-                 epochs=5,
+                 epochs=2,
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
         self._LOGGER = logger
