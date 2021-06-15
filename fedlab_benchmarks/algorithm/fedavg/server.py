@@ -5,7 +5,7 @@ sys.path.append('/home/zengdun/FedLab/')
 
 from models.lenet import LeNet
 from fedlab_core.server.handler import SyncParameterServerHandler
-from fedlab_core.server.topology import ServerSyncTop
+from fedlab_core.server.topology import ServerSynchronousTopology
 import argparse
 
 
@@ -21,6 +21,6 @@ if __name__ == "__main__":
     model = LeNet().cpu()
     ps = SyncParameterServerHandler(
         model, client_num_in_total=args.world_size-1)  # client = world_size-1
-    top = ServerSyncTop(server_handler=ps, server_address=(
+    top = ServerSynchronousTopology(handler=ps, server_address=(
         args.server_ip, args.server_port))
     top.run()

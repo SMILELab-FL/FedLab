@@ -1,3 +1,4 @@
+import logging
 import os
 from abc import ABC, abstractmethod
 
@@ -6,20 +7,22 @@ from torch.multiprocessing import Process
 
 from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
-from fedlab_core.communicator.processor import PackageProcessor
+from fedlab_utils.serialization import SerializationTool
+from fedlab_core.communicator.processor import Package, PackageProcessor
 
 
 class ClientBasicTopology(Process, ABC):
-    """Abstract class
+    """Abstract class of client topology
 
     If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
     methods.
 
     Example:
-        Read the code of :class:`ClientSyncTop` to learn how to use this class.
+        Read the code of :class:`ClientPassiveTopology` and `ClientActiveTopology` to learn how to use this class.
     """
+    def __init__(self, handler, server_addr, world_size, rank, dist_backend):
 
-    def __init__(self, server_addr, world_size, rank, dist_backend):
+        self._handler = handler
         self.rank = rank
         self.server_addr = server_addr
         self.world_size = world_size
@@ -41,62 +44,153 @@ class ClientBasicTopology(Process, ABC):
         raise NotImplementedError()
 
     def init_network_connection(self):
-        dist.init_process_group(backend=self.dist_backend, init_method='tcp://{}:{}'
-                                .format(self.server_addr[0], self.server_addr[1]),
-                                rank=self.rank, world_size=self.world_size)
+        dist.init_process_group(backend=self.dist_backend,
+                                init_method='tcp://{}:{}'.format(
+                                    self.server_addr[0], self.server_addr[1]),
+                                rank=self.rank,
+                                world_size=self.world_size)
 
 
-class ClientSyncTop(ClientBasicTopology):
-    """Synchronize communication class
+"""
+client的架构不应该被分为同步和异步，而是应该按照被调用算力的方式分为
+    主动网络拓扑： 完成计算就上传并开启下一轮训练
+    被动网络拓扑： 等待上层网络调用，才开始训练
+根据上述两种分类，添加两个新的架构类ClientActiveTopology、ClientPassiveTopology
+原有的同步和异步类被弃用
+"""
+class ClientPassiveTopology(ClientBasicTopology):
+    """Passive communication topology
 
-    This is the top class in our framework which is mainly responsible for network communication of CLIENT!
-    Synchronize with server following agreements defined in :meth:`run`.
+        Args:
+            client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
+            client.
+            server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
+            world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
+            rank (int): Rank of the current client process for ``torch.distributed`` initialization
+            dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+            and ``nccl``. Default: ``"gloo"``
+            epochs (int): epochs for local train
+            logger (`logger`, optional): object of `fedlab_utils.logger`
 
-    Args:
-        client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
-        client.
-        server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
-        world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
-        rank (int): Rank of the current client process for ``torch.distributed`` initialization
-        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-        and ``nccl``. Default: ``"gloo"``
-        logger_file (str, optional): Path to the log file for all clients of :class:`ClientSyncTop` class. Default: ``"client_log"``
-        logger_name (str, optional): Class name to initialize logger. Default: ``""``
-
-    Raises:
-        Errors raised by :func:`torch.distributed.init_process_group`
     """
+    def __init__(self,
+                 handler,
+                 server_addr,
+                 world_size,
+                 rank,
+                 dist_backend='gloo',
+                 epochs=2,
+                 logger=None):
+        super().__init__(handler, server_addr, world_size, rank, dist_backend)
 
-    def __init__(self, client_handler, server_addr, world_size, rank, dist_backend="gloo",
-                 logger_file="client_log",
-                 logger_name="client"):
-
-        super(ClientSyncTop, self).__init__(
-            server_addr, world_size, rank, dist_backend)
-
-        self._handler = client_handler
-
-        self.epochs = 2  # epochs for local training
-
-        self._LOGGER = logger(os.path.join(
-            "log", logger_file + str(rank) + ".txt"), logger_name+str(rank))
+        self._LOGGER = logging if logger is None else logger
+        self.epochs = epochs
 
     def run(self):
         """Main procedure of each client is defined here:
-            1. client waits for data from server
+            1. client waits for data from server （PASSIVE）
+            2. after receiving data, client will train local model
+            3. client will synchronize with server actively
+        """
+
+        self._LOGGER.info("connecting with server")
+        self._LOGGER.info(
+            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".
+            format(self.server_addr[0], self.server_addr[1], self.world_size,
+                   self.rank, self.dist_backend))
+
+        self.init_network_connection()
+        while True:
+            self._LOGGER.info("Waiting for server...")
+            # waits for data from
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            # exit
+            if message_code == MessageCode.Exit:
+                self._LOGGER.info(
+                    "Recv {}, Process exiting".format(message_code))
+                exit(0)
+            else:
+                # perform local training
+                self.on_receive(sender_rank, message_code, payload)
+
+            # synchronize with server
+            self.synchronize()
+
+    def on_receive(self, sender_rank, message_code, payload):
+        """Actions to perform on receiving new message, including local training
+
+        Args:
+            sender_rank (int): Rank of sender
+            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
+            s_parameters (torch.Tensor): Serialized model parameters
+        """
+        self._LOGGER.info("Paeckage received from {}, message code {}".format(
+            sender_rank, message_code))
+        s_parameters = payload[0]
+        #self._handler.load_parameters(s_parameters)
+        self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
+
+    def synchronize(self):
+        """Synchronize local model with server actively"""
+        self._LOGGER.info("synchronize model parameters with server")
+        model_params = SerializationTool.serialize_model(self._handler.model)
+        pack = Package(message_code=MessageCode.ParameterUpdate, content=model_params)
+        PackageProcessor.send_package(pack, dst=0)
+
+        """
+        PackageProcessor.send_model(self._handler.model,
+                                MessageCode.ParameterUpdate.value,
+                                    dst=0)
+        """
+
+class ClientActiveTopology(ClientBasicTopology):
+    """Active communication topology
+
+        Args:
+            client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
+            client.
+            server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
+            world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
+            rank (int): Rank of the current client process for ``torch.distributed`` initialization
+            dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+            and ``nccl``. Default: ``"gloo"``
+            epochs (int): epochs for local train
+            logger (`logger`, optional): object of `fedlab_utils.logger`
+    """
+    def __init__(self, handler, server_addr, world_size, rank, dist_backend):
+        super().__init__(handler, server_addr, world_size, rank, dist_backend)
+
+    def __init__(self,
+                 handler,
+                 server_addr,
+                 world_size,
+                 rank,
+                 dist_backend,
+                 epochs=2,
+                 logger=None):
+        super().__init__(handler, server_addr, world_size, rank, dist_backend)
+        self._LOGGER = logger
+
+        # temp variables
+        self.epochs = epochs
+
+    def run(self):
+        """Main procedure of each client is defined here:
+            1. client requests data from server (ACTIVE)
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        self.init_network_connection()
         self._LOGGER.info(
-            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".format(
-                self.server_addr[0], self.server_addr[1], self.world_size, self.rank, self.dist_backend))
+            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".
+            format(self.server_addr[0], self.server_addr[1], self.world_size,
+                   self.rank, self.dist_backend))
+
+        self.init_network_connection()
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from
-            sender_rank, message_code, s_parameters = PackageProcessor.recv_model(
-                self._handler.model, src=0)
+            sender_rank, message_code, s_parameters = self.request_model()
 
             # exit
             if message_code == MessageCode.Exit:
@@ -118,14 +212,21 @@ class ClientSyncTop(ClientBasicTopology):
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             s_parameters (torch.Tensor): Serialized model parameters
         """
-        self._LOGGER.info("Package received from {}, message code {}".format(
+        self._LOGGER.info("Paeckage received from {}, message code {}".format(
             sender_rank, message_code))
 
-        self._handler.load_parameters(s_parameters)
-        self._handler.train(epochs=self.epochs)
+        #self._handler.load_parameters(s_parameters)
+        self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        PackageProcessor.send_model(
-            self._handler.model, MessageCode.ParameterUpdate.value, dst=0)
+        PackageProcessor.send_model(self._handler.model,
+                                    MessageCode.ParameterUpdate.value,
+                                    dst=0)
+
+    def request_model(self):
+        # untested
+        self._LOGGER.info("synchronize model parameters with server")
+        pack = Package(message_code=MessageCode.ParameterRequest)
+        PackageProcessor.send_package(pack, dst=0)

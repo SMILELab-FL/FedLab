@@ -14,7 +14,7 @@ class SerializationTool(object):
         return m_parameters
 
     @staticmethod
-    def restore_model(model, serialized_parameters):
+    def deserialize_model(model, serialized_parameters):
         """
         Assigns grad_update params to model.parameters.
         This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
@@ -27,3 +27,4 @@ class SerializationTool(object):
             parameter.data.copy_(
                 serialized_parameters[current_index:current_index + numel].view(size))
             current_index += numel
+

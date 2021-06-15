@@ -1,13 +1,13 @@
 import time
 import os
 from abc import ABC, abstractmethod
+import logging
 
 import torch
 from torch import nn
 
 from fedlab_utils.logger import logger
 from  fedlab_utils.serialization import SerializationTool
-
 
 
 class ClientBackendHandler(ABC):
@@ -36,10 +36,6 @@ class ClientBackendHandler(ABC):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
-    def load_parameters(self, serialized_parameters):
-        """Restore model from serialized model parameters"""
-        SerializationTool.restore_model(self._model, serialized_parameters)
-
     @property
     def model(self):
         return self._model
@@ -59,14 +55,12 @@ class ClientSGDHandler(ClientBackendHandler):
         logger_file (str, optional): Path to the log file for client handler. Default: ``"log/handler.txt"``
         logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"handler"``
     """
-
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger_file="log/handler.txt",
-                 logger_name="handler"):
+    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
 
-        self._LOGGER = logger(os.path.join("log", "client_handler.txt"), logger_name)
+        self._LOGGER = logging if logger is not None else logger
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(
@@ -79,16 +73,20 @@ class ClientSGDHandler(ClientBackendHandler):
         else:
             self.criterion = criterion
 
-    def train(self, epochs):
+    def train(self, epochs, model_parameters):
         """
         Client trains its local model on local dataset.
 
         Args:
             epochs (int): number of epoch for local training
+            model_parameters (torch.Tensor): serialized model paremeters
         """
         self._LOGGER.info("starting local train process")
 
+        SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
+
         for epoch in range(epochs):
+            start_time = time.time()
             self._model.train()
             loss_sum = 0.0
             for inputs, labels in self._data_loader:
@@ -105,7 +103,8 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss_sum += loss.detach().item()
 
+            end_time = time.time()
             # TODO: is it proper to use loss_sum here?? CrossEntropyLoss is averaged over each sample
-            log_str = "Epoch {}/{}, Loss: {}, Time: {}".format(
-                epoch + 1, epochs, loss_sum, time.time())
+            log_str = "Epoch {}/{}, Loss: {:.4f}, Time cost: {}".format(
+                epoch + 1, epochs, loss_sum, end_time-start_time)
             self._LOGGER.info(log_str)

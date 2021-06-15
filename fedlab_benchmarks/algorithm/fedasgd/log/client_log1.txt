@@ -1,0 +1,13 @@
+2021-05-31 17:34:26,195 - client1 - INFO - connecting with server
+2021-05-31 17:34:27,786 - client1 - INFO - connected to server:127.0.0.1:3002,  world size:3, rank:1, backend:gloo
+2021-05-31 17:34:27,787 - client1 - INFO - Waiting for server...
+2021-05-31 17:34:27,878 - client1 - INFO - Package received from 0, message code MessageCode.ParameterUpdate, the received updated model time is 0
+2021-05-31 17:35:50,235 - client1 - INFO - synchronize model parameters with server
+2021-05-31 17:35:50,366 - client1 - INFO - Waiting for server...
+2021-05-31 17:35:55,516 - client1 - INFO - Package received from 0, message code MessageCode.ParameterUpdate, the received updated model time is 1
+2021-05-31 17:37:18,559 - client1 - INFO - synchronize model parameters with server
+2021-05-31 17:37:18,672 - client1 - INFO - Waiting for server...
+2021-05-31 17:37:25,982 - client1 - INFO - Package received from 0, message code MessageCode.ParameterUpdate, the received updated model time is 2
+2021-05-31 17:38:32,297 - client1 - INFO - synchronize model parameters with server
+2021-05-31 17:38:32,342 - client1 - INFO - Waiting for server...
+2021-05-31 17:38:36,501 - client1 - INFO - Recv MessageCode.Exit, Process exiting
