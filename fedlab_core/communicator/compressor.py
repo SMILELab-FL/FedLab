@@ -1,16 +1,15 @@
-#TODO: 开放的模型压缩接口
 # 参考dgc中DGCCompressor的实现形式
-
 from abc import ABC, abstractmethod
 import math
 import random
 import torch
+from torch._C import DoubleTensor
 
 
 class Compressor(ABC):
     def __init__(self) -> None:
         super().__init__()
-    
+
     @abstractmethod
     def initialize(self, named_parameters):
         raise NotImplementedError()
@@ -25,31 +24,14 @@ class Compressor(ABC):
 
 
 class TopkCompressor(Compressor):
-    def __init__(self,
-                 compress_ratio,
-                 sample_ratio=0.01,
-                 strided_sample=True,
-                 compress_upper_bound=1.3,
-                 compress_lower_bound=0.8,
-                 max_adaptation_iters=10,
-                 resample=True,
-                 fp16_values=False,
-                 int32_indices=False):
-        #self.op = Average
+    def __init__(self, compress_ratio, fp16_values=False, int32_indices=False):
+
         self.fp16_values = fp16_values
         self.int32_indices = int32_indices
 
-        self.base_compress_ratio = self.compress_ratio = \
-            compress_ratio if compress_ratio <= 1.0 else 1.0 / compress_ratio
+        self.compress_ratio = compress_ratio if compress_ratio <= 1.0 else 1.0 / compress_ratio
 
-        self.sample_ratio = min(max(sample_ratio, 0.01), 1.0)
-        self.strided_sample = strided_sample
-        self.compress_upper_bound = compress_upper_bound
-        self.compress_lower_bound = compress_lower_bound
-        self.max_adaptation_iters = max_adaptation_iters
-        self.resample = resample
-
-        self.attributes = {}
+        self.attributes = {}  # 定义压缩矩阵的基本信息： [numel, shape, num_selects, num_samples, top_k_samples, sample_stride]
 
     def initialize(self, named_parameters):
         for name, param in named_parameters:
@@ -59,118 +41,36 @@ class TopkCompressor(Compressor):
             else:
                 assert isinstance(param, (list, tuple))
                 numel, shape = param[0], param[1]
-            if self.sample_ratio < 1.0:
-                pct_numel = int(math.ceil(numel * self.sample_ratio))
-                cpr_numel = int(math.ceil(2 / self.compress_ratio))
-                if numel <= cpr_numel:
-                    sample_stride = 1
-                    num_samples = numel
-                else:
-                    sample_stride = int(
-                        math.ceil(
-                            numel / max(pct_numel, cpr_numel) / 32)) * 32 + 1
-                    num_samples = numel // sample_stride
-                    while num_samples < max(pct_numel, cpr_numel):
-                        sample_stride = sample_stride - 8
-                        num_samples = numel // sample_stride
-            else:
-                sample_stride = 1
-                num_samples = numel
 
-            top_k_samples = int(math.ceil(num_samples * self.compress_ratio))
-            num_selects = int(math.ceil(numel * self.compress_ratio))
-            self.attributes[name] = (numel, shape, num_selects, num_samples,
-                                     top_k_samples, sample_stride)
-
-    def _sparsity(self, tensor, name):
-        tensor = tensor.view(-1)
-        numel, shape, num_selects, num_samples, top_k_samples, sample_stride = self.attributes[
-            name]
-
-        importance = tensor.abs()
-        if numel == num_samples:
-            samples = importance
-        else:
-            if self.strided_sample:
-                sample_start = random.randint(0, sample_stride - 1)
-                samples = importance[sample_start::sample_stride]
-            else:
-                samples = importance[torch.randint(0,
-                                                   numel, (num_samples, ),
-                                                   device=tensor.device)]
-
-        threshold = torch.min(
-            torch.topk(samples, top_k_samples, 0, largest=True,
-                       sorted=False)[0])
-        mask = torch.ge(importance, threshold)
-        indices = mask.nonzero().view(-1)
-        num_indices = indices.numel()
-
-        if numel > num_samples:
-            # code modified from https://github.com/sands-lab/grace/blob/master/grace_dl/torch/compressor/dgc.py
-            for _ in range(self.max_adaptation_iters):
-                if num_indices > num_selects:
-                    if num_indices > num_selects * self.compress_upper_bound:
-                        if self.resample:
-                            indices = indices[torch.topk(importance[indices],
-                                                         num_selects,
-                                                         0,
-                                                         largest=True,
-                                                         sorted=False)[1]]
-                            break
-                        else:
-                            threshold = threshold * self.compress_upper_bound
-                    else:
-                        break
-                elif num_indices < self.compress_lower_bound * num_selects:
-                    threshold = threshold * self.compress_lower_bound
-                else:
-                    break
-                mask = torch.ge(importance, threshold)
-                indices = mask.nonzero().view(-1)
-                num_indices = indices.numel()
-
-        indices = indices[:num_selects]
-        values = tensor[indices]
-        return values, indices, numel, shape, num_selects
+            top_k_samples = int(math.ceil(numel * self.compress_ratio))
+            self.attributes[name] = (numel, shape, top_k_samples)
 
     def compress(self, tensor, name):
         # 对于已注册的数据结构/模型参数压缩
         if self.compress_ratio < 1.0 and name in self.attributes:
-            values, indices, numel, shape, num_selects = self._sparsity(
-                tensor, name)
-            indices = indices.view(-1, 1)
-            values = values.view(-1, 1)
+            tensor = tensor.view(-1)
+        
+            numel, shape, top_k_samples = self.attributes[name]
 
-            ctx = (name, numel, shape, values.dtype, indices.dtype,
-                   tensor.data.view(numel))
-            if self.fp16_values and values.dtype.is_floating_point:
-                values = values.type(torch.float16)
-            if self.int32_indices and not indices.dtype.is_floating_point:
-                indices = indices.type(torch.int32)
-            return (values, indices), ctx
-        # 对未注册不进行操作 返回置空数据
+            importance = tensor.abs()
+            _, indices = torch.topk(importance,
+                                    top_k_samples,
+                                    0,
+                                    largest=True,
+                                    sorted=False)
+            values = tensor[indices]
+            return (values, indices), (name, shape)
         else:
-            ctx = (name, None, None, tensor.dtype, None, None)
-            if self.fp16_values and tensor.dtype.is_floating_point:
-                tensor = tensor.type(torch.float16)
-            return tensor, ctx
+            raise ValueError("invalid value")
 
     def decompress(self, tensor, ctx):
-        name, numel, shape, vdtype, idtype, grad = ctx
+        name, shape = ctx
         if self.compress_ratio < 1.0 and name in self.attributes:
-            # decompress
-            assert isinstance(tensor, (list, tuple))
             values, indices = tensor
-            values = values.view(-1)
-            indices = indices.view(-1)
-            if self.fp16_values and vdtype.is_floating_point:
-                values = values.type(vdtype)
-            if self.int32_indices and not idtype.is_floating_point:
-                indices = indices.type(idtype)
-            grad.zero_().index_put_([indices], values, accumulate=True)
-            return grad.view(shape)
+
+            de_tensor = torch.zeros(size=shape).index_put_([indices],
+                                                           values,
+                                                           accumulate=True)
+            return de_tensor
         else:
-            if self.fp16_values and vdtype.is_floating_point:
-                tensor = tensor.type(vdtype)
-            return self.memory.compensate(tensor, name, accumulate=False)
+            raise ValueError("invalid value")
