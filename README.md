@@ -18,12 +18,13 @@ FedLab是一个基于pytorch的轻量级、组件化联邦学习框架，帮助�
 server端Topology与Handler的关系如下图，Topology处理信息并调用Handler.on_receive方法，Handler消息处理逻辑和模型更新算法。  
 ![](docs/imgs/server.png)
 
-FedLab提供了同步联邦和异步联邦server端的demo
+FedLab提供了同步联邦和异步联邦server端的demo。
 
 ### Client
-
-
-
+client端架构和各模块功能类似于server端，但Topology和Handler的功能和处理细节有所不同。
+![](docs/imgs/client.png)
+其中，异步和同步联邦的Topology通信逻辑如下图，同步联邦学习中，一轮学习的启动由server主导，而异步联邦中由client主导。
+![](docs/imgs/topology.png)
 ## Docs
 文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
 
@@ -32,7 +33,6 @@ FedLab提供了同步联邦和异步联邦server端的demo
 > pip install -r requirements.txt  
 2. 运行FedAvg demo
 > bash test.sh
-
 
 
 ## Citation
