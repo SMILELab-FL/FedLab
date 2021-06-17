@@ -19,8 +19,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = LeNet().cpu()
-    ps = SyncParameterServerHandler(
-        model, client_num_in_total=args.world_size-1)  # client = world_size-1
+    ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)  # client = world_size-1
+
     top = ServerSynchronousTopology(handler=ps, server_address=(
         args.server_ip, args.server_port))
+        
     top.run()

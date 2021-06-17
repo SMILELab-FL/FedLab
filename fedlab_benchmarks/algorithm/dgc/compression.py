@@ -6,13 +6,6 @@ import random
 
 import torch
 
-"""
-import horovod.torch as hvd
-from horovod.torch.mpi_ops import Average
-from horovod.torch.mpi_ops import allreduce_async_
-from horovod.torch.mpi_ops import allgather_async as allgather_async_
-from horovod.torch.mpi_ops import synchronize as synchronize_
-"""
 from fedlab_benchmarks.algorithm.dgc.memory import Memory
 
 __all__ = ['DGCCompressor']

@@ -49,10 +49,10 @@ if __name__ == "__main__":
     args.cuda = True
 
     model = LeNet()
-
     trainloader, testloader = get_dataset(args)
 
     handler = ClientSGDHandler(model, trainloader)
+
     top = ClientPassiveTopology(handler=handler, server_addr=(
         args.server_ip, args.server_port), world_size=3, rank=args.local_rank)
     top.run()
