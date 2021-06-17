@@ -92,7 +92,6 @@ class ClientPassiveTopology(ClientBasicTopology):
             2. after receiving data, client will train local model
             3. client will synchronize with server actively
         """
-
         self._LOGGER.info("connecting with server")
         self._LOGGER.info(
             "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".

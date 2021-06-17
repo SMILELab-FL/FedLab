@@ -26,12 +26,14 @@ class SerialHandler(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): use GPUs or not
     """ 
-    def __init__(self, client_handler_list, aggregator) -> None:
+    def __init__(self, client_handler_list, aggregator, multi_thread=False) -> None:
         # 需要添加类型检查
         self.clients = client_handler_list
         self.serial_number = len(client_handler_list)
         self.aggregator = aggregator
         self.model = deepcopy(self.clients[0].model)
+
+        self.multi_thread = multi_thread
 
     @abstractmethod
     def train(self, epochs, model_parameters, idx_list=None):
@@ -67,7 +69,7 @@ class SerialSGDHandler(SerialHandler):
                 idx_list = [i + 1 for i in range(self.serial_number)]
                 idx_list = random.sample(idx_list, self.client_num_per_round)
             else:
-                raise ValueError("idx_list and select_ration should not be None at the same time!")
+                raise ValueError("idx_list and select_ration can't be None at the same time!")
 
         for idx in idx_list:
             assert idx<self.serial_number
