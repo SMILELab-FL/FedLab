@@ -1,6 +1,0 @@
-2021-05-28 11:53:18,055 - server handler - INFO - Processing message: ParameterUpdate from rank 1
-2021-05-28 11:53:18,152 - server handler - INFO - Processing message: ParameterUpdate from rank 2
-2021-05-28 11:53:22,311 - server handler - INFO - Processing message: ParameterUpdate from rank 2
-2021-05-28 11:53:22,405 - server handler - INFO - Processing message: ParameterUpdate from rank 1
-2021-05-28 11:53:26,570 - server handler - INFO - Processing message: ParameterUpdate from rank 2
-2021-05-28 11:53:26,579 - server handler - INFO - Processing message: ParameterUpdate from rank 1

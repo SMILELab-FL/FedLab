@@ -10,6 +10,9 @@ import random
 
 from abc import ABC, abstractmethod
 from copy import deepcopy
+import threading
+
+from torch._C import T
 
 from fedlab_core.client.handler import ClientBackendHandler
 from  fedlab_utils.serialization import SerializationTool
@@ -26,14 +29,12 @@ class SerialHandler(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): use GPUs or not
     """ 
-    def __init__(self, client_handler_list, aggregator, multi_thread=False) -> None:
+    def __init__(self, client_handler_list, aggregator) -> None:
         # 需要添加类型检查
         self.clients = client_handler_list
         self.serial_number = len(client_handler_list)
         self.aggregator = aggregator
         self.model = deepcopy(self.clients[0].model)
-
-        self.multi_thread = multi_thread
 
     @abstractmethod
     def train(self, epochs, model_parameters, idx_list=None):
@@ -48,7 +49,7 @@ class SerialHandler(ABC):
         return self.model
         
 
-class SerialSGDHandler(SerialHandler):
+class SerialMultiHandler_demo(SerialHandler):
     """an example of SerialHandler
         Every client in this Serial share the same shape of model. Each of them has different
         datasets (differences shows in the init of ClientHandler)
@@ -58,9 +59,10 @@ class SerialSGDHandler(SerialHandler):
         Args：
             client_handler_list (list): list of objects of ClientBackendHandler's subclass
     """
-    def __init__(self, client_handler_list) -> None:
+    def __init__(self, client_handler_list, multi_thread=False) -> None:
         super(SerialHandler, self).__init__()
         self.clients = client_handler_list
+        self.multi_thread = multi_thread
 
     def train(self, epochs, model_parameters, idx_list=None, select_ratio=None):
 
@@ -71,11 +73,15 @@ class SerialSGDHandler(SerialHandler):
             else:
                 raise ValueError("idx_list and select_ration can't be None at the same time!")
 
+        if self.multi_thread is True:
+            thread_pool = []
+        
         for idx in idx_list:
             assert idx<self.serial_number
             if idx >= self.serial_number:
                 raise ValueError("Invalid idx of client: %d >= %d"%(idx, self.serial_number))
             self.clients[idx].train(epochs, model_parameters)
+
 
         merged_parameters = self._merge_models(idx_list)
         SerializationTool.deserialize_model(self.model, merged_parameters)

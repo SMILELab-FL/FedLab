@@ -60,7 +60,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
         self._data_loader = data_loader
 
-        self._LOGGER = logging if logger is not None else logger
+        self._LOGGER = logging if logger is None else logger
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)

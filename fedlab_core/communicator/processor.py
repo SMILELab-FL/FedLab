@@ -2,7 +2,7 @@ import torch
 import torch.distributed as dist
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
-from fedlab_core.communicator import package
+from fedlab_core.communicator import package as config
 from fedlab_core.communicator.package import Package
 
 
@@ -12,7 +12,7 @@ class PackageProcessor(object):
     @staticmethod
     def recv_package(src=None):
         def recv_header(src=src, parse=True):
-            buffer = torch.zeros(size=(package.HEADER_SIZE, ))
+            buffer = torch.zeros(size=(config.HEADER_SIZE, ))
             dist.recv(buffer, src=src)
             if parse is True:
                 return Package.parse_header(buffer)
@@ -47,7 +47,7 @@ class PackageProcessor(object):
             2.2 receiver: receive the content tensor, and parse it to obtain a tensor list using parser function
         """
         def send_header(header, dst):
-            header[package.HEADER_RECEIVER_RANK_IDX] = dst
+            header[config.HEADER_RECEIVER_RANK_IDX] = dst
             dist.send(header, dst=dst)
 
         def send_content(content, dst):
@@ -55,5 +55,5 @@ class PackageProcessor(object):
 
         send_header(header=package.header, dst=dst)
 
-        if package.header[package.HEADER_CONTENT_SIZE_IDX] > 0:
+        if package.header[config.HEADER_CONTENT_SIZE_IDX] > 0:
             send_content(content=package.content, dst=dst)
