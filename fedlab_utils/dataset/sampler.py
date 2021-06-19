@@ -81,7 +81,6 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     This is a copy of :class:`torch.utils.data.distributed.DistributedSampler` (28 March 2019)
     with the option to turn off adding extra samples to divide the work evenly.
     """
-
     def __init__(self, dataset, add_extra_samples=True):
         if torch.distributed.get_rank() == 0:
             print("Using non iid distributed sampler!!!")

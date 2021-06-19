@@ -52,15 +52,16 @@ class ClientSGDHandler(ClientBackendHandler):
         criterion (optional): loss function used in local training process. If set to ``None``, will use
         :func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
-        logger_file (str, optional): Path to the log file for client handler. Default: ``"log/handler.txt"``
-        logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"handler"``
+        logger (optional): `fedlab_utils.logger` 
     """
-    def __init__(self, model, data_loader, optimizer=None, criterion=None, cuda=True, logger=None):
+    def __init__(self, model, data_loader, local_epoch, optimizer=None, criterion=None, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
 
         self._LOGGER = logging if logger is None else logger
+
+        self.epoch = local_epoch
 
         if optimizer is None:
             self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)
@@ -72,7 +73,7 @@ class ClientSGDHandler(ClientBackendHandler):
         else:
             self.criterion = criterion
 
-    def train(self, epochs, model_parameters):
+    def train(self, model_parameters, epochs=None):
         """
         Client trains its local model on local dataset.
 
@@ -81,10 +82,14 @@ class ClientSGDHandler(ClientBackendHandler):
             model_parameters (torch.Tensor): serialized model paremeters
         """
         self._LOGGER.info("starting local train process")
-
         SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
 
-        for epoch in range(epochs):
+        if epochs is None:
+            local_epoch = self.epoch
+        else:
+            local_epoch = epochs
+    
+        for epoch in range(local_epoch):
             start_time = time.time()
             self._model.train()
             loss_sum = 0.0
@@ -101,9 +106,6 @@ class ClientSGDHandler(ClientBackendHandler):
                 self.optimizer.step()
 
                 loss_sum += loss.detach().item()
-
             end_time = time.time()
-            # TODO: is it proper to use loss_sum here?? CrossEntropyLoss is averaged over each sample
-            log_str = "Epoch {}/{}, Loss: {:.4f}, Time cost: {}".format(
-                epoch + 1, epochs, loss_sum, end_time-start_time)
+            log_str = "Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, local_epoch, loss_sum, end_time-start_time)
             self._LOGGER.info(log_str)
