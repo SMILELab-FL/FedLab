@@ -58,9 +58,7 @@ class ClientSGDHandler(ClientBackendHandler):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-
         self._LOGGER = logging if logger is None else logger
-
         self.epoch = local_epoch
 
         if optimizer is None:
@@ -107,5 +105,9 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 loss_sum += loss.detach().item()
             end_time = time.time()
-            log_str = "Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, local_epoch, loss_sum, end_time-start_time)
-            self._LOGGER.info(log_str)
+
+            self._LOGGER.info("Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, local_epoch, loss_sum, end_time-start_time))
+
+    
+
+    

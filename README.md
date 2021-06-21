@@ -4,8 +4,6 @@
 
 [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/CI-management_liang/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab)
 
-## Table of Contents
-
 
 ## Introduction
 
@@ -33,6 +31,5 @@ client端架构和各模块功能类似于server端，但Topology和Handler的�
 > pip install -r requirements.txt  
 2. 运行FedAvg demo
 > bash test.sh
-
 
 ## Citation

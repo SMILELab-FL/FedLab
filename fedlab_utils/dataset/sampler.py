@@ -26,7 +26,6 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         rank (optional): Rank of the current process within num_replicas.
         shuffle (optional): If true (default), sampler will shuffle the indices
     """
-
     def __init__(self, dataset, rank, num_replicas, shuffle=True):
         if num_replicas is None:
             if not dist.is_available():
