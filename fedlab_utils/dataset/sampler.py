@@ -26,7 +26,6 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         rank (optional): Rank of the current process within num_replicas.
         shuffle (optional): If true (default), sampler will shuffle the indices
     """
-
     def __init__(self, dataset, rank, num_replicas, shuffle=True):
         if num_replicas is None:
             if not dist.is_available():
@@ -81,7 +80,6 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     This is a copy of :class:`torch.utils.data.distributed.DistributedSampler` (28 March 2019)
     with the option to turn off adding extra samples to divide the work evenly.
     """
-
     def __init__(self, dataset, add_extra_samples=True):
         if torch.distributed.get_rank() == 0:
             print("Using non iid distributed sampler!!!")

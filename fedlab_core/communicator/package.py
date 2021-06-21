@@ -3,6 +3,7 @@ import torch.distributed as dist
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
 
+
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
 HEADER_CONTENT_SIZE_IDX = 2
@@ -86,16 +87,6 @@ class Package(object):
         """
         for tensor in tensor_list:
             self.append_tensor(tensor)
-
-    """
-    @property
-    def header(self):
-        return self.header
-
-    @property
-    def content(self):
-        return self.content
-    """
 
     @staticmethod
     def parse_content(content):

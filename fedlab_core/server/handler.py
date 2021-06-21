@@ -62,8 +62,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not. Default: ``False``
         select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default:
     ``1.0``
-        logger_file (str, optional): Path to the log file for client handler. Default: ``"server_handler.txt"``
-        logger_name (str, optional): Class name to initialize logger for client handler. Default: ``"server handler"``
+        logger (optional): `fedlab_utils.logger`
     """
     def __init__(self,
                  model,

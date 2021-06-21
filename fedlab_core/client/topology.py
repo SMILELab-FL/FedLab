@@ -79,12 +79,10 @@ class ClientPassiveTopology(ClientBasicTopology):
                  world_size,
                  rank,
                  dist_backend='gloo',
-                 epochs=2,
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
 
         self._LOGGER = logging if logger is None else logger
-        self.epochs = epochs
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -127,7 +125,7 @@ class ClientPassiveTopology(ClientBasicTopology):
             sender_rank, message_code))
         s_parameters = payload[0]
         #self._handler.load_parameters(s_parameters)
-        self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
+        self._handler.train(model_parameters=s_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
@@ -165,13 +163,13 @@ class ClientActiveTopology(ClientBasicTopology):
                  world_size,
                  rank,
                  dist_backend,
-                 epochs=2,
+                 local_epochs,
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
         self._LOGGER = logger
 
         # temp variables
-        self.epochs = epochs
+        self.epochs = local_epochs
 
     def run(self):
         """Main procedure of each client is defined here:

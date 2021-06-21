@@ -10,7 +10,7 @@ from fedlab_core.client.topology import ClientPassiveTopology
 from fedlab_core.client.handler import ClientSGDHandler
 from fedlab_utils.dataset.sampler import DistributedSampler
 from models.lenet import LeNet
-
+from fedlab_utils.logger import logger
 
 def get_dataset(args, dataset='MNIST', transform=None, root='/home/zengdun/datasets/mnist/'):
     """
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     model = LeNet()
     trainloader, testloader = get_dataset(args)
 
-    handler = ClientSGDHandler(model, trainloader)
+    handler = ClientSGDHandler(model, trainloader, local_epoch=2)
 
     top = ClientPassiveTopology(handler=handler, server_addr=(
-        args.server_ip, args.server_port), world_size=3, rank=args.local_rank)
+        args.server_ip, args.server_port), world_size=3, rank=args.local_rank, )
     top.run()
