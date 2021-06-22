@@ -18,6 +18,7 @@ import torch
 
 from fedlab_core.client.handler import ClientBackendHandler
 from  fedlab_utils.serialization import SerializationTool
+from fedlab_utils.dataset.sampler import DistributedSampler
 
 class SerialHandler(ABC):
     """An abstract class for serial model training process
@@ -49,7 +50,7 @@ class SerialHandler(ABC):
         return self.model
         
 
-class SerialMultipleHandler(SerialHandler):
+class SerialMultipleHandler(object):
     """an example of SerialHandler
         Every client in this Serial share the same shape of model. Each of them has different
         datasets (differences shows in the init of ClientHandler)
@@ -99,39 +100,45 @@ class SerialMultipleHandler(SerialHandler):
 
     
 
-class SerialSingleHandler(SerialHandler):
+class SerialSingleHandler(object):
     """
     多个模型share一个显存模型
     子client仅维护参数，而不是一个可推理的模型
 
-    该类仅支持序列化学习
+    该类仅支持单进程序列化学习
+
+    已测试
     """
-    def __init__(self, local_model, aggregator, sim_client_num, logger=None) -> None:
-        super().__init__(local_model, aggregator)
-        
-        self.client_handler_list = [i+1 for i in range(sim_client_num)]
-        self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)
+    def __init__(self, local_model, aggregator, dataset, sim_client_num, logger=None) -> None:
+        self.aggregator = aggregator
+        self.model = local_model
+        self.sim_client_num = sim_client_num
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.01)
         self.criterion = torch.nn.CrossEntropyLoss()
 
+        self.trainset = dataset
         self._LOGGER = logging if logger is None else logger
 
-    def get_dataloader(self, client_id):
-        pass
+    def get_dataloader(self, client_id, batch_size):
+        trainloader = torch.utils.data.DataLoader(self.trainset, sampler = DistributedSampler(self.trainset, rank=client_id, num_replicas=self.sim_client_num), batch_size=batch_size)
+        return trainloader
 
-    def train(self, epochs, idx_list, model_parameters, cuda):
+    def train(self, epochs, batch_size, idx_list, model_parameters, cuda):
+        param_list = []
         for id in idx_list:
             self._LOGGER.info("starting training process of client [{}]".format(id))
-            SerializationTool.deserialize_model(self._model, model_parameters)
-            data_loader = self.get_dataloader(id)
+            SerializationTool.deserialize_model(self.model, model_parameters)
+            data_loader = self.get_dataloader(id, batch_size)
+            self.model.train()
             for epoch in range(epochs):
                 loss_sum = 0.0
                 time_begin = time()
-                for step, (data, target) in data_loader:
+                for step, (data, target) in enumerate(data_loader):
                     if cuda:
                         data = data.cuda()
                         target = target.cuda()
                     
-                    output = self._model(data)
+                    output = self.model(data)
 
                     loss = self.criterion(output, target)
 
@@ -139,9 +146,12 @@ class SerialSingleHandler(SerialHandler):
                     loss.backward()
                     self.optimizer.step()
 
-            self._LOGGER.info("Client[{}] Traning. Epoch {}/{}, Loss {}, Time {}".format(id, epoch+1,epochs, loss_sum, time_begin-time()))
-
+                    loss_sum += loss.detach().item()
                     
+                self._LOGGER.info("Client[{}] Traning. Epoch {}/{}, Loss {:.4f}, Time {:.2f}s".format(id, epoch+1,epochs, loss_sum, time()-time_begin))
+            param_list.append(SerializationTool.serialize_model(self.model))
+        
+        return self.aggregator(param_list)
 
 
         

@@ -19,9 +19,9 @@ server端Topology与Handler的关系如下图，Topology处理信息并调用Han
 FedLab提供了同步联邦和异步联邦server端的demo。
 
 ### Client
-client端架构和各模块功能类似于server端，但Topology和Handler的功能和处理细节有所不同。
+client端架构和各模块功能类似于server端，但Topology和Handler的功能和处理细节有所不同。  
 ![image](./docs/imgs/client.png?raw=True)
-其中，异步和同步联邦的Topology通信逻辑如下图，同步联邦学习中，一轮学习的启动由server主导，而异步联邦中由client主导。
+其中，异步和同步联邦的Topology通信逻辑如下图，同步联邦学习中，一轮学习的启动由server主导，而异步联邦中由client主导。  
 ![image](./docs/imgs/topology.png?raw=True)
 ## Docs
 文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/

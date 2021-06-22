@@ -95,11 +95,10 @@ class ClientSGDHandler(ClientBackendHandler):
                 if self.cuda:
                     inputs, labels = inputs.cuda(), labels.cuda()
 
-                self.optimizer.zero_grad()
-
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)
-
+                
+                self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
 
