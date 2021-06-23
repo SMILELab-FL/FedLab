@@ -145,4 +145,3 @@ dmypy.json
 cython_debug/
 
 # dataset
-/fedlab_benchmarks/dataset/mnist/MNIST/
