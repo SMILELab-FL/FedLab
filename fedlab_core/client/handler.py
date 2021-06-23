@@ -1,12 +1,10 @@
 import time
-import os
 from abc import ABC, abstractmethod
 import logging
 
 import torch
 from torch import nn
 
-from fedlab_utils.logger import logger
 from  fedlab_utils.serialization import SerializationTool
 
 

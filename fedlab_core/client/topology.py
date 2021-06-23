@@ -1,11 +1,9 @@
 import logging
-import os
 from abc import ABC, abstractmethod
 
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
-from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
@@ -121,10 +119,10 @@ class ClientPassiveTopology(ClientBasicTopology):
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             s_parameters (torch.Tensor): Serialized model parameters
         """
-        self._LOGGER.info("Paeckage received from {}, message code {}".format(
+        self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
         s_parameters = payload[0]
-        #self._handler.load_parameters(s_parameters)
+        #self._handler.load_parameters(s_parameters) # put restoring model in train() before training
         self._handler.train(model_parameters=s_parameters)
 
     def synchronize(self):
@@ -154,22 +152,20 @@ class ClientActiveTopology(ClientBasicTopology):
             epochs (int): epochs for local train
             logger (`logger`, optional): object of `fedlab_utils.logger`
     """
-    def __init__(self, handler, server_addr, world_size, rank, dist_backend):
-        super().__init__(handler, server_addr, world_size, rank, dist_backend)
-
     def __init__(self,
                  handler,
                  server_addr,
                  world_size,
                  rank,
-                 dist_backend,
-                 local_epochs,
+                 local_epochs=None,
+                 dist_backend='gloo',
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
-        self._LOGGER = logger
-
-        # temp variables
+        self._LOGGER = logging if logger is None else logger
+        # temp variables, can assign train epoch rather than initial epoch value in handler
         self.epochs = local_epochs
+        self.model_gen_time = None  # record received model's generated update time
+
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -186,8 +182,10 @@ class ClientActiveTopology(ClientBasicTopology):
         self.init_network_connection()
         while True:
             self._LOGGER.info("Waiting for server...")
+            # request model actively
+            self.request_model()
             # waits for data from
-            sender_rank, message_code, s_parameters = self.request_model()
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
 
             # exit
             if message_code == MessageCode.Exit:
@@ -196,12 +194,12 @@ class ClientActiveTopology(ClientBasicTopology):
                 exit(0)
 
             # perform local training
-            self.on_receive(sender_rank, message_code, s_parameters)
+            self.on_receive(sender_rank, message_code, payload)
 
             # synchronize with server
             self.synchronize()
 
-    def on_receive(self, sender_rank, message_code, s_parameters):
+    def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform on receiving new message, including local training
 
         Args:
@@ -209,21 +207,23 @@ class ClientActiveTopology(ClientBasicTopology):
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`
             s_parameters (torch.Tensor): Serialized model parameters
         """
-        self._LOGGER.info("Paeckage received from {}, message code {}".format(
+        self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
-
-        #self._handler.load_parameters(s_parameters)
+        s_parameters = payload[0]
+        self.model_gen_time = payload[1]
+        # move loading model params to the start of training
         self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        PackageProcessor.send_model(self._handler.model,
-                                    MessageCode.ParameterUpdate.value,
-                                    dst=0)
+        model_params = SerializationTool.serialize_model(self._handler.model)
+        pack = Package(message_code=MessageCode.ParameterUpdate)
+        pack.append_tensor_list([model_params, self.model_gen_time])
+        PackageProcessor.send_package(pack, dst=0)
 
     def request_model(self):
         # untested
-        self._LOGGER.info("synchronize model parameters with server")
+        self._LOGGER.info("request model parameters from server")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)

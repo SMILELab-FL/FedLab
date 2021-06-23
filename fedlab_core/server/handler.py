@@ -6,10 +6,10 @@ import copy
 from queue import Queue
 
 from abc import ABC, abstractmethod
-from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.aggregator import Aggregators
+
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
@@ -19,6 +19,7 @@ class ParameterServerBackendHandler(ABC):
     Example:
         read sourcecode of :class:`SyncSGDParameterServerHandler` below
     """
+
     def __init__(self, model, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
@@ -64,6 +65,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     ``1.0``
         logger (optional): `fedlab_utils.logger`
     """
+
     def __init__(self,
                  model,
                  client_num_in_total,
@@ -161,6 +163,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Global model in server
         cuda (bool): Use GPUs or not
     """
+
     # TODO: unfinished
     def __init__(self, model, client_num_in_total, cuda=False, logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
@@ -169,23 +172,20 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.client_num_per_round = 2  # test
 
         # package: [model, T]
-        # need a Queue
-
-        self.model_update_time = 0  # record the current model's updated time
-        # need a Queue to receive the updated model from each client, not useful?
+        self.model_update_time = torch.zeros(1)  # record the current model's updated time
+        # need a Queue to receive the updated model from each client
         self.client_model_queue = Queue()
 
     def on_receive(self, sender_rank, message_code, content_list):
         """Define what parameter server does when receiving a single client's message
         """
         self._LOGGER.info(
-            "Processing message: {} from rank {}, the received updated model time is {}, "
+            "Processing message: {} from rank {}, the received updated model's generated time is {}, "
             "the handle's current model time is {}".format(
                 message_code.name, int(sender_rank),
-                int(content_list[1].item()), self.model_update_time))
+                int(content_list[1].item()), int(self.model_update_time.item())))
 
         if message_code == MessageCode.ParameterUpdate:
             # update local model parameters, and update server model async
@@ -210,14 +210,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                 self.model)
             new_serialized_parameters = torch.mul(1 - self.alpha, latest_serialized_parameters) + \
                                         torch.mul(self.alpha, receive_serialized_parameters)
-            SerializationTool.restore_model(self._model,
+            SerializationTool.deserialize_model(self._model,
                                             new_serialized_parameters)
-
-    def select_clients(self):
-        """Return a list of client rank indices selected randomly"""
-        id_list = [i + 1 for i in range(self.client_num_in_total)]
-        selection = random.sample(id_list, self.client_num_per_round)
-        return selection
 
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
