@@ -1,5 +1,4 @@
 import threading
-import os
 import torch
 from queue import Queue
 import logging
@@ -13,6 +12,7 @@ from fedlab_core.communicator.processor import Package, PackageProcessor, Messag
 
 DEFAULT_SERVER_RANK = 0
 
+
 class ServerBasicTopology(Process, ABC):
     """Abstract class for server network topology
 
@@ -23,6 +23,7 @@ class ServerBasicTopology(Process, ABC):
         dist_backend (str): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``
     """
+
     def __init__(self, handler, server_address, dist_backend):
         self._handler = handler
         self.server_address = server_address
@@ -57,6 +58,7 @@ class ServerBasicTopology(Process, ABC):
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)
 
+
 class ServerSynchronousTopology(ServerBasicTopology):
     """Synchronous communication class
 
@@ -70,6 +72,7 @@ class ServerSynchronousTopology(ServerBasicTopology):
         and ``nccl``. Default: ``"gloo"``
         logger （`logger`, optional）:
     """
+
     def __init__(self,
                  handler,
                  server_address,
@@ -123,7 +126,7 @@ class ServerSynchronousTopology(ServerBasicTopology):
             model_params = SerializationTool.serialize_model(
                 self._handler.model)
             pack = Package(message_code=MessageCode.ParameterUpdate, content=model_params)
-            PackageProcessor.send_package(pack,dst=client_idx)
+            PackageProcessor.send_package(pack, dst=client_idx)
 
     def listen_clients(self):
         """Listen messages from clients"""
@@ -138,6 +141,7 @@ class ServerSynchronousTopology(ServerBasicTopology):
             else:
                 self._LOGGER.info(
                     "invalid message code {}".format(message_code))
+
 
 # xiangjing
 # 客户端采用PassiveTopology
@@ -157,11 +161,7 @@ class ServerAsynchronousTopology(ServerBasicTopology):
         self._LOGGER.info(
             "Server initializes with ip address {}:{} and distributed backend {}"
             .format(server_address[0], server_address[1], dist_backend))
-
-        #
-        self.global_activate_epoch = 3  # global_round is global epochs in algorithm, for current test
-        self.has_new_update = False  # when new update is coming, start the next activate
-        self.total_update_time = self.global_activate_epoch * self._handler.client_num_per_round  # to end updater
+        self.total_update_num = 5  # control server to end receiving msg
 
     def run(self):
         """Main process
@@ -173,58 +173,50 @@ class ServerAsynchronousTopology(ServerBasicTopology):
             world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
 
-        #activate = threading.Thread(target=self.activate_clients)
         listen = threading.Thread(target=self.listen_clients)
 
-        #activate.start()
         listen.start()
 
         listen.join()
         self.shutdown_clients()
 
     def activate_clients(self):
-        """Activate some of clients to join each FL epoch
-           when the updated model is coming, start next FL epoch
-        """
-        current_model_epoch_torch = torch.zeros(1)
-        for current_model_epoch in range(self.global_activate_epoch):
-            current_model_epoch_torch[0] = current_model_epoch
-            self._LOGGER.info("Global FL epoch {}/{}".format(
-                current_model_epoch + 1, self.global_activate_epoch))
-
-            clients_this_epoch = self._handler.select_clients()
-            self._LOGGER.info("client id list for this FL round: {}".format(
-                clients_this_epoch))
-
-            for client_idx in clients_this_epoch:
-                # PackageProcessor.send_model_with_time(
-                #     self._handler.model, MessageCode.ParameterUpdate.value, dst=client_idx)
-                pack = Package(message_code=MessageCode.ParameterUpdate)
-                model_params = SerializationTool.serialize_model(
-                    self._handler.model)
-                pack.append_tensor_list(
-                    [model_params, current_model_epoch_torch])
-                PackageProcessor.send_package(pack, dst=client_idx)
-            self.has_new_update = False
-
-            while not self.has_new_update:
-                pass
+        raise NotImplementedError()
 
     def listen_clients(self):
         """Listen messages from clients"""
-        for current_update_time in range(self.total_update_time):
+        current_update_time = torch.zeros(1)
+        while current_update_time < self.total_update_num:
             sender, message_code, content = PackageProcessor.recv_package()
-
+            self._LOGGER.info("Package received from {}, message code {}".format(
+                sender, message_code))
+            # 有关模型和联邦优化算法的处理都放到handler里实现，topology只负责处理网络通信
             # 如果是参数请求，则返回模型信息
             # 如果是模型上传更新，则将信息传到handler处理（调用self._handler.on_receive()
             if message_code == MessageCode.ParameterRequest:
-                pass
+                self._LOGGER.info("Send model to rank {}, the model current updated time {}".format(
+                        sender, int(current_update_time.item())))
+                pack = Package(message_code=MessageCode.ParameterUpdate)
+                model_params = SerializationTool.serialize_model(self._handler.model)
+                pack.append_tensor_list([model_params, self._handler.model_update_time])
+                PackageProcessor.send_package(pack, dst=sender)
             elif message_code == MessageCode.ParameterUpdate:
-                pass
-            # 有关模型和联邦优化算法的处理都放到handler里实现
-            # topology只负责处理网络通信
-            """
-            self._handler.model_update_time = current_update_time
-            self._handler.on_receive(sender, message_code, content)
-            self.has_new_update = True
-            """
+                self._handler.on_receive(sender, message_code, content)
+                current_update_time += 1
+                self._handler.model_update_time = current_update_time
+            else:
+                self._LOGGER.info(
+                    "invalid message code {}".format(message_code))
+        self._LOGGER.info("{} times model update are completed".format(self.total_update_num))
+
+    def shutdown_clients(self):
+        """Shutdown all clients"""
+        for client_idx in range(1, self._handler.client_num_in_total + 1):
+            # deal the remaining package, end communication
+            sender, message_code, payload = PackageProcessor.recv_package(src=client_idx)
+
+            # for model request, end directly; for remaining model update, get the next model request package to end
+            if message_code == MessageCode.ParameterUpdate:
+                PackageProcessor.recv_package(src=client_idx)  # the next package is model request
+            pack = Package(message_code=MessageCode.Exit)
+            PackageProcessor.send_package(pack, dst=client_idx)

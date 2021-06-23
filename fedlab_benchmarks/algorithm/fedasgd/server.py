@@ -1,10 +1,13 @@
+import os
 import sys
+
 sys.path.append('../../../')
 # sys.path.append('/home/zengdun/FedLab/')
 
+from fedlab_utils.logger import logger
 from models.lenet import LeNet
 from fedlab_core.server.handler import AsyncParameterServerHandler
-from fedlab_core.server.topology import ServerAsyncTop
+from fedlab_core.server.topology import ServerAsynchronousTopology
 import argparse
 
 
@@ -18,8 +21,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = LeNet().cpu()
-    ps = AsyncParameterServerHandler(
-        model, client_num_in_total=args.world_size-1)  # client = world_size-1
-    top = ServerAsyncTop(server_handler=ps, server_address=(
-        args.server_ip, args.server_port))
-    top.run()
+    handler_logger = logger(os.path.join("log", "server_handler.txt"), "server")
+    ps = AsyncParameterServerHandler(model, client_num_in_total=args.world_size-1, logger=handler_logger)
+
+    topology_logger = logger(os.path.join("log", "server_topology.txt"), "server")
+    topology = ServerAsynchronousTopology(handler=ps, server_address=(
+        args.server_ip, args.server_port), logger=topology_logger)
+        
+    topology.run()

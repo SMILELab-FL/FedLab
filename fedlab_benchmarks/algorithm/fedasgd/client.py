@@ -1,13 +1,15 @@
-import torchvision.transforms as transforms
 import torchvision
+import torchvision.transforms as transforms
 import torch
 import argparse
 import sys
+import os
 
 sys.path.append('../../../')
 # sys.path.append('/home/zengdun/FedLab/')
 
-from fedlab_core.client.topology import ClientAsyncTop
+from fedlab_utils.logger import logger
+from fedlab_core.client.topology import ClientActiveTopology
 from fedlab_core.client.handler import ClientSGDHandler
 from fedlab_utils.dataset.sampler import DistributedSampler
 from models.lenet import LeNet
@@ -31,8 +33,9 @@ def get_dataset(args, dataset='MNIST', transform=None, root='../../dataset/mnist
         root=root, train=True, download=True, transform=train_transform)
     testset = torchvision.datasets.MNIST(
         root=root, train=False, download=True, transform=test_transform)
-   
-    trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank, num_replicas=args.world_size-1),
+
+    trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank,
+                                                                                   num_replicas=args.world_size - 1),
                                               batch_size=128,
                                               drop_last=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=len(testset),
@@ -50,10 +53,14 @@ if __name__ == "__main__":
     args.cuda = False
 
     model = LeNet()
-
     trainloader, testloader = get_dataset(args)
 
-    handler = ClientSGDHandler(model, trainloader, cuda=args.cuda)
-    top = ClientAsyncTop(client_handler=handler, server_addr=(
-        args.server_ip, args.server_port), world_size=args.world_size, rank=args.local_rank)
-    top.run()
+    handler_logger = logger(os.path.join("log", "client_handler" + str(args.local_rank) + ".txt"),
+                            "client_handler" + str(args.local_rank))
+    handler = ClientSGDHandler(model, trainloader, local_epoch=2, cuda=args.cuda, logger=handler_logger)
+
+    topology_logger = logger(os.path.join("log", "client_topology" + str(args.local_rank) + ".txt"),
+                             "client_topology" + str(args.local_rank))
+    topology = ClientActiveTopology(handler=handler, server_addr=(args.server_ip, args.server_port),
+                                    world_size=args.world_size, rank=args.local_rank, logger=topology_logger)
+    topology.run()
