@@ -32,6 +32,9 @@ class SerialHandler(object):
         logger ():
     """
     def __init__(self, local_model, aggregator, dataset, sim_client_num, logger=None) -> None:
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+        
         self.aggregator = aggregator
         self.model = local_model
         self.sim_client_num = sim_client_num
@@ -43,7 +46,6 @@ class SerialHandler(object):
 
     def get_dataloader(self, client_id, batch_size, sampler=None):
         """
-        
         Args:
             client_id ():
             batch_size ():
