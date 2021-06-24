@@ -8,7 +8,6 @@ import random
 import os 
 import argparse
 import wandb
-wandb.init(project='fedavg', entity='zengdun')
 
 # fedlab modules
 from fedlab_core.client.serial_handler import SerialHandler
@@ -35,15 +34,28 @@ parser.add_argument('--lr', type=float, default=0.1)
 parser.add_argument('--cuda', type=str, default=0)
 args = parser.parse_args()
 
+# wandb config
+
+
+wandb.init(
+  project="fedavg",
+  entity='zengdun',
+  name='test',
+  tags=["baseline", "paper1"],
+)
+
+wandb.config.update(args)
+
 config = wandb.config
 config.learning_rate = 0.1
 config.batch_size = 128
 config.epochs = 10
-
 config.communicate_round = args.com_round
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
 
+
+# prepare to train
 model = LeNet().cuda()
 aggregator = Aggregators.fedavg_aggregate
 criterion = torch.nn.CrossEntropyLoss()

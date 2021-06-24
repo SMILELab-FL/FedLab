@@ -39,7 +39,7 @@ class SerialHandler(object):
         self.aggregator = aggregator
         self.model = local_model
         self.sim_client_num = sim_client_num
-        self.data_slices = client_data_indices
+        self.data_slices = client_data_indices #[0,sim_client_num)
 
         self.optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -54,7 +54,7 @@ class SerialHandler(object):
             batch_size ():
             sampler ():
         """
-        trainloader = torch.utils.data.DataLoader(self.trainset, sampler = AssignSampler(indices=self.data_slices[client_id], shuffle=True), batch_size=batch_size)
+        trainloader = torch.utils.data.DataLoader(self.trainset, sampler = AssignSampler(indices=self.data_slices[client_id-1], shuffle=True), batch_size=batch_size)
         return trainloader
 
     def train(self, epochs, batch_size, idx_list, model_parameters, cuda):
