@@ -33,5 +33,6 @@ def evaluate(model, criterion, test_loader, cuda):
     log_str = "Evaluate, Loss {}, accuracy: {}".format(loss_sum,
                                                        accuracy)
     print(log_str)
+    return loss_sum, accuracy
 
 

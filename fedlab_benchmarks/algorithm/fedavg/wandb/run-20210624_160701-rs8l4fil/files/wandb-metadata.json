@@ -1,0 +1,31 @@
+{
+    "os": "Linux-4.15.0-142-generic-x86_64-with-glibc2.23",
+    "python": "3.9.5",
+    "heartbeatAt": "2021-06-24T08:07:03.393754",
+    "startedAt": "2021-06-24T08:07:01.148488",
+    "docker": null,
+    "gpu": "TITAN Xp",
+    "gpu_count": 4,
+    "cpu_count": 20,
+    "cuda": "10.1.168",
+    "args": [
+        "--com_round",
+        "20",
+        "--epochs",
+        "5",
+        "--cuda",
+        "3"
+    ],
+    "state": "running",
+    "program": "/home/zengdun/FedLab/fedlab_benchmarks/algorithm/fedavg/standalone.py",
+    "codePath": "fedlab_benchmarks/algorithm/fedavg/standalone.py",
+    "git": {
+        "remote": "git@github.com:SMILELab-FL/FedLab.git",
+        "commit": "f08948ad211a2a12339729a051eaa754089eafcf"
+    },
+    "email": "928255708@qq.com",
+    "root": "/home/zengdun/FedLab",
+    "host": "machine09",
+    "username": "zengdun",
+    "executable": "/home/zengdun/anaconda3/envs/fedlab/bin/python"
+}

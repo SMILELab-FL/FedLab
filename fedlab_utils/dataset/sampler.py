@@ -1,11 +1,25 @@
 # unfinished
 
 from copy import deepcopy
-from random import random
-
+import  random
 import torch
 import torch.distributed as dist
 import math
+
+class AssignSampler(torch.utils.data.Sampler):
+    """Sampler that restricts data loading to a subset of the dataset.
+
+    """
+    def __init__(self, indices:list, shuffle=False) -> None:
+        self.indices = indices
+        if shuffle is True:
+            random.shuffle(self.indices)
+
+    def __iter__(self):
+        return iter(self.indices)
+
+    def __len__(self):
+        return len(self.indices)
 
 
 class DistributedSampler(torch.utils.data.distributed.Sampler):
@@ -26,7 +40,7 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         rank (optional): Rank of the current process within num_replicas.
         shuffle (optional): If true (default), sampler will shuffle the indices
     """
-    def __init__(self, dataset, rank, num_replicas, shuffle=True):
+    def __init__(self, dataset, rank, num_replicas):
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError(
@@ -39,7 +53,6 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
                 raise RuntimeError("Requires distributed package to be available")
             rank = dist.get_rank() - 1
         """
-
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank-1
@@ -47,16 +60,10 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         self.num_samples = int(
             math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas
-        self.shuffle = shuffle
 
     def __iter__(self):
         # deterministically shuffle based on epoch
-        g = torch.Generator()
-        g.manual_seed(self.epoch)
-        if self.shuffle:
-            indices = torch.randperm(len(self.dataset), generator=g).tolist()
-        else:
-            indices = list(range(len(self.dataset)))
+        indices = list(range(len(self.dataset)))
 
         # add extra samples to make it evenly divisible
         indices += indices[:(self.total_size - len(indices))]
@@ -80,16 +87,21 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     This is a copy of :class:`torch.utils.data.distributed.DistributedSampler` (28 March 2019)
     with the option to turn off adding extra samples to divide the work evenly.
     """
-    def __init__(self, dataset, add_extra_samples=True):
+    def __init__(self, dataset, rank, num_replicas, add_extra_samples=True):
+
         if torch.distributed.get_rank() == 0:
             print("Using non iid distributed sampler!!!")
+        
         self._dataset = dataset
+        
         if torch.distributed.is_available():
             self._num_replicas = torch.distributed.get_world_size() - 1
             self._rank = torch.distributed.get_rank() - 1
         else:
-            self._num_replicas = 1
-            self._rank = 0
+            print("warning: torch.distributed is not available")
+
+        self._rank = rank
+        self._num_replicas = num_replicas
         self._add_extra_samples = add_extra_samples
         self._epoch = 0
 
@@ -124,10 +136,14 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     def __iter__(self):
         indices = deepcopy(
             self._indices[self._num_samples * self._rank:self._num_samples * (self._rank + 1)])
-        random.seed(self._epoch)
-        random.shuffle(indices)
+
+        #random.seed(self._epoch)
+        #random.shuffle(indices)
+        
         assert len(indices) == self._num_samples
-        self.set_epoch(self._epoch + 1)
+
+        #self.set_epoch(self._epoch + 1)
+        
         return iter(indices)
 
     def __len__(self):

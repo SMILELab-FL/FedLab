@@ -18,6 +18,7 @@ import torch
 
 from  fedlab_utils.serialization import SerializationTool
 from fedlab_utils.dataset.sampler import DistributedSampler
+from fedlab_utils.dataset.sampler import AssignSampler
 
 class SerialHandler(object):
     """
@@ -31,27 +32,29 @@ class SerialHandler(object):
         sim_client_num ():
         logger ():
     """
-    def __init__(self, local_model, aggregator, dataset, sim_client_num, logger=None) -> None:
+    def __init__(self, local_model, aggregator, dataset, sim_client_num, client_data_indices, lr=0.1, logger=None) -> None:
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
         
         self.aggregator = aggregator
         self.model = local_model
         self.sim_client_num = sim_client_num
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.01)
+        self.data_slices = client_data_indices
+
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
         self.criterion = torch.nn.CrossEntropyLoss()
 
         self.trainset = dataset
         self._LOGGER = logging if logger is None else logger
 
-    def get_dataloader(self, client_id, batch_size, sampler=None):
+    def get_dataloader(self, client_id, batch_size):
         """
         Args:
             client_id ():
             batch_size ():
             sampler ():
         """
-        trainloader = torch.utils.data.DataLoader(self.trainset, sampler = DistributedSampler(self.trainset, rank=client_id, num_replicas=self.sim_client_num), batch_size=batch_size)
+        trainloader = torch.utils.data.DataLoader(self.trainset, sampler = AssignSampler(indices=self.data_slices[client_id], shuffle=True), batch_size=batch_size)
         return trainloader
 
     def train(self, epochs, batch_size, idx_list, model_parameters, cuda):

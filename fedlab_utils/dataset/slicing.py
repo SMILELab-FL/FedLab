@@ -14,14 +14,11 @@ work list
     *** 1.完整数据集的切割、存储、读取
     *   2.数据集index的切割、index存储、index映射到完整数据集的读取
 """
+
 import warnings
-
 import numpy as np
-from torchvision import datasets, transforms
-from copy import deepcopy
 
-
-def dataset_noniid(dataset, num_clients, num_shards):
+def noniid_slicing(dataset, num_clients, num_shards):
     """
     将dataset划分为每块大小为num_shards的非独立同分布的块
     按块数量平均分配给num_clients数量的参与者
@@ -59,9 +56,7 @@ def dataset_noniid(dataset, num_clients, num_shards):
     
     return dict_users
 
-
-
-def dataset_random(dataset, num_clients):
+def random_slicing(dataset, num_clients):
     """
     将dataset随机划分分配给num_clients数量的参与者
     返回 各参与者数据集在dataset对应的索引表
@@ -75,61 +70,17 @@ def dataset_random(dataset, num_clients):
     return dict_users
 
 
-def get_dataset(name):
-    if name == "cifar10":
-        dataset_train = datasets.CIFAR10(
-            '../datasets/cifar10/', train=True)
-        dataset_test = datasets.CIFAR10(
-            '../datasets/cifar10/', train=False)
-        return dataset_train, dataset_test
-    elif name == "mnist":
-        dataset_train = datasets.MNIST('../data/mnist/', train=True)
-        dataset_test = datasets.MNIST('../data/mnist/', train=False)
-        return dataset_train, dataset_test
-
-    else:
-        raise ValueError("Invalid dataset name")
-
-
-def divide_dataset(dict_users, dataset_train):
+def divide_dataset(slicing_dict, dataset_train):
     """
     返回数据集分割后的元数据组
     """
     datasets = []
     data = dataset_train.data
     label = np.array(dataset_train.targets)
-    for _, dic in dict_users.items():
+    for _, dic in slicing_dict.items():
         dic = np.array(list(dic))
         client_data = data[dic]
         client_label = list(label[dic])
         client_dataset = (client_data, client_label)
         datasets.append(client_dataset)
     return datasets
-
-
-def cut_dataset(dataset, cutsize, transform=None):
-    """ cut a base dataset into 2 pieces """
-    data = dataset.data
-    targets = dataset.targets
-
-    cut_data = deepcopy(data[0:cutsize])
-    remain_data = deepcopy(data[cutsize:])
-
-    cut_targets = deepcopy(targets[0:cutsize])
-    remain_targets = deepcopy(targets[cutsize:])
-
-    cut_dataset = BaseDataset(
-        data=cut_data, targets=cut_targets, transform=transform)
-    remain_dataset = BaseDataset(
-        data=remain_data, targets=remain_targets, transform=transform)
-
-    return cut_dataset, remain_dataset
-
-
-if __name__ == '__main__':
-    dataset_train = datasets.MNIST('../data/mnist/', train=True, download=True,
-                                   transform=transforms.Compose([
-                                       transforms.ToTensor(),
-                                       transforms.Normalize(
-                                           (0.1307,), (0.3081,))
-                                   ]))
