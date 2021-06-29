@@ -12,7 +12,6 @@ from fedlab_core.communicator.processor import Package, PackageProcessor, Messag
 
 DEFAULT_SERVER_RANK = 0
 
-
 class ServerBasicTopology(Process, ABC):
     """Abstract class for server network topology
 
@@ -23,8 +22,7 @@ class ServerBasicTopology(Process, ABC):
         dist_backend (str): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``
     """
-
-    def __init__(self, handler, server_address, dist_backend):
+    def __init__(self, handler, server_address, dist_backend='gloo'):
         self._handler = handler
         self.server_address = server_address
         self.dist_backend = dist_backend
@@ -35,13 +33,12 @@ class ServerBasicTopology(Process, ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def activate_clients(self):
-        """Activate some of clients to join this FL round"""
-        raise NotImplementedError()
-
-    @abstractmethod
     def listen_clients(self):
         """Listen messages from clients"""
+        raise NotImplementedError()
+    
+    def activate_clients(self):
+        """Activate some of clients to join this FL round"""
         raise NotImplementedError()
 
     def init_network_connection(self, world_size):
@@ -60,7 +57,7 @@ class ServerBasicTopology(Process, ABC):
 
 
 class ServerSynchronousTopology(ServerBasicTopology):
-    """Synchronous communication class
+    """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
     Synchronize with clients following agreements defined in :meth:`run`.
@@ -134,18 +131,25 @@ class ServerSynchronousTopology(ServerBasicTopology):
         # server_handler will turn off train_flag once the global model is updated
         while self._handler.train_flag:
             sender, message_code, payload = PackageProcessor.recv_package()
-            # 把对message_code的判断信息挪到topology层
-            # 因为有的信息不需要下层进行数据操作，而是直接上层返回，handler部分不应该调用network相关模块(解耦合)
             if message_code == MessageCode.ParameterUpdate:
                 self._handler.on_receive(sender, message_code, payload)
             else:
                 self._LOGGER.info(
                     "invalid message code {}".format(message_code))
 
-
-# xiangjing
-# 客户端采用PassiveTopology
 class ServerAsynchronousTopology(ServerBasicTopology):
+    """Asynchronous communication
+
+    This is the top class in our framework which is mainly responsible for network communication of SERVER!.
+    Asynchronize with clients following agreements defined in :meth:`run`.
+
+    Args:
+        server_handler: Subclass of :class:`ParameterServerHandler`
+        server_address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
+        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``. Default: ``"gloo"``
+        logger （`logger`, optional）:
+    """
     def __init__(self,
                  handler,
                  server_address,
@@ -164,9 +168,7 @@ class ServerAsynchronousTopology(ServerBasicTopology):
         self.total_update_num = 5  # control server to end receiving msg
 
     def run(self):
-        """Main process
-
-        """
+        """Main process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
         self.init_network_connection(
@@ -180,16 +182,12 @@ class ServerAsynchronousTopology(ServerBasicTopology):
         listen.join()
         self.shutdown_clients()
 
-    def activate_clients(self):
-        raise NotImplementedError()
-
     def listen_clients(self):
         """Listen messages from clients"""
-        current_update_time = torch.zeros(1)
+        current_update_time = torch.zeros(1) # TODO: current_update_time应该由handler更新
         while current_update_time < self.total_update_num:
             sender, message_code, content = PackageProcessor.recv_package()
-            self._LOGGER.info("Package received from {}, message code {}".format(
-                sender, message_code))
+            self._LOGGER.info("Package received from {}, message code {}".format(sender, message_code))
             # 有关模型和联邦优化算法的处理都放到handler里实现，topology只负责处理网络通信
             # 如果是参数请求，则返回模型信息
             # 如果是模型上传更新，则将信息传到handler处理（调用self._handler.on_receive()
@@ -205,8 +203,8 @@ class ServerAsynchronousTopology(ServerBasicTopology):
                 current_update_time += 1
                 self._handler.model_update_time = current_update_time
             else:
-                self._LOGGER.info(
-                    "invalid message code {}".format(message_code))
+                raise ValueError("Invalid message code {}".format(message_code))
+        
         self._LOGGER.info("{} times model update are completed".format(self.total_update_num))
 
     def shutdown_clients(self):
@@ -214,7 +212,6 @@ class ServerAsynchronousTopology(ServerBasicTopology):
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             # deal the remaining package, end communication
             sender, message_code, payload = PackageProcessor.recv_package(src=client_idx)
-
             # for model request, end directly; for remaining model update, get the next model request package to end
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(src=client_idx)  # the next package is model request

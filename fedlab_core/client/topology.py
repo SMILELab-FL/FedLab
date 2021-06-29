@@ -12,8 +12,7 @@ from fedlab_core.communicator.processor import Package, PackageProcessor
 class ClientBasicTopology(Process, ABC):
     """Abstract class of client topology
 
-    If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its
-    methods.
+    If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its methods.
 
     Example:
         Read the code of :class:`ClientPassiveTopology` and `ClientActiveTopology` to learn how to use this class.
@@ -59,16 +58,15 @@ client的架构不应该被分为同步和异步，而是应该按照被调用�
 class ClientPassiveTopology(ClientBasicTopology):
     """Passive communication topology
 
-        Args:
-            client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
-            client.
-            server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
-            world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
-            rank (int): Rank of the current client process for ``torch.distributed`` initialization
-            dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-            and ``nccl``. Default: ``"gloo"``
-            epochs (int): epochs for local train
-            logger (`logger`, optional): object of `fedlab_utils.logger`
+    Args:
+        client_handler: Subclass of ClientBackendHandler. Provides meth:train and attribute:model
+        server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
+        world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
+        rank (int): Rank of the current client process for ``torch.distributed`` initialization
+        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``. Default: ``"gloo"``
+        epochs (int): epochs for local train
+        logger (`logger`, optional): object of `fedlab_utils.logger`
 
     """
     def __init__(self,
@@ -223,7 +221,6 @@ class ClientActiveTopology(ClientBasicTopology):
         PackageProcessor.send_package(pack, dst=0)
 
     def request_model(self):
-        # untested
         self._LOGGER.info("request model parameters from server")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)

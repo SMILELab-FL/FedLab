@@ -5,11 +5,11 @@ import torch.distributed as dist
 from torch.functional import meshgrid
 from torch.multiprocessing import Process
 
-from ...fedlab_core.client.topology import ClientBasicTop
-from ...fedlab_core.server.topology import ServerBasicTop
-from ...fedlab_utils.serialization import SerializationTool
-from ...fedlab_utils.message_code import MessageCode
-from ...fedlab_core.communicator import Package
+from fedlab_core.client.topology import ClientBasicTop
+from fedlab_core.server.topology import ServerBasicTop
+from fedlab_utils.serialization import SerializationTool
+from fedlab_utils.message_code import MessageCode
+from fedlab_core.communicator import Package
 
 
 """

@@ -20,6 +20,9 @@ class Compressor(ABC):
 
 
 class TopkCompressor(Compressor):
+    """
+    
+    """
     def __init__(self, compress_ratio, fp16_values=False, int32_indices=False):
 
         self.fp16_values = fp16_values

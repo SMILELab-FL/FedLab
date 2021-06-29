@@ -61,11 +61,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Model used in this federation
         client_num_in_total (int): Total number of clients in this federation
         cuda (bool): Use GPUs or not. Default: ``False``
-        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default:
-    ``1.0``
-        logger (optional): `fedlab_utils.logger`
+        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
+        logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
     """
-
     def __init__(self,
                  model,
                  client_num_in_total,
@@ -103,7 +101,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
             serialized_params (torch.Tensor): Serialized local model parameters from client
         """
-
         self._LOGGER.info("Processing message: {} from rank {}".format(
             message_code.name, int(sender_rank)))
 
@@ -163,8 +160,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Global model in server
         cuda (bool): Use GPUs or not
     """
-
-    # TODO: unfinished
     def __init__(self, model, client_num_in_total, cuda=False, logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
 
@@ -189,16 +184,11 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         if message_code == MessageCode.ParameterUpdate:
             # update local model parameters, and update server model async
-            self.add_single_model(sender_rank, content_list)
+            #self.add_single_model(sender_rank, content_list)
+            self.client_model_queue.put(copy.deepcopy(content_list))
             self.update_model()
-        elif message_code == MessageCode.GradientUpdate:
-            raise NotImplementedError()
         else:
-            pass
-
-    def add_single_model(self, sender_rank, content_list):
-        """deal with single model's parameters"""
-        self.client_model_queue.put(copy.deepcopy(content_list))
+            raise ValueError("Unexpected messagecode ", message_code)
 
     def update_model(self, serialized_params_list=None):
         """"update global model from client_model_queue"""
@@ -212,7 +202,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                                         torch.mul(self.alpha, receive_serialized_parameters)
             SerializationTool.deserialize_model(self._model,
                                             new_serialized_parameters)
-
+            self.model_update_time += 1
+    
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
         self.alpha = torch.mul(self.alpha, 1)

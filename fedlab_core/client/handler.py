@@ -12,16 +12,19 @@ class ClientBackendHandler(ABC):
     """An abstract class representing handler for a client backend.
 
     In our framework, we define the backend of client handler show manage its local model.
-    It should have a function to update its model called :meth:`train` and a function called :meth:`evaluate`.
+    It should have a function to update its model called :meth:`train`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
-    should subclass it. All subclasses should overwrite :meth:`train` and :meth:`evaluate`.
+    should subclass it. All subclasses should overwrite :meth:`train`.
 
     Args:
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
-    """
 
+    Attributes:
+        _model (torch.nn.Module): 
+        cuda (bool):
+    """
     def __init__(self, model, cuda):
         self.cuda = cuda
         if self.cuda:
@@ -36,6 +39,7 @@ class ClientBackendHandler(ABC):
 
     @property
     def model(self):
+        """  """
         return self._model
 
 
@@ -50,7 +54,16 @@ class ClientSGDHandler(ClientBackendHandler):
         criterion (optional): loss function used in local training process. If set to ``None``, will use
         :func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
-        logger (optional): `fedlab_utils.logger` 
+        logger (optional): `fedlab_utils.logger`, 
+    
+    Attributes:
+        _model (torch.nn.Module): 
+        cuda (bool):
+        _data_loader:
+        _LOGGER:
+        epoch:
+        optimizer:
+        criterion:
     """
     def __init__(self, model, data_loader, local_epoch, optimizer=None, criterion=None, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)

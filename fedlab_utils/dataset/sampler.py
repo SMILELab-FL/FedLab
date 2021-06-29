@@ -6,9 +6,13 @@ import torch
 import torch.distributed as dist
 import math
 
-class AssignSampler(torch.utils.data.Sampler):
-    """Sampler that restricts data loading to a subset of the dataset.
+class SubsetSampler(torch.utils.data.Sampler):
+    """Subset of a dataset at specified indices. 
+        Similar to torch.utils.data.dataset.Subset, but this is a Sampler used in Dataloader
 
+    Args:
+        indices (list): Indices in the whole set selected for subset
+        shuffle (bool): shuffle the indices or not.
     """
     def __init__(self, indices:list, shuffle=False) -> None:
         self.indices = indices
@@ -21,18 +25,25 @@ class AssignSampler(torch.utils.data.Sampler):
     def __len__(self):
         return len(self.indices)
 
+class FedDistributedSampler(torch.utils.data.Sampler):
+
+    def __init__(self):
+        pass
+
+    def __iter__(self):
+        pass
+
+    def __len__(self):
+        pass
 
 class DistributedSampler(torch.utils.data.distributed.Sampler):
     """Sampler that restricts data loading to a subset of the dataset.
-
     It is especially useful in conjunction with
     :class:`torch.nn.parallel.DistributedDataParallel`. In such case, each
     process can pass a DistributedSampler instance as a DataLoader sampler,
     and load a subset of the original dataset that is exclusive to it.
-
     .. note::
         Dataset is assumed to be of constant size.
-
     Arguments:
         dataset: Dataset used for sampling.
         num_replicas (optional): Number of processes participating in
@@ -80,7 +91,6 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
 
     def set_epoch(self, epoch):
         self.epoch = epoch
-
 
 class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     """

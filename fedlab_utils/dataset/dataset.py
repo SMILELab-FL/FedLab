@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader, Dataset
 
 class DistillDataset(Dataset):
     """ Dataset with data logit and label """
-
     def __init__(self, dataset, logit):
         self.data = dataset.data
         self.targets = dataset.targets

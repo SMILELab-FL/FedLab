@@ -17,20 +17,27 @@ from time import time
 import torch
 
 from  fedlab_utils.serialization import SerializationTool
-from fedlab_utils.dataset.sampler import DistributedSampler
 from fedlab_utils.dataset.sampler import AssignSampler
 
 class SerialHandler(object):
-    """
-    在FedLab架构中作为单个client，逻辑上可以模拟任意数量的参与者模型的训练
-    串行IO
+    """Train multiple clients with a single process.
 
     Args:
-        local_model ():
-        aggregator ():
-        dataset ():
-        sim_client_num ():
-        logger ():
+        local_model (nn.Module): Model used in this federation.
+        aggregator (fedlab_utils.aggregator): function to deal with a list of parameters.
+        dataset (nn.utils.dataset): local dataset for this group of clients.
+        sim_client_num (int): the number of client this class should maintain.
+        logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
+    
+    Attributes:
+        model:
+        aggregator:
+        sim_client_num:
+        optimizer:
+        criterion:
+        trainset:
+        data_slices:
+        _LOGGER:
     """
     def __init__(self, local_model, aggregator, dataset, sim_client_num, client_data_indices, lr=0.1, logger=None) -> None:
         if logger is None:
@@ -39,32 +46,46 @@ class SerialHandler(object):
         self.aggregator = aggregator
         self.model = local_model
         self.sim_client_num = sim_client_num
-        self.data_slices = client_data_indices #[0,sim_client_num)
 
         self.optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
         self.criterion = torch.nn.CrossEntropyLoss()
 
         self.trainset = dataset
+        self.data_slices = client_data_indices #[0,sim_client_num)
+
         self._LOGGER = logging if logger is None else logger
 
-    def get_dataloader(self, client_id, batch_size):
-        """
+    def _get_dataloader(self, client_id, batch_size):
+        """Return a dataloader used in :meth:`train`
+
         Args:
-            client_id ():
-            batch_size ():
-            sampler ():
+            client_id (int): client id to generate this dataloader
+            batch_size (int): batch size
+        
+        Returns:
+            Dataloader for specific client sub-dataset
         """
         trainloader = torch.utils.data.DataLoader(self.trainset, sampler = AssignSampler(indices=self.data_slices[client_id-1], shuffle=True), batch_size=batch_size)
         return trainloader
 
-    def train(self, epochs, batch_size, idx_list, model_parameters, cuda):
-        """
+    def train(self, epochs, model_parameters, batch_size, id_list, cuda):
+        """Train local model with different dataset according to id in id_list.
+
+        Args:
+            epochs (int): number of epoch for local training.
+            model_parameters (torch.Tensor): serialized model paremeters.
+            batch_size (int):
+            id_list (list): client id in this train 
+            cuda (bool): use GPUs or not.
+
+        Returns:
+            Merged serialized params
         """
         param_list = []
-        for id in idx_list:
+        for id in id_list:
             self._LOGGER.info("starting training process of client [{}]".format(id))
             SerializationTool.deserialize_model(self.model, model_parameters)
-            data_loader = self.get_dataloader(id, batch_size)
+            data_loader = self._get_dataloader(id, batch_size)
 
             # classic train pipeline
             self.model.train()
@@ -93,6 +114,7 @@ class SerialHandler(object):
         return self.aggregator(param_list)
 
     def multithreading_train(self):
+        """Train multiple clients with multiple threads."""
         pass
 
         

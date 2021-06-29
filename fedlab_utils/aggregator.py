@@ -1,9 +1,7 @@
-# unfinished
-
 import torch
 
 class Aggregators(object):
-    # 合并模型
+    """Define the algorithm of parameters aggregation"""
     @staticmethod
     def fedavg_aggregate(serialized_params_list):
         serialized_parameters = torch.mean(
