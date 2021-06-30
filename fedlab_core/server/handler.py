@@ -184,25 +184,21 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         if message_code == MessageCode.ParameterUpdate:
             # update local model parameters, and update server model async
-            #self.add_single_model(sender_rank, content_list)
             self.client_model_queue.put(copy.deepcopy(content_list))
-            self.update_model()
+            while self.client_model_queue.empty() is not False:
+                content_list = self.client_model_queue.get()
+                self.adapt_alpha(content_list[1])  # ?
+                receive_serialized_parameters = content_list[0]
+                self.update_model([receive_serialized_parameters])
         else:
             raise ValueError("Unexpected messagecode ", message_code)
 
-    def update_model(self, serialized_params_list=None):
+    def update_model(self, serialized_params_list):
         """"update global model from client_model_queue"""
-        while not self.client_model_queue.empty():
-            content_list = self.client_model_queue.get()
-            self.adapt_alpha(content_list[1])
-            receive_serialized_parameters = content_list[0]
-            latest_serialized_parameters = SerializationTool.serialize_model(
-                self.model)
-            new_serialized_parameters = torch.mul(1 - self.alpha, latest_serialized_parameters) + \
-                                        torch.mul(self.alpha, receive_serialized_parameters)
-            SerializationTool.deserialize_model(self._model,
-                                            new_serialized_parameters)
-            self.model_update_time += 1
+        latest_serialized_parameters = SerializationTool.serialize_model(self.model)
+        merged_params = Aggregators.fedasgd_aggregate(latest_serialized_parameters, serialized_params_list[0], self.alpha) # use aggregator
+        SerializationTool.deserialize_model(self._model, merged_params)
+        self.model_update_time += 1
     
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""

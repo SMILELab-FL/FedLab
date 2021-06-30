@@ -25,16 +25,88 @@ class SubsetSampler(torch.utils.data.Sampler):
     def __len__(self):
         return len(self.indices)
 
+# untested
+# modified from DistributedSampler
 class FedDistributedSampler(torch.utils.data.Sampler):
+    """Sampler that restricts data loading to a subset of the dataset.
+    It is especially useful in conjunction with
+    :class:`torch.nn.parallel.DistributedDataParallel`. In such case, each
+    process can pass a DistributedSampler instance as a DataLoader sampler,
+    and load a subset of the original dataset that is exclusive to it.
+    .. note::
+        Dataset is assumed to be of constant size.
+    Arguments:
+        dataset: Dataset used for sampling.
+        num_replicas (int, optional): Number of processes participating in
+            distributed training. By default, :attr:`world_size` is retrieved from the
+            current distributed group.
+        rank (int, optional): Rank of the current process within :attr:`num_replicas`.
+            By default, :attr:`rank` is retrieved from the current distributed
+            group.
+        shuffle (bool, optional): If ``True`` (default), sampler will shuffle the
+            indices.
+        drop_last (bool, optional): if ``True``, then the sampler will drop the
+            tail of the data to make it evenly divisible across the number of
+            replicas. If ``False``, the sampler will add extra indices to make
+            the data evenly divisible across the replicas. Default: ``False``.
+    """
+    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True, drop_last=False):
 
-    def __init__(self):
-        pass
+        if num_replicas is None:
+            if not dist.is_available():
+                raise RuntimeError("Requires distributed package to be available")
+            num_replicas = dist.get_world_size() - 1
+        if rank is None:
+            if not dist.is_available():
+                raise RuntimeError("Requires distributed package to be available")
+            rank = dist.get_rank() - 1
+        if rank >= num_replicas or rank < 0:
+            raise ValueError(
+                "Invalid rank {}, rank should be in the interval"
+                " [0, {}]".format(rank, num_replicas - 1))
+        
+        self._dataset = dataset
+        
+        self.drop_last = drop_last
+        # If the dataset length is evenly divisible by # of replicas, then there
+        # is no need to drop any data, since the dataset will be split equally.
+        if self.drop_last and len(self.dataset) % self.num_replicas != 0:  # type: ignore[arg-type]
+            # Split to nearest available length that is evenly divisible.
+            # This is to ensure each rank receives the same amount of data when
+            # using this Sampler.
+            self.num_samples = math.ceil(
+                # `type:ignore` is required because Dataset cannot provide a default __len__
+                # see NOTE in pytorch/torch/utils/data/sampler.py
+                (len(self.dataset) - self.num_replicas) / self.num_replicas  # type: ignore[arg-type]
+            )
+        else:
+            self.num_samples = math.ceil(len(self.dataset) / self.num_replicas)  # type: ignore[arg-type]
+        
+        self.total_size = self.num_samples * self.num_replicas
+        self.shuffle = shuffle
 
     def __iter__(self):
-        pass
+        # deterministically shuffle based on epoch
+        indices = list(range(len(self.dataset)))
+
+        # add extra samples to make it evenly divisible
+        indices += indices[:(self.total_size - len(indices))]
+        assert len(indices) == self.total_size
+
+        # subsample
+        indices = indices[self.rank*self.num_samples:(self.rank+1)*self.num_samples]
+        assert len(indices) == self.num_samples
+
+        if self.shuffle is True:
+            random.shuffle(self.indices)
+        
+        return iter(indices)
 
     def __len__(self):
-        pass
+        return self.num_samples
+
+
+# codes below are about to be abandoned
 
 class DistributedSampler(torch.utils.data.distributed.Sampler):
     """Sampler that restricts data loading to a subset of the dataset.
@@ -161,6 +233,3 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
 
     def set_epoch(self, epoch):
         self._epoch = epoch
-
-
-

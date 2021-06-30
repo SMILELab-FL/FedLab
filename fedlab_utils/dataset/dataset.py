@@ -1,32 +1,8 @@
 """
 functions associated with data and dataset operations
+
 """
-import warnings
-
-import numpy as np
-from torchvision import datasets, transforms
-from copy import deepcopy
-from torch.utils.data import DataLoader, Dataset
-
-
-class DistillDataset(Dataset):
-    """ Dataset with data logit and label """
-    def __init__(self, dataset, logit):
-        self.data = dataset.data
-        self.targets = dataset.targets
-        self.logits = logit
-        self.transform = dataset.transform
-        if len(dataset) != len(logit):
-            raise ValueError("Invalid Logit, length does not match")
-
-    def __len__(self):
-        return len(self.logits)
-
-    def __getitem__(self, idx):
-        data, label, logit = self.data[idx], self.targets[idx], self.logits[idx]
-        if self.transform:
-            data = self.transform(data)
-        return data, label, logit
+from torch.utils.data import Dataset
 
 
 class BaseDataset(Dataset):

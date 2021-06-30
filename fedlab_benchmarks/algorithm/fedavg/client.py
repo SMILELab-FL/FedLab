@@ -57,6 +57,7 @@ if __name__ == "__main__":
 
     handler_logger = logger(os.path.join("log", "client_handler" + str(args.local_rank) + ".txt"),
                             "client_handler" + str(args.local_rank))
+                            
     handler = ClientSGDHandler(model, trainloader, local_epoch=2, cuda=args.cuda, logger=handler_logger)
 
     topology_logger = logger(os.path.join("log", "client_topology" + str(args.local_rank) + ".txt"),
