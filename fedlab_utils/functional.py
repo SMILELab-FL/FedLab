@@ -1,6 +1,23 @@
 # unfinished
-
 import torch
+
+class AverageMeter(object):
+    """ class for record train infomation"""
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val = 0.0
+        self.avg = 0.0
+        self.sum = 0.0
+        self.count = 0.0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
 
 def evaluate(model, criterion, test_loader, cuda):
     """
@@ -34,5 +51,3 @@ def evaluate(model, criterion, test_loader, cuda):
                                                        accuracy)
     print(log_str)
     return loss_sum, accuracy
-
-

@@ -1,3 +1,4 @@
+import threading
 
 from queue import Queue
 import torch
@@ -5,11 +6,10 @@ import torch.distributed as dist
 from torch.functional import meshgrid
 from torch.multiprocessing import Process
 
-from fedlab_core.client.topology import ClientBasicTop
-from fedlab_core.server.topology import ServerBasicTop
+from fedlab_core.communicator.package import Package
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
-from fedlab_core.communicator import Package
+from fedlab_core.communicator.processor import PackageProcessor
 
 
 """
@@ -23,7 +23,7 @@ pipe top双进程采用低耦合消息队列同步模式
             server向下层通信[client_list, parameters]
             pipeTop 做id->rank映射包转发
             client将模型上传pipe
-            pipeTop 做合并 mid model并上传[parameters, client_num]
+            pipeTop 做合并 mid model并上传[parameters, client_num] 
             server获得mid model合并 global model  
 """
 
@@ -40,86 +40,87 @@ class MessageQueue(object):
     def get(self):
         return self.MQ.get(block=True)
 
+class Network(object):
+    def __init__(self, server_address, world_size, rank, dist_backend='gloo'):
+        self.world_size = world_size
+        self.rank = rank
+        self.server_address = server_address
+        self.dist_backend = dist_backend
 
-class PipeToClient(ServerBasicTop):
+    def init_network_connection(self):
+        dist.init_process_group(backend=self.dist_backend,
+                                init_method='tcp://{}:{}'.format(
+                                    self.server_address[0],
+                                    self.server_address[1]),
+                                rank=self.rank,
+                                world_size=self.world_size)
+
+
+class PipeToClient(Network):
     """
     向下面向clinet担任mid server的角色，整合参数
     """
-
-    def __init__(self, server_addr, world_size, rank, dist_backend):
+    def __init__(self, server_addr, world_size, rank, dist_backend, write_queue, read_queue):
         super(PipeToClient, self).__init__(
             server_addr, world_size, rank, dist_backend)
 
-        self.mq_read = None
-        self.mq_write = None
-
-        self.model_cache = torch.zeros(
-            size=(self.msg_processor.serialized_param_size)).cpu()
-        self.cache_cnt = 0
-
-        self.rank_map = {}  # 上层rank到下层rank的映射
-
-    def run(self):
-        if self.mq_write is None or self.mq_read is NotImplemented:
-            raise ValueError("invalid MQs")
-        self.init_network_connection()
-
-        while True:
-            message = self.mq_read.get()
-            sender, recver, header, parameters = self.msg_processor.unpack(
-                message)
-            message_code = header
-            if message_code == MessageCode.ParameterUpdate:
-                self.model_cache += parameters
-                self.cache_cnt += 1
-
-    def activate_clients(self, payload):
-        clients_this_round = []
-        for client_idx in clients_this_round:
-            payload = payload
-            self.msg_processor.send_package(payload=payload, dst=client_idx)
-
-    def listen_clients(self):
-        package = self.msg_processor.recv_package()
-        sender, recver, header, parameters = self.msg_processor.unpack(
-            payload=package)
-
-    def load_message_queue(self, write_queue, read_queue):
         self.mq_read = read_queue
         self.mq_write = write_queue
 
+        #self.rank_map = {}  # 上层rank到下层rank的映射
 
-class PipeToServer(ClientBasicTop):
+    def run(self):
+        self.init_network_connection()
+        while True:
+            sender, message_code, payload = PackageProcessor.recv_package()
+            """
+            deal with information hear
+            """
+            self.mq_write.put((sender, message_code, payload))
+
+    def deal_queue(self):
+        """
+        处理上层下传信息
+        """
+        sender, message_code, payload = self.mq_read.get()
+        print("data from {}, message code {}".format(sender, message_code))
+        # implement your functions
+        """
+        """
+        
+
+class PipeToServer(Network):
+    """向topserver担任client的角色，处理和解析消息
+   
     """
-    向topserver担任client的角色，处理和解析消息
-    """
-    def __init__(self, server_addr, world_size, rank, dist_backend):
+    def __init__(self, server_addr, world_size, rank, dist_backend, write_queue, read_queue):
         super(PipeToServer, self).__init__(
             server_addr, world_size, rank, dist_backend)
 
-        self.mq_write = None
-        self.mq_read = None
+        self.mq_write = write_queue
+        self.mq_read = read_queue
 
     def run(self):
-        if self.mq_write is None or self.mq_read is NotImplemented:
-            raise ValueError("invalid MQs")
         self.init_network_connection()
+        while True:
+            sender, message_code, payload = PackageProcessor.recv_package()
+            """
+            deal with information from server
+            """
+            self.mq_write.put((sender, message_code, payload))
 
-    def on_receive(self, sender, message_code, payload):
-        raise NotImplementedError()
+    def deal_queue(self):
+        """
+        处理下层向上传的信息
+        """
+        sender, message_code, payload = self.mq_read.get()
+        print("data from {}, message code {}".format(sender, message_code))
 
-    def synchronize(self):
-        raise NotImplementedError()
-
-    def load_message_queue(self, write_queue, read_queue):
-        self.mq_read = read_queue
-        self.mq_write = write_queue
-
-
-class PipeTop(Process):
-    """
-    Abstract class for server Pipe topology
-    simple example
+        pack = Package(message_code=message_code, content=payload)
+        PackageProcessor.send_package(pack, dst=0)
+        
+class MiddleTopology(Process):
+    """Middle Topology for hierarchical communication pattern
 
     向上屏蔽局部的rank （通过全局rank到局部rank的映射解决）
 
@@ -135,16 +136,12 @@ class PipeTop(Process):
     功能规划：
         rank映射
         子联邦合并
-
     """
-
     def __init__(self, pipe2c, pipe2s):
         self.pipe2c = pipe2c
         self.pipe2s = pipe2s
 
         self.MQs = [MessageQueue(), MessageQueue()]
-        self.pipe2c.load_message_queue(self.MQs[0], self.MQs[1])
-        self.pipe2s.load_message_queue(self.MQs[1], self.MQs[0])
 
     def run(self):
         """process function"""

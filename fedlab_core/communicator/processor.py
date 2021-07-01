@@ -19,8 +19,8 @@ class PackageProcessor(object):
             else:
                 return buffer
 
-        def recv_content(cache_size, src):
-            buffer = torch.zeros(size=(cache_size, ))
+        def recv_content(content_size, src):
+            buffer = torch.zeros(size=(content_size, ))
             dist.recv(buffer, src=src)
             return Package.parse_content(buffer)
 
