@@ -1,10 +1,9 @@
 import threading
 
-from queue import Queue
 import torch
 import torch.distributed as dist
 from torch.functional import meshgrid
-from torch.multiprocessing import Process
+from torch.multiprocessing import Process, Queue, Manager
 
 from fedlab_core.communicator.package import Package
 from fedlab_utils.serialization import SerializationTool
@@ -26,19 +25,6 @@ pipe top双进程采用低耦合消息队列同步模式
             pipeTop 做合并 mid model并上传[parameters, client_num] 
             server获得mid model合并 global model  
 """
-
-class MessageQueue(object):
-    def __init__(self) -> None:
-        self.MQ = Queue(maxsize=10)
-
-    def empty(self):
-        return self.MQ.empty()
-
-    def put(self, package):
-        self.MQ.put(package)
-
-    def get(self):
-        return self.MQ.get(block=True)
 
 class Network(object):
     def __init__(self, server_address, world_size, rank, dist_backend='gloo'):
@@ -141,8 +127,8 @@ class MiddleTopology(Process):
         self.pipe2c = pipe2c
         self.pipe2s = pipe2s
 
-        self.MQs = [MessageQueue(), MessageQueue()]
-
+        self.MQs = [Queue(), Queue()]
+        
     def run(self):
         """process function"""
         self.pipe2c.run()
