@@ -33,7 +33,11 @@ class SerialHandler(object):
         self.dataset = dataset
         self.data_slices = data_slices #[0,sim_client_num)
 
-        self._LOGGER = logging if logger is None else logger
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
 
     def _get_dataloader(self, client_id, batch_size):
         """Return a dataloader used in :meth:`train`

@@ -69,9 +69,14 @@ class ClientSGDHandler(ClientBackendHandler):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-        self._LOGGER = logging if logger is None else logger
         self.epoch = local_epoch
 
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
+            
         if optimizer is None:
             self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)
         else:

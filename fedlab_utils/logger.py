@@ -3,7 +3,8 @@ import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
+                    
+logging.getLogger().setLevel(logging.INFO)
 
 class logger(object):
     """record cmd info to file and print it to cmd at the same time"""

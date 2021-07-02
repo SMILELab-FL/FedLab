@@ -78,7 +78,11 @@ class ClientPassiveTopology(ClientBasicTopology):
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
 
-        self._LOGGER = logging if logger is None else logger
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
 
     def run(self):
         """Main procedure of each client is defined here:
@@ -159,11 +163,16 @@ class ClientActiveTopology(ClientBasicTopology):
                  dist_backend='gloo',
                  logger=None):
         super().__init__(handler, server_addr, world_size, rank, dist_backend)
-        self._LOGGER = logging if logger is None else logger
+        
         # temp variables, can assign train epoch rather than initial epoch value in handler
         self.epochs = local_epochs
         self.model_gen_time = None  # record received model's generated update time
 
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
 
     def run(self):
         """Main procedure of each client is defined here:

@@ -81,7 +81,12 @@ class ServerSynchronousTopology(ServerBasicTopology):
                              server_address=server_address,
                              dist_backend=dist_backend)
 
-        self._LOGGER = logging if logger is None else logger
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
+
         self._LOGGER.info(
             "Server initializes with ip address {}:{} and distributed backend {}"
             .format(server_address[0], server_address[1], dist_backend))
@@ -161,7 +166,12 @@ class ServerAsynchronousTopology(ServerBasicTopology):
                              server_address=server_address,
                              dist_backend=dist_backend)
 
-        self._LOGGER = logging if logger is None else logger
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
+        else:
+            self._LOGGER = logger
+        
         self._LOGGER.info(
             "Server initializes with ip address {}:{} and distributed backend {}"
             .format(server_address[0], server_address[1], dist_backend))

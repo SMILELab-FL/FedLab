@@ -1,18 +1,22 @@
 import threading
+import sys
+
+from torch.distributed.distributed_c10d import send
+
+sys.path.append('/home/zengdun/FedLab/')
+
 
 import torch
 import torch.distributed as dist
-from torch.functional import meshgrid
-from torch.multiprocessing import Process, Queue, Manager
+from torch.multiprocessing import Process, Queue
+torch.multiprocessing.set_sharing_strategy("file_system")
 
 from fedlab_core.communicator.package import Package
-from fedlab_utils.serialization import SerializationTool
-from fedlab_utils.message_code import MessageCode
 from fedlab_core.communicator.processor import PackageProcessor
 
 
 """
-pipe top双进程采用低耦合消息队列同步模式
+pipe top双进程采用耦合消息队列同步模式
     启动流程:
         1. Pipe2Client(下称进程P2C)开启接受参与者网络请求，构成下层group  
            Pipe2Server(下称进程P2S)与上层server通信，构成上层group
@@ -22,34 +26,35 @@ pipe top双进程采用低耦合消息队列同步模式
             server向下层通信[client_list, parameters]
             pipeTop 做id->rank映射包转发
             client将模型上传pipe
-            pipeTop 做合并 mid model并上传[parameters, client_num] 
-            server获得mid model合并 global model  
+            pipeTop 做合并 mid model并上传[parameters, client_num]
+            server获得mid model合并 global model
 """
 
-class Network(object):
+class Network(Process):
     def __init__(self, server_address, world_size, rank, dist_backend='gloo'):
+        super(Network, self).__init__()
         self.world_size = world_size
         self.rank = rank
         self.server_address = server_address
         self.dist_backend = dist_backend
 
     def init_network_connection(self):
+        print("init network with ip address {}:{}".format(self.server_address[0],self.server_address[1]))
         dist.init_process_group(backend=self.dist_backend,
                                 init_method='tcp://{}:{}'.format(
                                     self.server_address[0],
                                     self.server_address[1]),
                                 rank=self.rank,
                                 world_size=self.world_size)
+    
+    def run(self):
+        pass
 
-
-class PipeToClient(Network):
-    """
-    向下面向clinet担任mid server的角色，整合参数
-    """
+class ConnectClient(Network):
+    """connect with clients"""
     def __init__(self, server_addr, world_size, rank, dist_backend, write_queue, read_queue):
-        super(PipeToClient, self).__init__(
+        super(ConnectClient, self).__init__(
             server_addr, world_size, rank, dist_backend)
-
         self.mq_read = read_queue
         self.mq_write = write_queue
 
@@ -57,30 +62,33 @@ class PipeToClient(Network):
 
     def run(self):
         self.init_network_connection()
+        # start a thread watching message queue
+        watching_queue = threading.Thread(target=self.deal_queue)
+        watching_queue.start()
+        
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package()
-            """
-            deal with information hear
-            """
-            self.mq_write.put((sender, message_code, payload))
+            sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
+            print("ConnectClient: recv data from {}, message code {}".format(sender, message_code))
+            self.receive(sender, message_code, payload)
 
     def deal_queue(self):
         """
         处理上层下传信息
         """
-        sender, message_code, payload = self.mq_read.get()
-        print("data from {}, message code {}".format(sender, message_code))
-        # implement your functions
-        """
-        """
-        
+        while True:
+            sender, message_code, payload = self.mq_read.get()
+            print("Watching Queue: data from {}, message code {}".format(sender, message_code))
+            # implement your functions
+            pack = Package(message_code=message_code, content=payload)
+            PackageProcessor.send_package(pack, dst=1)
+    
+    def receive(self, sender, message_code, payload):
+        self.mq_write.put((sender, message_code, payload))
 
-class PipeToServer(Network):
-    """向topserver担任client的角色，处理和解析消息
-   
-    """
+class ConnectServer(Network):
+    """向topserver担任client的角色，处理和解析消息"""
     def __init__(self, server_addr, world_size, rank, dist_backend, write_queue, read_queue):
-        super(PipeToServer, self).__init__(
+        super(ConnectServer, self).__init__(
             server_addr, world_size, rank, dist_backend)
 
         self.mq_write = write_queue
@@ -88,51 +96,48 @@ class PipeToServer(Network):
 
     def run(self):
         self.init_network_connection()
+        # start a thread watching message queue
+        watching_queue = threading.Thread(target=self.deal_queue)
+        watching_queue.start()
+
         while True:
             sender, message_code, payload = PackageProcessor.recv_package()
-            """
-            deal with information from server
-            """
-            self.mq_write.put((sender, message_code, payload))
+            self.receive(sender. message_code, payload)
 
     def deal_queue(self):
-        """
-        处理下层向上传的信息
-        """
-        sender, message_code, payload = self.mq_read.get()
-        print("data from {}, message code {}".format(sender, message_code))
+        """ """
+        while True:
+            sender, message_code, payload = self.mq_read.get()
+            print("data from {}, message code {}".format(sender, message_code))
 
-        pack = Package(message_code=message_code, content=payload)
-        PackageProcessor.send_package(pack, dst=0)
+            pack = Package(message_code=message_code, content=payload)
+            PackageProcessor.send_package(pack, dst=0)
         
-class MiddleTopology(Process):
-    """Middle Topology for hierarchical communication pattern
+    def receive(self, sender, message_code, payload):
+        print("MiddleCoodinator: recv data from {}, message code {}".format(sender, message_code))
+        self.mq_write.put((sender, message_code, payload))
 
-    向上屏蔽局部的rank （通过全局rank到局部rank的映射解决）
 
-    主副进程：
-        server进程，用于管理本地组的子FL系统
-        Pipe主进程，做消息通信和中继
-
-    难点：进程间通信和同步
-        考虑Queue 队列消息传递同步
-
-        采用消息双队列同步和激活进程
-
-    功能规划：
-        rank映射
-        子联邦合并
-    """
-    def __init__(self, pipe2c, pipe2s):
-        self.pipe2c = pipe2c
-        self.pipe2s = pipe2s
-
+class MiddleServer(Process):
+    """Middle Topology for hierarchical communication pattern"""
+    def __init__(self):
+        super(MiddleServer, self).__init__()
+        
         self.MQs = [Queue(), Queue()]
-        
-    def run(self):
-        """process function"""
-        self.pipe2c.run()
-        self.pipe2s.run()
 
-        self.pipe2c.join()
-        self.pipe2s.join()
+    def run(self):
+
+        connect_client = ConnectClient(('127.0.0.1','3002'), world_size=2, rank=0, dist_backend="gloo", write_queue=self.MQs[0], read_queue=self.MQs[1])
+        connect_server = ConnectServer(('127.0.0.1','3001'), world_size=2, rank=1, dist_backend="gloo", write_queue=self.MQs[1], read_queue=self.MQs[0])
+
+        connect_client.start()
+        connect_server.start()
+
+        connect_client.join()
+        connect_server.join()
+
+
+if __name__ == "__main__":
+    middle_server = MiddleServer()
+    middle_server.start()
+    middle_server.join()
