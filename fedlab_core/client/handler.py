@@ -21,9 +21,6 @@ class ClientBackendHandler(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
 
-    Attributes:
-        _model (torch.nn.Module): 
-        cuda (bool):
     """
     def __init__(self, model, cuda):
         self.cuda = cuda
@@ -39,7 +36,7 @@ class ClientBackendHandler(ABC):
 
     @property
     def model(self):
-        """  """
+        """attribute"""
         return self._model
 
 
@@ -49,6 +46,7 @@ class ClientSGDHandler(ClientBackendHandler):
     Args:
         model (torch.nn.Module): model used in federation
         data_loader (torch.Dataloader): :class:`DataLoader` for this client
+        epoch (int): local epoch
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use
         :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
         criterion (optional): loss function used in local training process. If set to ``None``, will use
@@ -56,20 +54,12 @@ class ClientSGDHandler(ClientBackendHandler):
         cuda (bool, optional): use GPUs or not. Default: ``True``
         logger (optional): `fedlab_utils.logger`, 
     
-    Attributes:
-        _model (torch.nn.Module): 
-        cuda (bool):
-        _data_loader:
-        _LOGGER:
-        epoch:
-        optimizer:
-        criterion:
     """
-    def __init__(self, model, data_loader, local_epoch, optimizer=None, criterion=None, cuda=True, logger=None):
+    def __init__(self, model, data_loader, epoch, optimizer=None, criterion=None, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-        self.epoch = local_epoch
+        self.epoch = epoch
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)

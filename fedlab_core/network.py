@@ -3,7 +3,15 @@ from torch.multiprocessing import Process
 
 
 class DistNetwork(object):
-    """Manage distributed network"""
+    """Manage torch.distributed network
+    
+    Args:
+        address (tuple):
+        world_size ():
+        rank ():
+        dist_backend ():
+    
+    """
     def __init__(self, address, world_size, rank, dist_backend='gloo'):
         super(DistNetwork, self).__init__()
         self.address = address
@@ -20,3 +28,5 @@ class DistNetwork(object):
                                 rank=self.rank,
                                 world_size=self.world_size)
     
+    def show_configuration(self):
+        pass

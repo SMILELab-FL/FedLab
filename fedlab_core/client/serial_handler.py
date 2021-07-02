@@ -9,7 +9,7 @@ from  fedlab_utils.serialization import SerializationTool
 from fedlab_utils.dataset.sampler import SubsetSampler
 
 class SerialHandler(object):
-    """Train multiple clients with a single process.
+    """Train multiple clients with a single process or multiple threads.
 
     Args:
         model (nn.Module): Model used in this federation.
@@ -49,7 +49,7 @@ class SerialHandler(object):
         """
         trainloader = torch.utils.data.DataLoader(self.dataset, sampler = SubsetSampler(indices=self.data_slices[client_id-1], shuffle=True), batch_size=batch_size)
         return trainloader
-
+    
     def train(self, model_parameters, epochs, lr, batch_size, id_list, cuda):
         """Train local model with different dataset according to id in id_list.
 
