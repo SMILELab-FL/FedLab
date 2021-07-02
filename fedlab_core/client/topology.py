@@ -17,13 +17,9 @@ class ClientBasicTopology(Process, ABC):
     Example:
         Read the code of :class:`ClientPassiveTopology` and `ClientActiveTopology` to learn how to use this class.
     """
-    def __init__(self, handler, server_addr, world_size, rank, dist_backend):
-
+    def __init__(self, handler, network):
         self._handler = handler
-        self.rank = rank
-        self.server_addr = server_addr
-        self.world_size = world_size
-        self.dist_backend = dist_backend
+        self._network = network
 
     @abstractmethod
     def run(self):
@@ -39,14 +35,6 @@ class ClientBasicTopology(Process, ABC):
     def synchronize(self):
         """Please override this function"""
         raise NotImplementedError()
-
-    def init_network_connection(self):
-        dist.init_process_group(backend=self.dist_backend,
-                                init_method='tcp://{}:{}'.format(
-                                    self.server_addr[0], self.server_addr[1]),
-                                rank=self.rank,
-                                world_size=self.world_size)
-
 
 """
 client的架构不应该被分为同步和异步，而是应该按照被调用算力的方式分为
@@ -71,12 +59,9 @@ class ClientPassiveTopology(ClientBasicTopology):
     """
     def __init__(self,
                  handler,
-                 server_addr,
-                 world_size,
-                 rank,
-                 dist_backend='gloo',
+                 network,
                  logger=None):
-        super().__init__(handler, server_addr, world_size, rank, dist_backend)
+        super().__init__(handler, network)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -91,12 +76,7 @@ class ClientPassiveTopology(ClientBasicTopology):
             3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        self._LOGGER.info(
-            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".
-            format(self.server_addr[0], self.server_addr[1], self.world_size,
-                   self.rank, self.dist_backend))
-
-        self.init_network_connection()
+        self._network.init_network_connection()
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from
@@ -156,13 +136,10 @@ class ClientActiveTopology(ClientBasicTopology):
     """
     def __init__(self,
                  handler,
-                 server_addr,
-                 world_size,
-                 rank,
+                 network,
                  local_epochs=None,
-                 dist_backend='gloo',
                  logger=None):
-        super().__init__(handler, server_addr, world_size, rank, dist_backend)
+        super().__init__(handler, network)
         
         # temp variables, can assign train epoch rather than initial epoch value in handler
         self.epochs = local_epochs
@@ -181,12 +158,7 @@ class ClientActiveTopology(ClientBasicTopology):
             3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        self._LOGGER.info(
-            "connected to server:{}:{},  world size:{}, rank:{}, backend:{}".
-            format(self.server_addr[0], self.server_addr[1], self.world_size,
-                   self.rank, self.dist_backend))
-
-        self.init_network_connection()
+        self._network.init_network_connection()
         while True:
             self._LOGGER.info("Waiting for server...")
             # request model actively

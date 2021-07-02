@@ -1,3 +1,4 @@
+from _typeshed import SupportsDivMod
 import threading
 import sys
 
@@ -15,6 +16,31 @@ from fedlab_core.network import DistNetwork
 from fedlab_core.communicator.package import Package
 from fedlab_core.communicator.processor import PackageProcessor
 
+"""
+class DistNetwork(Process):
+    #Manage distributed network
+    def __init__(self, address, world_size, rank, dist_backend='gloo'):
+        super(DistNetwork, self).__init__()
+        self.address = address
+        self.rank = rank
+        self.world_size = world_size
+        self.dist_backend = dist_backend
+
+    def init_network_connection(self):
+        print("torch.distributed initializeing processing group with ip address {}:{}, rank {}, world size: {}, backend: {}".format(self.address[0],self.address[1],self.rank, self.world_size, self.dist_backend))
+        dist.init_process_group(backend=self.dist_backend,
+                                init_method='tcp://{}:{}'.format(
+                                    self.address[0],
+                                    self.address[1]),
+                                rank=self.rank,
+                                world_size=self.world_size)
+    
+    def run(self):
+        pass
+
+    def on_receive(self, sender, message_code, payload):
+        pass
+"""
 class ConnectClient(Process):
     """connect with clients"""
     def __init__(self, network, write_queue, read_queue):
@@ -48,7 +74,7 @@ class ConnectClient(Process):
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=1)
     
-class ConnectServer(Process):
+class ConnectServer(DistNetwork):
     """向topserver担任client的角色，处理和解析消息"""
     def __init__(self, network, write_queue, read_queue):
         super(ConnectServer, self).__init__()
@@ -65,7 +91,7 @@ class ConnectServer(Process):
 
         while True:
             sender, message_code, payload = PackageProcessor.recv_package()
-            self.on_receive(sender, message_code, payload)
+            self.on_receive(sender. message_code, payload)
 
     def on_receive(self, sender, message_code, payload):
         print("MiddleCoodinator: recv data from {}, message code {}".format(sender, message_code))
@@ -87,11 +113,11 @@ class MiddleServer(Process):
         self.MQs = [Queue(), Queue()]
 
     def run(self):
-
+        
         cnet = DistNetwork(('127.0.0.1','3002'), world_size=2, rank=0, dist_backend="gloo")
         connect_client = ConnectClient(cnet, write_queue=self.MQs[0], read_queue=self.MQs[1])
 
-        snet= DistNetwork(('127.0.0.1','3001'), world_size=2, rank=1, dist_backend="gloo")
+        snet = DistNetwork(('127.0.0.1','3001'), world_size=2, rank=1, dist_backend="gloo")
         connect_server = ConnectServer(snet, write_queue=self.MQs[1], read_queue=self.MQs[0])
 
         connect_client.start()

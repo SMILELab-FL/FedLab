@@ -23,8 +23,6 @@ class SerialHandler(object):
         
     """
     def __init__(self, model, aggregator, dataset, data_slices, logger=None) -> None:
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
         
         self.aggregator = aggregator
         self.model = model
