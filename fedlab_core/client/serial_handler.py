@@ -22,15 +22,19 @@ class SerialHandler(object):
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
         
     """
-    def __init__(self, model, aggregator, dataset, data_slices, logger=None) -> None:
+    def __init__(self, model, dataset, data_slices, optimizer, criterion, aggregator, logger=None) -> None:
         
-        self.aggregator = aggregator
+        
         self.model = model
-        self.client_num = len(data_slices)
 
         self.dataset = dataset
         self.data_slices = data_slices #[0,sim_client_num)
+        self.client_num = len(data_slices)
 
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.aggregator = aggregator
+        
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
             self._LOGGER = logging
@@ -49,6 +53,36 @@ class SerialHandler(object):
         """
         trainloader = torch.utils.data.DataLoader(self.dataset, sampler = SubsetSampler(indices=self.data_slices[client_id-1], shuffle=True), batch_size=batch_size)
         return trainloader
+    
+    def _train_alone(self, model_parameters, epochs, batch_size, lr, cuda):
+        # lock
+            model = deepcopy(self.model)
+            self.optimizer.load_state_dict(model.parameters())
+            # unlock
+            SerializationTool.deserialize_model(model, model_parameters)
+            data_loader = self._get_dataloader(id, batch_size)
+
+            # classic train pipeline
+            model.train()
+            for epoch in range(epochs):
+                loss_sum = 0.0
+                time_begin = time()
+                for _, (data, target) in enumerate(data_loader):
+                    if cuda:
+                        data = data.cuda()
+                        target = target.cuda()
+                    
+                    output = self.model(data)
+
+                    loss = self.criterion(output, target)
+
+                    self.optimizer.zero_grad()
+                    loss.backward()
+                    self.optimizer.step()
+
+                    loss_sum += loss.detach().item()
+
+                print("Client[{}] Traning. Epoch {}/{}, Loss {:.4f}, Time {:.2f}s".format(id, epoch+1,epochs, loss_sum, time()-time_begin))
     
     def train(self, model_parameters, epochs, lr, batch_size, id_list, cuda):
         """Train local model with different dataset according to id in id_list.
@@ -96,41 +130,4 @@ class SerialHandler(object):
         
         # aggregate model parameters
         return self.aggregator(param_list)
-    
-
-    # TODO: implement
-    def multithreading_train(self):
-        """Train multiple clients with multiple threads."""
-        def train_(model_parameters, epochs, batch_size, lr, cuda):
-            # lock
-            model = deepcopy(self.model)
-            optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
-            criterion = torch.nn.CrossEntropyLoss()
-            # unlock
-            SerializationTool.deserialize_model(model, model_parameters)
-            data_loader = self._get_dataloader(id, batch_size)
-
-            # classic train pipeline
-            model.train()
-            for epoch in range(epochs):
-                loss_sum = 0.0
-                time_begin = time()
-                for _, (data, target) in enumerate(data_loader):
-                    if cuda:
-                        data = data.cuda()
-                        target = target.cuda()
-                    
-                    output = self.model(data)
-
-                    loss = self.criterion(output, target)
-
-                    self.optimizer.zero_grad()
-                    loss.backward()
-                    self.optimizer.step()
-
-                    loss_sum += loss.detach().item()
-
-                print("Client[{}] Traning. Epoch {}/{}, Loss {:.4f}, Time {:.2f}s".format(id, epoch+1,epochs, loss_sum, time()-time_begin))
-        pass
-
         

@@ -16,18 +16,28 @@ from fedlab_core.communicator.package import Package
 from fedlab_core.communicator.processor import PackageProcessor
 
 class ConnectClient(Process):
-    """connect with clients"""
+    """Connect with clients.
+
+        This class is a part of middle server which used in hierarchical structure.
+
+        TODO: middle server
+        
+    Args:
+        network (DistNetwork): 
+        write_queue (Queue): message queue
+        read_queue (Queue):  message queue
+    """
     def __init__(self, network, write_queue, read_queue):
         super(ConnectClient, self).__init__()
 
-        self.network = network
+        self._network = network
         self.mq_read = read_queue
         self.mq_write = write_queue
 
         #self.rank_map = {}  # 上层rank到下层rank的映射
 
     def run(self):
-        self.network.init_network_connection()
+        self._network.init_network_connection()
         # start a thread watching message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
@@ -49,16 +59,27 @@ class ConnectClient(Process):
             PackageProcessor.send_package(pack, dst=1)
     
 class ConnectServer(Process):
-    """向topserver担任client的角色，处理和解析消息"""
+    """Connect with server.
+
+        This class is a part of middle server which used in hierarchical structure.
+        
+        TODO:Rank mapper
+
+    Args:
+        network (DistNetwork): 
+        write_queue (Queue): message queue
+        read_queue (Queue):  message queue
+    """
+
     def __init__(self, network, write_queue, read_queue):
         super(ConnectServer, self).__init__()
 
-        self.network = network
+        self._network = network
         self.mq_write = write_queue
         self.mq_read = read_queue
 
     def run(self):
-        self.network.init_network_connection()
+        self._network.init_network_connection()
         # start a thread watching message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
@@ -79,6 +100,7 @@ class ConnectServer(Process):
 
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=0)
+
 
 class MiddleServer(Process):
     """Middle Topology for hierarchical communication pattern"""

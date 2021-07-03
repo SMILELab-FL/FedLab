@@ -7,10 +7,9 @@ class DistNetwork(object):
     
     Args:
         address (tuple):
-        world_size ():
-        rank ():
-        dist_backend ():
-    
+        world_size (int):
+        rank (int):
+        dist_backend (str):
     """
     def __init__(self, address, world_size, rank, dist_backend='gloo'):
         super(DistNetwork, self).__init__()
@@ -29,4 +28,6 @@ class DistNetwork(object):
                                 world_size=self.world_size)
     
     def show_configuration(self):
-        pass
+        info_str = "ip address {}:{}, rank {}, world size: {}, backend: {}".format(self.address[0],self.address[1],self.rank, self.world_size, self.dist_backend)
+        print(info_str)
+        return info_str

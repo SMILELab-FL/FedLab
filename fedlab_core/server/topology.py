@@ -5,8 +5,10 @@ import logging
 
 from abc import ABC, abstractmethod
 import torch.distributed as dist
+from torch.distributed.distributed_c10d import send
 from torch.multiprocessing import Process
 
+from fedlab_core.topology import Topology
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor, MessageCode
 
@@ -23,7 +25,6 @@ class ServerBasicTopology(Process, ABC):
         dist_backend (str): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
         and ``nccl``
     """
-
     def __init__(self, handler, network):
         self._handler = handler
         self._network = network
@@ -33,13 +34,7 @@ class ServerBasicTopology(Process, ABC):
         """Main process, define your server's behavior"""
         raise NotImplementedError()
 
-    @abstractmethod
-    def listen_clients(self):
-        """Listen messages from clients"""
-        raise NotImplementedError()
-
-    def activate_clients(self):
-        """Activate some of clients to join this FL round"""
+    def on_receive(self, sender, message_code, payload):
         raise NotImplementedError()
 
     def shutdown_clients(self):
@@ -49,7 +44,8 @@ class ServerBasicTopology(Process, ABC):
             PackageProcessor.send_package(pack, dst=client_idx)
 
 
-class ServerSynchronousTopology(ServerBasicTopology):
+
+class ServerSynchronousTopology(Topology):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -62,7 +58,6 @@ class ServerSynchronousTopology(ServerBasicTopology):
         and ``nccl``. Default: ``"gloo"``
         logger （`logger`, optional）:
     """
-
     def __init__(self, handler, network, logger=None):
 
         super(ServerSynchronousTopology, self).__init__(handler, network)
@@ -90,15 +85,24 @@ class ServerSynchronousTopology(ServerBasicTopology):
                 round_idx + 1, self.global_round))
 
             activate = threading.Thread(target=self.activate_clients)
-            listen = threading.Thread(target=self.listen_clients)
-
             activate.start()
-            listen.start()
 
-            activate.join()
-            listen.join()
+            while True:
+                sender, message_code, payload = PackageProcessor.recv_package()
+                update_flag = self.on_receive(sender, message_code, payload)
+                if update_flag:
+                    break
 
         self.shutdown_clients()
+
+    def on_receive(self, sender, message_code, payload):
+        if message_code == MessageCode.ParameterUpdate:
+            model_parameters = payload[0]
+            update_flag = self._handler.add_single_model(
+                sender, model_parameters)
+            return update_flag
+        else:
+            raise Exception("Unexpected message code {}".format(message_code))
 
     def activate_clients(self):
         """Activate some of clients to join this FL round"""
@@ -113,20 +117,14 @@ class ServerSynchronousTopology(ServerBasicTopology):
                            content=model_params)
             PackageProcessor.send_package(pack, dst=client_idx)
 
-    def listen_clients(self):
-        """Listen messages from clients"""
-        self._handler.train()  # turn train_flag to True
-        # server_handler will turn off train_flag once the global model is updated
-        while self._handler.train_flag:
-            sender, message_code, payload = PackageProcessor.recv_package()
-            if message_code == MessageCode.ParameterUpdate:
-                self._handler.on_receive(sender, message_code, payload)
-            else:
-                self._LOGGER.info(
-                    "invalid message code {}".format(message_code))
-
-
-class ServerAsynchronousTopology(ServerBasicTopology):
+    def shutdown_clients(self):
+        """Shutdown all clients"""
+        for client_idx in range(1, self._handler.client_num_in_total + 1):
+            pack = Package(message_code=MessageCode.Exit)
+            PackageProcessor.send_package(pack, dst=client_idx)
+    
+    
+class ServerAsynchronousTopology(Topology):
     """Asynchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -139,7 +137,6 @@ class ServerAsynchronousTopology(ServerBasicTopology):
         and ``nccl``. Default: ``"gloo"``
         logger （`logger`, optional）:
     """
-
     def __init__(self, handler, network, logger=None):
 
         super(ServerAsynchronousTopology, self).__init__(handler, network)
@@ -151,23 +148,66 @@ class ServerAsynchronousTopology(ServerBasicTopology):
             self._LOGGER = logger
 
         self.total_update_num = 5  # control server to end receiving msg
+        self.message_queue = Queue()
 
     def run(self):
         """Main process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
-        self.network.init_network_connection(
-            world_size=self._handler.client_num_in_total + 1)
+        self.network.init_network_connection(world_size=self._handler.client_num_in_total + 1)
         self._LOGGER.info("Connect to clients successfully")
+        current_time = 0
+        
+        watching = threading.Thread(target=self.watching_queue)
+        watching.start()
 
-        listen = threading.Thread(target=self.listen_clients)
-        listen.start()
-        listen.join()
+        while current_time < self.total_update_num:
+            sender, message_code, payload = PackageProcessor.recv_package()
+            self.on_receive(sender, message_code, payload)
 
         self.shutdown_clients()
 
+    def on_receive(self, sender, message_code, payload):
+        if message_code == MessageCode.ParameterRequest:
+            pack = Package(message_code=MessageCode.ParameterUpdate)
+            model_params = SerializationTool.serialize_model(
+                self._handler.model)
+            pack.append_tensor_list(
+                [model_params, self._handler.model_update_time])
+            self._LOGGER.info("Send model to rank {}, the model current updated time {}".format(sender, int(self._handler.model_update_time.item())))
+            PackageProcessor.send_package(pack, dst=sender)
+
+        elif message_code == MessageCode.ParameterUpdate:
+            self.message_queue.put((sender, message_code, payload))
+
+        else:
+            raise ValueError(
+                "Unexpected message code {}".format(message_code))
+
+    def watching_queue(self):
+        while True:
+            _, _, payload = self.message_queue.get()
+            parameters = payload[0]
+            model_time = payload[1]
+            self._handler.update_model(parameters, model_time)
+            self.total_update_num += 1
+
+    def shutdown_clients(self):
+        """Shutdown all clients"""
+        for client_idx in range(1, self._handler.client_num_in_total + 1):
+            # deal the remaining package, end communication
+            sender, message_code, payload = PackageProcessor.recv_package(
+                src=client_idx)
+            # for model request, end directly; for remaining model update, get the next model request package to end
+            if message_code == MessageCode.ParameterUpdate:
+                PackageProcessor.recv_package(
+                    src=client_idx)  # the next package is model request
+            pack = Package(message_code=MessageCode.Exit)
+            PackageProcessor.send_package(pack, dst=client_idx)
+    
+    """
     def listen_clients(self):
-        """Listen messages from clients"""
+        #Listen messages from clients
         current_update_time = torch.zeros(
             1)  # TODO: current_update_time应该由handler更新
         while current_update_time < self.total_update_num:
@@ -188,8 +228,10 @@ class ServerAsynchronousTopology(ServerBasicTopology):
                 pack.append_tensor_list(
                     [model_params, self._handler.model_update_time])
                 PackageProcessor.send_package(pack, dst=sender)
+
             elif message_code == MessageCode.ParameterUpdate:
                 self._handler.on_receive(sender, message_code, content)
+
                 current_update_time += 1
                 self._handler.model_update_time = current_update_time
             else:
@@ -198,16 +240,5 @@ class ServerAsynchronousTopology(ServerBasicTopology):
 
         self._LOGGER.info("{} times model update are completed".format(
             self.total_update_num))
-
-    def shutdown_clients(self):
-        """Shutdown all clients"""
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
-            # deal the remaining package, end communication
-            sender, message_code, payload = PackageProcessor.recv_package(
-                src=client_idx)
-            # for model request, end directly; for remaining model update, get the next model request package to end
-            if message_code == MessageCode.ParameterUpdate:
-                PackageProcessor.recv_package(
-                    src=client_idx)  # the next package is model request
-            pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
+    """
+    

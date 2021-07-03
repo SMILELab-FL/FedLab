@@ -8,9 +8,22 @@ from fedlab_core.communicator.package import Package
 
 class PackageProcessor(object):
     """Provide more flexible distributed tensor communication functions based on :func:`torch.distributed.send` and
-    :func:`torch.distributed.recv`"""
+    :func:`torch.distributed.recv`
+    
+    Notes:
+        EVERYTHING is Tensor in FedLab.
+    """
     @staticmethod
     def recv_package(src=None):
+        """Two-segment tensor communication pattern based on ``torch.distributed``
+
+        Pattern is shown as follows:
+            1.1 sender: send a header tensor containing ``content_size`` to receiver
+            1.2 receiver: receive the header, and get the value of ``content_size`` and create a buffer for incoming content
+
+            2.1 sender: send a content tensor composed of a list of tensors and their offsets
+            2.2 receiver: receive the content tensor, and parse it to obtain a tensor list using parser function
+        """
         def recv_header(src=src, parse=True):
             buffer = torch.zeros(size=(config.HEADER_SIZE, ))
             dist.recv(buffer, src=src)

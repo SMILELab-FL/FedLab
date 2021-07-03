@@ -20,8 +20,14 @@ class Compressor(ABC):
 
 
 class TopkCompressor(Compressor):
-    """
-    
+    """ Compressor for federated communication
+
+        Top-k gradient or weights selection
+
+        Args:
+            compress_ratio (float): compress ratio
+            fp16_values (bool): data type
+            int32_indices (bool): data type
     """
     def __init__(self, compress_ratio, fp16_values=False, int32_indices=False):
 
