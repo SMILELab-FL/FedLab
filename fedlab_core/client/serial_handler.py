@@ -5,10 +5,11 @@ from time import time
 
 import torch
 
-from  fedlab_utils.serialization import SerializationTool
+from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.dataset.sampler import SubsetSampler
+from fedlab_core.client.handler import ClientBackendHandler
 
-class SerialHandler(object):
+class SerialHandler(ClientBackendHandler):
     """Train multiple clients with a single process or multiple threads.
 
     Args:
@@ -22,10 +23,9 @@ class SerialHandler(object):
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
         
     """
-    def __init__(self, model, dataset, data_slices, optimizer, criterion, aggregator, logger=None) -> None:
+    def __init__(self, model, dataset, data_slices, optimizer, criterion, aggregator, logger=None, cuda=True) -> None:
         
-        
-        self.model = model
+        super(SerialHandler, self).__init__(model=model, cuda=cuda)
 
         self.dataset = dataset
         self.data_slices = data_slices #[0,sim_client_num)
@@ -84,7 +84,7 @@ class SerialHandler(object):
 
                 print("Client[{}] Traning. Epoch {}/{}, Loss {:.4f}, Time {:.2f}s".format(id, epoch+1,epochs, loss_sum, time()-time_begin))
     
-    def train(self, model_parameters, epochs, lr, batch_size, id_list, cuda):
+    def train(self, model_parameters, epochs, lr, batch_size, id_list, cuda, multi_threading=False):
         """Train local model with different dataset according to id in id_list.
 
         Args:
@@ -97,16 +97,16 @@ class SerialHandler(object):
         Returns:
             Merged serialized params
         """
-        optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
         criterion = torch.nn.CrossEntropyLoss()
         param_list = []
         for id in id_list:
             self._LOGGER.info("starting training process of client [{}]".format(id))
-            SerializationTool.deserialize_model(self.model, model_parameters)
+            SerializationTool.deserialize_model(self._model, model_parameters)
             data_loader = self._get_dataloader(id, batch_size)
 
             # classic train pipeline
-            self.model.train()
+            self._model.train()
             for epoch in range(epochs):
                 loss_sum = 0.0
                 time_begin = time()

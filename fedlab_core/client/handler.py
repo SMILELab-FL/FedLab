@@ -20,8 +20,8 @@ class ClientBackendHandler(ABC):
     Args:
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
-
     """
+    
     def __init__(self, model, cuda):
         self.cuda = cuda
         if self.cuda:
@@ -51,14 +51,14 @@ class ClientSGDHandler(ClientBackendHandler):
         criterion (optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
         logger (optional): `fedlab_utils.logger`, 
-    
+
     """
     def __init__(self, model, data_loader, epoch, optimizer, criterion, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-        self.epoch = epoch
 
+        self.epoch = epoch
         self.optimizer = optimizer
         self.criterion = criterion
 
@@ -73,8 +73,8 @@ class ClientSGDHandler(ClientBackendHandler):
         Client trains its local model on local dataset.
 
         Args:
-            epochs (int): number of epoch for local training
             model_parameters (torch.Tensor): serialized model paremeters
+            epochs (int): number of epoch for current local training
         """
         self._LOGGER.info("starting local train process")
         SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
