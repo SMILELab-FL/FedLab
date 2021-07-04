@@ -55,7 +55,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         client_num_in_total (int): Total number of clients in this federation
         cuda (bool): Use GPUs or not. Default: ``False``
         select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
-        logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
+        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self,
                  model,
@@ -86,30 +86,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         # client buffer
         self.client_buffer_cache = {}
         self.cache_cnt = 0
-
-    """
-    
-    def on_receive(self, sender_rank, message_code, payload) -> None:
-        Define what parameter server does when receiving a single client's message
-
-        Args:
-            sender_rank (int): Rank of client process sending this local model
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            serialized_params (torch.Tensor): Serialized local model parameters from client
-        
-        self._LOGGER.info("Processing message: {} from rank {}".format(
-            message_code.name, int(sender_rank)))
-
-        if message_code == MessageCode.ParameterUpdate:
-            # update model parameters
-            serialized_params = payload[0]
-            self.add_single_model(sender_rank, serialized_params)
-            # update server model when client_buffer_cache is full
-            if self.cache_cnt == self.client_num_per_round:
-                self.update_model(list(self.client_buffer_cache.values()))
-        else:
-            raise Exception("Undefined message type!")
-    """
 
     def select_clients(self):
         """Return a list of client rank indices selected randomly"""
@@ -162,7 +138,9 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     Args:
         model (torch.nn.Module): Global model in server
-        cuda (bool): Use GPUs or not
+        client_num_in_total (int): the num of client in federation.
+        cuda (bool): Use GPUs or not.
+        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self, model, client_num_in_total, cuda=False, logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
@@ -175,31 +153,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.model_update_time = torch.zeros(
-            1)  # record the current model's updated time
-
-        # need a Queue to receive the updated model from each client
-        #self.client_model_queue = Queue()
-
-    """
-    def on_receive(self, sender_rank, message_code, content_list):
-        #Define what parameter server does when receiving a single client's message
-        self._LOGGER.info(
-            "Processing message: {} from rank {}, the received updated model's generated time is {}, "
-            "the handle's current model time is {}".format(
-                message_code.name, int(sender_rank),
-                int(content_list[1].item()), int(self.model_update_time.item())))
-        if message_code == MessageCode.ParameterUpdate:
-            # update local model parameters, and update server model async
-            self.client_model_queue.put(copy.deepcopy(content_list))
-            while self.client_model_queue.empty() is not False:
-                content_list = self.client_model_queue.get()
-                self.adapt_alpha(content_list[1])  # ?
-                receive_serialized_parameters = content_list[0]
-                self.update_model([receive_serialized_parameters])
-        else:
-            raise ValueError("Unexpected messagecode ", message_code)
-    """
+        self.model_update_time = torch.zeros(1)  # record the current model's updated time
 
     def update_model(self, model_parameters, model_time):
         """"update global model from client_model_queue"""

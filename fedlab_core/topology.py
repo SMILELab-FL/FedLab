@@ -6,10 +6,10 @@ class Topology(Process):
     """Abstract class
 
     Args:
-        handler:
-        newtork:
+        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
+        newtork (`DistNetwork`): object to manage torch.distributed network communication.
     """
-    def __init__(self, handler, network):
+    def __init__(self, network, handler=None):
         super(Topology, self).__init__()
         
         self._handler = handler

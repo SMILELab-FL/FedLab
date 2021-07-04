@@ -6,10 +6,11 @@ class DistNetwork(object):
     """Manage torch.distributed network
     
     Args:
-        address (tuple):
-        world_size (int):
-        rank (int):
-        dist_backend (str):
+        address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
+        world_size (int): the size of this distributed group (including server).
+        rank (int): the rank of process in distributed group.
+        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
+        and ``nccl``. Default: ``"gloo"``.
     """
     def __init__(self, address, world_size, rank, dist_backend='gloo'):
         super(DistNetwork, self).__init__()

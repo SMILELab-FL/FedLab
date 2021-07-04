@@ -24,7 +24,7 @@ class ConnectClient(Topology):
         TODO: middle server
         
     Args:
-        network (DistNetwork): 
+        newtork (`DistNetwork`): object to manage torch.distributed network communication.
         write_queue (Queue): message queue
         read_queue (Queue):  message queue
     """
@@ -52,7 +52,7 @@ class ConnectClient(Topology):
         self.mq_write.put((sender, message_code, payload))
 
     def deal_queue(self):
-        """"""
+        """Process message queue"""
         while True:
             sender, message_code, payload = self.mq_read.get()
             print("Watching Queue: data from {}, message code {}".format(sender, message_code))
@@ -67,7 +67,7 @@ class ConnectServer(Topology):
         TODO:Rank mapper
 
     Args:
-        network (DistNetwork): 
+        newtork (`DistNetwork`): object to manage torch.distributed network communication.
         write_queue (Queue): message queue
         read_queue (Queue):  message queue
     """
@@ -90,11 +90,10 @@ class ConnectServer(Topology):
             self.on_receive(sender, message_code, payload)
 
     def on_receive(self, sender, message_code, payload):
-        print("MiddleCoodinator: recv data from {}, message code {}".format(sender, message_code))
         self.mq_write.put((sender, message_code, payload))
 
     def deal_queue(self):
-        """ """
+        """Process message queue"""
         while True:
             sender, message_code, payload = self.mq_read.get()
             print("data from {}, message code {}".format(sender, message_code))

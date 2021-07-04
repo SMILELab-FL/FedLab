@@ -47,7 +47,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
     parser.add_argument('--server_ip', type=str, default='127.0.0.1')
     parser.add_argument('--server_port', type=str, default='3002')
-    parser.add_argument('--world_size', type=int, default=3)
+    parser.add_argument('--world_size', type=int)
     parser.add_argument('--local_rank', type=int)
     
     args = parser.parse_args()
