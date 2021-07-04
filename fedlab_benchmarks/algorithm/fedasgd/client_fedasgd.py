@@ -5,17 +5,17 @@ import argparse
 import sys
 import os
 
-sys.path.append('../../../')
-# sys.path.append('/home/zengdun/FedLab/')
+from torch import nn
+sys.path.append('/home/zengdun/FedLab/')
 
 from fedlab_utils.logger import logger
-from fedlab_core.client.topology import ClientPassiveTopology
+from fedlab_core.client.topology import ClientActiveTopology
 from fedlab_core.client.handler import ClientSGDHandler
 from fedlab_utils.dataset.sampler import DistributedSampler
-from models.lenet import LeNet
+from fedlab_utils.models.lenet import LeNet
+from fedlab_core.network import DistNetwork
 
-
-def get_dataset(args, dataset='MNIST', transform=None, root='../../dataset/mnist/'):
+def get_dataset(args, dataset='MNIST', transform=None, root='/home/zengdun/datasets/mnist/'):
     """
     :param dataset_name:
     :param transform:
@@ -47,21 +47,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
     parser.add_argument('--server_ip', type=str, default='127.0.0.1')
     parser.add_argument('--server_port', type=str, default='3002')
-    parser.add_argument('--local_rank', type=int, default=1)
-    parser.add_argument('--world_size', type=int, default=2)
+    parser.add_argument('--world_size', type=int, default=3)
+    parser.add_argument('--local_rank', type=int)
+    
     args = parser.parse_args()
     args.cuda = False
 
     model = LeNet()
     trainloader, testloader = get_dataset(args)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    criterion = nn.CrossEntropyLoss()
+    handler = ClientSGDHandler(model, trainloader, epoch=2, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
 
-    handler_logger = logger(os.path.join("log", "client_handler" + str(args.local_rank) + ".txt"),
-                            "client_handler" + str(args.local_rank))
-                            
-    handler = ClientSGDHandler(model, trainloader, local_epoch=2, cuda=args.cuda, logger=handler_logger)
-
-    topology_logger = logger(os.path.join("log", "client_topology" + str(args.local_rank) + ".txt"),
-                             "client_topology" + str(args.local_rank))
-    topology = ClientPassiveTopology(handler=handler, server_addr=(
-        args.server_ip, args.server_port), world_size=args.world_size, rank=args.local_rank, logger=topology_logger)
+    network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=args.local_rank)
+    topology = ClientActiveTopology(handler=handler, network=network)
     topology.run()

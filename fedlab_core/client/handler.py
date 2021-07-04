@@ -21,9 +21,6 @@ class ClientBackendHandler(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
 
-    Attributes:
-        _model (torch.nn.Module): 
-        cuda (bool):
     """
     def __init__(self, model, cuda):
         self.cuda = cuda
@@ -39,7 +36,7 @@ class ClientBackendHandler(ABC):
 
     @property
     def model(self):
-        """  """
+        """attribute"""
         return self._model
 
 
@@ -49,40 +46,29 @@ class ClientSGDHandler(ClientBackendHandler):
     Args:
         model (torch.nn.Module): model used in federation
         data_loader (torch.Dataloader): :class:`DataLoader` for this client
-        optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use
-        :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
-        criterion (optional): loss function used in local training process. If set to ``None``, will use
-        :func:`nn.CrossEntropyLoss` as default.
+        epoch (int): local epoch
+        optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
+        criterion (optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``
         logger (optional): `fedlab_utils.logger`, 
     
-    Attributes:
-        _model (torch.nn.Module): 
-        cuda (bool):
-        _data_loader:
-        _LOGGER:
-        epoch:
-        optimizer:
-        criterion:
     """
-    def __init__(self, model, data_loader, local_epoch, optimizer=None, criterion=None, cuda=True, logger=None):
+    def __init__(self, model, data_loader, epoch, optimizer, criterion, cuda=True, logger=None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-        self._LOGGER = logging if logger is None else logger
-        self.epoch = local_epoch
+        self.epoch = epoch
 
-        if optimizer is None:
-            self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)
+        self.optimizer = optimizer
+        self.criterion = criterion
+
+        if logger is None:
+            logging.getLogger().setLevel(logging.INFO)
+            self._LOGGER = logging
         else:
-            self.optimizer = optimizer
+            self._LOGGER = logger
 
-        if criterion is None:
-            self.criterion = nn.CrossEntropyLoss()
-        else:
-            self.criterion = criterion
-
-    def train(self, model_parameters, epochs=None):
+    def train(self, model_parameters, epoch=None):
         """
         Client trains its local model on local dataset.
 
@@ -93,12 +79,12 @@ class ClientSGDHandler(ClientBackendHandler):
         self._LOGGER.info("starting local train process")
         SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
 
-        if epochs is None:
-            local_epoch = self.epoch
+        if epoch is None:
+            epochs = self.epoch
         else:
-            local_epoch = epochs
+            epochs = epoch
     
-        for epoch in range(local_epoch):
+        for epoch in range(epochs):
             start_time = time.time()
             self._model.train()
             loss_sum = 0.0
@@ -116,7 +102,7 @@ class ClientSGDHandler(ClientBackendHandler):
                 loss_sum += loss.detach().item()
             end_time = time.time()
 
-            self._LOGGER.info("Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, local_epoch, loss_sum, end_time-start_time))
+            self._LOGGER.info("Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, epochs, loss_sum, end_time-start_time))
 
     
 

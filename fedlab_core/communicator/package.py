@@ -25,8 +25,7 @@ class Package(object):
 
     Args:
         message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-        header (list, optional): A list containing 4 elements representing sender rank (int), receiver rank (int),
-    content size (int), message code (:class:`MessageCode`) respectively.
+        header (list, optional): A list containing 4 elements representing sender rank (int), receiver rank (int), content size (int), message code (:class:`MessageCode`) respectively.
         content (torch.Tensor, optional): Details shows above.
     """
     def __init__(self, receiver_rank=None, message_code=None, content=None):
