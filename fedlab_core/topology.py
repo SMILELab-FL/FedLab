@@ -10,6 +10,8 @@ class Topology(Process):
         newtork:
     """
     def __init__(self, handler, network):
+        super(Topology, self).__init__()
+        
         self._handler = handler
         self._network = network
 

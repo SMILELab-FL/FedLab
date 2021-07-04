@@ -10,34 +10,6 @@ from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
 
 
-class ClientBasicTopology(Process, ABC):
-    """Abstract class of client topology
-
-    If you want to define your own Network Topology, please be sure your class should subclass it and OVERRIDE its methods.
-
-    Example:
-        Read the code of :class:`ClientPassiveTopology` and `ClientActiveTopology` to learn how to use this class.
-    """
-    def __init__(self, handler, network):
-        self._handler = handler
-        self._network = network
-
-    @abstractmethod
-    def run(self):
-        """Please override this function"""
-        raise NotImplementedError()
-
-    @abstractmethod
-    def on_receive(self, sender_rank, message_code, payload):
-        """Please override this function"""
-        raise NotImplementedError()
-
-    @abstractmethod
-    def synchronize(self):
-        """Please override this function"""
-        raise NotImplementedError()
-
-
 class ClientPassiveTopology(Topology):
     """Passive communication topology
 
@@ -173,7 +145,7 @@ class ClientActiveTopology(Topology):
         s_parameters = payload[0]
         self.model_gen_time = payload[1]
         # move loading model params to the start of training
-        self._handler.train(epochs=self.epochs, model_parameters=s_parameters)
+        self._handler.train(epoch=self.epochs, model_parameters=s_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""

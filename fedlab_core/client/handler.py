@@ -59,9 +59,7 @@ class ClientSGDHandler(ClientBackendHandler):
         self._data_loader = data_loader
         self.epoch = epoch
 
-        #self.optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1, momentum=0.9)
         self.optimizer = optimizer
-        #self.criterion = nn.CrossEntropyLoss()
         self.criterion = criterion
 
         if logger is None:

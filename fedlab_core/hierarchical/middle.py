@@ -14,8 +14,9 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 from fedlab_core.network import DistNetwork
 from fedlab_core.communicator.package import Package
 from fedlab_core.communicator.processor import PackageProcessor
+from fedlab_core.topology import Topology
 
-class ConnectClient(Process):
+class ConnectClient(Topology):
     """Connect with clients.
 
         This class is a part of middle server which used in hierarchical structure.
@@ -28,9 +29,9 @@ class ConnectClient(Process):
         read_queue (Queue):  message queue
     """
     def __init__(self, network, write_queue, read_queue):
-        super(ConnectClient, self).__init__()
+        super(ConnectClient, self).__init__(None, network)
 
-        self._network = network
+        #self._network = network
         self.mq_read = read_queue
         self.mq_write = write_queue
 
@@ -58,7 +59,7 @@ class ConnectClient(Process):
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=1)
     
-class ConnectServer(Process):
+class ConnectServer(Topology):
     """Connect with server.
 
         This class is a part of middle server which used in hierarchical structure.
@@ -72,9 +73,9 @@ class ConnectServer(Process):
     """
 
     def __init__(self, network, write_queue, read_queue):
-        super(ConnectServer, self).__init__()
+        super(ConnectServer, self).__init__(None, network)
 
-        self._network = network
+        #self._network = network
         self.mq_write = write_queue
         self.mq_read = read_queue
 
@@ -100,29 +101,3 @@ class ConnectServer(Process):
 
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=0)
-
-
-class MiddleServer(Process):
-    """Middle Topology for hierarchical communication pattern"""
-    def __init__(self):
-        super(MiddleServer, self).__init__()
-        self.MQs = [Queue(), Queue()]
-
-    def run(self):
-
-        cnet = DistNetwork(('127.0.0.1','3002'), world_size=2, rank=0, dist_backend="gloo")
-        connect_client = ConnectClient(cnet, write_queue=self.MQs[0], read_queue=self.MQs[1])
-
-        snet= DistNetwork(('127.0.0.1','3001'), world_size=2, rank=1, dist_backend="gloo")
-        connect_server = ConnectServer(snet, write_queue=self.MQs[1], read_queue=self.MQs[0])
-
-        connect_client.start()
-        connect_server.start()
-
-        connect_client.join()
-        connect_server.join()
-
-if __name__ == "__main__":
-    middle_server = MiddleServer()
-    middle_server.start()
-    middle_server.join()

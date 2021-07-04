@@ -3,47 +3,12 @@ import torch
 from queue import Queue
 import logging
 
-from abc import ABC, abstractmethod
-import torch.distributed as dist
-from torch.distributed.distributed_c10d import send
-from torch.multiprocessing import Process
 
 from fedlab_core.topology import Topology
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor, MessageCode
 
 DEFAULT_SERVER_RANK = 0
-
-
-class ServerBasicTopology(Process, ABC):
-    """Abstract class for server network topology
-
-    If you want to define your own topology agreements, please subclass it.
-
-    Args:
-        server_address (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
-        dist_backend (str): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-        and ``nccl``
-    """
-    def __init__(self, handler, network):
-        self._handler = handler
-        self._network = network
-
-    @abstractmethod
-    def run(self):
-        """Main process, define your server's behavior"""
-        raise NotImplementedError()
-
-    def on_receive(self, sender, message_code, payload):
-        raise NotImplementedError()
-
-    def shutdown_clients(self):
-        """Shutdown all clients"""
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
-            pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
-
-
 
 class ServerSynchronousTopology(Topology):
     """Synchronous communication
@@ -76,8 +41,7 @@ class ServerSynchronousTopology(Topology):
         self._LOGGER.info(
             "Initializing pytorch distributed group\n Waiting for connection requests from clients"
         )
-        self._network.init_network_connection(
-            world_size=self._handler.client_num_in_total + 1)
+        self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
         for round_idx in range(self.global_round):
@@ -154,17 +118,18 @@ class ServerAsynchronousTopology(Topology):
         """Main process"""
         self._LOGGER.info("Initializing pytorch distributed group")
         self._LOGGER.info("Waiting for connection requests from clients")
-        self.network.init_network_connection(world_size=self._handler.client_num_in_total + 1)
+        self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
-        current_time = 0
         
+        current_time = 0
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
         while current_time < self.total_update_num:
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
-
+            current_time += 1
+        
         self.shutdown_clients()
 
     def on_receive(self, sender, message_code, payload):

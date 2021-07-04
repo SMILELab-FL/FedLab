@@ -27,11 +27,6 @@ class ParameterServerBackendHandler(ABC):
             self._model = model.cpu()
 
     @abstractmethod
-    def on_receive(self, sender_rank, message_code, payload):
-        """Override this function to define what the server to do when receiving message from client"""
-        raise NotImplementedError()
-
-    @abstractmethod
     def update_model(self, serialized_params_list):
         """Override this function to update global model
 
