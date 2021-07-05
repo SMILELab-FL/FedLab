@@ -8,6 +8,8 @@ from fedlab_core.topology import Topology
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
+from fedlab_core.network import DistNetwork
+from fedlab_utils.logger import logger
 
 
 class ClientPassiveTopology(Topology):
@@ -20,8 +22,7 @@ class ClientPassiveTopology(Topology):
         dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``
         logger (`logger`, optional): object of `fedlab_utils.logger`
     """
-
-    def __init__(self, handler, network, logger=None):
+    def __init__(self, handler, network: DistNetwork, logger=None):
         super().__init__(handler, network)
 
         if logger is None:
@@ -91,7 +92,11 @@ class ClientActiveTopology(Topology):
             epochs (int): epochs for local train
             logger (`logger`, optional): object of `fedlab_utils.logger`
     """
-    def __init__(self, handler, network, local_epochs=None, logger=None):
+    def __init__(self,
+                 handler,
+                 network: DistNetwork,
+                 local_epochs: int = None,
+                 logger: logger = None):
         super().__init__(handler, network)
 
         # temp variables, can assign train epoch rather than initial epoch value in handler

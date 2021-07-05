@@ -5,7 +5,8 @@ import logging
 import torch
 from torch import nn
 
-from  fedlab_utils.serialization import SerializationTool
+from fedlab_utils.logger import logger
+from fedlab_utils.serialization import SerializationTool
 
 
 class ClientBackendHandler(ABC):
@@ -21,8 +22,7 @@ class ClientBackendHandler(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
     """
-    
-    def __init__(self, model, cuda):
+    def __init__(self, model: nn.Module, cuda: bool):
         self.cuda = cuda
         if self.cuda:
             self._model = model.cuda()
@@ -53,7 +53,14 @@ class ClientSGDHandler(ClientBackendHandler):
         logger (optional): `fedlab_utils.logger`, 
 
     """
-    def __init__(self, model, data_loader, epoch, optimizer, criterion, cuda=True, logger=None):
+    def __init__(self,
+                 model: torch.nn.Module,
+                 data_loader: torch.utils.data.DataLoader,
+                 epoch: int,
+                 optimizer: torch.optim.Optimizer,
+                 criterion: torch.nn.Module,
+                 cuda: bool = True,
+                 logger: logger = None):
         super(ClientSGDHandler, self).__init__(model, cuda)
 
         self._data_loader = data_loader
@@ -68,7 +75,7 @@ class ClientSGDHandler(ClientBackendHandler):
         else:
             self._LOGGER = logger
 
-    def train(self, model_parameters, epoch=None):
+    def train(self, model_parameters: torch.Tensor, epoch: int = None) -> None:
         """
         Client trains its local model on local dataset.
 
@@ -77,13 +84,14 @@ class ClientSGDHandler(ClientBackendHandler):
             epochs (int): number of epoch for current local training
         """
         self._LOGGER.info("starting local train process")
-        SerializationTool.deserialize_model(self._model, model_parameters) # load paramters
+        SerializationTool.deserialize_model(self._model,
+                                            model_parameters)  # load paramters
 
         if epoch is None:
             epochs = self.epoch
         else:
             epochs = epoch
-    
+
         for epoch in range(epochs):
             start_time = time.time()
             self._model.train()
@@ -94,7 +102,7 @@ class ClientSGDHandler(ClientBackendHandler):
 
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)
-                
+
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
@@ -102,8 +110,6 @@ class ClientSGDHandler(ClientBackendHandler):
                 loss_sum += loss.detach().item()
             end_time = time.time()
 
-            self._LOGGER.info("Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(epoch + 1, epochs, loss_sum, end_time-start_time))
-
-    
-
-    
+            self._LOGGER.info(
+                "Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(
+                    epoch + 1, epochs, loss_sum, end_time - start_time))

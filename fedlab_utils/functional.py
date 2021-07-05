@@ -1,8 +1,7 @@
-# unfinished
 import torch
 
 class AverageMeter(object):
-    """ class for record train infomation"""
+    """Record train infomation"""
     def __init__(self):
         self.reset()
 

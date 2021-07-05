@@ -9,8 +9,4 @@ class MessageCode(Enum):
     ParameterUpdate = 2
     EvaluateParams = 3
     Exit = 4
-
-    # Pipe Topologe agreements
-    Registration = 5
-    IdAssignment = 6
     

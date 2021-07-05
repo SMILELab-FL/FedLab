@@ -3,12 +3,14 @@ import torch
 from queue import Queue
 import logging
 
-
 from fedlab_core.topology import Topology
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor, MessageCode
+from fedlab_core.network import DistNetwork
+from fedlab_utils.logger import logger
 
 DEFAULT_SERVER_RANK = 0
+
 
 class ServerSynchronousTopology(Topology):
     """Synchronous communication
@@ -21,7 +23,7 @@ class ServerSynchronousTopology(Topology):
         newtork (`DistNetwork`): object to manage torch.distributed network communication.
         logger (`fedlab_utils.logger`, optional): Tools, used to output information.
     """
-    def __init__(self, handler, network, logger=None):
+    def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
         super(ServerSynchronousTopology, self).__init__(handler, network)
 
@@ -84,8 +86,8 @@ class ServerSynchronousTopology(Topology):
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)
-    
-    
+
+
 class ServerAsynchronousTopology(Topology):
     """Asynchronous communication
 
@@ -99,7 +101,7 @@ class ServerAsynchronousTopology(Topology):
         and ``nccl``. Default: ``"gloo"``
         logger (`fedlab_utils.logger`, optional): Tools, used to output information.
     """
-    def __init__(self, handler, network, logger=None):
+    def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
         super(ServerAsynchronousTopology, self).__init__(handler, network)
 
@@ -118,7 +120,7 @@ class ServerAsynchronousTopology(Topology):
         self._LOGGER.info("Waiting for connection requests from clients")
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
-        
+
         current_time = 0
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
@@ -127,7 +129,7 @@ class ServerAsynchronousTopology(Topology):
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
             current_time += 1
-        
+
         self.shutdown_clients()
 
     def on_receive(self, sender, message_code, payload):
@@ -137,15 +139,16 @@ class ServerAsynchronousTopology(Topology):
                 self._handler.model)
             pack.append_tensor_list(
                 [model_params, self._handler.model_update_time])
-            self._LOGGER.info("Send model to rank {}, the model current updated time {}".format(sender, int(self._handler.model_update_time.item())))
+            self._LOGGER.info(
+                "Send model to rank {}, the model current updated time {}".
+                format(sender, int(self._handler.model_update_time.item())))
             PackageProcessor.send_package(pack, dst=sender)
 
         elif message_code == MessageCode.ParameterUpdate:
             self.message_queue.put((sender, message_code, payload))
 
         else:
-            raise ValueError(
-                "Unexpected message code {}".format(message_code))
+            raise ValueError("Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
         while True:
@@ -159,12 +162,10 @@ class ServerAsynchronousTopology(Topology):
         """Shutdown all clients"""
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             # deal the remaining package, end communication
-            _, message_code, _ = PackageProcessor.recv_package(
-                src=client_idx)
+            _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
             # for model request, end directly; for remaining model update, get the next model request package to end
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
                     src=client_idx)  # the next package is model request
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)
-    

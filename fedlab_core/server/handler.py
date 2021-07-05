@@ -6,7 +6,6 @@ import copy
 from queue import Queue
 
 from abc import ABC, abstractmethod
-from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.aggregator import Aggregators
 
@@ -19,7 +18,7 @@ class ParameterServerBackendHandler(ABC):
     Example:
         read sourcecode of :class:`SyncSGDParameterServerHandler` below
     """
-    def __init__(self, model, cuda=False) -> None:
+    def __init__(self, model: torch.nn.Module, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
             self._model = model.cuda()
@@ -58,7 +57,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self,
-                 model,
+                 model:torch.nn.Module,
                  client_num_in_total,
                  cuda=False,
                  select_ratio=1.0,
@@ -142,7 +141,11 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not.
         logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
-    def __init__(self, model, client_num_in_total, cuda=False, logger=None):
+    def __init__(self,
+                 model: torch.nn.Module,
+                 client_num_in_total,
+                 cuda=False,
+                 logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
 
         if logger is None:
@@ -153,7 +156,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.model_update_time = torch.zeros(1)  # record the current model's updated time
+        self.model_update_time = torch.zeros(
+            1)  # record the current model's updated time
 
     def update_model(self, model_parameters, model_time):
         """"update global model from client_model_queue"""
