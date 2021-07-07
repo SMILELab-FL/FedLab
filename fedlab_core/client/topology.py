@@ -23,7 +23,7 @@ class ClientPassiveTopology(Topology):
         logger (`logger`, optional): object of `fedlab_utils.logger`
     """
     def __init__(self, handler, network: DistNetwork, logger=None):
-        super().__init__(handler, network)
+        super(ClientPassiveTopology, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -97,7 +97,7 @@ class ClientActiveTopology(Topology):
                  network: DistNetwork,
                  local_epochs: int = None,
                  logger: logger = None):
-        super().__init__(handler, network)
+        super(ClientActiveTopology, self).__init__(network, handler)
 
         # temp variables, can assign train epoch rather than initial epoch value in handler
         self.epochs = local_epochs

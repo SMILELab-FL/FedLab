@@ -25,7 +25,7 @@ class ServerSynchronousTopology(Topology):
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
-        super(ServerSynchronousTopology, self).__init__(handler, network)
+        super(ServerSynchronousTopology, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
