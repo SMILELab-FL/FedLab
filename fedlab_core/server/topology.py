@@ -56,7 +56,6 @@ class ServerSynchronousTopology(Topology):
                 update_flag = self.on_receive(sender, message_code, payload)
                 if update_flag:
                     break
-
         self.shutdown_clients()
 
     def on_receive(self, sender, message_code, payload):

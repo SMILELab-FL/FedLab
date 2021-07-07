@@ -63,7 +63,7 @@ if __name__ == "__main__":
     parser.add_argument('--local_rank', type=int)
     
     args = parser.parse_args()
-    args.cuda = False
+    args.cuda = True
 
     model = LeNet()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
