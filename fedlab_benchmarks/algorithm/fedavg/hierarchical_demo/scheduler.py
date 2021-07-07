@@ -12,10 +12,10 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 
-class MiddleServer(Process):
+class Scheduler(Process):
     """Middle Topology for hierarchical communication pattern"""
     def __init__(self):
-        super(MiddleServer, self).__init__()
+        super(Scheduler, self).__init__()
         self.MQs = [Queue(), Queue()]
 
     def run(self):
@@ -33,6 +33,6 @@ class MiddleServer(Process):
         connect_server.join()
 
 if __name__ == "__main__":
-    middle_server = MiddleServer()
+    middle_server = Scheduler()
     middle_server.start()
     middle_server.join()

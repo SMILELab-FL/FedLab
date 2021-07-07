@@ -3,6 +3,7 @@
 import warnings
 import numpy as np
 
+
 def noniid_slicing(dataset, num_clients, num_shards):
     """Slice a dataset 
     
@@ -21,15 +22,17 @@ def noniid_slicing(dataset, num_clients, num_shards):
                 ...
                 'k': indices of dataset }
     """
-    size_of_shards = int(len(dataset)/num_shards)
+    size_of_shards = int(len(dataset) / num_shards)
     if len(dataset) % num_shards != 0:
         warnings.warn(
-            "warning: the length of dataset isn't divided exactly by num_shard.some samples will be wasted.")
+            "warning: the length of dataset isn't divided exactly by num_shard.some samples will be wasted."
+        )
     # the number of shards that each one of clients can get
-    shard_pc = int(num_shards/num_clients)
+    shard_pc = int(num_shards / num_clients)
     if num_shards % num_clients != 0:
         warnings.warn(
-            "warning: num_shard isn't divided exacly by num_clients. some samples will be wasted.")
+            "warning: num_shard isn't divided exacly by num_clients. some samples will be wasted."
+        )
 
     dict_users = {i: np.array([], dtype='int64') for i in range(num_clients)}
 
@@ -48,9 +51,12 @@ def noniid_slicing(dataset, num_clients, num_shards):
         idx_shard = list(set(idx_shard) - rand_set)
         for rand in rand_set:
             dict_users[i] = np.concatenate(
-                (dict_users[i], idxs[rand*size_of_shards:(rand+1)*size_of_shards]), axis=0)
-    
+                (dict_users[i],
+                 idxs[rand * size_of_shards:(rand + 1) * size_of_shards]),
+                axis=0)
+
     return dict_users
+
 
 def random_slicing(dataset, num_clients):
     """Slice a dataset randomly and equally
@@ -65,13 +71,14 @@ def random_slicing(dataset, num_clients):
                 ...
                 'k': indices of dataset }
     """
-    num_items = int(len(dataset)/num_clients)
+    num_items = int(len(dataset) / num_clients)
     dict_users, all_idxs = {}, [i for i in range(len(dataset))]
     for i in range(num_clients):
-        dict_users[i] = set(np.random.choice(
-            all_idxs, num_items, replace=False))
+        dict_users[i] = set(
+            np.random.choice(all_idxs, num_items, replace=False))
         all_idxs = list(set(all_idxs) - dict_users[i])
     return dict_users
+
 
 def divide_dataset(dataset, slicing_dict):
     """cut a dataset

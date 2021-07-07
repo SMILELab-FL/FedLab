@@ -9,7 +9,7 @@ from fedlab_utils.logger import logger
 from fedlab_utils.serialization import SerializationTool
 
 
-class ClientBackendHandler(ABC):
+class ClientTrainer(ABC):
     """An abstract class representing handler for a client backend.
 
     In our framework, we define the backend of client handler show manage its local model.
@@ -40,7 +40,7 @@ class ClientBackendHandler(ABC):
         return self._model
 
 
-class ClientSGDHandler(ClientBackendHandler):
+class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
@@ -61,7 +61,7 @@ class ClientSGDHandler(ClientBackendHandler):
                  criterion: torch.nn.Module,
                  cuda: bool = True,
                  logger: logger = None):
-        super(ClientSGDHandler, self).__init__(model, cuda)
+        super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
 

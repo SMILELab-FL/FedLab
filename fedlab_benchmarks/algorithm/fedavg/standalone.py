@@ -10,8 +10,8 @@ import argparse
 import wandb
 
 # fedlab modules
-from fedlab_core.client.serial_handler import SerialHandler
-from models.lenet import LeNet
+from fedlab_core.client.serial_trainer import SerialTrainer
+from fedlab_utils.models.lenet import LeNet
 from fedlab_utils.aggregator import Aggregators
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.functional import evaluate
@@ -71,7 +71,7 @@ test_loader = torch.utils.data.DataLoader(testset, batch_size=len(testset), drop
 total_client_num = args.total_client  # client总数
 data_indices = noniid_slicing(trainset, num_clients=args.total_client, num_shards=200)
 
-test_handler = SerialHandler(local_model=deepcopy(model), aggregator=aggregator, dataset=trainset, sim_client_num=total_client_num, client_data_indices=data_indices)
+test_handler = SerialTrainer(local_model=deepcopy(model), aggregator=aggregator, dataset=trainset, sim_client_num=total_client_num, client_data_indices=data_indices)
 model_params = SerializationTool.serialize_model(model)
 to_select = [i+1 for i in range(total_client_num)] # client_id 从1开始
 

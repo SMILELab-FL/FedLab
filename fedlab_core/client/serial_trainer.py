@@ -8,10 +8,10 @@ import torch
 from fedlab_utils.logger import logger
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.dataset.sampler import SubsetSampler
-from fedlab_core.client.handler import ClientBackendHandler
+from fedlab_core.client.trainer import ClientTrainer
 
 
-class SerialHandler(ClientBackendHandler):
+class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.
 
     Args:
@@ -35,7 +35,7 @@ class SerialHandler(ClientBackendHandler):
                  logger: logger = None,
                  cuda: bool = True) -> None:
 
-        super(SerialHandler, self).__init__(model=model, cuda=cuda)
+        super(SerialTrainer, self).__init__(model=model, cuda=cuda)
 
         self.dataset = dataset
         self.data_slices = data_slices  #[0,sim_client_num)
