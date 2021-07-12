@@ -26,6 +26,7 @@ class ReturnThread(threading.Thread):
         except Exception:
             return None
 
+
 class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.
 
@@ -78,7 +79,8 @@ class SerialTrainer(ClientTrainer):
             batch_size=batch_size)
         return trainloader
 
-    def _train_alone(self, id, model, epochs, data_loader, optimizer, criterion, cuda):
+    def _train_alone(self, id, model, epochs, data_loader, optimizer,
+                     criterion, cuda):
         """single round of training
 
         Args:
@@ -145,27 +147,40 @@ class SerialTrainer(ClientTrainer):
         for id in id_list:
             self._LOGGER.info(
                 "starting training process of client [{}]".format(id))
-            
+
             SerializationTool.deserialize_model(self._model, model_parameters)
             criterion = torch.nn.CrossEntropyLoss()
-            data_loader = self._get_dataloader(client_id=id, batch_size=batch_size)
+            data_loader = self._get_dataloader(client_id=id,
+                                               batch_size=batch_size)
+
             if multi_threading is False:
+
                 optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
-                self._train_alone(id, self._model, epochs=epochs, data_loader=data_loader,optimizer=optimizer, criterion=criterion, cuda=cuda)
-                param_list.append(SerializationTool.serialize_model(self.model))
+                self._train_alone(id,
+                                  self._model,
+                                  epochs=epochs,
+                                  data_loader=data_loader,
+                                  optimizer=optimizer,
+                                  criterion=criterion,
+                                  cuda=cuda)
+                param_list.append(SerializationTool.serialize_model(
+                    self.model))
+
             else:
+
                 model = deepcopy(self._model)
                 optimizer = torch.optim.SGD(model.parameters(), lr=lr)
-                args=(id, model, epochs, data_loader, optimizer, criterion, cuda)
+                args = (id, model, epochs, data_loader, optimizer, criterion,
+                        cuda)
                 t = ReturnThread(target=self._train_alone, args=args)
                 t.start()
                 threads.append(t)
-            
+
         if multi_threading is True:
             for t in threads:
                 t.join()
             for t in threads:
                 param_list.append(t.get_result())
-            
+
         # aggregate model parameters
         return self.aggregator(param_list)

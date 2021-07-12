@@ -5,8 +5,7 @@ import argparse
 import sys
 import os
 
-#sys.path.append('../../../')
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 from torch import nn
 from fedlab_utils.logger import logger
 from fedlab_core.client.topology import ClientPassiveTopology
@@ -61,15 +60,18 @@ if __name__ == "__main__":
     parser.add_argument('--server_port', type=str, default='3002')
     parser.add_argument('--world_size', type=int)
     parser.add_argument('--local_rank', type=int)
+
+    parser.add_argument("--epoch", type=int, default=2)
+    parser.add_argument("--lr", type=float, default=0.1)
+    parser.add_argument("--cuda", type=bool, default=True)
     
     args = parser.parse_args()
-    args.cuda = True
 
     model = LeNet()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
     trainloader, testloader = get_dataset(args)
-    handler = ClientSGDTrainer(model, trainloader, epoch=2, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
+    handler = ClientSGDTrainer(model, trainloader, epoch=args.epoch, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
     network = DistNetwork(address=(args.server_ip, args.server_port),
                           world_size=args.world_size,
                           rank=args.local_rank)
