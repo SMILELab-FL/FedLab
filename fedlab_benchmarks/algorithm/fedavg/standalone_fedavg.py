@@ -2,6 +2,7 @@ import sys
 import torch
 sys.path.append('/home/zengdun/FedLab/')
 import torchvision
+from torch import nn
 import torchvision.transforms as transforms
 from copy import deepcopy
 import random
@@ -32,25 +33,22 @@ parser.add_argument('--lr', type=float, default=0.1)
 
 # cuda config
 parser.add_argument('--cuda', type=str, default=0)
+
+
+parser.add_argument('--wandb', type=bool, default=False)
+
 args = parser.parse_args()
 
 # wandb config
+if args.wandb:
+    wandb.init(
+    project="fedavg",
+    entity='zengdun',
+    name='test',
+    tags=["baseline", "paper1"],
+    )
 
-
-wandb.init(
-  project="fedavg",
-  entity='zengdun',
-  name='test',
-  tags=["baseline", "paper1"],
-)
-
-wandb.config.update(args)
-
-config = wandb.config
-config.learning_rate = 0.1
-config.batch_size = 128
-config.epochs = 10
-config.communicate_round = args.com_round
+    wandb.config.update(args)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
 
@@ -71,14 +69,19 @@ test_loader = torch.utils.data.DataLoader(testset, batch_size=len(testset), drop
 total_client_num = args.total_client  # client总数
 data_indices = noniid_slicing(trainset, num_clients=args.total_client, num_shards=200)
 
-test_handler = SerialTrainer(local_model=deepcopy(model), aggregator=aggregator, dataset=trainset, sim_client_num=total_client_num, client_data_indices=data_indices)
+local_model = deepcopy(model)
+criterion = nn.CrossEntropyLoss()
+
+test_handler = SerialTrainer(model=local_model, dataset=trainset, data_slices=data_indices, aggregator=aggregator)
 model_params = SerializationTool.serialize_model(model)
 to_select = [i+1 for i in range(total_client_num)] # client_id 从1开始
 
 for round in range(args.com_round):
     selection = random.sample(to_select, args.num_per_round)
     print(selection)
-    model_params = test_handler.train(epochs=args.epochs, batch_size=args.batch_size, idx_list=selection, model_parameters=model_params, cuda=True)
+    model_params = test_handler.train(model_parameters=model_params, epochs=args.epochs, lr=0.1, batch_size=args.batch_size, id_list=selection, cuda=True, multi_threading=True )
     SerializationTool.deserialize_model(model, model_params)
     loss, acc = evaluate(model, criterion, test_loader, cuda=True)
-    wandb.log({"Test Accuracy": acc})
+
+    if args.wandb:
+        wandb.log({"Test Accuracy": acc})
