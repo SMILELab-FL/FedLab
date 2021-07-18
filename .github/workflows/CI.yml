@@ -34,15 +34,15 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Cache pip macOS
-          uses: actions/cache@v2
-          if: startsWith(runner.os, 'macOS')
-          with:
-            # This path is specific to macOS
-            path: ~/Library/Caches/pip
-            # Look to see if there is a cache hit for the corresponding requirements file
-            key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-            restore-keys: |
-              ${{ runner.os }}-pip-
+        uses: actions/cache@v2
+        if: startsWith(runner.os, 'macOS')
+        with:
+          # This path is specific to macOS
+          path: ~/Library/Caches/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: pip install -r requirements.txt
