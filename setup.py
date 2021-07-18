@@ -29,8 +29,8 @@ setup(
     long_description=get_readme(),
     url="https://github.com/SMILELab-FL/FedLab",
     packages=find_packages(exclude=['docs', 'tests']),  # TODO: add things in 'exclude'
-    install_requires=['torch==1.7.1',
-                      'torchvision==0.8.2',
+    install_requires=['torch>=1.7.1',
+                      'torchvision>=0.8.2',
                       'numpy'],
     python_requires='>=3.6',
     classifiers=[
