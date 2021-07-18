@@ -42,7 +42,7 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
 
-        'License :: OSI Approved :: MIT License',  # TODO: is MIT proper???
+        'License :: OSI Approved :: Apache Software License',
 
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
