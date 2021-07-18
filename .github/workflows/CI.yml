@@ -36,7 +36,7 @@ jobs:
         run: |
           pip install coverage
           pip install codecov
-          coverage run --source=fedlab_core,fedlab_utiles setup.py test
+          coverage run --source=fedlab_core,fedlab_utils setup.py test
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
