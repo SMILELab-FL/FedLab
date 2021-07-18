@@ -11,16 +11,20 @@ jobs:
     strategy:
       matrix:
         python-version: [ 3.6, 3.7, 3.8 ]
+        torch-version: [1.7.1, 1.8.1]
         os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
+
+      - name: Cache pip Linux
         uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -28,7 +32,17 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-            ${{ runner.os }}-
+
+      - name: Cache pip macOS
+          uses: actions/cache@v2
+          if: startsWith(runner.os, 'macOS')
+          with:
+            # This path is specific to macOS
+            path: ~/Library/Caches/pip
+            # Look to see if there is a cache hit for the corresponding requirements file
+            key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+            restore-keys: |
+              ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: pip install -r requirements.txt
