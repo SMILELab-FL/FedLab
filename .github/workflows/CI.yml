@@ -11,8 +11,13 @@ jobs:
     strategy:
       matrix:
         python-version: [ 3.6, 3.7, 3.8 ]
-        torch-version: [1.7.1, 1.8.1]
+        torch-version: [1.7.1, 1.8.0]
         os: [ubuntu-latest, macos-latest]
+        include:
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+        - os: macos-latest
+          path: ~/Library/Caches/pip
 
     steps:
       - uses: actions/checkout@v2
@@ -22,23 +27,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Cache pip Linux
+      - name: Cache pip
         uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
         with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Cache pip macOS
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          # This path is specific to macOS
-          path: ~/Library/Caches/pip
+          # This path is depend on os
+          path: ${{ matrix.path }}
           # Look to see if there is a cache hit for the corresponding requirements file
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
