@@ -8,17 +8,16 @@ import unittest
 import os
 from random import randint
 
-from fedlab_core.communicator.processor import (HEADER_SENDER_RANK_IDX,
-                                                HEADER_RECVER_RANK_IDX,
+from fedlab_core.communicator.package import (HEADER_SENDER_RANK_IDX,
+                                                HEADER_RECEIVER_RANK_IDX,
                                                 HEADER_CONTENT_SIZE_IDX,
                                                 HEADER_MESSAGE_CODE_IDX,
-                                                DEFAULT_RECVER_RANK,
+                                                DEFAULT_RECEIVER_RANK,
                                                 DEFAULT_CONTENT_SIZE,
                                                 DEFAULT_MESSAGE_CODE_VALUE,
                                                 HEADER_SIZE)
 
-from fedlab_core.communicator.processor import Package
-from fedlab_core.communicator.processor import PackageProcessor
+from fedlab_core.communicator.package import Package
 from fedlab_utils.message_code import MessageCode
 
 import torch
@@ -59,7 +58,7 @@ class PackageTestCase(unittest.TestCase):
     def test_init_package_default(self):
         p = Package()
         self._assert_tensor_eq(p.header, torch.Tensor([dist.get_rank(),
-                                                       DEFAULT_RECVER_RANK,
+                                                       DEFAULT_RECEIVER_RANK,
                                                        DEFAULT_CONTENT_SIZE,
                                                        DEFAULT_MESSAGE_CODE_VALUE]))
         self._assert_tensor_eq(p.content, torch.zeros(size=(1,)))
@@ -78,17 +77,17 @@ class PackageTestCase(unittest.TestCase):
         self.assertEqual(int(p2.header[HEADER_CONTENT_SIZE_IDX]), self.content_size)
 
     def test_init_package_without_content(self):
-        p1 = Package(recver_rank=self.recver_rank, message_code=self.message_code)
+        p1 = Package(receiver_rank=self.recver_rank, message_code=self.message_code)
         h1 = torch.Tensor(size=(HEADER_SIZE,))
-        h1[HEADER_RECVER_RANK_IDX] = self.recver_rank
+        h1[HEADER_RECEIVER_RANK_IDX] = self.recver_rank
         h1[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         h1[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
         h1[HEADER_MESSAGE_CODE_IDX] = self.message_code.value
         self._assert_tensor_eq(p1.header, h1)
 
-        p2 = Package(recver_rank=self.recver_rank, message_code=self.message_code_value)
+        p2 = Package(receiver_rank=self.recver_rank, message_code=self.message_code_value)
         h2 = torch.Tensor(size=(HEADER_SIZE,))
-        h2[HEADER_RECVER_RANK_IDX] = self.recver_rank
+        h2[HEADER_RECEIVER_RANK_IDX] = self.recver_rank
         h2[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         h2[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
         h2[HEADER_MESSAGE_CODE_IDX] = self.message_code_value
@@ -97,7 +96,7 @@ class PackageTestCase(unittest.TestCase):
         with self.assertRaises(AssertionError):
             p3 = Package(message_code=3.5)
         with self.assertRaises(AssertionError):
-            p4 = Package(recver_rank=4.5)
+            p4 = Package(receiver_rank=4.5)
 
     def test_append_tensor(self):
         p = Package()
@@ -129,7 +128,7 @@ class PackageTestCase(unittest.TestCase):
 
     def test_parse_header(self):
         # test on package with empty content
-        p_no_content = Package(recver_rank=self.recver_rank, message_code=self.message_code_value)
+        p_no_content = Package(receiver_rank=self.recver_rank, message_code=self.message_code_value)
         sender_rank, recver_rank, content_size, message_code = Package.parse_header(p_no_content.header)
         self.assertEqual(sender_rank, dist.get_rank())
         self.assertEqual(recver_rank, self.recver_rank)
@@ -137,7 +136,7 @@ class PackageTestCase(unittest.TestCase):
         self.assertEqual(message_code, self.message_code)
 
         # test on package with empty content
-        p_with_content = Package(recver_rank=self.recver_rank, message_code=self.message_code_value,
+        p_with_content = Package(receiver_rank=self.recver_rank, message_code=self.message_code_value,
                                  content=self.tensor_list)
         sender_rank, recver_rank, content_size, message_code = Package.parse_header(p_with_content.header)
         self.assertEqual(sender_rank, dist.get_rank())

@@ -61,5 +61,5 @@ class SerializationTestCase(unittest.TestCase):
         model = Net(self.input_size, self.hidden_size, self.num_classes)
         self._model_params_neq(self.model, model)
         serialized_params = SerializationTool.serialize_model(self.model)
-        SerializationTool.restore_model(model, serialized_params)
+        SerializationTool.deserialize_model(model, serialized_params)
         self._model_params_eq(self.model, model)
