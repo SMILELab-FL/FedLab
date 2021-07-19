@@ -79,14 +79,13 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.client_num_in_total = client_num_in_total
         self.select_ratio = select_ratio
-        self.client_num_per_round = max(
-            1, int(self.select_ratio * self.client_num_in_total))
+        self.client_num_per_round = max(1, int(self.select_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = {}
         self.cache_cnt = 0
 
-    def select_clients(self):
+    def sample_clients(self):
         """Return a list of client rank indices selected randomly"""
         id_list = [i + 1 for i in range(self.client_num_in_total)]
         selection = random.sample(id_list, self.client_num_per_round)
@@ -156,8 +155,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.model_update_time = torch.zeros(
-            1)  # record the current model's updated time
+        self.global_time = torch.zeros(1)  # record the current model's updated time
 
     def update_model(self, model_parameters, model_time):
         """"update global model from client_model_queue"""
@@ -167,7 +165,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
             latest_serialized_parameters, model_parameters,
             self.alpha)  # use aggregator
         SerializationTool.deserialize_model(self._model, merged_params)
-        self.model_update_time += 1
+        self.global_time += 1
 
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""

@@ -9,7 +9,7 @@ class Topology(Process):
         handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
         newtork (`DistNetwork`): object to manage torch.distributed network communication.
     """
-    def __init__(self, network: DistNetwork, handler):
+    def __init__(self, network: DistNetwork, handler=None):
         super(Topology, self).__init__()
 
         self._handler = handler

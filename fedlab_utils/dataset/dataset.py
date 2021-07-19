@@ -1,7 +1,4 @@
-"""
-functions associated with data and dataset operations
-
-"""
+#functions associated with data and dataset operations
 from torch.utils.data import Dataset
 
 
