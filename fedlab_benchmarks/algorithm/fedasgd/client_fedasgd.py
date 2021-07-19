@@ -15,7 +15,7 @@ from fedlab_utils.dataset.sampler import DistributedSampler
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.network import DistNetwork
 
-def get_dataset(args, dataset='MNIST', transform=None, root='/home/zengdun/datasets/mnist/'):
+def get_dataset(args):
     """
     :param dataset_name:
     :param transform:
@@ -30,9 +30,9 @@ def get_dataset(args, dataset='MNIST', transform=None, root='/home/zengdun/datas
         transforms.ToTensor(),
     ])
     trainset = torchvision.datasets.MNIST(
-        root=root, train=True, download=True, transform=train_transform)
+        root=args.root, train=True, download=True, transform=train_transform)
     testset = torchvision.datasets.MNIST(
-        root=root, train=False, download=True, transform=test_transform)
+        root=args.root, train=False, download=True, transform=test_transform)
 
     trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank,
                                                                                    num_replicas=args.world_size - 1),
@@ -55,7 +55,8 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--cuda", type=bool, default=True)
     args = parser.parse_args()
-    args.cuda = False
+    args.root = '../../../../datasets/mnist/'
+    args.cuda = True
 
     model = LeNet()
     trainloader, testloader = get_dataset(args)

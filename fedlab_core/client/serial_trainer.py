@@ -150,7 +150,7 @@ class SerialTrainer(ClientTrainer):
 
             SerializationTool.deserialize_model(self._model, model_parameters)
             criterion = torch.nn.CrossEntropyLoss()
-            data_loader = self._get_dataloader(client_id=id,
+            data_loader = self._get_dataloader(id=id,
                                                batch_size=batch_size)
 
             if multi_threading is False:

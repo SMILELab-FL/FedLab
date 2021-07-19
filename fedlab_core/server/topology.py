@@ -102,7 +102,7 @@ class ServerAsynchronousTopology(Topology):
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
-        super(ServerAsynchronousTopology, self).__init__(handler, network)
+        super(ServerAsynchronousTopology, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -110,6 +110,7 @@ class ServerAsynchronousTopology(Topology):
         else:
             self._LOGGER = logger
 
+        self.current_time = 0
         self.total_update_num = 5  # control server to end receiving msg
         self.message_queue = Queue()
 
@@ -120,17 +121,15 @@ class ServerAsynchronousTopology(Topology):
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
-        current_time = 0
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        while current_time < self.total_update_num:
+        while self.current_time < self.total_update_num:
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
-            current_time += 1
 
         self.shutdown_clients()
-
+    
     def on_receive(self, sender, message_code, payload):
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
@@ -150,12 +149,12 @@ class ServerAsynchronousTopology(Topology):
             raise ValueError("Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
-        while True:
+        while self.current_time < self.total_update_num:
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
             self._handler.update_model(parameters, model_time)
-            self.total_update_num += 1
+            self.current_time += 1
 
     def shutdown_clients(self):
         """Shutdown all clients"""

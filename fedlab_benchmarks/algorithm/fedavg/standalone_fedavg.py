@@ -36,18 +36,19 @@ parser.add_argument('--wandb', type=bool, default=False)
 
 args = parser.parse_args()
 
-os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
+os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
 model = LeNet().cuda()
 aggregator = Aggregators.fedavg_aggregate
 criterion = torch.nn.CrossEntropyLoss()
 
 # get raw dataset
+root = '../../../../datasets/mnist/'
 # test
 trainset = torchvision.datasets.MNIST(
-    root='/home/zengdun/datasets/mnist/', train=True, download=True, transform=transforms.ToTensor())
+    root=root, train=True, download=True, transform=transforms.ToTensor())
 testset = torchvision.datasets.MNIST(
-    root='/home/zengdun/datasets/mnist/', train=False, download=True, transform=transforms.ToTensor())
+    root=root, train=False, download=True, transform=transforms.ToTensor())
 
 test_loader = torch.utils.data.DataLoader(
     testset, batch_size=len(testset), drop_last=False, shuffle=False)
