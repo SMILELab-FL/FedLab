@@ -1,9 +1,7 @@
 import os
 import sys
 
-#sys.path.append('../../../')
-sys.path.append('/home/zengdun/FedLab/')
-
+sys.path.append('../../../')
 from fedlab_utils.logger import logger
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.server.handler import SyncParameterServerHandler

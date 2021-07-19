@@ -2,7 +2,7 @@ import os
 import sys
 
 
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 
 from fedlab_core.network import DistNetwork
 from fedlab_utils.models.lenet import LeNet
