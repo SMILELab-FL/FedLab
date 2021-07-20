@@ -53,14 +53,14 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Model used in this federation
         client_num_in_total (int): Total number of clients in this federation
         cuda (bool): Use GPUs or not. Default: ``False``
-        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
+        sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
         logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self,
                  model:torch.nn.Module,
                  client_num_in_total:int,
                  cuda=False,
-                 select_ratio=1.0,
+                 sample_ratio=1.0,
                  logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
@@ -70,16 +70,16 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         else:
             self._LOGGER = logger
 
-        if select_ratio < 0.0 or select_ratio > 1.0:
-            raise ValueError("Invalid select ratio: {}".format(select_ratio))
+        if sample_ratio < 0.0 or sample_ratio > 1.0:
+            raise ValueError("Invalid select ratio: {}".format(sample_ratio))
 
         if client_num_in_total < 1:
             raise ValueError(
                 "Invalid total client number: {}".format(client_num_in_total))
 
         self.client_num_in_total = client_num_in_total
-        self.select_ratio = select_ratio
-        self.client_num_per_round = max(1, int(self.select_ratio * self.client_num_in_total))
+        self.sample_ratio = sample_ratio
+        self.client_num_per_round = max(1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = {}

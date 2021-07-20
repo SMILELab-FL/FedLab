@@ -7,9 +7,6 @@ from fedlab_utils.aggregator import Aggregators
 class AggregatorTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.fedavg_aggregator = Aggregators.fedavg_aggregate
-        cls.fedasgd_aggregator = Aggregators.fedasgd_aggregate
-
         cls.shape = (10000,)
 
     def setUp(self) -> None:
@@ -23,7 +20,7 @@ class AggregatorTestCase(unittest.TestCase):
         for _ in range(random.randint(1, 10)):
             params.append(torch.Tensor(size=self.shape))
 
-        merged_params = self.fedavg_aggregator(params)
+        merged_params = Aggregators.fedavg_aggregate(params)
 
         assert self.shape == merged_params.shape
 
@@ -32,7 +29,7 @@ class AggregatorTestCase(unittest.TestCase):
         server_params = torch.Tensor(size=self.shape)
         comming_params = torch.Tensor(size=self.shape)
 
-        merged_params = self.fedasgd_aggregator(server_params, comming_params, 0.5)
+        merged_params = Aggregators.fedasgd_aggregate(server_params, comming_params, 0.5)
 
         assert self.shape == merged_params.shape
 

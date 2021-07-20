@@ -33,7 +33,7 @@ class SerializationTestCase(unittest.TestCase):
         cls.hidden_size = 250
         cls.num_classes = 10
         test_path = os.path.dirname(os.path.realpath(__file__))
-        model_path = os.path.join(test_path, 'data/nnModel.ckpt')
+        model_path = os.path.join(test_path, '../data/nnModel.ckpt')
         cls.model = Net(cls.input_size, cls.hidden_size, cls.num_classes)
         cls.model.load_state_dict(torch.load(model_path))
 
@@ -61,5 +61,5 @@ class SerializationTestCase(unittest.TestCase):
         model = Net(self.input_size, self.hidden_size, self.num_classes)
         self._model_params_neq(self.model, model)
         serialized_params = SerializationTool.serialize_model(self.model)
-        SerializationTool.restore_model(model, serialized_params)
+        SerializationTool.deserialize_model(model, serialized_params)
         self._model_params_eq(self.model, model)
