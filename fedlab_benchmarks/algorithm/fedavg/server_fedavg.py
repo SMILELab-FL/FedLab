@@ -18,6 +18,7 @@ if __name__ == "__main__":
     parser.add_argument('--world_size', type=int)
     args = parser.parse_args()
 
+
     model = LeNet().cpu()
     
     ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)
