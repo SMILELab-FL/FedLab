@@ -32,11 +32,12 @@ class SerialTrainer(ClientTrainer):
 
     Args:
         model (nn.Module): Model used in this federation.
-        aggregator (fedlab_utils.aggregator): function to deal with a list of parameters.
         dataset (nn.utils.dataset): local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
+        aggregator (fedlab_utils.aggregator): function to deal with a list of parameters.
         logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
-    
+        cuda (bool): use GPUs or not.
+
     Notes:
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
         
@@ -66,7 +67,7 @@ class SerialTrainer(ClientTrainer):
         """Return a dataloader used in :meth:`train`
 
         Args:
-            client_id (int): client id to generate this dataloader
+            client_id (int): client id to generate dataloader
             batch_size (int): batch size
         
         Returns:
@@ -127,11 +128,13 @@ class SerialTrainer(ClientTrainer):
         """Train local model with different dataset according to id in id_list.
 
         Args:
-            epochs (int): number of epoch for local training.
             model_parameters (torch.Tensor): serialized model paremeters.
-            batch_size (int):
+            epochs (int): number of epoch for local training.
+            lr (float): learning rate
+            batch_size (int): batch size
             id_list (list): client id in this train 
             cuda (bool): use GPUs or not.
+            multi_threading (bool): use multiple threading to accelerate process.
 
         Returns:
             Merged serialized params
@@ -150,8 +153,7 @@ class SerialTrainer(ClientTrainer):
 
             SerializationTool.deserialize_model(self._model, model_parameters)
             criterion = torch.nn.CrossEntropyLoss()
-            data_loader = self._get_dataloader(id=id,
-                                               batch_size=batch_size)
+            data_loader = self._get_dataloader(id=id, batch_size=batch_size)
 
             if multi_threading is False:
 

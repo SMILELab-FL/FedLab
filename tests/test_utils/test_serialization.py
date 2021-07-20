@@ -33,7 +33,7 @@ class SerializationTestCase(unittest.TestCase):
         cls.hidden_size = 250
         cls.num_classes = 10
         test_path = os.path.dirname(os.path.realpath(__file__))
-        model_path = os.path.join(test_path, 'data/nnModel.ckpt')
+        model_path = os.path.join(test_path, '../data/nnModel.ckpt')
         cls.model = Net(cls.input_size, cls.hidden_size, cls.num_classes)
         cls.model.load_state_dict(torch.load(model_path))
 

@@ -16,10 +16,8 @@ class ClientPassiveTopology(Topology):
     """Passive communication topology
 
     Args:
-        client_handler: Subclass of ClientBackendHandler. Provides meth:train and attribute:model
-        server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
-        world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization rank (int): Rank of the current client process for ``torch.distributed`` initialization
-        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``
+        handler (`ClientBackendHandler`): Subclass of ClientBackendHandler. Provides meth:train and attribute:model.
+        network (`DistNetwork`): distributed network initialization.
         logger (`logger`, optional): object of `fedlab_utils.logger`
     """
     def __init__(self, handler, network: DistNetwork, logger=None):
@@ -82,14 +80,9 @@ class ClientActiveTopology(Topology):
     """Active communication topology
 
         Args:
-            client_handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each
-            client.
-            server_addr (tuple): Address of server in form of ``(SERVER_ADDR, SERVER_IP)``
-            world_size (int): Number of client processes participating in the job for ``torch.distributed`` initialization
-            rank (int): Rank of the current client process for ``torch.distributed`` initialization
-            dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-            and ``nccl``. Default: ``"gloo"``
-            epochs (int): epochs for local train
+            handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each client.
+            network (`DistNetwork`): distributed network initialization.
+            local_epochs (int): epochs for local train
             logger (`logger`, optional): object of `fedlab_utils.logger`
     """
     def __init__(self,

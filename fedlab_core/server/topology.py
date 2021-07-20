@@ -11,7 +11,6 @@ from fedlab_utils.logger import logger
 
 DEFAULT_SERVER_RANK = 0
 
-
 class ServerSynchronousTopology(Topology):
     """Synchronous communication
 
@@ -20,7 +19,7 @@ class ServerSynchronousTopology(Topology):
 
     Args:
         handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
+        network (`DistNetwork`): object to manage torch.distributed network communication.
         logger (`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
@@ -34,19 +33,15 @@ class ServerSynchronousTopology(Topology):
             self._LOGGER = logger
 
         self.global_round = 3  # for current test
-        # TODO 考虑通过pytorch.kv_store实现，client参数请求
 
     def run(self):
         """Main Process"""
-        self._LOGGER.info(
-            "Initializing pytorch distributed group\n Waiting for connection requests from clients"
-        )
+        self._LOGGER.info("Initializing pytorch distributed group\n Waiting for connection requests from clients")
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
         for round_idx in range(self.global_round):
-            self._LOGGER.info("Global FL round {}/{}".format(
-                round_idx + 1, self.global_round))
+            self._LOGGER.info("Global FL round {}/{}".format(round_idx + 1, self.global_round))
 
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
@@ -69,7 +64,7 @@ class ServerSynchronousTopology(Topology):
 
     def activate_clients(self):
         """Activate some of clients to join this FL round"""
-        clients_this_round = self._handler.select_clients()
+        clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
@@ -94,10 +89,8 @@ class ServerAsynchronousTopology(Topology):
     Asynchronize with clients following agreements defined in :meth:`run`.
 
     Args:
-        server_handler: Subclass of :class:`ParameterServerHandler`
-        server_address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
-        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-        and ``nccl``. Default: ``"gloo"``
+        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
+        newtork (`DistNetwork`): object to manage torch.distributed network communication.
         logger (`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
@@ -110,21 +103,19 @@ class ServerAsynchronousTopology(Topology):
         else:
             self._LOGGER = logger
 
-        self.current_time = 0
-        self.total_update_num = 5  # control server to end receiving msg
+        self.total_round = 5  # control server to end receiving msg
         self.message_queue = Queue()
 
     def run(self):
         """Main process"""
-        self._LOGGER.info("Initializing pytorch distributed group")
-        self._LOGGER.info("Waiting for connection requests from clients")
+        self._LOGGER.info("Initializing pytorch distributed group \nWaiting for connection requests from clients")
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        while self.current_time < self.total_update_num:
+        while self._handler.global_time < self.total_round:
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
 
@@ -136,10 +127,10 @@ class ServerAsynchronousTopology(Topology):
             model_params = SerializationTool.serialize_model(
                 self._handler.model)
             pack.append_tensor_list(
-                [model_params, self._handler.model_update_time])
+                [model_params, self._handler.global_time])
             self._LOGGER.info(
                 "Send model to rank {}, the model current updated time {}".
-                format(sender, int(self._handler.model_update_time.item())))
+                format(sender, int(self._handler.global_time.item())))
             PackageProcessor.send_package(pack, dst=sender)
 
         elif message_code == MessageCode.ParameterUpdate:
@@ -149,19 +140,18 @@ class ServerAsynchronousTopology(Topology):
             raise ValueError("Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
-        while self.current_time < self.total_update_num:
+        while self._handler.global_time < self.total_round:
+
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
             self._handler.update_model(parameters, model_time)
-            self.current_time += 1
+
 
     def shutdown_clients(self):
         """Shutdown all clients"""
         for client_idx in range(1, self._handler.client_num_in_total + 1):
-            # deal the remaining package, end communication
             _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
-            # for model request, end directly; for remaining model update, get the next model request package to end
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
                     src=client_idx)  # the next package is model request

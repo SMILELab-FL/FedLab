@@ -16,7 +16,7 @@ class ParameterServerBackendHandler(ABC):
     Please make sure that you self-defined server handler class subclasses this class
 
     Example:
-        read sourcecode of :class:`SyncSGDParameterServerHandler` below
+        read sourcecode of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
     def __init__(self, model: torch.nn.Module, cuda=False) -> None:
         self.cuda = cuda
@@ -53,14 +53,14 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Model used in this federation
         client_num_in_total (int): Total number of clients in this federation
         cuda (bool): Use GPUs or not. Default: ``False``
-        select_ratio (float): ``select_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
+        sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
         logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self,
                  model:torch.nn.Module,
-                 client_num_in_total,
+                 client_num_in_total:int,
                  cuda=False,
-                 select_ratio=1.0,
+                 sample_ratio=1.0,
                  logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
@@ -70,23 +70,22 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         else:
             self._LOGGER = logger
 
-        if select_ratio < 0.0 or select_ratio > 1.0:
-            raise ValueError("Invalid select ratio: {}".format(select_ratio))
+        if sample_ratio < 0.0 or sample_ratio > 1.0:
+            raise ValueError("Invalid select ratio: {}".format(sample_ratio))
 
         if client_num_in_total < 1:
             raise ValueError(
                 "Invalid total client number: {}".format(client_num_in_total))
 
         self.client_num_in_total = client_num_in_total
-        self.select_ratio = select_ratio
-        self.client_num_per_round = max(
-            1, int(self.select_ratio * self.client_num_in_total))
+        self.sample_ratio = sample_ratio
+        self.client_num_per_round = max(1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = {}
         self.cache_cnt = 0
 
-    def select_clients(self):
+    def sample_clients(self):
         """Return a list of client rank indices selected randomly"""
         id_list = [i + 1 for i in range(self.client_num_in_total)]
         selection = random.sample(id_list, self.client_num_per_round)
@@ -96,8 +95,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """Deal with incoming model parameters
 
         Args:
-            sender_rank (int): rank of sender in distributed
-            serialized_params (torch.Tensor): serialized model parameters
+            sender_rank (int): rank of sender in distributed.
+            serialized_params (torch.Tensor): serialized model parameters.
         """
         if self.client_buffer_cache.get(sender_rank) is not None:
             self._LOGGER.info(
@@ -156,8 +155,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.model_update_time = torch.zeros(
-            1)  # record the current model's updated time
+        self.global_time = torch.zeros(1)
 
     def update_model(self, model_parameters, model_time):
         """"update global model from client_model_queue"""
@@ -167,7 +165,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
             latest_serialized_parameters, model_parameters,
             self.alpha)  # use aggregator
         SerializationTool.deserialize_model(self._model, merged_params)
-        self.model_update_time += 1
+        self.global_time += 1
 
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
