@@ -6,35 +6,49 @@
 ## Introduction
 
 FedLab是一个基于pytorch的轻量级、组件化联邦学习框架，帮助使用者在单机或多机环境下快速实现联邦学习算法的模拟。  
-框架分为server和client两部分，每个角色又划分为Topology和Handler两个模块。其中，Topology模块基于torch.distributed实现，负责网络通信和消息预处理，并将处理好的信息通过预设的接口传递到底层。Handler模块负责定义优化算法，模型参数处理等工作。  
+框架分为server和client两部分，server和client都由Topology模块用于通信和消息处理，Topology模块基于[torch.distributed](https://pytorch.org/docs/stable/distributed.html)实现的分布式点对点通信模块，负责消息处理和调用后端。 server的后端计算逻辑由ParameterServerHandler负责，client的后端计算由trainer负责。Topology模块构成通信协议和压缩框架，ParameterServer和Trainer构成联邦学习和优化框架。  
+FedLab提供了一系列构建联邦学习系统的组件和Demo，主要分为同步联邦学习和异步联邦学习，并实现了常见的联邦学习算法Benchmarks。
 
 ![image](/docs/imgs/fedlab-overview.png?raw=True)
 
 ### Server
-server端Topology与Handler的关系如下图，Topology处理信息并调用Handler.on_receive方法，Handler消息处理逻辑和模型更新算法。  
-![image](./docs/imgs/server.png?raw=True)
+server端Topology与ParameterServer的关系如下图，Topology处理信息并调用ParameterServer.on_receive方法，ParameterServer处理上层调用并更新全局模型(Global Model)。  
 
-FedLab提供了同步联邦和异步联邦server端的demo。
+![image](./docs/imgs/fedlab-server.png?raw=True)
+
 
 ### Client
-client端架构和各模块功能类似于server端，但Topology和Handler的功能和处理细节有所不同。  
 
-![image](./docs/imgs/client.png?raw=True)  
+client端架构和各模块功能类似于server端，但Topology和Trainer的功能和处理细节不同。client端后端统一为Trainer，向上层提供底层模型的训练算法调用，用于定义torch模型训练流程。Topology管理前后端逻辑协调和消息处理。
 
-其中，异步和同步联邦的Topology通信逻辑如下图，同步联邦学习中，一轮学习的启动由server主导，而异步联邦中由client主导。  
+![image](./docs/imgs/fedlab-client.png?raw=True)  
 
-![image](./docs/imgs/topology.png?raw=True)  
+### Communication
+其中，异步和同步联邦的Topology通信逻辑如下图。  
+1. 同步联邦学习中，一轮学习的启动由server主导，即server执行参与者采样（sample clients），广播全局模型参数。
+2. 异步联邦中由client主导，即client向联邦服务器请求当前模型参数，进行本地模型训练。  
 
+![异步通信](./docs/imgs/fedlab-asychronous.png)
+![同步通信](./docs/imgs/fedlab-sychronous.png)
 ## Experiment Scene
+FedLab支持多机和单机联邦学习系统的部署和模拟。
+
 ### Standalone
-![image](./docs/imgs/fedlab-standalone.png?raw=True)  
-### 
+
+串行训练器，使用一个进程资源进程多client联邦模拟：
+![image](./docs/imgs/fedlab-SerialTrainer.png?raw=True)
+
+多进程模拟，在一台机器或多个机器上执行多个联邦脚本：
+![image](./docs/imgs/fedlab-multi_process.png?raw=True)
+
+
 ### Hierarchical
+分层联邦通信，添加scheduler做消息转发或sub-server，满足扩展性，可用于大规模联邦学习模拟。同时scheduler满足跨局域网消息转发的功能，因此FedLab支持跨域联邦。
 ![image](./docs/imgs/fedlab-hierarchical.png?raw=True)  
 ## Docs
 文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
 
-## Contribution Guidance
+
 
 ## Quick Start
 1. 配置python环境
@@ -43,3 +57,6 @@ client端架构和各模块功能类似于server端，但Topology和Handler的�
 > bash run.sh
 
 ## Citation
+
+## Contribution Guidance
+欢迎提交pull request贡献代码
