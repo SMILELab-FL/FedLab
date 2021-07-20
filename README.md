@@ -45,16 +45,26 @@ FedLab支持多机和单机联邦学习系统的部署和模拟。
 ### Hierarchical
 分层联邦通信，添加scheduler做消息转发或sub-server，满足扩展性，可用于大规模联邦学习模拟。同时scheduler满足跨局域网消息转发的功能，因此FedLab支持跨域联邦。
 ![image](./docs/imgs/fedlab-hierarchical.png?raw=True)  
-## Docs
-文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
+
+### Benchmarks
 
 
 
-## Quick Start
+## How to start FedLab？
+
+
+### Quick Start
 1. 配置python环境
-> pip install -r requirements.txt  
+```shell
+pip install -r requirements.txt
+```
 2. 运行FedAvg demo
-> bash run.sh
+```shell
+bash run.sh 
+```
+
+### Docs
+文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
 
 ## Citation
 
