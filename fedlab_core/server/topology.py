@@ -104,7 +104,6 @@ class ServerAsynchronousTopology(Topology):
             self._LOGGER = logger
 
         self.total_round = 5  # control server to end receiving msg
-
         self.message_queue = Queue()
 
     def run(self):
@@ -142,10 +141,12 @@ class ServerAsynchronousTopology(Topology):
 
     def watching_queue(self):
         while self._handler.global_time < self.total_round:
+
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
             self._handler.update_model(parameters, model_time)
+
 
     def shutdown_clients(self):
         """Shutdown all clients"""
