@@ -19,4 +19,12 @@ class Topology(Process):
         raise NotImplementedError()
 
     def on_receive(self, sender, message_code, payload):
+        """Define the reaction of Topology get a package.
+        
+
+        Args:
+            sender (int): rank of distributed.
+            message_code (`MessageCode`): message code
+            payload (`torch.Tensor`): Tensor 
+        """
         raise NotImplementedError()

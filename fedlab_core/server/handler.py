@@ -16,7 +16,7 @@ class ParameterServerBackendHandler(ABC):
     Please make sure that you self-defined server handler class subclasses this class
 
     Example:
-        read sourcecode of :class:`SyncSGDParameterServerHandler` below
+        read sourcecode of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
     def __init__(self, model: torch.nn.Module, cuda=False) -> None:
         self.cuda = cuda
@@ -58,7 +58,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     """
     def __init__(self,
                  model:torch.nn.Module,
-                 client_num_in_total,
+                 client_num_in_total:int,
                  cuda=False,
                  select_ratio=1.0,
                  logger=None):
@@ -95,8 +95,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """Deal with incoming model parameters
 
         Args:
-            sender_rank (int): rank of sender in distributed
-            serialized_params (torch.Tensor): serialized model parameters
+            sender_rank (int): rank of sender in distributed.
+            serialized_params (torch.Tensor): serialized model parameters.
         """
         if self.client_buffer_cache.get(sender_rank) is not None:
             self._LOGGER.info(
@@ -155,7 +155,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
-        self.global_time = torch.zeros(1)  # record the current model's updated time
+        self.global_time = torch.zeros(1)
 
     def update_model(self, model_parameters, model_time):
         """"update global model from client_model_queue"""
