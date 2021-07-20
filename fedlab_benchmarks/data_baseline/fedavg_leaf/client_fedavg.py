@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='femnist')
 
     args = parser.parse_args()
-    args.cuda = False
+    args.cuda = True
 
     if args.dataset == 'shakespeare':
         model = RNN_Shakespeare()

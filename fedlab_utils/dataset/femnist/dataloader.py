@@ -1,3 +1,6 @@
+"""Get
+
+"""
 import torch
 import os
 import numpy as np
@@ -6,21 +9,34 @@ from fedlab_utils.dataset.dataset import BaseDataset
 from fedlab_utils.dataset.data_read_util import read_data
 
 
-def get_tarin_test_data(root='../../../data/femnist/data/'):
-    """
-    get train data and test data for femnist,
-    before it, we should run script to get partioned data, the path is  /data/femnist/download.sh
+def get_tarin_test_data(root='../../../data/femnist/data'):
+    """Get train data and test data for femnist from ``root`` path, preprocess data format as model need.
+
+    Notes:
+        Please check data downloaded and preprocessed completely before running this method.
+
+        The shell script for data is in ``FedLab/data/femnist/run.sh``,
+        preprocessed data should be in `root`/train and `root`/test.
+
     Args:
-        root: path contains train and test data folders
+        root (str, optional): path string contains `train` and `test` folders for train data and test data.
+            Defaluts to '../../../data/femnist/data/', is equals to 'FedLab/data/femnist/data/'
 
     Returns:
+        A tuple contains the client number, train data and test data for each clients::
 
+        (
+            'client_num' (int): the client number of split data by LEAF,
+            'train_data_x_dict' (dict[int, Tensor]): A train input dict mapping keys to the corresponding client id,
+            'train_data_y_dict' (dict[int, Tensor]): A train label dict mapping keys to the corresponding client id,
+            'test_data_x_dict' (dict[int, Tensor]): A test input dict mapping keys to the corresponding client id,
+            'test_data_y_dict' (dict[int, Tensor]): A test label dict mapping keys to the corresponding client id.
+        )
+    Raises:
+        FileNotFoundError: [Errno 2] No such file or directory: '`root`/train' or '`root`/test'
     """
     train_path = os.path.join(root, 'train')
     test_path = os.path.join(root, 'test')
-    if not os.path.exists(train_path):
-        print("please check if data have been downloaded correctly, "
-              "you can got to fedlab_utils/data to re-download by run preprocess.sh with some params")
 
     users, groups, train_data, test_data = read_data(train_path, test_path)
 
@@ -45,17 +61,20 @@ def get_tarin_test_data(root='../../../data/femnist/data/'):
     return client_num, train_data_x_dict, train_data_y_dict, test_data_x_dict, test_data_y_dict
 
 
-def get_dataloader_femnist(client_id=None, batch_size=128):
-    """
-    get femnist dataloader for an assigned client or all data
+def get_dataloader_femnist(client_id=0, batch_size=128):
+    """Get femnist dataloader with ``batch_size`` param for client with ``client_id``
+
     Args:
-        client_id: get dataloader for assigned client
-        batch_size:
+        client_id (int, optional): assigned client_id to get dataloader for this client. Defaults to 0
+        batch_size (int, optional): the number of batch size for dataloader. Defaults to 128
 
     Returns:
-        dataloader for one client with client_id
-        or return dataloader with all data together
+        A tuple with train dataloader and test dataloader for the client with `client_id`::
 
+        (
+            'trainloader' (torch.utils.data.DataLoader): dataloader for train dataset to client with client_id,
+            'testloader' (torch.utils.data.DataLoader): dataloader for test dataset to client with client_id
+        )
     """
 
     client_num, train_data_x_dict, train_data_y_dict, test_data_x_dict, test_data_y_dict = get_tarin_test_data()

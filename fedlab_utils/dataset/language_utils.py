@@ -2,7 +2,6 @@
 
 import re
 
-
 # ------------------------
 # utils for shakespeare dataset
 
@@ -32,11 +31,13 @@ def letter_to_vec(letter):
     index = ALL_LETTERS.find(letter)
     return _one_hot(index, VOCAB_SIZE)
 
+
 def letter_to_index(letter):
     '''returns one-hot representation of given letter
     '''
     index = ALL_LETTERS.find(letter)
     return index
+
 
 def word_to_indices(word):
     '''returns a list of character indices
@@ -102,9 +103,9 @@ def line_to_indices(line, word2id, max_words=25):
         indl: list of word indices, one index for each word in phrase
     '''
     unk_id = len(word2id)
-    line_list = split_line(line) # split phrase in words
+    line_list = split_line(line)  # split phrase in words
     indl = [word2id[w] if w in word2id else unk_id for w in line_list[:max_words]]
-    indl += [unk_id]*(max_words-len(indl))
+    indl += [unk_id] * (max_words - len(indl))
     return indl
 
 

@@ -9,15 +9,32 @@ from fedlab_utils.dataset.language_utils import word_to_indices, letter_to_index
 
 
 def get_tarin_test_data(root='../../../data/shakespeare/data/'):
-    """
-    get train data and test data for Shakespeare,
-    before it, we should run script to get partioned data, the path is  /data/shakespeare/download.sh
+    """Get train data and test data for shakespeare from ``root`` path, preprocess data format as model need.
+
+    Notes:
+        Please check data downloaded and preprocessed completely before running this method.
+
+        The shell script for data is in ``FedLab/data/shakespeare/run.sh``,
+        preprocessed data should be in `root`/train and `root`/test.
+
     Args:
-        root: path contains train and test data folders
+        root (str, optional): path string contains `train` and `test` folders for train data and test data.
+            Defaluts to '../../../data/shakespeare/data/', is equals to 'FedLab/data/shakespeare/data/'
 
     Returns:
+        A tuple contains the client number, train data and test data for each clients::
 
+        (
+            'client_num' (int): the client number of split data by LEAF,
+            'train_data_x_dict' (dict[int, Tensor]): A train input dict mapping keys to the corresponding client id,
+            'train_data_y_dict' (dict[int, Tensor]): A train label dict mapping keys to the corresponding client id,
+            'test_data_x_dict' (dict[int, Tensor]): A test input dict mapping keys to the corresponding client id,
+            'test_data_y_dict' (dict[int, Tensor]): A test label dict mapping keys to the corresponding client id.
+        )
+    Raises:
+        FileNotFoundError: [Errno 2] No such file or directory: '`root`/train' or '`root`/test'
     """
+
     train_path = os.path.join(root, 'train')
     test_path = os.path.join(root, 'test')
 
@@ -45,27 +62,46 @@ def get_tarin_test_data(root='../../../data/shakespeare/data/'):
 
 
 def process_x(raw_x):
+    """for all word strings in raw_x, process each char to index in ALL_LETTERS
+
+    Args:
+        raw_x (list[string]): contains a list of word strings to process
+
+    Returns:
+        x (list[list]): int indices list for words in raw_x in ALL_LETTERS
+    """
     x = [word_to_indices(word) for word in raw_x]
-    # x_batch = np.array(x_batch)
     return x
 
 
 def process_y(raw_y):
+    """for all labels(next char) in raw_y, process them to index in ALL_LETTERS
+
+    Args:
+        raw_y (list[char]): contains a list of label to process
+
+    Returns:
+        y (list[int]): the index for all chars in raw_y in ALL_LETTERS list
+
+    """
     y = [letter_to_index(c) for c in raw_y]
     return y
 
 
-def get_dataloader_shakespeare(client_id=None, batch_size=128):
-    """
-    get shakespeare dataloader for an assigned client or all data
+def get_dataloader_shakespeare(client_id=0, batch_size=128):
+    """Get shakespeare dataloader with ``batch_size`` param for client with ``client_id``
+
     Args:
-        client_id: get dataloader for assigned client
-        batch_size:
+        client_id (int, optional): assigned client_id to get dataloader for this client. Defaults to 0
+        batch_size (int, optional): the number of batch size for dataloader. Defaluts to 128
 
     Returns:
-        dataloader for one client with client_id
-        or return dataloader with all data together
+        A tuple with train dataloader and test dataloader for the client with `client_id`::
 
+        (
+            'trainloader' (torch.utils.data.DataLoader): dataloader for train dataset to client with client_id,
+            'testloader' (torch.utils.data.DataLoader): dataloader for test dataset to client with client_id
+        )
     """
 
     client_num, train_data_x_dict, train_data_y_dict, test_data_x_dict, test_data_y_dict= get_tarin_test_data()
@@ -86,3 +122,6 @@ def get_dataloader_shakespeare(client_id=None, batch_size=128):
         drop_last=False,
         shuffle=False)
     return trainloader, testloader
+
+if __name__ == '__main__':
+    trainloader, testloader = get_dataloader_shakespeare()
