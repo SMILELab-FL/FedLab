@@ -7,36 +7,58 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python-version: [ 3.6, 3.7, 3.8 ]
+        torch-version: [1.7.1, 1.8.0]
+        os: [ubuntu-latest, macos-latest]
+        include:
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        # check https://pypi.org/project/torchvision/ for torch-torchvision compatibility
+        - torch-version: 1.7.1
+          torchvision-version: 0.8.2
+        - torch-version: 1.8.0
+          torchvision-version: 0.9.0
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Cache pip
         uses: actions/cache@v2
         with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
+          # This path is depend on os
+          path: ${{ matrix.path }}
           # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-py${{ matrix.python-version }}-torch==${{ matrix.torch-version }}
           restore-keys: |
             ${{ runner.os }}-pip-
-            ${{ runner.os }}-
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+#      - name: Install dependencies
+#        run: pip install -r requirements.txt
+
+      - name: Install PyTorch & Torchvision
+        run: |
+          pip install torch==${{ matrix.torch-version }} torchvision==${{ matrix.torchvision-version }}
+
+      - name: Install other dependencies
+        run: |
+          pip install numpy
 
       - name: Test with coverage
         run: |
           pip install coverage
           pip install codecov
-          coverage run --source=fedlab_core setup.py test
+          coverage run --source=fedlab_core,fedlab_utils setup.py test
+
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

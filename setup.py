@@ -28,9 +28,9 @@ setup(
     description="A framework for simulation in federated setting implemented in PyTorch",
     long_description=get_readme(),
     url="https://github.com/SMILELab-FL/FedLab",
-    packages=find_packages(exclude=['docs']),  # TODO: add things in 'exclude'
-    install_requires=['torch==1.7.1',
-                      'torchvision==0.8.2',
+    packages=find_packages(exclude=['docs', 'tests']),  # TODO: add things in 'exclude'
+    install_requires=['torch>=1.7.1',
+                      'torchvision>=0.8.2',
                       'numpy'],
     python_requires='>=3.6',
     classifiers=[
@@ -42,7 +42,7 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
 
-        'License :: OSI Approved :: MIT License',  # TODO: is MIT proper???
+        'License :: OSI Approved :: Apache Software License',
 
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
