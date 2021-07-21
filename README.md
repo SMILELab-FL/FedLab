@@ -38,6 +38,7 @@ FedLab支持多机和单机联邦学习系统的部署和模拟。
 串行训练器，使用一个进程资源进程多client联邦模拟：
 ![image](./docs/imgs/fedlab-SerialTrainer.png?raw=True)
 
+### Cross Machine
 多进程模拟，在一台机器或多个机器上执行多个联邦脚本：
 ![image](./docs/imgs/fedlab-multi_process.png?raw=True)
 
@@ -45,10 +46,6 @@ FedLab支持多机和单机联邦学习系统的部署和模拟。
 ### Hierarchical
 分层联邦通信，添加scheduler做消息转发或sub-server，满足扩展性，可用于大规模联邦学习模拟。同时scheduler满足跨局域网消息转发的功能，因此FedLab支持跨域联邦。
 ![image](./docs/imgs/fedlab-hierarchical.png?raw=True)  
-
-### Benchmarks
-
-
 
 ## How to start FedLab？
 
@@ -63,7 +60,15 @@ pip install -r requirements.txt
 bash run.sh 
 ```
 
-### Docs
+### Benchmarks
+
+TODO：
+FedAvg  
+FedAsgd  
+Leaf  
+Compressor  
+
+### Documentation
 文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
 
 ## Citation

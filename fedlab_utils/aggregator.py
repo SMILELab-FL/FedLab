@@ -9,14 +9,13 @@ class Aggregators(object):
         paper: http://proceedings.mlr.press/v54/mcmahan17a.html
 
         Args:
-            serialized_params_list (list[torch.Tensor])): merge all Tensors using fedavg.
+            serialized_params_list (list[torch.Tensor])): merge all Tensors following FedAvg.
 
         Returns:
             torch.Tensor
         """
         serialized_parameters = torch.mean(
             torch.stack(serialized_params_list), dim=0)
-        print("Aggregators.fedavg_aggregate:  merged shape ",serialized_parameters.shape)
         return serialized_parameters
 
     @staticmethod
@@ -24,7 +23,6 @@ class Aggregators(object):
         """Fedasgd aggregator
         
         paper: https://arxiv.org/abs/1903.03934
-
         """
         serialized_parameters = torch.mul(1 - alpha, server_param) + \
                                         torch.mul(alpha, new_param)
