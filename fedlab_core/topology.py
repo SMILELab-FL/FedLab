@@ -22,7 +22,7 @@ class Topology(Process):
         """Define the reaction of Topology get a package.
     
         Args:
-            sender (int): rank of distributed.
+            sender (int): rank of current process.
             message_code (`MessageCode`): message code
             payload (`torch.Tensor`): Tensor 
         """

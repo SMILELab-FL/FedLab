@@ -5,8 +5,7 @@ import argparse
 import sys
 import os
 
-#sys.path.append('../../../')
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 from torch import nn
 from fedlab_utils.logger import logger
 from fedlab_core.client.topology import ClientPassiveTopology
