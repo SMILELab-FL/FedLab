@@ -1,14 +1,11 @@
-import os
 import sys
+import argparse
 
-#sys.path.append('../../../')
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 
-from fedlab_utils.logger import logger
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.server.handler import SyncParameterServerHandler
 from fedlab_core.server.topology import ServerSynchronousTopology
-import argparse
 from fedlab_core.network import DistNetwork
 
 

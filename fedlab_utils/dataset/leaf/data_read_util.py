@@ -47,9 +47,7 @@ def read_dir(data_dir):
         data_dir: directory contains json files
 
     Returns:
-        clients (list): all clients' id or name list
-        groups (list): groups list for each clients, it can be none
-        data (dict): a dict data mapping keys to client
+        client list, groups list for each clients, a dict data mapping keys to client
     """
     clients = []
     groups = []
@@ -83,10 +81,7 @@ def read_data(train_data_dir, test_data_dir):
         test_data_dir (str): path string for test data folder
 
     Returns:
-        clients: list of client ids
-        groups: list of group ids; empty list if none found
-        train_data: dictionary of train data
-        test_data: dictionary of test data
+        client id list, group id list, dictionary of train data, dictionary of test data
     """
 
     train_clients, train_groups, train_data = read_dir(train_data_dir)
