@@ -16,7 +16,7 @@ class Topology(Process):
         self._network = network
 
     def run(self):
-        raise NotImplementedError()
+        pass
 
     def on_receive(self, sender, message_code, payload):
         """Define the reaction of Topology get a package.
@@ -26,4 +26,4 @@ class Topology(Process):
             message_code (`MessageCode`): message code
             payload (`torch.Tensor`): Tensor 
         """
-        raise NotImplementedError()
+        pass

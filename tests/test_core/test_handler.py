@@ -17,8 +17,10 @@ class HandlerTestCase(unittest.TestCase):
         cls.total_num = 100
 
     def setUp(self) -> None:
+        
         self.AsyncHandler = AsyncParameterServerHandler(
             model=self.model, client_num_in_total=self.total_num)
+
         self.SyncHandler = SyncParameterServerHandler(
             model=self.model,
             client_num_in_total=self.total_num,

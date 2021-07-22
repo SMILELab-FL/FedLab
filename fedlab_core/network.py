@@ -32,3 +32,7 @@ class DistNetwork(object):
         info_str = "ip address {}:{}, rank {}, world size: {}, backend: {}".format(self.address[0],self.address[1],self.rank, self.world_size, self.dist_backend)
         print(info_str)
         return info_str
+
+    def close_network_connection(self):
+        if dist.is_initialized():
+            dist.destroy_process_group()
