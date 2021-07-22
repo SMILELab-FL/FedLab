@@ -1,21 +1,17 @@
 import torch
 import argparse
 import sys
-import os
 
 sys.path.append('../../../')
 # sys.path.append('/home/zengdun/FedLab/')
 from torch import nn
-from fedlab_utils.logger import logger
 from fedlab_core.client.topology import ClientPassiveTopology
 from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.models.lenet import LeNet
-from fedlab_utils.models.cnn import CNN_DropOut
 from fedlab_utils.models.rnn import RNN_Shakespeare
+from fedlab_utils.models.rnn import RNN_Sent140
 from fedlab_core.network import DistNetwork
-from fedlab_utils.dataset.mnist.dataloader import get_dataloader_mnist
-from fedlab_utils.dataset.femnist.dataloader import get_dataloader_femnist
-from fedlab_utils.dataset.shakespeare.dataloader import get_dataloader_shakespeare
+from fedlab_utils.dataset.leaf.dataloader import get_dataloader
 
 
 if __name__ == "__main__":
@@ -24,21 +20,23 @@ if __name__ == "__main__":
     parser.add_argument('--server_port', type=str, default='3002')
     parser.add_argument('--world_size', type=int, default=2)
     parser.add_argument('--local_rank', type=int, default=1)
-    parser.add_argument('--dataset', type=str, default='femnist')
+    parser.add_argument('--dataset', type=str, default='sent140')
 
     args = parser.parse_args()
     args.cuda = True
 
     if args.dataset == 'shakespeare':
         model = RNN_Shakespeare()
-        trainloader, testloader = get_dataloader_shakespeare(client_id=args.local_rank - 1)
+        trainloader, testloader = get_dataloader(dataset=args.dataset, client_id=args.local_rank - 1)
     elif args.dataset == 'femnist':
         model = LeNet(out_dim=62)
         # model = CNN_DropOut(False)
-        trainloader, testloader = get_dataloader_femnist(client_id=args.local_rank - 1)
+        trainloader, testloader = get_dataloader(dataset=args.dataset, client_id=args.local_rank - 1)
+    elif args.dataset == 'sent140':
+        model = RNN_Sent140()
+        trainloader, testloader = get_dataloader(dataset=args.dataset, client_id=args.local_rank - 1)
     else:
-        model = LeNet()
-        trainloader, testloader = get_dataloader_mnist(args)
+        pass
 
     if args.cuda:
         model = model.cuda()
