@@ -4,6 +4,7 @@ from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
 from fedlab_core.communicator import package as config
 from fedlab_core.communicator.package import Package
+import numpy as np
 
 
 class PackageProcessor(object):
@@ -32,17 +33,24 @@ class PackageProcessor(object):
             else:
                 return buffer
 
-        def recv_content(content_size, src):
+        def recv_slices(slices_size, src):
+            buffer_slices = torch.zeros(size=(slices_size, ),
+                                        dtype=torch.int32)
+            dist.recv(buffer_slices, src=src)
+            slices = [x.item() for x in buffer_slices]
+            return slices
+
+        def recv_content(slices, src):
+            content_size = sum(slices)
             buffer = torch.zeros(size=(content_size, ))
             dist.recv(buffer, src=src)
-            return Package.parse_content(buffer)
+            return Package.parse_content(slices, buffer)
 
-        sender_rank, recv_rank, content_size, message_code = recv_header(
-            src=src)
-
+        sender_rank, _, slices_size, message_code = recv_header(src=src)
         # 收到第一段包，第二段包指定来源rank
-        if content_size > 0:
-            content = recv_content(content_size, src=sender_rank)
+        if slices_size > 0:
+            slices = recv_slices(slices_size=slices_size, src=sender_rank)
+            content = recv_content(slices, src=sender_rank)
         else:
             content = None
 
@@ -63,10 +71,17 @@ class PackageProcessor(object):
             header[config.HEADER_RECEIVER_RANK_IDX] = dst
             dist.send(header, dst=dst)
 
+        def send_slices(slices, dst):
+            np_slices = np.array(slices, dtype=np.int32)
+            tensor_slices = torch.from_numpy(np_slices)
+            dist.send(tensor_slices, dst=dst)
+
         def send_content(content, dst):
             dist.send(content, dst=dst)
 
         send_header(header=package.header, dst=dst)
 
-        if package.header[config.HEADER_CONTENT_SIZE_IDX] > 0:
+        if package.header[config.HEADER_SLICE_SIZE_IDX] > 0:
+            send_slices(slices=package.slices, dst=dst)
+
             send_content(content=package.content, dst=dst)

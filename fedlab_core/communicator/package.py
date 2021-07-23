@@ -1,23 +1,25 @@
+from typing import List
+from numpy import dtype
 import torch
+from torch import tensor
 import torch.distributed as dist
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
-
+from copy import deepcopy
 
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
-HEADER_CONTENT_SIZE_IDX = 2
+HEADER_SLICE_SIZE_IDX = 2
 HEADER_MESSAGE_CODE_IDX = 3
 
 DEFAULT_RECEIVER_RANK = -1
-DEFAULT_CONTENT_SIZE = 0
+DEFAULT_SLICE_SIZE = 0
 DEFAULT_MESSAGE_CODE_VALUE = -1
 
 HEADER_SIZE = 4
 
-
 class Package(object):
-    """A basic network package data structure used in FedLab. Everything is Tensor in FedLab.
+    """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
     :class:`Package` maintains 2 variables:
         :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``
@@ -32,9 +34,10 @@ class Package(object):
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
 
-        assert isinstance(receiver_rank,
-                          int), 'receiver_rank should be integer, not {}'.format(
-                              type(receiver_rank))
+        assert isinstance(
+            receiver_rank,
+            int), 'receiver_rank should be integer, not {}'.format(
+                type(receiver_rank))
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -48,17 +51,21 @@ class Package(object):
 
         # initialize header
         self.header = torch.Tensor(size=(HEADER_SIZE, ))
-        self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
+        if dist.is_initialized():
+            self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
+        else:
+            self.header[HEADER_SENDER_RANK_IDX] = -1
         self.header[HEADER_RECEIVER_RANK_IDX] = receiver_rank
         self.header[HEADER_MESSAGE_CODE_IDX] = message_code
-        self.header[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
+        self.header[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
 
-        # initialize content
-        self.content_flag = False
-        self.content = torch.zeros(size=(1, ))
-        if content is not None:
-            if isinstance(content, torch.Tensor):
-                content = [content]
+        # initialize content and slices
+        self.slices = []
+        self.content = None
+
+        if isinstance(content, torch.Tensor):
+            self.append_tensor(content)
+        if isinstance(content, List):
             self.append_tensor_list(content)
 
     def append_tensor(self, tensor):
@@ -67,16 +74,19 @@ class Package(object):
         Args:
             tensor (torch.Tensor): Tensor to append.
         """
-        offset = tensor.shape[0]
-        if self.content_flag is False:
-            self.content[0] = offset
-            self.content = torch.cat((self.content, tensor))
-            self.content_flag = True
-        else:
-            self.content = torch.cat(
-                (self.content, torch.Tensor([offset]), tensor))
+        if not isinstance(tensor, torch.Tensor):
+            raise ValueError("Invalid content type")
+        if tensor.shape != tensor.view(-1).shape:
+            raise ValueError("Invalid shape")
 
-        self.header[HEADER_CONTENT_SIZE_IDX] = self.content.shape[0]
+        size = tensor.shape[0]
+        if self.content is None:
+            self.content = deepcopy(tensor)
+        else:
+            self.content = torch.cat((self.content, tensor))
+
+        self.slices.append(size)
+        self.header[HEADER_SLICE_SIZE_IDX] = len(self.slices)
 
     def append_tensor_list(self, tensor_list):
         """Append a list of tensors to :attr:`Package.content`.
@@ -88,7 +98,7 @@ class Package(object):
             self.append_tensor(tensor)
 
     @staticmethod
-    def parse_content(content):
+    def parse_content(slices, content):
         """Parse package content into a list of tensors
 
         Args:
@@ -100,13 +110,10 @@ class Package(object):
         """
         index = 0
         parse_result = []
-        if content.shape[0] >= 2:
-            while index < content.shape[0]:
-                offset = int(content[index])
-                index += 1
-                segment = content[index:index + offset]
-                parse_result.append(segment)
-                index += offset
+        for offset in slices:
+            seg_tensor = content[index:index + offset]
+            parse_result.append(seg_tensor)
+            index += offset
         return parse_result
 
     @staticmethod
@@ -123,7 +130,7 @@ class Package(object):
         """
         sender_rank = int(header[HEADER_SENDER_RANK_IDX])
         receiver_rank = int(header[HEADER_RECEIVER_RANK_IDX])
-        content_size = int(header[HEADER_CONTENT_SIZE_IDX])
+        slice_size = int(header[HEADER_SLICE_SIZE_IDX])
         message_code = MessageCode(int(header[HEADER_MESSAGE_CODE_IDX]))
-        
-        return sender_rank, receiver_rank, content_size, message_code
+
+        return sender_rank, receiver_rank, slice_size, message_code

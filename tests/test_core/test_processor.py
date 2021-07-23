@@ -9,8 +9,8 @@ import os
 from random import randint
 
 from fedlab_core.communicator.package import (
-    HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_CONTENT_SIZE_IDX,
-    HEADER_MESSAGE_CODE_IDX, DEFAULT_RECEIVER_RANK, DEFAULT_CONTENT_SIZE,
+    HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
+    HEADER_MESSAGE_CODE_IDX, DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE,
     DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE)
 
 from fedlab_core.communicator.package import Package
@@ -60,7 +60,7 @@ class PackageTestCase(unittest.TestCase):
         self._assert_tensor_eq(
             p.header,
             torch.Tensor([
-                dist.get_rank(), DEFAULT_RECEIVER_RANK, DEFAULT_CONTENT_SIZE,
+                dist.get_rank(), DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE,
                 DEFAULT_MESSAGE_CODE_VALUE
             ]))
         self._assert_tensor_eq(p.content, torch.zeros(size=(1, )))
@@ -74,13 +74,13 @@ class PackageTestCase(unittest.TestCase):
             torch.cat(
                 [torch.Tensor([self.tensor_sizes[0]]), self.tensor_list[0]]))
         self.assertEqual(p1.content_flag, True)
-        self.assertEqual(int(p1.header[HEADER_CONTENT_SIZE_IDX]),
+        self.assertEqual(int(p1.header[HEADER_SLICE_SIZE_IDX]),
                          self.tensor_sizes[0] + 1)
 
         # init with tensor list content
         p2 = Package(content=self.tensor_list)
         self._assert_tensor_eq(p2.content, self.content)
-        self.assertEqual(int(p2.header[HEADER_CONTENT_SIZE_IDX]),
+        self.assertEqual(int(p2.header[HEADER_SLICE_SIZE_IDX]),
                          self.content_size)
 
     def test_init_package_without_content(self):
@@ -89,7 +89,7 @@ class PackageTestCase(unittest.TestCase):
         h1 = torch.Tensor(size=(HEADER_SIZE, ))
         h1[HEADER_RECEIVER_RANK_IDX] = self.recver_rank
         h1[HEADER_SENDER_RANK_IDX] = dist.get_rank()
-        h1[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
+        h1[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
         h1[HEADER_MESSAGE_CODE_IDX] = self.message_code.value
         self._assert_tensor_eq(p1.header, h1)
 
@@ -98,7 +98,7 @@ class PackageTestCase(unittest.TestCase):
         h2 = torch.Tensor(size=(HEADER_SIZE, ))
         h2[HEADER_RECEIVER_RANK_IDX] = self.recver_rank
         h2[HEADER_SENDER_RANK_IDX] = dist.get_rank()
-        h2[HEADER_CONTENT_SIZE_IDX] = DEFAULT_CONTENT_SIZE
+        h2[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
         h2[HEADER_MESSAGE_CODE_IDX] = self.message_code_value
         self._assert_tensor_eq(p2.header, h2)
 
@@ -115,7 +115,7 @@ class PackageTestCase(unittest.TestCase):
             p.content,
             torch.cat(
                 [torch.Tensor([self.tensor_sizes[0]]), self.tensor_list[0]]))
-        self.assertEqual(int(p.header[HEADER_CONTENT_SIZE_IDX]),
+        self.assertEqual(int(p.header[HEADER_SLICE_SIZE_IDX]),
                          self.tensor_sizes[0] + 1)
         self.assertEqual(p.content_flag, True)
 
@@ -124,7 +124,7 @@ class PackageTestCase(unittest.TestCase):
         self.assertEqual(p.content_flag, False)
         p.append_tensor_list(self.tensor_list)
         self._assert_tensor_eq(p.content, self.content)
-        self.assertEqual(p.header[HEADER_CONTENT_SIZE_IDX], self.content_size)
+        self.assertEqual(p.header[HEADER_SLICE_SIZE_IDX], self.content_size)
         self.assertEqual(p.content_flag, True)
 
     def test_parse_content_with_content(self):
@@ -147,7 +147,7 @@ class PackageTestCase(unittest.TestCase):
             p_no_content.header)
         self.assertEqual(sender_rank, dist.get_rank())
         self.assertEqual(recver_rank, self.recver_rank)
-        self.assertEqual(content_size, DEFAULT_CONTENT_SIZE)
+        self.assertEqual(content_size, DEFAULT_SLICE_SIZE)
         self.assertEqual(message_code, self.message_code)
 
         # test on package with empty content
