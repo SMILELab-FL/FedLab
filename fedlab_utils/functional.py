@@ -1,7 +1,4 @@
 
-
-
-
 class AverageMeter(object):
     """Record train infomation"""
     def __init__(self):

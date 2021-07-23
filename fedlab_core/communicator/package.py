@@ -1,9 +1,6 @@
 from typing import List
-from numpy import dtype
 import torch
-from torch import tensor
 import torch.distributed as dist
-from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.message_code import MessageCode
 from copy import deepcopy
 
@@ -21,13 +18,14 @@ HEADER_SIZE = 4
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
-    :class:`Package` maintains 2 variables:
+    :class:`Package` maintains 3 variables:
         :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``
-        :attr:`content` : ``torch.Tensor([offset_1, tensor_1, offset_2, tensor_2, ...])``
+        :attr:`slices` : ``list[slice_size_1, slice_size_2]``
+        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
     Args:
-        message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-        header (list, optional): A list containing 4 elements representing sender rank (int), receiver rank (int), content size (int), message code (:class:`MessageCode`) respectively.
+        receiver_rank (int, optional): rank of receiver
+        message_code (message code): message code
         content (torch.Tensor, optional): Details shows above.
     """
     def __init__(self, receiver_rank=None, message_code=None, content=None):
@@ -102,8 +100,9 @@ class Package(object):
         """Parse package content into a list of tensors
 
         Args:
+            slices (list): 
             content (torch.Tensor): :attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and their
-        corresponding offsets. For more details about :class:`Package`, refer TODO: Package design
+        corresponding offsets. For more details about :class:`Package`.
 
         Returns:
             [torch.Tensor]: a list of 1-D tensors parsed from ``content``
@@ -122,11 +121,10 @@ class Package(object):
 
         Args:
             header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements:
-        ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``. For more details about :class:`Package`,
-        refer TODO: Package design
+        ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``. For more details about :class:`Package`.
 
         Returns:
-            tuple: a tuple containing 4 elements ``(sender_rank, recv_rank, content_size, message_code)``
+            tuple: a tuple containing 4 elements ``(sender_rank, recv_rank, slice_size, message_code)``
         """
         sender_rank = int(header[HEADER_SENDER_RANK_IDX])
         receiver_rank = int(header[HEADER_RECEIVER_RANK_IDX])

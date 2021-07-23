@@ -1,10 +1,9 @@
+import numpy as np
+
 import torch
 import torch.distributed as dist
-from fedlab_utils.serialization import SerializationTool
-from fedlab_utils.message_code import MessageCode
 from fedlab_core.communicator import package as config
 from fedlab_core.communicator.package import Package
-import numpy as np
 
 
 class PackageProcessor(object):
