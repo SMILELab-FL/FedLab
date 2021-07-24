@@ -23,6 +23,10 @@ class Package(object):
         :attr:`slices` : ``list[slice_size_1, slice_size_2]``
         :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
+    Note:
+        slice_size_i = tensor_i.shape[0]
+        every element in slices indicates the size of a sub-Tensor in content.
+
     Args:
         receiver_rank (int, optional): rank of receiver
         message_code (message code): message code
@@ -70,7 +74,7 @@ class Package(object):
         """Append new tensor to :attr:`Package.content`
             
         Args:
-            tensor (torch.Tensor): Tensor to append.
+            tensor (torch.Tensor): Tensor to append in content.
         """
         if not isinstance(tensor, torch.Tensor):
             raise ValueError("Invalid content type")

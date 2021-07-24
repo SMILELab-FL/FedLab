@@ -9,6 +9,7 @@ from fedlab_utils.logger import logger
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.dataset.sampler import SubsetSampler
 from fedlab_core.client.trainer import ClientTrainer
+from fedlab_utils.aggregator import Aggregators
 
 
 class ReturnThread(threading.Thread):
@@ -40,20 +41,21 @@ class SerialTrainer(ClientTrainer):
 
     Notes:
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
-        
+
     """
+
     def __init__(self,
                  model: torch.nn.Module,
-                 dataset,
-                 data_slices,
-                 aggregator,
+                 dataset: torch.nn.utils.dataset,
+                 data_slices: list,
+                 aggregator: Aggregators,
                  logger: logger = None,
                  cuda: bool = True) -> None:
 
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
 
         self.dataset = dataset
-        self.data_slices = data_slices  #[0,sim_client_num)
+        self.data_slices = data_slices  # [0,sim_client_num)
         self.client_num = len(data_slices)
         self.aggregator = aggregator
 
@@ -69,7 +71,7 @@ class SerialTrainer(ClientTrainer):
         Args:
             client_id (int): client id to generate dataloader
             batch_size (int): batch size
-        
+
         Returns:
             Dataloader for specific client sub-dataset
         """

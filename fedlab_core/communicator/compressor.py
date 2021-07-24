@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 import math
 import torch
-from memory import Memory, DGCSGDMemory
+import random
+from memory import Memory
 
 class Compressor(ABC):
     def __init__(self) -> None:
