@@ -1,6 +1,6 @@
 import logging
 
-from fedlab_core.topology import Topology
+from fedlab_core.network_manager import NetworkManager
 from fedlab_utils.message_code import MessageCode
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
@@ -8,8 +8,8 @@ from fedlab_core.network import DistNetwork
 from fedlab_utils.logger import logger
 
 
-class ClientPassiveTopology(Topology):
-    """Passive communication topology
+class ClientPassiveManager(NetworkManager):
+    """Passive communication Manager
 
     Args:
         handler (`ClientBackendHandler`): Subclass of ClientBackendHandler. Provides meth:train and attribute:model.
@@ -17,7 +17,7 @@ class ClientPassiveTopology(Topology):
         logger (`logger`, optional): object of `fedlab_utils.logger`
     """
     def __init__(self, handler, network: DistNetwork, logger=None):
-        super(ClientPassiveTopology, self).__init__(network, handler)
+        super(ClientPassiveManager, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -72,8 +72,8 @@ class ClientPassiveTopology(Topology):
         PackageProcessor.send_package(pack, dst=0)
 
 
-class ClientActiveTopology(Topology):
-    """Active communication topology
+class ClientActiveManager(NetworkManager):
+    """Active communication Manager
 
         Args:
             handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each client.
@@ -86,7 +86,7 @@ class ClientActiveTopology(Topology):
                  network: DistNetwork,
                  local_epochs: int = None,
                  logger: logger = None):
-        super(ClientActiveTopology, self).__init__(network, handler)
+        super(ClientActiveManager, self).__init__(network, handler)
 
         # temp variables, can assign train epoch rather than initial epoch value in handler
         self.epochs = local_epochs

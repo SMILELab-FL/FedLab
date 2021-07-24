@@ -8,8 +8,7 @@ import os
 from torch import nn
 sys.path.append('../../../')
 
-from fedlab_utils.logger import logger
-from fedlab_core.client.topology import ClientActiveTopology
+from fedlab_core.client.manager import ClientActiveManager
 from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.dataset.sampler import DistributedSampler
 from fedlab_utils.models.lenet import LeNet
@@ -65,5 +64,5 @@ if __name__ == "__main__":
     handler = ClientSGDTrainer(model, trainloader, epoch=args.epoch, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
 
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=args.local_rank)
-    topology = ClientActiveTopology(handler=handler, network=network)
-    topology.run()
+    Manager = ClientActiveManager(handler=handler, network=network)
+    Manager.run()

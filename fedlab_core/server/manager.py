@@ -2,7 +2,7 @@ import threading
 from queue import Queue
 import logging
 
-from fedlab_core.topology import Topology
+from fedlab_core.network_manager import NetworkManager
 from fedlab_utils.serialization import SerializationTool
 from fedlab_core.communicator.processor import Package, PackageProcessor
 from fedlab_core.network import DistNetwork
@@ -12,7 +12,7 @@ from fedlab_utils.message_code import MessageCode
 DEFAULT_SERVER_RANK = 0
 
 
-class ServerSynchronousTopology(Topology):
+class ServerSynchronousManager(NetworkManager):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -25,7 +25,7 @@ class ServerSynchronousTopology(Topology):
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
-        super(ServerSynchronousTopology, self).__init__(network, handler)
+        super(ServerSynchronousManager, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -86,7 +86,7 @@ class ServerSynchronousTopology(Topology):
             PackageProcessor.send_package(pack, dst=client_idx)
 
 
-class ServerAsynchronousTopology(Topology):
+class ServerAsynchronousManager(NetworkManager):
     """Asynchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -99,7 +99,7 @@ class ServerAsynchronousTopology(Topology):
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
-        super(ServerAsynchronousTopology, self).__init__(network, handler)
+        super(ServerAsynchronousManager, self).__init__(network, handler)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)

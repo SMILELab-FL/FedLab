@@ -8,7 +8,7 @@ import os
 sys.path.append('../../../')
 from torch import nn
 from fedlab_utils.logger import logger
-from fedlab_core.client.topology import ClientPassiveTopology
+from fedlab_core.client.manager import ClientPassiveManager
 from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.dataset.sampler import DistributedSampler
 from fedlab_utils.models.lenet import LeNet
@@ -71,5 +71,5 @@ if __name__ == "__main__":
     network = DistNetwork((args.server_ip, args.server_port),
                           args.world_size,
                           rank=args.local_rank)
-    topology = ClientPassiveTopology(handler=handler, network=network)
-    topology.run()
+    Manager = ClientPassiveManager(handler=handler, network=network)
+    Manager.run()

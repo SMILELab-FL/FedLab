@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import math
 import torch
 import random
-from memory import Memory
+from .memory import Memory
 
 
 class Compressor(ABC):
