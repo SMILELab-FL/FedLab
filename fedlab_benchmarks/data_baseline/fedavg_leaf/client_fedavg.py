@@ -3,9 +3,9 @@ import argparse
 import sys
 
 sys.path.append('../../../')
-# sys.path.append('/home/zengdun/FedLab/')
+
 from torch import nn
-from fedlab_core.client.topology import ClientPassiveTopology
+from fedlab_core.client.manager import ClientPassiveManager
 from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.models.lenet import LeNet
 from fedlab_utils.models.rnn import RNN_Shakespeare
@@ -50,5 +50,5 @@ if __name__ == "__main__":
     network = DistNetwork(address=(args.server_ip, args.server_port),
                           world_size=args.world_size,
                           rank=args.local_rank)
-    topology = ClientPassiveTopology(handler=handler, network=network)
-    topology.run()
+    Manager = ClientPassiveManager(handler=handler, network=network)
+    Manager.run()

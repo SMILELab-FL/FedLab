@@ -2,7 +2,6 @@ import os
 import sys
 
 sys.path.append('../../../')
-# sys.path.append('/home/zengdun/FedLab/')
 
 from fedlab_utils.logger import logger
 from fedlab_utils.models.lenet import LeNet
@@ -10,7 +9,7 @@ from fedlab_utils.models.cnn import CNN_DropOut
 from fedlab_utils.models.rnn import RNN_Shakespeare
 from fedlab_utils.models.rnn import RNN_Sent140
 from fedlab_core.server.handler import SyncParameterServerHandler
-from fedlab_core.server.topology import ServerSynchronousTopology
+from fedlab_core.server.manager import ServerSynchronousManager
 import argparse
 from fedlab_core.network import DistNetwork
 
@@ -41,6 +40,6 @@ if __name__ == "__main__":
     ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)
 
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=0)
-    topology = ServerSynchronousTopology(handler=ps, network=network)
+    Manager = ServerSynchronousManager(handler=ps, network=network)
         
-    topology.run()
+    Manager.run()

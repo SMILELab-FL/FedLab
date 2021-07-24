@@ -2,7 +2,7 @@ from torch.multiprocessing import Process
 from fedlab_core.network import DistNetwork
 
 
-class Topology(Process):
+class NetworkManager(Process):
     """Abstract class
 
     Args:
@@ -10,7 +10,7 @@ class Topology(Process):
         newtork (`DistNetwork`): object to manage torch.distributed network communication.
     """
     def __init__(self, network: DistNetwork, handler=None):
-        super(Topology, self).__init__()
+        super(NetworkManager, self).__init__()
 
         self._handler = handler
         self._network = network

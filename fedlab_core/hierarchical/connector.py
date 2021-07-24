@@ -5,15 +5,16 @@ sys.path.append('../../../')
 
 import torch
 from torch.multiprocessing import Queue
+
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 from fedlab_core.network import DistNetwork
 from fedlab_core.communicator.package import Package
 from fedlab_core.communicator.processor import PackageProcessor
-from fedlab_core.topology import Topology
+from fedlab_core.network_manager import NetworkManager
 
 
-class Connector(Topology):
+class Connector(NetworkManager):
     """Abstract class for basic Connector, which is a sub-module of schedular.
 
     Args:

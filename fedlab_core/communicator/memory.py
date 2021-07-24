@@ -1,9 +1,7 @@
+# codes below are copied from https://github.com/synxlin/deep-gradient-compression
+
 import torch
 
-__all__ = ['Memory', 'DGCSGDMemory']
-
-
-# code modified from https://github.com/sands-lab/grace/blob/master/grace_dl/torch/memory/dgc.py
 class Memory:
     @staticmethod
     def initialize(*args, **kwargs):
@@ -25,9 +23,9 @@ class Memory:
     def load_state_dict(state_dict):
         pass
 
-
 class DGCSGDMemory(Memory):
     """ Memory for momentum correction in DGC for momentum SGD optimizer"""
+
     def __init__(self,
                  momentum=0.9,
                  nesterov=False,

@@ -1,6 +1,4 @@
 import torch.distributed as dist
-from torch.multiprocessing import Process
-
 
 class DistNetwork(object):
     """Manage torch.distributed network

@@ -1,7 +1,7 @@
 import unittest
 
 
-from fedlab_core.topology import Topology
+from fedlab_core.network_manager import NetworkManager
 
 
 
@@ -14,6 +14,6 @@ class TopologyTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_topology(self):
-        top = Topology(network=None)
+        top = NetworkManager(network=None)
         top.on_receive(sender=None, message_code=None, payload=None)
         
