@@ -1,8 +1,4 @@
 import logging
-from abc import ABC, abstractmethod
-
-import torch.distributed as dist
-from torch.multiprocessing import Process
 
 from fedlab_core.topology import Topology
 from fedlab_utils.message_code import MessageCode

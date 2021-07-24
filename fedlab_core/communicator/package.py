@@ -15,6 +15,7 @@ DEFAULT_MESSAGE_CODE_VALUE = -1
 
 HEADER_SIZE = 4
 
+
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 

@@ -1,15 +1,16 @@
 import threading
-import torch
 from queue import Queue
 import logging
 
 from fedlab_core.topology import Topology
 from fedlab_utils.serialization import SerializationTool
-from fedlab_core.communicator.processor import Package, PackageProcessor, MessageCode
+from fedlab_core.communicator.processor import Package, PackageProcessor
 from fedlab_core.network import DistNetwork
 from fedlab_utils.logger import logger
+from fedlab_utils.message_code import MessageCode
 
 DEFAULT_SERVER_RANK = 0
+
 
 class ServerSynchronousTopology(Topology):
     """Synchronous communication
@@ -36,12 +37,15 @@ class ServerSynchronousTopology(Topology):
 
     def run(self):
         """Main Process"""
-        self._LOGGER.info("Initializing pytorch distributed group\n Waiting for connection requests from clients")
+        self._LOGGER.info(
+            "Initializing pytorch distributed group\n Waiting for connection requests from clients"
+        )
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
         for round_idx in range(self.global_round):
-            self._LOGGER.info("Global FL round {}/{}".format(round_idx + 1, self.global_round))
+            self._LOGGER.info("Global FL round {}/{}".format(
+                round_idx + 1, self.global_round))
 
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
@@ -108,7 +112,9 @@ class ServerAsynchronousTopology(Topology):
 
     def run(self):
         """Main process"""
-        self._LOGGER.info("Initializing pytorch distributed group \nWaiting for connection requests from clients")
+        self._LOGGER.info(
+            "Initializing pytorch distributed group \nWaiting for connection requests from clients"
+        )
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
@@ -120,14 +126,13 @@ class ServerAsynchronousTopology(Topology):
             self.on_receive(sender, message_code, payload)
 
         self.shutdown_clients()
-    
+
     def on_receive(self, sender, message_code, payload):
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
             model_params = SerializationTool.serialize_model(
                 self._handler.model)
-            pack.append_tensor_list(
-                [model_params, self._handler.global_time])
+            pack.append_tensor_list([model_params, self._handler.global_time])
             self._LOGGER.info(
                 "Send model to rank {}, the model current updated time {}".
                 format(sender, int(self._handler.global_time.item())))
@@ -146,7 +151,6 @@ class ServerAsynchronousTopology(Topology):
             parameters = payload[0]
             model_time = payload[1]
             self._handler.update_model(parameters, model_time)
-
 
     def shutdown_clients(self):
         """Shutdown all clients"""

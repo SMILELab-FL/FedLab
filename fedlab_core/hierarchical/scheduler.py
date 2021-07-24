@@ -1,13 +1,12 @@
-import threading
 import sys
+
 sys.path.append('../../../')
 
 import torch
 from torch.multiprocessing import Process, Queue
-
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-from .connector import ConnectClient,ConnectServer
+from .connector import ConnectClient, ConnectServer
 
 
 class Scheduler(Process):
@@ -22,9 +21,13 @@ class Scheduler(Process):
         self.net_lower = net_lower
 
     def run(self):
-        
-        connect_client = ConnectClient(self.net_lower, write_queue=self.MQs[0], read_queue=self.MQs[1])
-        connect_server = ConnectServer(self.net_upper, write_queue=self.MQs[1], read_queue=self.MQs[0])
+
+        connect_client = ConnectClient(self.net_lower,
+                                       write_queue=self.MQs[0],
+                                       read_queue=self.MQs[1])
+        connect_server = ConnectServer(self.net_upper,
+                                       write_queue=self.MQs[1],
+                                       read_queue=self.MQs[0])
 
         connect_client.start()
         connect_server.start()

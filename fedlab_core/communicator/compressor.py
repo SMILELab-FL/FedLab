@@ -4,6 +4,7 @@ import torch
 import random
 from memory import Memory
 
+
 class Compressor(ABC):
     def __init__(self) -> None:
         super().__init__()
@@ -31,7 +32,6 @@ class TopkCompressor(Compressor):
             fp16_values (bool): data type
             int32_indices (bool): data type
     """
-
     def __init__(self, compress_ratio, fp16_values=False, int32_indices=False):
 
         self.fp16_values = fp16_values
@@ -77,8 +77,9 @@ class TopkCompressor(Compressor):
 
             values, indices = tensor
             de_tensor = torch.zeros(size=shape).view(-1)
-            de_tensor = de_tensor.index_put_(
-                [indices], values, accumulate=True).view(shape)
+            de_tensor = de_tensor.index_put_([indices],
+                                             values,
+                                             accumulate=True).view(shape)
             return de_tensor
         else:
             raise ValueError("invalid value")
@@ -87,12 +88,21 @@ class TopkCompressor(Compressor):
 # codes below are copy from https://github.com/synxlin/deep-gradient-compression
 # modified by fedlab developer
 
+
 class DGCCompressor:
-    def __init__(self, compress_ratio, memory=None,
-                 sample_ratio=0.01, strided_sample=True,
-                 compress_upper_bound=1.3, compress_lower_bound=0.8, max_adaptation_iters=10, resample=True,
-                 fp16_values=False, int32_indices=False,
-                 warmup_epochs=-1, warmup_coeff=None):
+    def __init__(self,
+                 compress_ratio,
+                 memory=None,
+                 sample_ratio=0.01,
+                 strided_sample=True,
+                 compress_upper_bound=1.3,
+                 compress_lower_bound=0.8,
+                 max_adaptation_iters=10,
+                 resample=True,
+                 fp16_values=False,
+                 int32_indices=False,
+                 warmup_epochs=-1,
+                 warmup_coeff=None):
 
         self.fp16_values = fp16_values
         self.int32_indices = int32_indices
@@ -145,7 +155,8 @@ class DGCCompressor:
                     num_samples = numel
                 else:
                     sample_stride = int(
-                        math.ceil(numel / max(pct_numel, cpr_numel) / 32)) * 32 + 1
+                        math.ceil(
+                            numel / max(pct_numel, cpr_numel) / 32)) * 32 + 1
                     num_samples = numel // sample_stride
                     while num_samples < max(pct_numel, cpr_numel):
                         sample_stride = sample_stride - 8
@@ -155,8 +166,8 @@ class DGCCompressor:
                 num_samples = numel
             top_k_samples = int(math.ceil(num_samples * self.compress_ratio))
             num_selects = int(math.ceil(numel * self.compress_ratio))
-            self.attributes[name] = (
-                numel, shape, num_selects, num_samples, top_k_samples, sample_stride)
+            self.attributes[name] = (numel, shape, num_selects, num_samples,
+                                     top_k_samples, sample_stride)
 
     def warmup_compress_ratio(self, epoch):
         if self.warmup_epochs > 0:
@@ -164,7 +175,7 @@ class DGCCompressor:
                 if isinstance(self.warmup_coeff, (tuple, list)):
                     compress_ratio = self.warmup_coeff[epoch]
                 else:
-                    compress_ratio = max(self.warmup_coeff ** (epoch + 1),
+                    compress_ratio = max(self.warmup_coeff**(epoch + 1),
                                          self.base_compress_ratio)
             else:
                 compress_ratio = self.base_compress_ratio
@@ -187,11 +198,13 @@ class DGCCompressor:
                 sample_start = random.randint(0, sample_stride - 1)
                 samples = importance[sample_start::sample_stride]
             else:
-                samples = importance[torch.randint(
-                    0, numel, (num_samples, ), device=tensor.device)]
+                samples = importance[torch.randint(0,
+                                                   numel, (num_samples, ),
+                                                   device=tensor.device)]
 
-        threshold = torch.min(torch.topk(
-            samples, top_k_samples, 0, largest=True, sorted=False)[0])
+        threshold = torch.min(
+            torch.topk(samples, top_k_samples, 0, largest=True,
+                       sorted=False)[0])
         mask = torch.ge(importance, threshold)
         indices = mask.nonzero().view(-1)
         num_indices = indices.numel()
@@ -201,10 +214,11 @@ class DGCCompressor:
                 if num_indices > num_selects:
                     if num_indices > num_selects * self.compress_upper_bound:
                         if self.resample:
-                            indices = indices[
-                                torch.topk(importance[indices], num_selects,
-                                           0, largest=True, sorted=False)[1]
-                            ]
+                            indices = indices[torch.topk(importance[indices],
+                                                         num_selects,
+                                                         0,
+                                                         largest=True,
+                                                         sorted=False)[1]]
                             break
                         else:
                             threshold = threshold * self.compress_upper_bound
@@ -226,8 +240,9 @@ class DGCCompressor:
         # 对于已注册的数据结构/模型参数压缩
         if self.compress_ratio < 1.0 and name in self.attributes:
             # compress
-            tensor_compensated = self.memory.compensate(
-                tensor, name, accumulate=True)
+            tensor_compensated = self.memory.compensate(tensor,
+                                                        name,
+                                                        accumulate=True)
             values, indices, numel, shape, num_selects = \
                 self._sparsify(tensor_compensated, name)
             self.memory.update(name, (indices, ))

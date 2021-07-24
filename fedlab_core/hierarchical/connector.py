@@ -5,6 +5,7 @@ sys.path.append('../../../')
 
 import torch
 from torch.multiprocessing import Queue
+
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 from fedlab_core.network import DistNetwork

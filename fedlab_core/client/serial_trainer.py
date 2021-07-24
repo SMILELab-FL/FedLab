@@ -43,7 +43,6 @@ class SerialTrainer(ClientTrainer):
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
 
     """
-
     def __init__(self,
                  model: torch.nn.Module,
                  dataset: torch.nn.utils.dataset,
