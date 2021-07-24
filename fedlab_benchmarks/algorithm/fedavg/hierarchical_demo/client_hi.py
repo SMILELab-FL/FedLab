@@ -5,12 +5,11 @@ import argparse
 import sys
 import os
 
-#sys.path.append('../../../')
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 from torch import nn
 from fedlab_utils.logger import logger
-from fedlab_core.client.topology import ClientPassiveTopology
-from fedlab_core.client.trainer import ClientTrainer
+from fedlab_core.client.manager import ClientPassiveManager
+from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.dataset.sampler import DistributedSampler
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.network import DistNetwork
@@ -62,15 +61,15 @@ if __name__ == "__main__":
     parser.add_argument('--local_rank', type=int, default=1)
     parser.add_argument('--world_size', type=int, default=2)
     args = parser.parse_args()
-    args.cuda = False
+    args.cuda = True
 
     model = LeNet()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
     trainloader, testloader = get_dataset(args)
-    handler = ClientTrainer(model, trainloader, epoch=1, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
+    handler = ClientSGDTrainer(model, trainloader, epoch=1, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
     network = DistNetwork((args.server_ip, args.server_port),
                           args.world_size,
                           rank=args.local_rank)
-    topology = ClientPassiveTopology(handler=handler, network=network)
-    topology.run()
+    Manager = ClientPassiveManager(handler=handler, network=network)
+    Manager.run()

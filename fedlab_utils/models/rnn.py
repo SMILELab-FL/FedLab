@@ -12,7 +12,6 @@ import torch
 
 
 class RNN_Shakespeare(nn.Module):
-
     def __init__(self, vocab_size=90, embedding_dim=8, hidden_size=256):
         """Creates a RNN model using LSTM layers for Shakespeare language models (next character prediction task).
 
@@ -27,8 +26,13 @@ class RNN_Shakespeare(nn.Module):
             A `torch.nn.Module`.
         """
         super(RNN_Shakespeare, self).__init__()
-        self.embeddings = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim, padding_idx=0)
-        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, num_layers=2, batch_first=True)
+        self.embeddings = nn.Embedding(num_embeddings=vocab_size,
+                                       embedding_dim=embedding_dim,
+                                       padding_idx=0)
+        self.lstm = nn.LSTM(input_size=embedding_dim,
+                            hidden_size=hidden_size,
+                            num_layers=2,
+                            batch_first=True)
         self.fc = nn.Linear(hidden_size, vocab_size)
 
     def forward(self, input_seq):
@@ -40,8 +44,11 @@ class RNN_Shakespeare(nn.Module):
 
 
 class RNN_Sent140(nn.Module):
-
-    def __init__(self, vocab_size=400000, embedding_dim=100, hidden_size=256, output_dim=2):
+    def __init__(self,
+                 vocab_size=400000,
+                 embedding_dim=100,
+                 hidden_size=256,
+                 output_dim=2):
         """Creates a RNN model using LSTM layers for Shakespeare language models (next character prediction task).
 
         Args:
@@ -55,13 +62,19 @@ class RNN_Sent140(nn.Module):
             A `torch.nn.Module`.
         """
         super(RNN_Sent140, self).__init__()
-        self.embeddings = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim, padding_idx=0)
-        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, num_layers=2, batch_first=True)
+        self.embeddings = nn.Embedding(num_embeddings=vocab_size,
+                                       embedding_dim=embedding_dim,
+                                       padding_idx=0)
+        self.lstm = nn.LSTM(input_size=embedding_dim,
+                            hidden_size=hidden_size,
+                            num_layers=2,
+                            batch_first=True)
         self.fc = nn.Linear(hidden_size, output_dim)
 
     def forward(self, input_seq):
         embeds = self.embeddings(input_seq)  # (batch, seq_len, embedding_dim)
-        lstm_out, hidden = self.lstm(embeds)  # lstm_out = [seq_len, batch, hidden_dim]
+        lstm_out, hidden = self.lstm(
+            embeds)  # lstm_out = [seq_len, batch, hidden_dim]
         # final_hidden_state = lstm_out[:, -1]
         assert torch.equal(lstm_out[-1, :, :], hidden.squeeze(0))
         assert torch.equal(lstm_out[:, -1], hidden.squeeze(0))

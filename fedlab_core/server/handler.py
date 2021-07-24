@@ -1,9 +1,6 @@
 import logging
-import os
 import random
 import torch
-import copy
-from queue import Queue
 
 from abc import ABC, abstractmethod
 from fedlab_utils.serialization import SerializationTool
@@ -57,8 +54,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self,
-                 model:torch.nn.Module,
-                 client_num_in_total:int,
+                 model: torch.nn.Module,
+                 client_num_in_total: int,
                  cuda=False,
                  sample_ratio=1.0,
                  logger=None):
@@ -79,7 +76,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.client_num_in_total = client_num_in_total
         self.sample_ratio = sample_ratio
-        self.client_num_per_round = max(1, int(self.sample_ratio * self.client_num_in_total))
+        self.client_num_per_round = max(
+            1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = {}

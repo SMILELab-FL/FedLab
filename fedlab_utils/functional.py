@@ -9,19 +9,17 @@ class AverageMeter(object):
         self.val = 0.0
         self.avg = 0.0
         self.sum = 0.0
-        self.count = 0.0
+        self.count = 0.
 
     def update(self, val, n=1):
         self.val = val
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
-
-
+    
 def evaluate(model, criterion, test_loader, cuda):
     """
     Evaluate local model based on given test :class:`torch.DataLoader`
-
     Args:
         test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
         cuda (bool): Use GPUs or not

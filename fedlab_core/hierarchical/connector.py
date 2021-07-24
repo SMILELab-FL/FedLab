@@ -1,24 +1,52 @@
-import queue
 import threading
 import sys
 
-from torch.distributed.distributed_c10d import send
-
-sys.path.append('/home/zengdun/FedLab/')
+sys.path.append('../../../')
 
 import torch
-import torch.distributed as dist
-from torch.multiprocessing import Process, Queue
+from torch.multiprocessing import Queue
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 from fedlab_core.network import DistNetwork
 from fedlab_core.communicator.package import Package
 from fedlab_core.communicator.processor import PackageProcessor
-from fedlab_core.topology import Topology
+from fedlab_core.network_manager import NetworkManager
 
 
-class ConnectClient(Topology):
+class Connector(NetworkManager):
+    """Abstract class for basic Connector, which is a sub-module of schedular.
+
+    Args:
+        newtork (`DistNetwork`): object to manage torch.distributed network communication.
+        write_queue (Queue): message queue
+        read_queue (Queue):  message queue
+    """
+    def __init__(self, network: DistNetwork, write_queue: Queue,
+                 read_queue: Queue):
+        super(Connector, self).__init__(network)
+
+        self.mq_read = read_queue
+        self.mq_write = write_queue
+
+    def run(self):
+        return super().run()
+
+    def on_receive(self, sender, message_code, payload):
+        """define the reaction of receiving message.
+
+        Args:
+            sender (int): rank of sender in dist group.
+            message_code (`MessageCode`): message code
+            payload (`torch.Tensor`): Tensors 
+        """
+        pass
+
+    def deal_queue():
+        pass
+
+
+class ConnectClient(Connector):
     """Connect with clients.
 
         This class is a part of middle server which used in hierarchical structure.
@@ -32,15 +60,14 @@ class ConnectClient(Topology):
     """
     def __init__(self, network: DistNetwork, write_queue: Queue,
                  read_queue: Queue):
-        super(ConnectClient, self).__init__(None, network)
+        super(ConnectClient, self).__init__(network, write_queue, read_queue)
 
         self.mq_read = read_queue
         self.mq_write = write_queue
 
-
     def run(self):
         self._network.init_network_connection()
-        # start a thread watching message queue
+        # start a thread to watch message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
 
@@ -64,7 +91,7 @@ class ConnectClient(Topology):
             PackageProcessor.send_package(pack, dst=1)
 
 
-class ConnectServer(Topology):
+class ConnectServer(Connector):
     """Connect with server.
 
         This class is a part of middle server which used in hierarchical structure.
@@ -78,7 +105,7 @@ class ConnectServer(Topology):
     """
     def __init__(self, network: DistNetwork, write_queue: Queue,
                  read_queue: Queue):
-        super(ConnectServer, self).__init__(None, network)
+        super(ConnectServer, self).__init__(network, write_queue, read_queue)
 
         #self._network = network
         self.mq_write = write_queue

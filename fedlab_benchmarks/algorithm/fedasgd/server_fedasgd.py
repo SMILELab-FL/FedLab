@@ -7,7 +7,7 @@ sys.path.append('../../../')
 from fedlab_core.network import DistNetwork
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.server.handler import AsyncParameterServerHandler
-from fedlab_core.server.topology import ServerAsynchronousTopology
+from fedlab_core.server.manager import ServerAsynchronousManager
 import argparse
 
 
@@ -24,6 +24,6 @@ if __name__ == "__main__":
     ps = AsyncParameterServerHandler(model, client_num_in_total=args.world_size-1)
 
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size = args.world_size, rank=0)
-    topology = ServerAsynchronousTopology(handler=ps, network=network)
+    Manager = ServerAsynchronousManager(handler=ps, network=network)
         
-    topology.run()
+    Manager.run()

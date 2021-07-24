@@ -2,7 +2,7 @@ from torch.multiprocessing import Process
 from fedlab_core.network import DistNetwork
 
 
-class Topology(Process):
+class NetworkManager(Process):
     """Abstract class
 
     Args:
@@ -10,20 +10,20 @@ class Topology(Process):
         newtork (`DistNetwork`): object to manage torch.distributed network communication.
     """
     def __init__(self, network: DistNetwork, handler=None):
-        super(Topology, self).__init__()
+        super(NetworkManager, self).__init__()
 
         self._handler = handler
         self._network = network
 
     def run(self):
-        raise NotImplementedError()
+        pass
 
     def on_receive(self, sender, message_code, payload):
         """Define the reaction of Topology get a package.
     
         Args:
-            sender (int): rank of distributed.
+            sender (int): rank of current process.
             message_code (`MessageCode`): message code
             payload (`torch.Tensor`): Tensor 
         """
-        raise NotImplementedError()
+        pass
