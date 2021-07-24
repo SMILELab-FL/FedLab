@@ -1,5 +1,6 @@
 """
     Utils for shakespeare dataset
+    This is copied by [LEAF](https://github.com/TalwalkarLab/leaf/blob/master/models/utils/language_utils.py)
     Vocabulary re-used from the Federated Learning for Text Generation tutorial.
     https://www.tensorflow.org/federated/tutorials/federated_learning_for_text_generation
 """

@@ -54,7 +54,7 @@ class RNN_Sent140(nn.Module):
         Returns:
             A `torch.nn.Module`.
         """
-        super(RNN_Shakespeare, self).__init__()
+        super(RNN_Sent140, self).__init__()
         self.embeddings = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim, padding_idx=0)
         self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, num_layers=2, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_dim)

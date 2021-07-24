@@ -1,43 +1,13 @@
-""" Read data for leaf processed json files.
-
+"""
+    This is modified by [LEAF/models/utils/model_utils.py](https://github.com/TalwalkarLab/leaf/blob/master/models/utils/model_utils.py)
+    Read data for leaf_data_process processed json files.
+    Methods:
+        read_dir(data_dir): Read .json file from ``data_fir``
+        read_data(train_data_dir, test_data_dir): parses data in given train and test data directories
 """
 import json
-import numpy as np
 import os
 from collections import defaultdict
-
-
-def batch_data(data, batch_size, seed=100):
-    """Generate batch data for leaf data after reading data method
-
-    Args:
-        data (dict): client's data, a dict:={'x': [numpy array], 'y': [numpy array]} (on one client)
-        batch_size: size of batch
-        seed: control random reproduce
-
-    Returns:
-        batch_data: contains batch_x and batch_y, which are both numpy array of length: batch_size
-
-    """
-    data_x = data['x']
-    data_y = data['y']
-
-    # randomly shuffle data
-    np.random.seed(seed)
-    rng_state = np.random.get_state()
-    np.random.shuffle(data_x)
-    np.random.set_state(rng_state)
-    np.random.shuffle(data_y)
-
-    # loop through mini-batches
-    batch_data = list()
-    for i in range(0, len(data_x), batch_size):
-        batched_x = data_x[i:i + batch_size]
-        batched_y = data_y[i:i + batch_size]
-        # batched_x = torch.from_numpy(np.asarray(process_x(batched_x)))
-        # batched_y = torch.from_numpy(np.asarray(process_y(batched_y)))
-        batch_data.append((batched_x, batched_y))
-    return batch_data
 
 
 def read_dir(data_dir):
@@ -47,9 +17,10 @@ def read_dir(data_dir):
         data_dir: directory contains json files
 
     Returns:
-        client list, groups list for each clients, a dict data mapping keys to client
+        clients name dict mapping keys to id, groups list for each clients, a dict data mapping keys to client
     """
-    clients = []
+    # Splicing absolute path
+    data_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), data_dir)
     groups = []
     data = defaultdict(lambda: None)
 
@@ -59,12 +30,15 @@ def read_dir(data_dir):
         file_path = os.path.join(data_dir, f)
         with open(file_path, 'r') as inf:
             cdata = json.load(inf)
-        clients.extend(cdata['users'])
         if 'hierarchies' in cdata:
             groups.extend(cdata['hierarchies'])
         data.update(cdata['user_data'])
 
-    clients = list(sorted(data.keys()))
+    # generate clients_id_str - client_id_index map
+    clients_name = list(sorted(data.keys()))
+    clients_id = list(range(len(clients_name)))
+    clients = dict(zip(clients_id, clients_name))
+
     return clients, groups, data
 
 
