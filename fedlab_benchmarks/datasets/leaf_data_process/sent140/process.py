@@ -1,21 +1,21 @@
+"""
+    process sent140 data in leaf json
+"""
+
 import torch
 import numpy as np
 
-from fedlab_utils.dataset.leaf.process.sent140.language_utils import bag_of_words, val_to_vec, get_word_emb_arr
+from fedlab_benchmarks.datasets.leaf_data_process.sent140.language_utils import bag_of_words, \
+    val_to_vec, get_word_emb_arr
 
-import os
-print(os.path.abspath(os.curdir))
-
-# _, _, VOCAB = get_word_emb_arr("embs.json")
-# vocab_size = len(VOCAB)
+_, _, VOCAB = get_word_emb_arr("embs.json")
+vocab_size = len(VOCAB)
 
 
 def process_x(raw_x):
     """for all word strings in raw_x, process each string to get bag of words representation in VOCAB
-
     Args:
         raw_x (list[string]): contains a list of word strings to process
-
     Returns:
         x (list[list]): int indices list for words in raw_x in ALL_LETTERS
     Return:
@@ -30,13 +30,10 @@ def process_x(raw_x):
 
 def process_y(raw_y):
     """for all labels(class) in raw_y, process them to one-hot vector
-
     Args:
         raw_y (list): contains a list of label to process
-
     Returns:
         y (list): list contains one-hot vectors for raw_y's labels
-
     """
     y = [int(e) for e in raw_y]
     y = [val_to_vec(2, e) for e in y]
