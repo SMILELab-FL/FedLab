@@ -6,7 +6,7 @@ import torch
 from torch.multiprocessing import Process, Queue
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-from fedlab_core.hierarchical.connector import ConnectClient, ConnectServer
+from .connector import ConnectClient, ConnectServer
 
 
 class Scheduler(Process):
