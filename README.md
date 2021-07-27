@@ -51,11 +51,11 @@ FedLab支持多机和单机联邦学习系统的部署和模拟。
 
 
 ### Quick Start
-1. 配置python环境
+1. 配置python环境：
 ```shell
 pip install -r requirements.txt
 ```
-2. 运行FedAvg demo
+2. 进入./fedlab_benchmarks/algorithm/fedavg/， 运行FedAvg demo：
 ```shell
 bash run.sh 
 ```
@@ -74,14 +74,20 @@ FedLab的代码结构和功能如下：
   - dataset
 
   
-
-
 ### Documentation
-文档：https://fedlab-fedlab.readthedocs-hosted.com/en/latest/
+Coming soon
 
 ## Citation
 如果你的工作用到了FedLab，请引用
-> bibtex
+```bibtex
+@article{smile2021fedlab,  
+    title={FedLab: A Flexible Federated Learning Framework},  
+    author={Dun Zeng, Siqi Liang, Xiangjing Hu and Zenglin Xu},  
+    journal={arXiv preprint arXiv:2107.11621},  
+    year={2021}
+}
+```
+
 
 
 ## Contribution Guidance
