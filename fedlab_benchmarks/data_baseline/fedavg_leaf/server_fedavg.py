@@ -40,6 +40,6 @@ if __name__ == "__main__":
     ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)
 
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=0)
-    Manager = ServerSynchronousManager(handler=ps, network=network)
+    manager = ServerSynchronousManager(handler=ps, network=network)
         
-    Manager.run()
+    manager.run()

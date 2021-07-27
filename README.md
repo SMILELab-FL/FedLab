@@ -26,10 +26,15 @@ client端架构和各模块功能类似于server端，但NetworkManager和Traine
 ### Communication
 其中，异步和同步联邦的Network Manager通信逻辑如下图。  
 1. 同步联邦学习中，一轮学习的启动由server主导，即server执行参与者采样（sample clients），广播全局模型参数。
+
+![同步通信](./docs/imgs/fedlab-sychronous.png)
+
 2. 异步联邦中由client主导，即client向联邦服务器请求当前模型参数，进行本地模型训练。  
 
 ![异步通信](./docs/imgs/fedlab-asychronous.png)
-![同步通信](./docs/imgs/fedlab-sychronous.png)
+
+
+
 ## Experiment Scene
 FedLab支持多机和单机联邦学习系统的部署和模拟。
 

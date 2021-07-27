@@ -50,5 +50,5 @@ if __name__ == "__main__":
     network = DistNetwork(address=(args.server_ip, args.server_port),
                           world_size=args.world_size,
                           rank=args.local_rank)
-    Manager = ClientPassiveManager(handler=handler, network=network)
-    Manager.run()
+    manager = ClientPassiveManager(handler=handler, network=network)
+    manager.run()
