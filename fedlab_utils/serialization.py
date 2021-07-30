@@ -1,3 +1,17 @@
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import torch
 
 
@@ -31,12 +45,12 @@ class SerializationTool(object):
             model (`torch.nn.Module`): model to deserialize.
             serialized_parameters (`torch.Tensor`): serialized model parameters.
         """
-        
+
         current_index = 0  # keep track of where to read from grad_update
         for parameter in model.parameters():
             numel = parameter.data.numel()
             size = parameter.data.size()
             parameter.data.copy_(
                 serialized_parameters[current_index:current_index +
-                                      numel].view(size))
+                                                    numel].view(size))
             current_index += numel
