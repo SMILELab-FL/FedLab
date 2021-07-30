@@ -63,24 +63,10 @@ pip install -r requirements.txt
 ```shell
 bash run.sh 
 ```
-
-### Code Architecture
-FedLab的代码结构和功能如下：  
-- fedlab_benchmarks: 基于FedLab的算法实现
-  - algorithm
-  - datasets
-- fedlab_core: FedLab的基础组件  
-  - client
-  - server
-  - hierarchical
-  - communicator
-- fedlab_utils:  FedLab静态工具类和函数
-  - dataset
-
   
 ### Documentation
 
-[FedLab Docs(prototype)](fedlab.readthedocs.io)
+[FedLab Docs(prototype)](https://fedlab.readthedocs.io/en/latest/)
 
 
 ## Citation
