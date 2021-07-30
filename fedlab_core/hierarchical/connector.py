@@ -1,3 +1,17 @@
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import threading
 import sys
 
@@ -22,6 +36,7 @@ class Connector(NetworkManager):
         write_queue (Queue): message queue
         read_queue (Queue):  message queue
     """
+
     def __init__(self, network: DistNetwork, write_queue: Queue,
                  read_queue: Queue):
         super(Connector, self).__init__(network)
@@ -58,6 +73,7 @@ class ConnectClient(Connector):
         write_queue (Queue): message queue
         read_queue (Queue):  message queue
     """
+
     def __init__(self, network: DistNetwork, write_queue: Queue,
                  read_queue: Queue):
         super(ConnectClient, self).__init__(network, write_queue, read_queue)
@@ -103,11 +119,12 @@ class ConnectServer(Connector):
         write_queue (Queue): message queue
         read_queue (Queue):  message queue
     """
+
     def __init__(self, network: DistNetwork, write_queue: Queue,
                  read_queue: Queue):
         super(ConnectServer, self).__init__(network, write_queue, read_queue)
 
-        #self._network = network
+        # self._network = network
         self.mq_write = write_queue
         self.mq_read = read_queue
 

@@ -1,4 +1,18 @@
-# unfinished
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# TODO: unfinished
 
 from copy import deepcopy
 import random
@@ -15,6 +29,7 @@ class SubsetSampler(torch.utils.data.Sampler):
         indices (list): Indices in the whole set selected for subset
         shuffle (bool): shuffle the indices or not.
     """
+
     def __init__(self, indices: list, shuffle=False) -> None:
         self.indices = indices
         if shuffle is True:
@@ -27,7 +42,7 @@ class SubsetSampler(torch.utils.data.Sampler):
         return len(self.indices)
 
 
-# untested
+# TODO: untested
 # modified from DistributedSampler
 class FedDistributedSampler(torch.utils.data.Sampler):
     """Sampler that restricts data loading to a subset of the dataset.
@@ -52,6 +67,7 @@ class FedDistributedSampler(torch.utils.data.Sampler):
             replicas. If ``False``, the sampler will add extra indices to make
             the data evenly divisible across the replicas. Default: ``False``.
     """
+
     def __init__(self,
                  dataset,
                  num_replicas=None,
@@ -108,7 +124,7 @@ class FedDistributedSampler(torch.utils.data.Sampler):
 
         # subsample
         indices = indices[self.rank * self.num_samples:(self.rank + 1) *
-                          self.num_samples]
+                                                       self.num_samples]
         assert len(indices) == self.num_samples
 
         if self.shuffle is True:
@@ -120,7 +136,7 @@ class FedDistributedSampler(torch.utils.data.Sampler):
         return self.num_samples
 
 
-# codes below are about to be abandoned
+# TODO: codes below are about to be abandoned
 
 
 class DistributedSampler(torch.utils.data.distributed.Sampler):
@@ -138,12 +154,13 @@ class DistributedSampler(torch.utils.data.distributed.Sampler):
         rank (optional): Rank of the current process within num_replicas.
         shuffle (optional): If true (default), sampler will shuffle the indices
     """
+
     def __init__(self, dataset, rank, num_replicas):
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError(
                     "Requires distributed package to be available")
-            #num_replicas = dist.get_world_size() - 1
+            # num_replicas = dist.get_world_size() - 1
             num_replicas = num_replicas
         """
         if rank is None:
@@ -185,6 +202,7 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     This is a copy of :class:`torch.utils.data.distributed.DistributedSampler` (28 March 2019)
     with the option to turn off adding extra samples to divide the work evenly.
     """
+
     def __init__(self, dataset, rank, num_replicas, add_extra_samples=True):
 
         if torch.distributed.get_rank() == 0:
@@ -234,14 +252,14 @@ class NonIIDDistributedSampler(torch.utils.data.distributed.Sampler):
     def __iter__(self):
         indices = deepcopy(
             self._indices[self._num_samples * self._rank:self._num_samples *
-                          (self._rank + 1)])
+                                                         (self._rank + 1)])
 
-        #random.seed(self._epoch)
-        #random.shuffle(indices)
+        # random.seed(self._epoch)
+        # random.shuffle(indices)
 
         assert len(indices) == self._num_samples
 
-        #self.set_epoch(self._epoch + 1)
+        # self.set_epoch(self._epoch + 1)
 
         return iter(indices)
 

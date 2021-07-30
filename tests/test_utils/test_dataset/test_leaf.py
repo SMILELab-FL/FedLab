@@ -1,3 +1,18 @@
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import unittest
 import os
 from fedlab_utils.dataset.leaf import dataloader
@@ -12,12 +27,12 @@ class FemnistTestCase(unittest.TestCase):
         cls.dataset = 'femnist'
         # cls.client_id_map = {'f3797_07' : 1, 'f3793_06' : 2, 'f3728_28' : 3,
         #                      'f3687_48' : 4, 'f3785_26' : 5}
-        cls.client_id_map = {1 : 'f3797_07', 2 : 'f3793_06', 3 : 'f3728_28',
-                             4 : 'f3687_48', 5 : 'f3785_26'}
-        cls.train_num_samples = {'f3797_07' : 11, 'f3793_06' : 16, 'f3728_28' : 17,
-                                 'f3687_48' : 18, 'f3785_26' : 16}
-        cls.test_num_samples = {'f3797_07': 19, 'f3793_06': 17, 'f3728_28': 19,
+        cls.client_id_map = {1: 'f3797_07', 2: 'f3793_06', 3: 'f3728_28',
+                             4: 'f3687_48', 5: 'f3785_26'}
+        cls.train_num_samples = {'f3797_07': 11, 'f3793_06': 16, 'f3728_28': 17,
                                  'f3687_48': 18, 'f3785_26': 16}
+        cls.test_num_samples = {'f3797_07': 19, 'f3793_06': 17, 'f3728_28': 19,
+                                'f3687_48': 18, 'f3785_26': 16}
 
     def setUp(self) -> None:
         return super().setUp()
@@ -26,7 +41,7 @@ class FemnistTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_get_data(self) -> None:
-        client_num, train_data_x_dict, train_data_y_dict, test_data_x_dict, test_data_y_dict\
+        client_num, train_data_x_dict, train_data_y_dict, test_data_x_dict, test_data_y_dict \
             = dataloader.get_train_test_data(self.path)
         assert client_num == 5
         for client_id in range(client_num):
