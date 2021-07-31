@@ -53,9 +53,9 @@ class RNN_Sent140(nn.Module):
 
         Args:
             vocab_size (int, optional): the size of the vocabulary, used as a dimension in the input embedding,
-                Defaults to 90.
+                Defaults to 400000.
             embedding_dim (int, optional): the size of embedding vector size, used as a dimension in the output embedding,
-                Defaults to 8.
+                Defaults to 100.
             hidden_size (int, optional): the size of hidden layer. Defaults to 256.
 
         Returns:
@@ -76,8 +76,10 @@ class RNN_Sent140(nn.Module):
         lstm_out, hidden = self.lstm(
             embeds)  # lstm_out = [seq_len, batch, hidden_dim]
         # final_hidden_state = lstm_out[:, -1]
-        assert torch.equal(lstm_out[-1, :, :], hidden.squeeze(0))
-        assert torch.equal(lstm_out[:, -1], hidden.squeeze(0))
+        # if torch.equal(lstm_out[-1, :, :], hidden.squeeze(0)):
+        #     print("lstm_out[-1, :, :] equals hidden.squeeze(0)")
+        # if torch.equal(lstm_out[:, -1], hidden.squeeze(0)):
+        #     print("lstm_out[:, -1] equals hidden.squeeze(0)")
         return self.fc(hidden.squeeze(0))
         # output = self.fc(final_hidden_state)
         # return output
