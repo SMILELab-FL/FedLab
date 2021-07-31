@@ -1,5 +1,5 @@
 """
-    This is copy by [RSE-Adversarial-Defense-Github]
+    This is modified by [RSE-Adversarial-Defense-Github]
     https://github.com/Raibows/RSE-Adversarial-Defense/tree/de7bb5afc94d3d262cf0b08f55952800161865ce
 """
 

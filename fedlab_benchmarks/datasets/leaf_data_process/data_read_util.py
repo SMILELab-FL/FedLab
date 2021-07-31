@@ -21,7 +21,7 @@ def read_dir(data_dir):
     # Splicing absolute path
     data_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), data_dir)
     groups = []
-    data = defaultdict(lambda: None)
+    client_name2data = defaultdict(lambda: None)
 
     files = os.listdir(data_dir)
     files = [f for f in files if f.endswith('.json')]
@@ -31,11 +31,11 @@ def read_dir(data_dir):
             cdata = json.load(inf)
         if 'hierarchies' in cdata:
             groups.extend(cdata['hierarchies'])
-        data.update(cdata['user_data'])
+        client_name2data.update(cdata['user_data'])
 
     # generate clients_id_str - client_id_index map
-    clients_name = list(sorted(data.keys()))
+    clients_name = list(sorted(client_name2data.keys()))
     clients_id = list(range(len(clients_name)))
-    clients = dict(zip(clients_id, clients_name))
+    client_id2name = dict(zip(clients_id, clients_name))
 
-    return clients, groups, data
+    return client_id2name, groups, client_name2data

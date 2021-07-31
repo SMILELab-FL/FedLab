@@ -54,10 +54,19 @@ def get_dataloader(dataset, client_id=0, batch_size=128):
     trainloader = torch.utils.data.DataLoader(
         trainset,
         batch_size=batch_size,
-        drop_last=True)
+        drop_last=False)
     testloader = torch.utils.data.DataLoader(
         testset,
         batch_size=len(testset),
         drop_last=False,
         shuffle=False)
     return trainloader, testloader
+
+if __name__ == '__main__':
+    trainloader, testloader = get_dataloader(dataset='sent140')
+    for inputs, labels in trainloader:
+        print(inputs)
+        print(labels)
+    for inputs, labels in testloader:
+        print(inputs)
+        print(labels)

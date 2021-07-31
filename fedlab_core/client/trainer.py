@@ -115,7 +115,6 @@ class ClientSGDTrainer(ClientTrainer):
                     inputs, labels = inputs.cuda(), labels.cuda()
 
                 outputs = self._model(inputs)
-                print("outputs:{}，label:{}".format(outputs, labels))
                 loss = self.criterion(outputs, labels)
 
                 self.optimizer.zero_grad()
