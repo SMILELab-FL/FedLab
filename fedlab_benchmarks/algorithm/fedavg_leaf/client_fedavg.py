@@ -10,7 +10,7 @@ from fedlab_core.client.trainer import ClientSGDTrainer
 from fedlab_utils.models.lenet import LeNet
 from fedlab_utils.models.rnn import RNN_Shakespeare
 from fedlab_core.network import DistNetwork
-from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_dataloader
+from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
-    trainloader, testloader = get_dataloader(dataset=args.dataset, client_id=args.local_rank - 1)
+    trainloader, testloader = get_LEAF_dataloader(dataset=args.dataset, client_id=args.local_rank - 1)
     handler = ClientSGDTrainer(model, trainloader, epoch=2, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
     network = DistNetwork(address=(args.server_ip, args.server_port),
                           world_size=args.world_size,

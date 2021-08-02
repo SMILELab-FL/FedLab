@@ -49,7 +49,7 @@ class SerialTrainer(ClientTrainer):
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.nn.utils.dataset): local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
-        aggregator (:func:`fedlab_utils.aggregator.Aggregators`, callable): function to deal with a list of parameters.
+        aggregator (fedlab_utils.aggregator.Aggregators, callable): function to deal with a list of parameters.
         logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
         cuda (bool): use GPUs or not.
 
