@@ -46,10 +46,10 @@ class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.
 
     Args:
-        model (nn.Module): Model used in this federation.
-        dataset (nn.utils.dataset): local dataset for this group of clients.
+        model (torch.nn.Module): Model used in this federation.
+        dataset (torch.nn.utils.dataset): local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
-        aggregator (fedlab_utils.aggregator): function to deal with a list of parameters.
+        aggregator (:func:`fedlab_utils.aggregator.Aggregators`, callable): function to deal with a list of parameters.
         logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
         cuda (bool): use GPUs or not.
 
@@ -102,11 +102,11 @@ class SerialTrainer(ClientTrainer):
 
         Args:
             id (int): client id of this round.
-            model (nn.Module): model to be trained.
+            model (torch.nn.Module): model to be trained.
             epochs (int): the local epoch of training.
             data_loader (torch.utils.data.DataLoader): dataloader for data iteration.
-            optimizer (torch.Optimizer): Optimizer associated with model.
-            critereion (torch.nn.Loss): loss function.
+            optimizer (torch.optim.Optimizer): Optimizer associated with model. Example, :class:`torch.nn.CrossEntropyLoss`.
+            critereion (torch.nn.Loss): loss function. 
             cuda (bool): use GPUs or not.
         """
         model.train()

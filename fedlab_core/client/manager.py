@@ -26,9 +26,9 @@ class ClientPassiveManager(NetworkManager):
     """Passive communication Manager
 
     Args:
-        handler (`ClientBackendHandler`): Subclass of ClientBackendHandler. Provides meth:train and attribute:model.
-        network (`DistNetwork`): distributed network initialization.
-        logger (`logger`, optional): object of `fedlab_utils.logger`
+        handler (:class:`ClientBackendHandler`): Subclass of ClientBackendHandler. Provides meth:train and attribute:model.
+        network (:class:`DistNetwork`): distributed network initialization.
+        logger (:class:`fedlab_utils.logger`, optional): object of `fedlab_utils.logger`
     """
 
     def __init__(self, handler, network: DistNetwork, logger=None):
@@ -70,7 +70,7 @@ class ClientPassiveManager(NetworkManager):
 
         Args:
             sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
+            message_code (:class:`MessageCode`): Agreements code defined in: class:`MessageCode`
             payload (torch.Tensor): Serialized parameters
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
@@ -92,9 +92,9 @@ class ClientActiveManager(NetworkManager):
 
         Args:
             handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each client.
-            network (`DistNetwork`): distributed network initialization.
+            network (:class:`DistNetwork`): distributed network initialization.
             local_epochs (int): epochs for local train
-            logger (`logger`, optional): object of `fedlab_utils.logger`
+            logger (:class:`logger`, optional): object of `fedlab_utils.logger`
     """
 
     def __init__(self,

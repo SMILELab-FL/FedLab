@@ -20,8 +20,8 @@ class NetworkManager(Process):
     """Abstract class
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
+        handler (:class:`ClientBackendHandler` or :class:`ParameterServerHandler`, optional): object to deal.
+        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
     """
 
     def __init__(self, network: DistNetwork, handler=None):
@@ -38,7 +38,7 @@ class NetworkManager(Process):
     
         Args:
             sender (int): rank of current process.
-            message_code (`MessageCode`): message code
-            payload (`torch.Tensor`): Tensor 
+            message_code (:class:`MessageCode`): message code
+            payload (torch.Tensor): Tensor 
         """
         pass

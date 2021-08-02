@@ -34,9 +34,9 @@ class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
     :class:`Package` maintains 3 variables:
-        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``
-        :attr:`slices` : ``list[slice_size_1, slice_size_2]``
-        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
+        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``   
+        :attr:`slices` : ``list[slice_size_1, slice_size_2]``   
+        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``   
 
     Note:
         slice_size_i = tensor_i.shape[0]
@@ -44,7 +44,7 @@ class Package(object):
 
     Args:
         receiver_rank (int, optional): rank of receiver
-        message_code (message code): message code
+        message_code (MessageCode): message code
         content (torch.Tensor, optional): Details shows above.
     """
     def __init__(self, receiver_rank=None, message_code=None, content=None):
@@ -140,7 +140,7 @@ class Package(object):
 
         Args:
             header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements:
-        ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``. For more details about :class:`Package`.
+        ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code])``. For more details about :class:`Package`.
 
         Returns:
             tuple: a tuple containing 4 elements ``(sender_rank, recv_rank, slice_size, message_code)``
