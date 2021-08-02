@@ -38,8 +38,8 @@ class SerializationTool(object):
     def deserialize_model(model: torch.nn.Module,
                           serialized_parameters: torch.Tensor):
         """Assigns serialized parameters to model.parameters.
-        This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
-        NOTE: this function manipulates `model.parameters`.
+        This is done by iterating through ``model.parameters()`` and assigning the relevant params in ``grad_update``.
+        NOTE: this function manipulates ``model.parameters``.
 
         Args:
             model (torch.nn.Module): model to deserialize.
