@@ -58,12 +58,12 @@ class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
-        model (torch.nn.Module): model used in federation
-        data_loader (torch.Dataloader): :class:`DataLoader` for this client
-        epoch (int): local epoch
+        model (torch.nn.Module): model used in federation.
+        data_loader (torch.Dataloader): :class:`DataLoader` for this client.
+        epoch (int): the number of local epoch.
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
         criterion (optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
-        cuda (bool, optional): use GPUs or not. Default: ``True``
+        cuda (bool, optional): use GPUs or not. Default: ``True``.
         logger (optional): `fedlab_utils.logger`, 
 
     """
@@ -94,8 +94,8 @@ class ClientSGDTrainer(ClientTrainer):
         Client trains its local model on local dataset.
 
         Args:
-            model_parameters (torch.Tensor): serialized model paremeters
-            epochs (int): number of epoch for current local training
+            model_parameters (torch.Tensor): serialized model paremeters.
+            epochs (int): number of epoch for current local training.
         """
         self._LOGGER.info("starting local train process")
         SerializationTool.deserialize_model(self._model,

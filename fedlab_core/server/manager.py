@@ -33,9 +33,9 @@ class ServerSynchronousManager(NetworkManager):
     Synchronize with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        network (`DistNetwork`): object to manage torch.distributed network communication.
-        logger (`fedlab_utils.logger`, optional): Tools, used to output information.
+        handler (:class:`ClientBackendHandler` or :class:`ParameterServerHandler`, optional): object to deal.
+        network (:class:`DistNetwork`): object to manage torch.distributed network communication.
+        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
@@ -107,9 +107,9 @@ class ServerAsynchronousManager(NetworkManager):
     Asynchronize with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
-        logger (`fedlab_utils.logger`, optional): Tools, used to output information.
+        handler (:class:`ClientBackendHandler` or :class:`ParameterServerHandler`, optional): object to deal.
+        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
+        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
