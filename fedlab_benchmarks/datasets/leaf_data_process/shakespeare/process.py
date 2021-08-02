@@ -1,5 +1,10 @@
+"""
+    process shakespeare data in leaf json
+"""
+
 import torch
 import numpy as np
+from fedlab_benchmarks.datasets.leaf_data_process.shakespeare.language_utils import word_to_indices, letter_to_index
 
 
 def process_x(raw_x):
@@ -10,12 +15,9 @@ def process_x(raw_x):
 
     Returns:
         x (list[list]): int indices list for words in raw_x in ALL_LETTERS
-    Return:
-        len(vocab) by len(raw_x_batch) np array
     """
-    x = torch.from_numpy(np.asarray(raw_x))
-    x = torch.reshape(x, (-1, 1, 28, 28))
-    x = x.to(torch.float32)
+    x = [word_to_indices(word) for word in raw_x]
+    x = torch.from_numpy(np.asarray(x))
     return x
 
 
@@ -27,8 +29,7 @@ def process_y(raw_y):
 
     Returns:
         y (list[int]): the index for all chars in raw_y in ALL_LETTERS list
-
     """
-    y = torch.from_numpy(np.asarray(raw_y))
-    y = y.to(torch.long)
+    y = [letter_to_index(c) for c in raw_y]
+    y = torch.from_numpy(np.asarray(y))
     return y
