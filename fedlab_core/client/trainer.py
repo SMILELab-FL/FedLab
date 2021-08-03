@@ -62,9 +62,9 @@ class ClientSGDTrainer(ClientTrainer):
         data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         epoch (int): the number of local epoch.
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
-        criterion (optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
+        criterion (torch.nn.Loss, optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (optional): `fedlab_utils.logger`, 
+        logger (logger, optional): `fedlab_utils.logger`, 
 
     """
     def __init__(self,

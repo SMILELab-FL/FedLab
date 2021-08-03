@@ -101,7 +101,6 @@ class TopkCompressor(Compressor):
 # codes below are copy from https://github.com/synxlin/deep-gradient-compression
 # modified by fedlab developer
 
-
 class DGCCompressor:
     def __init__(self,
                  compress_ratio,

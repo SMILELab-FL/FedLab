@@ -42,15 +42,17 @@ class ReturnThread(threading.Thread):
             return None
 
 
+#TODO: something wrong with multi_threading. 异步训练失败？
+
 class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        dataset (torch.nn.utils.dataset): local dataset for this group of clients.
+        dataset (torch.utils.data.Dataset): local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
-        aggregator (fedlab_utils.aggregator.Aggregators, callable): function to deal with a list of parameters.
-        logger (:class:`fedlab_utils.logger`, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
+        aggregator (Aggregators, callable): function to deal with a list of parameters.
+        logger (logger, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
         cuda (bool): use GPUs or not.
 
     Notes:
@@ -155,8 +157,6 @@ class SerialTrainer(ClientTrainer):
         Returns:
             Merged serialized params
 
-        #TODO: something wrong with multi_threading.
-                异步训练失败？
         """
         param_list = []
 

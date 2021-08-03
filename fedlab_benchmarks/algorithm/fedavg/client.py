@@ -10,15 +10,8 @@ sys.path.append('../../../')
 from torch import nn
 from fedlab_core.client.manager import ClientPassiveManager
 from fedlab_core.client.trainer import ClientSGDTrainer
-from fedlab_utils.dataset.sampler import DistributedSampler
-from fedlab_utils.models.lenet import LeNet
-from fedlab_utils.models.rnn import RNN_Shakespeare
-
 from fedlab_core.network import DistNetwork
-from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
-
-
-from .setting import get_model, get_dataset
+from setting import get_model, get_dataset
 
 if __name__ == "__main__":
     
@@ -33,7 +26,6 @@ if __name__ == "__main__":
     parser.add_argument("--cuda", type=bool, default=True)
     parser.add_argument("--dataset", type=str)
     args = parser.parse_args()
-
 
     model = get_model(args)
     trainloader, testloader = get_dataset(args)

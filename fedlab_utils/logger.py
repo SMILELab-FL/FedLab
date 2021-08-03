@@ -29,14 +29,19 @@ class logger(object):
         log_name (str): log name for output
     """
 
-    def __init__(self, log_file, log_name):
+    def __init__(self, log_name, log_file=None):
+        
         self.logger = logging.getLogger(log_name)
-        handler = logging.FileHandler(log_file, mode='w')
-        handler.setLevel(level=logging.INFO)
-        formatter = logging.Formatter(
+
+        if log_file is not None:
+            handler = logging.FileHandler(log_file, mode='w')
+            handler.setLevel(level=logging.INFO)
+            formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+        
+        
 
     def info(self, log_str):
         """Print information to logger"""

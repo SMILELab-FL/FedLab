@@ -19,7 +19,7 @@ import torch
 from abc import ABC, abstractmethod
 from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.aggregator import Aggregators
-
+from fedlab_utils.logger import logger
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
@@ -65,7 +65,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         client_num_in_total (int): Total number of clients in this federation
         cuda (bool): Use GPUs or not. Default: ``False``
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
-        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
+        logger (logger, optional): Tools, used to output information.
     """
     def __init__(self,
                  model: torch.nn.Module,
@@ -150,7 +150,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Global model in server
         client_num_in_total (int): the num of client in federation.
         cuda (bool): Use GPUs or not.
-        logger (:class:`fedlab_utils.logger`, optional): Tools, used to output information.
+        logger (logger, optional): Tools, used to output information.
     """
     def __init__(self,
                  model: torch.nn.Module,

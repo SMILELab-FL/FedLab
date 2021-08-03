@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 import sys
 sys.path.append('../../../')
 
-from fedlab_utils.dataset.sampler import DistributedSampler
+from fedlab_utils.dataset.sampler import FedDistributedSampler
 from fedlab_utils.models.lenet import LeNet
 from fedlab_utils.models.rnn import RNN_Shakespeare
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
@@ -31,7 +31,7 @@ def get_dataset(args):
 
         trainloader = torch.utils.data.DataLoader(
             trainset,
-            sampler=DistributedSampler(trainset,
+            sampler=FedDistributedSampler(trainset,
                                        rank=args.rank,
                                        num_replicas=args.world_size - 1),
             batch_size=128,
