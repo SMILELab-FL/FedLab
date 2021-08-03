@@ -64,37 +64,26 @@ class FedDistributedSampler(torch.utils.data.Sampler):
             replicas. If ``False``, the sampler will add extra indices to make
             the data evenly divisible across the replicas. Default: ``False``.
     """
-    def __init__(self,
-                 dataset,
-                 num_replicas=None,
-                 client_id=None,
-                 shuffle=True):
+    def __init__(self, dataset, num_replicas, client_id=None, shuffle=True):
 
-        if num_replicas is None:
-            if not dist.is_available():
-                raise RuntimeError(
-                    "Requires distributed package to be available")
-            num_replicas = dist.get_world_size() - 1
+        self.dataset = dataset
+        self.indices = [index for index in range(len(self.dataset))]
 
-        if client_id is None:
-            if not dist.is_available():
-                raise RuntimeError(
-                    "Requires distributed package to be available")
-            rank = dist.get_rank() - 1
+        self.num_replicas = num_replicas
+        self.id = client_id
         
-        if rank >= num_replicas or rank < 0:
-            raise ValueError("Invalid rank {}, rank should be in the interval"
-                             " [0, {}]".format(rank, num_replicas - 1))
+        self.num_samples = int(len(self.dataset) / self.num_replicas)
 
-        self._dataset = dataset
-
-        self.total_size = self.num_samples * self.num_replicas
         self.shuffle = shuffle
 
     def __iter__(self):
-        indices = None
-        return iter(indices)
+        # deterministically shuffle based on epoch
+        
+        local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
+
+        assert len(local_indices) == self.num_samples
+
+        return iter(local_indices)
 
     def __len__(self):
         return self.num_samples
-
