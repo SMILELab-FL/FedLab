@@ -20,12 +20,13 @@ from fedlab_utils.serialization import SerializationTool
 from fedlab_utils.logger import logger
 from fedlab_core.communicator.processor import Package, PackageProcessor
 from fedlab_core.network import DistNetwork
+from fedlab_core.client.trainer import ClientTrainer
 
 class ClientPassiveManager(NetworkManager):
     """Passive communication Manager
 
     Args:
-        handler (fedlab_core.client.ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
+        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
         network (DistNetwork): distributed network initialization.
         logger (logger, optional): object of `fedlab_utils.logger`
     """

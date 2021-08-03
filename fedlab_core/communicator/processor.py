@@ -63,7 +63,7 @@ class PackageProcessor(object):
             return Package.parse_content(slices, buffer)
 
         sender_rank, _, slices_size, message_code = recv_header(src=src)
-        # 收到第一段包，第二段包指定来源rank
+        
         if slices_size > 0:
             slices = recv_slices(slices_size=slices_size, src=sender_rank)
             content = recv_content(slices, src=sender_rank)

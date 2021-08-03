@@ -7,7 +7,7 @@ from fedlab_utils.logger import logger
 from fedlab_core.server.handler import SyncParameterServerHandler
 from fedlab_core.server.manager import ServerSynchronousManager
 from fedlab_core.network import DistNetwork
-from .setting import get_model
+from setting import get_model
 
 
 if __name__ == "__main__":

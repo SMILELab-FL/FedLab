@@ -9,10 +9,9 @@ sys.path.append('../../../')
 from torch import nn
 from fedlab_core.client.manager import ClientPassiveManager
 from fedlab_core.client.trainer import ClientSGDTrainer
-from fedlab_utils.dataset.sampler import DistributedSampler
+from fedlab_utils.dataset.sampler import FedDistributedSampler
 from fedlab_utils.models.lenet import LeNet
 from fedlab_core.network import DistNetwork
-
 
 
 def get_dataset(args):
@@ -40,7 +39,7 @@ def get_dataset(args):
 
     trainloader = torch.utils.data.DataLoader(
         trainset,
-        sampler=DistributedSampler(trainset,
+        sampler=FedDistributedSampler(trainset,
                                    rank=args.local_rank,
                                    num_replicas=args.world_size - 1),
         batch_size=128,
