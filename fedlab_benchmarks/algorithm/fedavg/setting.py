@@ -32,7 +32,7 @@ def get_dataset(args):
         trainloader = torch.utils.data.DataLoader(
             trainset,
             sampler=FedDistributedSampler(trainset,
-                                       rank=args.rank,
+                                       client_id=args.rank,
                                        num_replicas=args.world_size - 1),
             batch_size=128,
             drop_last=True,

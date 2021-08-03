@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_argument('--server_ip', type=str, default='127.0.0.1')
     parser.add_argument('--server_port', type=str, default='3002')
     parser.add_argument('--world_size', type=int)
-    parser.add_argument('--rank', type=int)
+    parser.add_argument('--rank', type=int, default=1)
 
     parser.add_argument("--epoch", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.1)

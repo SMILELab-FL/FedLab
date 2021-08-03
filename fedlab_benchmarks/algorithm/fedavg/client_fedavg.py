@@ -40,8 +40,8 @@ def get_dataset(args):
     trainloader = torch.utils.data.DataLoader(
         trainset,
         sampler=FedDistributedSampler(trainset,
-                                   rank=args.local_rank,
-                                   num_replicas=args.world_size - 1),
+                                      num_replicas=args.world_size - 1,
+                                      client_id=args.local_rank),
         batch_size=128,
         drop_last=True,
         num_workers=2)
@@ -63,19 +63,24 @@ if __name__ == "__main__":
     parser.add_argument("--epoch", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--cuda", type=bool, default=True)
-    
+
     args = parser.parse_args()
-    args.root= '../../../../datasets/mnist/'
+    args.root = '../../../../datasets/mnist/'
 
     model = LeNet()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
     trainloader, testloader = get_dataset(args)
-    
-    handler = ClientSGDTrainer(model, trainloader, epoch=args.epoch, optimizer=optimizer, criterion=criterion, cuda=args.cuda)
+
+    handler = ClientSGDTrainer(model,
+                               trainloader,
+                               epoch=args.epoch,
+                               optimizer=optimizer,
+                               criterion=criterion,
+                               cuda=args.cuda)
     network = DistNetwork(address=(args.server_ip, args.server_port),
                           world_size=args.world_size,
                           rank=args.local_rank)
     Manager = ClientPassiveManager(handler=handler, network=network)
-    
+
     Manager.run()

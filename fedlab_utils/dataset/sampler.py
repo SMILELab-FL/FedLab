@@ -64,44 +64,26 @@ class FedDistributedSampler(torch.utils.data.Sampler):
             replicas. If ``False``, the sampler will add extra indices to make
             the data evenly divisible across the replicas. Default: ``False``.
     """
-    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
-        if num_replicas is None:
-            if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
-            num_replicas = dist.get_world_size() - 1
-        if rank is None:
-            if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
-            rank = dist.get_rank() - 1
+    def __init__(self, dataset, num_replicas, client_id=None, shuffle=True):
+
         self.dataset = dataset
+        self.indices = [index for index in range(len(self.dataset))]
+
         self.num_replicas = num_replicas
-        self.rank = rank
-        self.epoch = 0
-        self.num_samples = int(math.ceil(len(self.dataset) * 1.0 / self.num_replicas))
-        self.total_size = self.num_samples * self.num_replicas
+        self.id = client_id
+        
+        self.num_samples = int(len(self.dataset) / self.num_replicas)
+
         self.shuffle = shuffle
 
     def __iter__(self):
         # deterministically shuffle based on epoch
-        g = torch.Generator()
-        g.manual_seed(self.epoch)
-        if self.shuffle:
-            indices = torch.randperm(len(self.dataset), generator=g).tolist()
-        else:
-            indices = list(range(len(self.dataset)))
+        
+        local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
 
-        # add extra samples to make it evenly divisible
-        indices += indices[:(self.total_size - len(indices))]
-        assert len(indices) == self.total_size
+        assert len(local_indices) == self.num_samples
 
-        # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
-        assert len(indices) == self.num_samples
-
-        return iter(indices)
+        return iter(local_indices)
 
     def __len__(self):
         return self.num_samples
-
-    def set_epoch(self, epoch):
-        self.epoch = epoch
