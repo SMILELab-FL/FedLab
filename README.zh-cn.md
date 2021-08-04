@@ -15,6 +15,7 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 FedLab是一个基于pytorch的轻量级、组件化联邦学习框架，帮助使用者在单机或多机环境下快速实现联邦学习算法的模拟。 
 框架分为server和client两部分，server和client都由NetworkManager模块用于通信和消息处理，NetworkManager模块基于[torch.distributed](https://pytorch.org/docs/stable/distributed.html)实现的分布式点对点通信模块，负责消息处理和调用后端。
 server的后端计算逻辑由ParameterServerHandler负责，client的后端计算由trainer负责。Manager模块构成通信协议和压缩框架，ParameterServer和Trainer构成联邦学习和优化框架。  
+
 FedLab提供了一系列构建联邦学习系统的组件和Demo，主要分为同步联邦学习和异步联邦学习，并实现了常见的联邦学习算法Benchmarks。
 
 ![image](./docs/imgs/fedlab-overview.pdf?raw=True)
@@ -113,6 +114,6 @@ bash run.sh
 
 请通过GitHub issues或邮件联系__FedLab__开发团队：
 
-- Zeng Dun: zengdun@foxmail.com
+- Dun Zeng: zengdun@foxmail.com
 - Siqi Liang: zszxlsq@gmail.com
 
