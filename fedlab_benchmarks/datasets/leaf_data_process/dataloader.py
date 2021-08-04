@@ -18,10 +18,10 @@
 
 import torch
 import pickle
-from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.vocab import Vocab
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
+from ...datasets.leaf_data_process.nlp_utils.vocab import Vocab
+from ...datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
+from ...datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
+from ...datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
 
 
 def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):

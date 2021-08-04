@@ -15,7 +15,7 @@
 import os
 import torch
 from torch.utils.data import Dataset
-from fedlab_benchmarks.datasets.leaf_data_process.data_read_util import read_dir
+from ..data_read_util import read_dir
 
 
 class FemnistDataset(Dataset):

@@ -16,9 +16,9 @@ import os
 import math
 import random
 import pickle
-from fedlab_benchmarks.datasets.leaf_data_process.data_read_util import read_dir
-from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.tokenizer import Tokenizer
-from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.vocab import Vocab
+from ...data_read_util import read_dir
+from ...nlp_utils.tokenizer import Tokenizer
+from ...nlp_utils.vocab import Vocab
 
 
 class DataSample:
