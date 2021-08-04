@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from typing import List
+from copy import deepcopy
 import torch
 import torch.distributed as dist
-from fedlab_utils.message_code import MessageCode
-from copy import deepcopy
+from ...utils.message_code import MessageCode
 
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1

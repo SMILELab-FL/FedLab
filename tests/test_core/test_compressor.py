@@ -14,8 +14,8 @@
 
 import unittest
 
-from fedlab_utils.models.lenet import LeNet
-from fedlab_core.communicator.compressor import TopkCompressor
+from fedlab.utils.models.lenet import LeNet
+from fedlab.core.communicator.compressor import TopkCompressor
 
 
 class CompressorTestCase(unittest.TestCase):

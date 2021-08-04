@@ -22,10 +22,10 @@ from torch.multiprocessing import Queue
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-from fedlab_core.network import DistNetwork
-from fedlab_core.communicator.package import Package
-from fedlab_core.communicator.processor import PackageProcessor
-from fedlab_core.network_manager import NetworkManager
+from ..network import DistNetwork
+from ..communicator.package import Package
+from ..communicator.processor import PackageProcessor
+from ..network_manager import NetworkManager
 
 
 class Connector(NetworkManager):

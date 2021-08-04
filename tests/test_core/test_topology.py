@@ -14,7 +14,7 @@
 
 import unittest
 
-from fedlab_core.network_manager import NetworkManager
+from fedlab.core.network_manager import NetworkManager
 
 
 class TopologyTestCase(unittest.TestCase):

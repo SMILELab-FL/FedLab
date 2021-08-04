@@ -14,13 +14,25 @@
 
 import logging
 
-from fedlab_core.network_manager import NetworkManager
-from fedlab_utils.message_code import MessageCode
-from fedlab_utils.serialization import SerializationTool
-from fedlab_utils.logger import logger
-from fedlab_core.communicator.processor import Package, PackageProcessor
-from fedlab_core.network import DistNetwork
-from fedlab_core.client.trainer import ClientTrainer
+
+from ...utils.message_code import MessageCode
+from ...utils.serialization import SerializationTool
+from ...utils.logger import logger
+
+from ..communicator.processor import Package, PackageProcessor
+from ..network import DistNetwork
+from ..client.trainer import ClientTrainer
+from ..network_manager import NetworkManager
+
+
+#from fedlab_utils.message_code import MessageCode
+#from fedlab_utils.serialization import SerializationTool
+#from fedlab_utils.logger import logger
+
+#from fedlab_core.communicator.processor import Package, PackageProcessor
+#from fedlab_core.network import DistNetwork
+#from fedlab_core.client.trainer import ClientTrainer
+#from fedlab_core.network_manager import NetworkManager
 
 class ClientPassiveManager(NetworkManager):
     """Passive communication Manager
@@ -28,7 +40,7 @@ class ClientPassiveManager(NetworkManager):
     Args:
         handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
         network (DistNetwork): distributed network initialization.
-        logger (logger, optional): object of `fedlab_utils.logger`
+        logger (logger, optional): object of `...fedlab_utils.logger`
     """
 
     def __init__(self, handler, network: DistNetwork, logger=None):
@@ -94,7 +106,7 @@ class ClientActiveManager(NetworkManager):
             handler: Subclass of ClientBackendHandler, manages training and evaluation of local model on each client.
             network (DistNetwork): distributed network initialization.
             local_epochs (int): epochs for local train
-            logger (logger, optional): object of `fedlab_utils.logger`
+            logger (logger, optional): object of `...fedlab_utils.logger`
     """
 
     def __init__(self,

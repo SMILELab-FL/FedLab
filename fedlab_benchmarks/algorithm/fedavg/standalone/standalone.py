@@ -8,7 +8,7 @@ import torchvision
 import sys
 import torch
 
-sys.path.append('../../../')
+sys.path.append('../../../../')
 
 from fedlab_utils.dataset.slicing import noniid_slicing
 from fedlab_utils.functional import evaluate

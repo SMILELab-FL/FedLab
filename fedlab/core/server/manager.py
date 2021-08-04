@@ -16,14 +16,14 @@ import threading
 from queue import Queue
 import logging
 
-from fedlab_core.network_manager import NetworkManager
-from fedlab_utils.serialization import SerializationTool
-from fedlab_core.communicator.processor import Package, PackageProcessor
-from fedlab_core.network import DistNetwork
-from fedlab_utils.logger import logger
-from fedlab_utils.message_code import MessageCode
+from ..network_manager import NetworkManager
+from ..communicator.processor import Package, PackageProcessor
+from ..network import DistNetwork
+from ..server.handler import ParameterServerBackendHandler
 
-from fedlab_core.server.handler import ParameterServerBackendHandler
+from ...utils.serialization import SerializationTool
+from ...utils.logger import logger
+from ...utils.message_code import MessageCode
 
 DEFAULT_SERVER_RANK = 0
 
