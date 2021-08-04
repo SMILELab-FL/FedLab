@@ -67,7 +67,6 @@ class TopkCompressor(Compressor):
             self.attributes[name] = (numel, shape, top_k_samples)
 
     def compress(self, tensor, name):
-        # 对于已注册的数据结构/模型参数压缩
         if self.compress_ratio < 1.0 and name in self.attributes:
 
             tensor = tensor.view(-1)
@@ -101,7 +100,6 @@ class TopkCompressor(Compressor):
 
 # codes below are copy from https://github.com/synxlin/deep-gradient-compression
 # modified by fedlab developer
-
 
 class DGCCompressor:
     def __init__(self,

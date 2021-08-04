@@ -15,13 +15,12 @@
 from torch.multiprocessing import Process
 from fedlab_core.network import DistNetwork
 
-
 class NetworkManager(Process):
     """Abstract class
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
+        handler (:class:`fedlab_core.client.trainer.ClientTrainer` or :class:`fedlab_core.server.handler.ParameterServerBackendHandler`, optional): backend computation class.
+        newtork (DistNetwork): object to manage torch.distributed network communication.
     """
 
     def __init__(self, network: DistNetwork, handler=None):
@@ -38,7 +37,7 @@ class NetworkManager(Process):
     
         Args:
             sender (int): rank of current process.
-            message_code (`MessageCode`): message code
-            payload (`torch.Tensor`): Tensor 
+            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
+            payload (torch.Tensor): Tensor 
         """
         pass

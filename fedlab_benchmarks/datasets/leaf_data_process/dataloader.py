@@ -24,7 +24,7 @@ from fedlab_benchmarks.datasets.leaf_data_process.dataset.shakespeare_dataset im
 from fedlab_benchmarks.datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
 
 
-def get_dataloader(dataset, client_id=0, batch_size=128):
+def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     """Get dataloader with ``batch_size`` param for client with ``client_id``
 
     Args:
@@ -67,7 +67,7 @@ def get_dataloader(dataset, client_id=0, batch_size=128):
 
 
 if __name__ == '__main__':
-    trainloader, testloader = get_dataloader(dataset='sent140')
+    trainloader, testloader = get_LEAF_dataloader(dataset='sent140')
     for inputs, labels in trainloader:
         print(inputs)
         print(labels)

@@ -23,6 +23,8 @@ from fedlab_core.network import DistNetwork
 from fedlab_utils.logger import logger
 from fedlab_utils.message_code import MessageCode
 
+from fedlab_core.server.handler import ParameterServerBackendHandler
+
 DEFAULT_SERVER_RANK = 0
 
 
@@ -30,12 +32,12 @@ class ServerSynchronousManager(NetworkManager):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-    Synchronize with clients following agreements defined in :meth:`run`.
+    Synchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        network (`DistNetwork`): object to manage torch.distributed network communication.
-        logger (`fedlab_utils.logger`, optional): Tools, used to output information.
+        handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
+        network (DistNetwork): object to manage torch.distributed network communication.
+        logger (logger, optional): output cmd info to file.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 
@@ -104,12 +106,12 @@ class ServerAsynchronousManager(NetworkManager):
     """Asynchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-    Asynchronize with clients following agreements defined in :meth:`run`.
+    Asynchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (`ClientBackendHandler` or `ParameterServerHandler`, optional): object to deal.
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
-        logger (`fedlab_utils.logger`, optional): Tools, used to output information.
+        handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
+        newtork (DistNetwork): object to manage torch.distributed network communication.
+        logger (logger, optional): output cmd info to file.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
 

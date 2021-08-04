@@ -32,9 +32,9 @@ class Connector(NetworkManager):
     """Abstract class for basic Connector, which is a sub-module of schedular.
 
     Args:
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
-        write_queue (Queue): message queue
-        read_queue (Queue):  message queue
+        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
+        write_queue (Queue): message queue.
+        read_queue (Queue):  message queue.
     """
 
     def __init__(self, network: DistNetwork, write_queue: Queue,
@@ -52,8 +52,8 @@ class Connector(NetworkManager):
 
         Args:
             sender (int): rank of sender in dist group.
-            message_code (`MessageCode`): message code
-            payload (`torch.Tensor`): Tensors 
+            message_code (:class:`MessageCode`): message code.
+            payload (torch.Tensor): Tensors.
         """
         pass
 
@@ -69,9 +69,9 @@ class ConnectClient(Connector):
         TODO: middle server
         
     Args:
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
-        write_queue (Queue): message queue
-        read_queue (Queue):  message queue
+        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
+        write_queue (Queue): message queue.
+        read_queue (Queue):  message queue.
     """
 
     def __init__(self, network: DistNetwork, write_queue: Queue,

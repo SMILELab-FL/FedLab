@@ -25,7 +25,7 @@ class SerializationTool(object):
         Return a `torch.Tensor` with shape (size, )
 
         Args:
-            model (`torch.nn.Module`): model to serialize.
+            model (torch.nn.Module): model to serialize.
         """
 
         parameters = [param.data.view(-1) for param in model.parameters()]
@@ -38,12 +38,12 @@ class SerializationTool(object):
     def deserialize_model(model: torch.nn.Module,
                           serialized_parameters: torch.Tensor):
         """Assigns serialized parameters to model.parameters.
-        This is done by iterating through `model.parameters()` and assigning the relevant params in `grad_update`.
-        NOTE: this function manipulates `model.parameters`.
+        This is done by iterating through ``model.parameters()`` and assigning the relevant params in ``grad_update``.
+        NOTE: this function manipulates ``model.parameters``.
 
         Args:
-            model (`torch.nn.Module`): model to deserialize.
-            serialized_parameters (`torch.Tensor`): serialized model parameters.
+            model (torch.nn.Module): model to deserialize.
+            serialized_parameters (torch.Tensor): serialized model parameters.
         """
 
         current_index = 0  # keep track of where to read from grad_update
