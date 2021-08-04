@@ -38,20 +38,20 @@ __FedLab__提供了一系列构建联邦学习系统的组件和demo，主要分
 
 ## 框架设计
 
-![image](./docs/imgs/fedlab-overview.svg?raw=True)
+<img src="./docs/imgs/fedlab-overview.svg?raw=True" width=600>
 
 ### 服务器端
 
 server端`NetworkManager`与`ParameterServerHandler`的关系如下图，`NetworkManager`处理信息并调用`ParameterServerHandler.on_receive()`方法，`ParameterServerHandler`处理上层调用并更新全局模型(
 Global Model)。
 
-<img src="./docs/imgs/fedlab-server.pdf?raw=True" width=450>
+<img src="./docs/imgs/fedlab-server.svg?raw=True" width=450>
 
 ### 客户端
 
 client端架构和各模块功能类似于server端，但`NetworkManager`和`Trainer`的功能和处理细节不同。client端后端统一为`Trainer`，向上层提供底层模型的训练算法调用，用于定义torch模型训练流程。`NetworkManager`管理前后端逻辑协调和消息处理。
 
-<img src="./docs/imgs/fedlab-client.pdf?raw=True" width=450>
+<img src="./docs/imgs/fedlab-client.svg?raw=True" width=450>
 
 ### 通信
 
@@ -59,11 +59,11 @@ client端架构和各模块功能类似于server端，但`NetworkManager`和`Tra
 
 1. 同步联邦学习中，一轮学习的启动由server主导，即server执行参与者采样（sample clients），广播全局模型参数。
 
-![同步通信](./docs/imgs/fedlab-sychronous.pdf?raw=True)
+   <img src="./docs/imgs/fedlab-sychronous.svg?raw=True" width=500>
 
 2. 异步联邦中由client主导，即client向联邦服务器请求当前模型参数，进行本地模型训练。
 
-![异步通信](./docs/imgs/fedlab-asychronous.pdf?raw=True)
+<img src="./docs/imgs/fedlab-asychronous.svg?raw=True" width=500>
 
 ## 部署场景
 
@@ -72,17 +72,22 @@ __FedLab__支持单机、跨机，以及跨局域网联邦学习系统的部署�
 ### 单机模式
 
 串行训练器，使用一个进程资源进程多client联邦模拟：
-![image](./docs/imgs/fedlab-SerialTrainer.pdf?raw=True)
+
+<img src="./docs/imgs/fedlab-SerialTrainer.svg?raw=True" width=450>
 
 ### 跨机模式
 
 多进程模拟，在一台机器或多个机器上执行多个联邦脚本：
-![image](./docs/imgs/fedlab-multi_process.pdf?raw=True)
+
+<img src="./docs/imgs/fedlab-multi_process.svg?raw=True" width=450>
 
 ### 跨局域网模式
 
 分层联邦通信，添加`Scheduler`做消息转发，构建跨局域网域联邦，或自定义`Scheduler`功能作为中间服务器，构成负载均衡，满足扩展性，可用于大规模联邦学习模拟。同时`Scheduler`满足跨局域网消息转发的功能，因此__FedLab__支持跨局域网联邦。
-![image](./docs/imgs/fedlab-hierarchical.pdf?raw=True)
+
+<img src="./docs/imgs/fedlab-hierarchical.svg?raw=True" width=600>
+
+
 
 ## 如何使用?
 

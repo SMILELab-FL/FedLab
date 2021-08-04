@@ -34,13 +34,7 @@ For more details, please read our [full paper](https://arxiv.org/abs/2107.11621)
 
 ## Framework Overview
 
-<object data="./docs/imgs/fedlab-overview.pdf?raw=True" type="application/pdf" width="700px" height="700px">
-    <embed src="./docs/imgs/fedlab-overview.pdf?raw=True">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./docs/imgs/fedlab-overview.pdf?raw=True">Download PDF</a>.</p>
-    </embed>
-</object>
-
-![framework-overview](./docs/imgs/fedlab-overview.pdf?raw=True)
+<img src="./docs/imgs/fedlab-overview.svg?raw=True" width=600>
 
 __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `Server`/`Client` consists of two components called `NetworkManager` and `ParameterHandler`/`Trainer`. 
 
@@ -54,13 +48,13 @@ __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `
 
 The connection between `NetworkManager` and `ParameterServerHandler` in `Server` is shown as below. `NetworkManager` processes message and calls `ParameterServerHandler.on_receive()` method, while `ParameterServerHandler` performs training as well as computation process of server (model aggregation for example), and updates the global model. 
 
-<img src="./docs/imgs/fedlab-server.pdf?raw=True" width=450>
+<img src="./docs/imgs/fedlab-server.svg?raw=True" width=450>
 
 ### Client
 
 `Client` shares similar design and structure with `Server`, with `NetworkManager` in charge of message processing as well as network communication with server, and `Trainer` for client local training procedure.
 
-<img src="./docs/imgs/fedlab-client.pdf?raw=True" width=450>
+<img src="./docs/imgs/fedlab-client.svg?raw=True" width=450>
 
 
 
@@ -70,11 +64,11 @@ __FedLab__ furnishes both synchronous and asynchronous communication patterns, a
 
 1. Synchronous FL: each round is launched by server, that is, server performs clients sampling first then broadcasts global model parameters.
 
-![syn-comm](./docs/imgs/fedlab-sychronous.pdf?raw=True)
+<img src="./docs/imgs/fedlab-sychronous.svg?raw=True" width=500>
 
 2. Asynchronous FL: each round is launched by clients, that is, clients request current global model parameters then perform local training.
 
-![asyn-comm](./docs/imgs/fedlab-asychronous.pdf?raw=True)
+<img src="./docs/imgs/fedlab-asychronous.svg?raw=True" width=500>
 
 ## Experiment Scene
 
@@ -83,7 +77,7 @@ __FedLab__ supports both single machine and  multi-machine FL simulations, with 
 ### Standalone
 
 __FedLab__ implements `SerialTrainer` for FL simulation in single system process. `SerialTrainer` allows user to simulate a FL system with multiple clients executing one by one in serial in one `SerialTrainer`. It is designed for simulation in environment with limited computation resources.  
-![image](./docs/imgs/fedlab-SerialTrainer.pdf?raw=True)
+<img src="./docs/imgs/fedlab-SerialTrainer.svg?raw=True" width=450>
 
 ### Cross-Machine
 
@@ -91,7 +85,7 @@ __FedLab__ supports simulation executed on multiple machines with correct networ
 
 > All machines must be in the same network (LAN or WAN) for cross-machine deployment.
 
-![image](./docs/imgs/fedlab-multi_process.pdf?raw=True)
+<img src="./docs/imgs/fedlab-multi_process.svg?raw=True" width=450>
 
 ### Hierarchical
 
@@ -99,8 +93,8 @@ _Hierarchical_ mode for __FedLab__ is designed for situations where both _standa
 
 > The client group for each schedular can be either _standalone_ or _cross-machine_.
 
-A hierarchical FL system with $K$​​ client groups is depicted as below.
-![image](./docs/imgs/fedlab-hierarchical.pdf?raw=True)
+A hierarchical FL system with $K$ client groups is depicted as below.
+<img src="./docs/imgs/fedlab-hierarchical.svg?raw=True" width=600>
 
 ## How to use？
 
