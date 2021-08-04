@@ -17,9 +17,9 @@ import random
 import torch
 
 from abc import ABC, abstractmethod
-from fedlab_utils.serialization import SerializationTool
-from fedlab_utils.aggregator import Aggregators
-from fedlab_utils.logger import logger
+from ...utils.serialization import SerializationTool
+from ...utils.aggregator import Aggregators
+from ...utils.logger import logger
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.

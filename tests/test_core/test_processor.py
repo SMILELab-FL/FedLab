@@ -16,7 +16,7 @@ import unittest
 import os
 from random import randint
 
-from fedlab_core.communicator.package import (
+from fedlab.core.communicator.package import (
     HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
     HEADER_MESSAGE_CODE_IDX, DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE,
     DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE)

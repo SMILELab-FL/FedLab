@@ -16,7 +16,7 @@ import os
 import unittest
 import torch
 import torch.nn as nn
-from fedlab_utils.serialization import SerializationTool
+from fedlab.utils.serialization import SerializationTool
 
 
 class Net(nn.Module):

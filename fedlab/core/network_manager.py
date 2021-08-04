@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from torch.multiprocessing import Process
-from fedlab_core.network import DistNetwork
+from .network import DistNetwork
 
 class NetworkManager(Process):
     """Abstract class

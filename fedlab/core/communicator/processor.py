@@ -16,8 +16,7 @@ import numpy as np
 
 import torch
 import torch.distributed as dist
-from fedlab_core.communicator import package as config
-from fedlab_core.communicator.package import Package
+from .package import Package, HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
 
 
 class PackageProcessor(object):
@@ -42,7 +41,7 @@ class PackageProcessor(object):
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
         def recv_header(src=src, parse=True):
-            buffer = torch.zeros(size=(config.HEADER_SIZE, ))
+            buffer = torch.zeros(size=(HEADER_SIZE, ))
             dist.recv(buffer, src=src)
             if parse is True:
                 return Package.parse_header(buffer)
@@ -87,7 +86,7 @@ class PackageProcessor(object):
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
         def send_header(header, dst):
-            header[config.HEADER_RECEIVER_RANK_IDX] = dst
+            header[HEADER_RECEIVER_RANK_IDX] = dst
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
@@ -100,7 +99,7 @@ class PackageProcessor(object):
 
         send_header(header=package.header, dst=dst)
 
-        if package.header[config.HEADER_SLICE_SIZE_IDX] > 0:
+        if package.header[HEADER_SLICE_SIZE_IDX] > 0:
             send_slices(slices=package.slices, dst=dst)
 
             send_content(content=package.content, dst=dst)
