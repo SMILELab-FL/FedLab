@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# get world size dicts for all datasets and run all client processes foe each dataset
-declare -A dataset_world_size=(['femnist']=15 ['shakespeare']=10)  # real split client number is ['femnist']=55 ['shakespeare']=122)
+# get world size dicts for all datasets and run all client processes for each dataset
+declare -A dataset_world_size=(['femnist']=15 ['shakespeare']=10)
 
 for key in ${!dataset_world_size[*]}
 do
