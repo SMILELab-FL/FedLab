@@ -15,7 +15,7 @@
 
 import os
 import unittest
-from fedlab_utils.message_code import MessageCode
+from fedlab.utils.message_code import MessageCode
 
 
 class MessageCodeTestCase(unittest.TestCase):

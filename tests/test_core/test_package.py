@@ -14,7 +14,7 @@
 
 import unittest
 
-from fedlab_core.communicator.package import Package
+from fedlab.core.communicator.package import Package
 
 
 class PackageTestCase(unittest.TestCase):

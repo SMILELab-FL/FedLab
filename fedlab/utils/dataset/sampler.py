@@ -42,28 +42,7 @@ class SubsetSampler(torch.utils.data.Sampler):
 
 # modified from DistributedSampler
 class FedDistributedSampler(torch.utils.data.Sampler):
-    """Sampler that restricts data loading to a subset of the dataset.
-    It is especially useful in conjunction with
-    :class:`torch.nn.parallel.DistributedDataParallel`. In such case, each
-    process can pass a DistributedSampler instance as a DataLoader sampler,
-    and load a subset of the original dataset that is exclusive to it.
-    .. note::
-        Dataset is assumed to be of constant size.
-    Arguments:
-        dataset: Dataset used for sampling.
-        num_replicas (int, optional): Number of processes participating in
-            distributed training. By default, :attr:`world_size` is retrieved from the
-            current distributed group.
-        rank (int, optional): Rank of the current process within :attr:`num_replicas`.
-            By default, :attr:`rank` is retrieved from the current distributed
-            group.
-        shuffle (bool, optional): If ``True`` (default), sampler will shuffle the
-            indices.
-        drop_last (bool, optional): if ``True``, then the sampler will drop the
-            tail of the data to make it evenly divisible across the number of
-            replicas. If ``False``, the sampler will add extra indices to make
-            the data evenly divisible across the replicas. Default: ``False``.
-    """
+    """"""
     def __init__(self, dataset, num_replicas, client_id=None, shuffle=True):
 
         self.dataset = dataset
@@ -77,10 +56,8 @@ class FedDistributedSampler(torch.utils.data.Sampler):
         self.shuffle = shuffle
 
     def __iter__(self):
-        # deterministically shuffle based on epoch
-        
+    
         local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
-
         assert len(local_indices) == self.num_samples
 
         return iter(local_indices)

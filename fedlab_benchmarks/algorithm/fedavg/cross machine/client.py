@@ -6,9 +6,9 @@ import os
 sys.path.append('../../../')
 
 from torch import nn
-from fedlab.core.client.manager import ClientPassiveManager
-from fedlab.core.client.trainer import ClientSGDTrainer
-from fedlab.core.network import DistNetwork
+from fedlab_core.client.manager import ClientPassiveManager
+from fedlab_core.client.trainer import ClientSGDTrainer
+from fedlab_core.network import DistNetwork
 from setting import get_model, get_dataset
 
 if __name__ == "__main__":

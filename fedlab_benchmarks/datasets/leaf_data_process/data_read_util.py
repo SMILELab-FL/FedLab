@@ -20,8 +20,6 @@ def read_dir(data_dir):
     """
     # Splicing absolute path
     data_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), data_dir)
-    
-    print(data_dir)
 
     groups = []
     client_name2data = defaultdict(lambda: None)

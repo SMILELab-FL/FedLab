@@ -19,12 +19,12 @@ from time import time
 
 import torch
 
-from fedlab_utils.logger import logger
-from fedlab_utils.serialization import SerializationTool
-from fedlab_utils.dataset.sampler import SubsetSampler
-from fedlab_core.client.trainer import ClientTrainer
-from fedlab_utils.aggregator import Aggregators
+from ...utils.logger import logger
+from ...utils.serialization import SerializationTool
+from ...utils.dataset.sampler import SubsetSampler
+from ...utils.aggregator import Aggregators
 
+from .trainer import ClientTrainer
 
 class ReturnThread(threading.Thread):
     def __init__(self, target, args):

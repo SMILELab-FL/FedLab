@@ -19,8 +19,8 @@ import logging
 import torch
 from torch import nn
 
-from fedlab_utils.logger import logger
-from fedlab_utils.serialization import SerializationTool
+from ...utils.logger import logger
+from ...utils.serialization import SerializationTool
 
 
 class ClientTrainer(ABC):

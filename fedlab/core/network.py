@@ -14,7 +14,6 @@
 
 import torch.distributed as dist
 
-
 class DistNetwork(object):
     """Manage torch.distributed network
     

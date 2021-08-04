@@ -17,9 +17,9 @@ import unittest
 
 import torch
 
-from fedlab_utils.models.lenet import LeNet
-from fedlab_utils.serialization import SerializationTool
-from fedlab_core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
+from fedlab.utils.models.lenet import LeNet
+from fedlab.utils.serialization import SerializationTool
+from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
 
 
 class HandlerTestCase(unittest.TestCase):

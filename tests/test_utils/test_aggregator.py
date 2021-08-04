@@ -16,7 +16,7 @@
 import unittest
 import random
 import torch
-from fedlab_utils.aggregator import Aggregators
+from fedlab.utils.aggregator import Aggregators
 
 
 class AggregatorTestCase(unittest.TestCase):
