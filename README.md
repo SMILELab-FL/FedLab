@@ -6,7 +6,21 @@ _Read this in other languages: [English](README.md), [简体中文](README.zh-cn
 
 ## Table of Contents
 
-
+- [Introduction](#introdcution)
+- [Framework Overview](#framework-overview)
+  - [Server](#server)
+  - [Client](#client)
+  - [Communication](#communication)
+- [Experiment Scene](#experiment-scene)
+  - [Standalone](#standalone)
+  - [Cross-Machine](#cross-machine)
+  - [Hierarchical](#hierarchical)
+- [How to Use?](#how-to-use)
+  - [Quick Start](#quick-start)
+  - [Document](#document)
+- [Citation](#citation)
+- [Contribution Guideline](#contribution-guideline)
+- [Contact](#contact)
 
 ## Introduction
 
@@ -50,11 +64,11 @@ __FedLab__ furnishes both synchronous and asynchronous communication patterns, a
 
 1. Synchronous FL: each round is launched by server, that is, server performs clients sampling first then broadcasts global model parameters.
 
-![同步通信](./docs/imgs/fedlab-sychronous.pdf?raw=True)
+![syn-comm](./docs/imgs/fedlab-sychronous.pdf?raw=True)
 
 2. Asynchronous FL: each round is launched by clients, that is, clients request current global model parameters then perform local training.
 
-![异步通信](./docs/imgs/fedlab-asychronous.pdf?raw=True)
+![asyn-comm](./docs/imgs/fedlab-asychronous.pdf?raw=True)
 
 ## Experiment Scene
 
