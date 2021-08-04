@@ -1,0 +1,6 @@
+e45839efc9a908ba4a0ac5d684ae5e8c  data/all_data/all_data.json
+c1b03df6c43aaae612517474bb3649ca  data/raw_data/users_and_plays.json
+a15b794f1e7ba6e25a550ac41ea8ec00  data/rem_user_data/all_data_niid_2_keep_0.json
+a15b794f1e7ba6e25a550ac41ea8ec00  data/sampled_data/all_data_niid_2.json
+aa744d7cd4a6bd14f0e7f1fe888e08c0  data/test/all_data_niid_2_keep_0_test_9.json
+de6f4ac56c098c805a28018021639fc4  data/train/all_data_niid_2_keep_0_train_9.json
