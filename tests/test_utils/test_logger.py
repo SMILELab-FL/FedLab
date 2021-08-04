@@ -15,7 +15,7 @@
 
 import unittest
 import os
-from fedlab_utils.logger import logger
+from fedlab.utils.logger import logger
 
 
 class LoggerTestCase(unittest.TestCase):
