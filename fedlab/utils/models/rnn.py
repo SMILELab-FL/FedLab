@@ -47,7 +47,7 @@ class RNN_Shakespeare(nn.Module):
 class LSTMModel(nn.Module):
     def __init__(self,
                  vocab_size, embedding_dim, hidden_size, num_layers, output_dim,
-                 using_pretrained=False, embedding_weights=None, bid=False, head_tail=False):
+                 using_pretrained=False, embedding_weights=None, bid=False):
         """Creates a RNN model using LSTM layers providing embedding_weights to pretrain
 
         Args:
@@ -59,7 +59,6 @@ class LSTMModel(nn.Module):
             using_pretrained (bool, optional): if use embedding vector to pretrain model, set `True`, defaults to `False`
             embedding_weights (torch.Tensor, optional): vectors to pretrain model, defaults to `None`
             bid (bool, optional): if use bidirectional LSTM model, set `True`, defaults to `False`
-            head_tail (bool, optional):
 
         Returns:
             A `torch.nn.Module`.
@@ -80,12 +79,11 @@ class LSTMModel(nn.Module):
             num_layers=num_layers,
             bidirectional=bid,
             dropout=0.3,
+            batch_first=True
         )
 
         # using bidrectional, *2
         if bid:
-            hidden_size *= 2
-        if head_tail:
             hidden_size *= 2
         self.fc = nn.Sequential(
             nn.Dropout(0.5),
@@ -93,15 +91,10 @@ class LSTMModel(nn.Module):
         )
 
     def forward(self, input_seq: torch.Tensor):
-        input_seq = input_seq.permute(1, 0)  # [batch, seq_len] -> [seq_len, batch]
-        input_seq = self.embeddings(input_seq)  # [seq_len, batch, word_dim]
-
-        input_seq = self.dropout(input_seq)
-
-        outputs, _ = self.encoder(input_seq)  # output, (hidden, memory)
+        embeds = self.embeddings(input_seq)  # (batch, seq_len, embedding_dim)
+        embeds = self.dropout(embeds)
+        lstm_out, _ = self.encoder(embeds)
         # outputs [seq_len, batch, hidden*2] *2 means using bidrectional
-        # head and tail, [batch, hidden*4]
-
-        outputs = torch.cat((outputs[0], outputs[-1]), -1) if self.head_tail else outputs[-1]
-        outputs = self.fc(outputs)  # [batch, hidden*4] -> [batch, labels]
-        return outputs
+        final_hidden_state = lstm_out[:, -1]
+        output = self.fc(final_hidden_state)
+        return output
