@@ -17,10 +17,11 @@
 """
 
 import torch
-from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.vocab import Vocab
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
-from fedlab_benchmarks.datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
+import pickle
+from ...datasets.leaf_data_process.nlp_utils.vocab import Vocab
+from ...datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
+from ...datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
+from ...datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
 
 
 def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
@@ -47,20 +48,23 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     elif dataset == 'sent140':
         trainset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=True)
         testset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=False)
-        vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
+        vocab_file = open('nlp_utils/dataset_vocab/sent140_vocab.pck', 'rb')  # get vocab based on sample data
+        vocab = pickle.load(vocab_file)
+        # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
         trainset.token2seq(vocab, maxlen=300)
         testset.token2seq(vocab, maxlen=300)
 
     trainloader = torch.utils.data.DataLoader(
         trainset,
         batch_size=batch_size,
-        drop_last=False)
+        drop_last=False)  # avoid train dataloader size 0
     testloader = torch.utils.data.DataLoader(
         testset,
         batch_size=len(testset),
         drop_last=False,
         shuffle=False)
     return trainloader, testloader
+
 
 if __name__ == '__main__':
     trainloader, testloader = get_LEAF_dataloader(dataset='sent140')

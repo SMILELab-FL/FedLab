@@ -6,8 +6,8 @@
 import os
 import torch
 from torch.utils.data import Dataset
-from fedlab_benchmarks.datasets.leaf_data_process.data_read_util import read_dir
-from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.tokenizer import Tokenizer
+from ..data_read_util import read_dir
+from ..nlp_utils.tokenizer import Tokenizer
 
 
 class Sent140Dataset(Dataset):

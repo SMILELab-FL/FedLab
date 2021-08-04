@@ -1,5 +1,3 @@
-import torchvision
-import torchvision.transforms as transforms
 import torch
 import argparse
 import sys
@@ -8,9 +6,9 @@ import os
 sys.path.append('../../../')
 
 from torch import nn
-from fedlab_core.client.manager import ClientPassiveManager
-from fedlab_core.client.trainer import ClientSGDTrainer
-from fedlab_core.network import DistNetwork
+from fedlab.core.client.manager import ClientPassiveManager
+from fedlab.core.client.trainer import ClientSGDTrainer
+from fedlab.core.network import DistNetwork
 from setting import get_model, get_dataset
 
 if __name__ == "__main__":
@@ -21,11 +19,15 @@ if __name__ == "__main__":
     parser.add_argument('--world_size', type=int)
     parser.add_argument('--rank', type=int)
 
-    parser.add_argument("--epoch", type=int, default=2)
-    parser.add_argument("--lr", type=float, default=0.1)
+    parser.add_argument("--epoch", type=int)
+    parser.add_argument("--lr", type=float, default=0.01)
     parser.add_argument("--cuda", type=bool, default=True)
+    parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--dataset", type=str)
     args = parser.parse_args()
+
+
+    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
     model = get_model(args)
     trainloader, testloader = get_dataset(args)

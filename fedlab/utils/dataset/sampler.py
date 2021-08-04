@@ -1,0 +1,66 @@
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from copy import deepcopy
+import random
+import torch
+import torch.distributed as dist
+import math
+
+
+class SubsetSampler(torch.utils.data.Sampler):
+    """Subset of a dataset at specified indices. 
+        Similar to torch.utils.data.dataset.Subset, but this is a Sampler used in Dataloader
+
+    Args:
+        indices (list): Indices in the whole set selected for subset
+        shuffle (bool): shuffle the indices or not.
+    """
+
+    def __init__(self, indices: list, shuffle=False) -> None:
+        self.indices = indices
+        if shuffle is True:
+            random.shuffle(self.indices)
+
+    def __iter__(self):
+        return iter(self.indices)
+
+    def __len__(self):
+        return len(self.indices)
+
+
+# modified from DistributedSampler
+class FedDistributedSampler(torch.utils.data.Sampler):
+    """"""
+    def __init__(self, dataset, num_replicas, client_id=None, shuffle=True):
+
+        self.dataset = dataset
+        self.indices = [index for index in range(len(self.dataset))]
+
+        self.num_replicas = num_replicas
+        self.id = client_id
+        
+        self.num_samples = int(len(self.dataset) / self.num_replicas)
+
+        self.shuffle = shuffle
+
+    def __iter__(self):
+    
+        local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
+        assert len(local_indices) == self.num_samples
+
+        return iter(local_indices)
+
+    def __len__(self):
+        return self.num_samples

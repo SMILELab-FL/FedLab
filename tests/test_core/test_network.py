@@ -15,7 +15,7 @@
 
 import unittest
 
-from fedlab_core.network import DistNetwork
+from fedlab.core.network import DistNetwork
 
 
 class NetworkTestCase(unittest.TestCase):

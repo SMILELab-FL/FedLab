@@ -14,7 +14,7 @@
 
 
 import unittest
-from fedlab_utils.functional import AverageMeter
+from fedlab.utils.functional import AverageMeter
 import random
 
 class FunctionalTestCase(unittest.TestCase):

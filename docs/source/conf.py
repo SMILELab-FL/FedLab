@@ -52,7 +52,7 @@ templates_path = ['_templates']
 
 # configuration for 'autoapi.extension'
 autoapi_type = 'python'
-autoapi_dirs = ['../../fedlab_core', '../../fedlab_utils']
+autoapi_dirs = ['../../fedlab']
 autoapi_template_dir = '_autoapi_templates'
 add_module_names = False  # makes Sphinx render package.module.Class as Class
 
