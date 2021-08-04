@@ -34,6 +34,12 @@ For more details, please read our [full paper](https://arxiv.org/abs/2107.11621)
 
 ## Framework Overview
 
+<object data="./docs/imgs/fedlab-overview.pdf?raw=True" type="application/pdf" width="700px" height="700px">
+    <embed src="./docs/imgs/fedlab-overview.pdf?raw=True">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./docs/imgs/fedlab-overview.pdf?raw=True">Download PDF</a>.</p>
+    </embed>
+</object>
+
 ![framework-overview](./docs/imgs/fedlab-overview.pdf?raw=True)
 
 __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `Server`/`Client` consists of two components called `NetworkManager` and `ParameterHandler`/`Trainer`. 

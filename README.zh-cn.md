@@ -38,7 +38,7 @@ __FedLab__提供了一系列构建联邦学习系统的组件和demo，主要分
 
 ## 框架设计
 
-![image](./docs/imgs/fedlab-overview.pdf?raw=True)
+![image](./docs/imgs/fedlab-overview.svg?raw=True)
 
 ### 服务器端
 
