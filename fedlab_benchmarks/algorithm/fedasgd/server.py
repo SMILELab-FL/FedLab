@@ -4,10 +4,10 @@ import sys
 
 sys.path.append('../../../')
 
-from fedlab_core.network import DistNetwork
-from fedlab_utils.models.lenet import LeNet
-from fedlab_core.server.handler import AsyncParameterServerHandler
-from fedlab_core.server.manager import ServerAsynchronousManager
+from fedlab.core.network import DistNetwork
+from fedlab.utils.models.lenet import LeNet
+from fedlab.core.server.handler import AsyncParameterServerHandler
+from fedlab.core.server.manager import ServerAsynchronousManager
 import argparse
 
 
