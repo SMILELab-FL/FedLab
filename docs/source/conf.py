@@ -92,8 +92,8 @@ html_theme_options = {
     #     </a>
     # """,
     "sidebar_hide_name": True,
-    "light_logo": "imgs/FedLab-logo.svg",
-    "dark_logo": "imgs/FedLab-logo.svg",
+    "light_logo": "../imgs/FedLab-logo.svg",
+    "dark_logo": "../imgs/FedLab-logo.svg",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
