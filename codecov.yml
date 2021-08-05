@@ -3,6 +3,9 @@ codecov:
     - "github.com/features/actions"
   require_ci_to_pass: yes
 
+ignore:
+  - "fedlab/utils/models"  # ignore folders and all its contents
+
 coverage:
   precision: 2  # decimal number for coverage report on codecov web
   round: down
