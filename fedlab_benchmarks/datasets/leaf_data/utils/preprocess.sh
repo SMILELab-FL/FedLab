@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # script to preprocess data
 
@@ -146,7 +146,7 @@ META_DIR=`realpath ${META_DIR}`
 
 if [ ! -d "data/all_data" ]; then
     cd preprocess
-    ./data_to_json.sh
+    bash data_to_json.sh
     cd ..
 fi
 
