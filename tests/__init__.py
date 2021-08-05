@@ -23,12 +23,12 @@ def get_tests():
     from .test_utils.test_logger import LoggerTestCase
     
 
-    from .test_core.test_processor import ProcessorTestCase
-    from .test_core.test_compressor import CompressorTestCase
-    from .test_core.test_handler import HandlerTestCase
+    from .test_core.test_communicator.test_processor import ProcessorTestCase
+    from .test_core.test_communicator.test_compressor import CompressorTestCase
+    from .test_core.test_server.test_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
     from .test_core.test_network_manager import ManagerTestCase
-    from .test_core.test_package import PackageTestCase
+    from .test_core.test_communicator.test_package import PackageTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
