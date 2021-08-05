@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # download data and convert to .json format
 
@@ -13,6 +13,6 @@ NAME="synthetic" # name of the dataset, equivalent to directory name
 
 cd ../utils
 
-./preprocess.sh --name $NAME $@
+bash preprocess.sh --name $NAME $@
 
 cd ../$NAME

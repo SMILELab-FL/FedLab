@@ -4,7 +4,7 @@
 
 if [ ! -d "data/all_data" ] || [ ! "$(ls -A data/all_data)" ]; then
     cd preprocess
-    ./data_to_json.sh
+    bash data_to_json.sh
     cd ..
 fi
 
