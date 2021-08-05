@@ -19,6 +19,7 @@ import logging
 import torch
 from torch import nn
 
+from ...utils.functional import AverageMeter
 from ...utils.logger import logger
 from ...utils.serialization import SerializationTool
 
@@ -38,6 +39,7 @@ class ClientTrainer(ABC):
     """
     def __init__(self, model: nn.Module, cuda: bool):
         self.cuda = cuda
+        
         if self.cuda:
             self._model = model.cuda()
         else:
@@ -106,10 +108,12 @@ class ClientSGDTrainer(ClientTrainer):
         else:
             epochs = epoch
 
+        loss_ = AverageMeter()
         for epoch in range(epochs):
             start_time = time.time()
             self._model.train()
-            loss_sum = 0.0
+            
+            loss_.reset()
             for inputs, labels in self._data_loader:
                 if self.cuda:
                     inputs, labels = inputs.cuda(), labels.cuda()
@@ -121,9 +125,10 @@ class ClientSGDTrainer(ClientTrainer):
                 loss.backward()
                 self.optimizer.step()
 
-                loss_sum += loss.detach().item()
+                loss_.update(loss.detach().item())
+                
             end_time = time.time()
 
             self._LOGGER.info(
                 "Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(
-                    epoch + 1, epochs, loss_sum, end_time - start_time))
+                    epoch + 1, epochs, loss_.sum, end_time - start_time))
