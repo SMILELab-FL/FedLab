@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [ ! -d "../data" ]; then
   mkdir ../data
@@ -10,7 +10,7 @@ if [ ! -f ../data/raw_data/test.csv ]; then
   echo "------------------------------"
   echo "retrieving raw data"
   
-  ./get_data.sh
+  bash get_data.sh
   echo "finished retrieving raw data"
 fi
 

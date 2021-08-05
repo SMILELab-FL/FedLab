@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # download data and convert to .json format
 
@@ -8,7 +8,7 @@ if [[ $@ = *"--raw"* ]]; then
 fi
 if [ ! -d "data/all_data" ] || [ ! "$(ls -A data/all_data)" ]; then
     cd preprocess
-    ./data_to_json.sh $RAWTAG
+    bash data_to_json.sh $RAWTAG
     cd ..
 fi
 
@@ -16,6 +16,6 @@ NAME="shakespeare"
 
 cd ../utils
 
-./preprocess.sh --name $NAME $@
+bash preprocess.sh --name $NAME $@
 
 cd ../$NAME

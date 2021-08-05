@@ -2,11 +2,11 @@ import os
 import sys
 import argparse
 
-sys.path.append('../../../')
-from fedlab_utils.logger import logger
-from fedlab_core.server.handler import SyncParameterServerHandler
-from fedlab_core.server.manager import ServerSynchronousManager
-from fedlab_core.network import DistNetwork
+sys.path.append('../../../../')
+from fedlab.utils.logger import logger
+from fedlab.core.server.handler import SyncParameterServerHandler
+from fedlab.core.server.manager import ServerSynchronousManager
+from fedlab.core.network import DistNetwork
 from setting import get_model
 
 

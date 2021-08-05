@@ -28,4 +28,4 @@ class NetworkTestCase(unittest.TestCase):
         self.cnet.close_network_connection()
 
     def test_(self):
-        self.cnet.show_configuration()
+        print(self.cnet)

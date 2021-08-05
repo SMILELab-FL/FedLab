@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [ ! -d "../data" ]; then
     mkdir ../data
@@ -9,7 +9,7 @@ if [ ! -d "../data/raw_data" ]; then
 fi
 
 if [ ! -f ../data/raw_data/raw_data.txt ]; then
-    ./get_data.sh
+    bash get_data.sh
 fi
 
 if [ ! -d "../data/raw_data/by_play_and_character" ]; then
