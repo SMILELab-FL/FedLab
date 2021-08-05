@@ -1,4 +1,4 @@
-Examples of FedLab
+Examples
 ==================
 
 

@@ -1,4 +1,4 @@
-Hot to define your own FL algorithm？
+Customization
 =====================================
 
 This user guide for FedLab customization
