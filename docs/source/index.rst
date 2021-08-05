@@ -12,8 +12,11 @@ Welcome to FedLab's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   quick_start
-   user_guide
+   overview
+   install
+   example
+   cusotmization
+   contribute_guide
 
 
 
