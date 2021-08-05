@@ -16,7 +16,7 @@ Welcome to FedLab's documentation!
    install
    example
    cusotmization
-   contribute_guide
+   contributing
 
 
 
