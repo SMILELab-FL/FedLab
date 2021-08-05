@@ -84,19 +84,20 @@ todo_include_todos = True
 #
 # html_theme = 'alabaster'
 html_theme = "furo"
-html_theme_options = {
-    # "announcement": """
-    #     <a style=\"text-decoration: none; color: white;\"
-    #        href=\"https://github.com/sponsors/urllib3\">
-    #        <img src=\"/en/latest/_static/favicon.png\"/> Support urllib3 on GitHub Sponsors
-    #     </a>
-    # """,
-    "sidebar_hide_name": True,
-    "light_logo": "../imgs/FedLab-logo.svg",
-    "dark_logo": "../imgs/FedLab-logo.svg",
-}
+# html_theme_options = {
+#     # "announcement": """
+#     #     <a style=\"text-decoration: none; color: white;\"
+#     #        href=\"https://github.com/sponsors/urllib3\">
+#     #        <img src=\"/en/latest/_static/favicon.png\"/> Support urllib3 on GitHub Sponsors
+#     #     </a>
+#     # """,
+#     "sidebar_hide_name": True,
+#     "light_logo": "../imgs/FedLab-logo.svg",
+#     "dark_logo": "../imgs/FedLab-logo.svg",
+# }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_logo = "FedLab-logo.svg"
