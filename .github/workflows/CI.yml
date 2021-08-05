@@ -1,6 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 name: CI
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - main #[ push, pull_request ]
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -10,9 +14,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [ 3.6, 3.7, 3.8 ]
-        torch-version: [1.7.1, 1.8.0]
-        os: [ubuntu-latest, macos-latest]
+        python-version: [3.8] #[ 3.6, 3.7, 3.8 ]
+        torch-version: [1.7.1] #[1.7.1, 1.8.0]
+        os: [ubuntu-latest] #[ubuntu-latest, macos-latest]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -21,8 +25,8 @@ jobs:
         # check https://pypi.org/project/torchvision/ for torch-torchvision compatibility
         - torch-version: 1.7.1
           torchvision-version: 0.8.2
-        - torch-version: 1.8.0
-          torchvision-version: 0.9.0
+#        - torch-version: 1.8.0
+#          torchvision-version: 0.9.0
 
     steps:
       - uses: actions/checkout@v2

@@ -1,6 +1,6 @@
 # FedLab: A Flexible Federated Learning Framework
 
-[![Documentation Status](https://readthedocs.com/projects/fedlab-fedlab/badge/?version=latest&token=24c27118c61cc32da390946ad541028871fb336025d47404d1b6be000727ac4a)](https://fedlab-fedlab.readthedocs-hosted.com/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.com/projects/fedlab-fedlab/badge/?version=latest&token=24c27118c61cc32da390946ad541028871fb336025d47404d1b6be000727ac4a)](https://fedlab-fedlab.readthedocs-hosted.com/en/latest/?badge=latest) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions)
 
 _Read this in other languages: [English](README.md), [简体中文](README.zh-cn.md)._
 
@@ -34,7 +34,7 @@ For more details, please read our [full paper](https://arxiv.org/abs/2107.11621)
 
 ## Framework Overview
 
-<center><img src="./docs/imgs/fedlab-overview.svg?raw=True" width=600></center>
+<p align="center"><img src="./docs/imgs/fedlab-overview.svg?raw=True" width=600></p>
 
 __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `Server`/`Client` consists of two components called `NetworkManager` and `ParameterHandler`/`Trainer`. 
 
@@ -48,13 +48,13 @@ __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `
 
 The connection between `NetworkManager` and `ParameterServerHandler` in `Server` is shown as below. `NetworkManager` processes message and calls `ParameterServerHandler.on_receive()` method, while `ParameterServerHandler` performs training as well as computation process of server (model aggregation for example), and updates the global model. 
 
-<center><img src="./docs/imgs/fedlab-server.svg?raw=True" width=450></center>
+<p align="center"><img src="./docs/imgs/fedlab-server.svg?raw=True" width=450></p>
 
 ### Client
 
 `Client` shares similar design and structure with `Server`, with `NetworkManager` in charge of message processing as well as network communication with server, and `Trainer` for client local training procedure.
 
-<center><img src="./docs/imgs/fedlab-client.svg?raw=True" width=450></center>
+<p align="center"><img src="./docs/imgs/fedlab-client.svg?raw=True" width=450></p>
 
 
 
@@ -64,11 +64,11 @@ __FedLab__ furnishes both synchronous and asynchronous communication patterns, a
 
 1. Synchronous FL: each round is launched by server, that is, server performs clients sampling first then broadcasts global model parameters.
 
-<center><img src="./docs/imgs/fedlab-sychronous.svg?raw=True" width=500></center>
+<p align="center"><img src="./docs/imgs/fedlab-sychronous.svg?raw=True" width=500></p>
 
 2. Asynchronous FL: each round is launched by clients, that is, clients request current global model parameters then perform local training.
 
-<center><img src="./docs/imgs/fedlab-asychronous.svg?raw=True" width=500></center>
+<p align="center"><img src="./docs/imgs/fedlab-asychronous.svg?raw=True" width=500></p>
 
 ## Experiment Scene
 
@@ -78,7 +78,7 @@ __FedLab__ supports both single machine and  multi-machine FL simulations, with 
 
 __FedLab__ implements `SerialTrainer` for FL simulation in single system process. `SerialTrainer` allows user to simulate a FL system with multiple clients executing one by one in serial in one `SerialTrainer`. It is designed for simulation in environment with limited computation resources.  
 
-<center><img src="./docs/imgs/fedlab-SerialTrainer.svg?raw=True" width=450></center>
+<p align="center"><img src="./docs/imgs/fedlab-SerialTrainer.svg?raw=True" width=450></p>
 
 ### Cross-Machine
 
@@ -86,7 +86,7 @@ __FedLab__ supports simulation executed on multiple machines with correct networ
 
 > All machines must be in the same network (LAN or WAN) for cross-machine deployment.
 
-<center><img src="./docs/imgs/fedlab-multi_process.svg?raw=True" width=450></center>
+<p align="center"><img src="./docs/imgs/fedlab-multi_process.svg?raw=True" width=450></p>
 
 ### Hierarchical
 
@@ -96,7 +96,7 @@ _Hierarchical_ mode for __FedLab__ is designed for situations where both _standa
 
 A hierarchical FL system with $K$​ client groups is depicted as below.
 
-<center><img src="./docs/imgs/fedlab-hierarchical.svg?raw=True" width=600></center>
+<p align="center"><img src="./docs/imgs/fedlab-hierarchical.svg?raw=True" width=600></p>
 
 ## How to use？
 
