@@ -42,7 +42,7 @@ class ReturnThread(threading.Thread):
             return None
 
 
-#TODO: something wrong with multi_threading. 异步训练失败？
+#TODO: something wrong with multi_threading==True.
 
 class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.

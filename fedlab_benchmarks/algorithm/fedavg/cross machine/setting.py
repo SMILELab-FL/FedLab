@@ -5,9 +5,9 @@ import sys
 
 sys.path.append('../../../')
 
-from fedlab_utils.dataset.sampler import FedDistributedSampler
-from fedlab_utils.models.lenet import LeNet
-from fedlab_utils.models.rnn import RNN_Shakespeare
+from fedlab.utils.dataset.sampler import FedDistributedSampler
+from fedlab.utils.models.lenet import LeNet
+from fedlab.utils.models.rnn import RNN_Shakespeare
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 
 

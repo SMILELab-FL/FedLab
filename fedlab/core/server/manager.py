@@ -15,6 +15,7 @@
 import threading
 from queue import Queue
 import logging
+import time
 
 from ..network_manager import NetworkManager
 from ..communicator.processor import Package, PackageProcessor
@@ -49,7 +50,7 @@ class ServerSynchronousManager(NetworkManager):
         else:
             self._LOGGER = logger
 
-        self.global_round = 3  # for current test
+        self.global_round = 2  # for current test
 
     def run(self):
         """Main Process"""
@@ -59,6 +60,8 @@ class ServerSynchronousManager(NetworkManager):
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
+        time.sleep(3)
+        
         for round_idx in range(self.global_round):
             self._LOGGER.info("Global FL round {}/{}".format(
                 round_idx + 1, self.global_round))
@@ -72,6 +75,7 @@ class ServerSynchronousManager(NetworkManager):
                 if update_flag:
                     break
         self.shutdown_clients()
+        self._network.close_network_connection()
 
     def on_receive(self, sender, message_code, payload):
         if message_code == MessageCode.ParameterUpdate:
