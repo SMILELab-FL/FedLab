@@ -26,5 +26,5 @@ class LoggerTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_logger(self):
-        LOGGER = logger("./test.txt", log_name="test")
+        LOGGER = logger(log_name="test", log_file="./test.txt")
         os.remove("./test.txt")

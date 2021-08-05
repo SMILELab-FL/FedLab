@@ -23,31 +23,32 @@ def get_tests():
     from .test_utils.test_logger import LoggerTestCase
     
 
-    
-    from .test_core.test_processor import PackageTestCase
+    from .test_core.test_processor import ProcessorTestCase
     from .test_core.test_compressor import CompressorTestCase
     from .test_core.test_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
-    from .test_core.test_topology import TopologyTestCase
+    from .test_core.test_network_manager import ManagerTestCase
+    from .test_core.test_package import PackageTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
-    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
+    processor_suite = unittest.TestLoader().loadTestsFromTestCase(ProcessorTestCase)
     functional_suite = unittest.TestLoader().loadTestsFromTestCase(FunctionalTestCase)
     logger_suite = unittest.TestLoader().loadTestsFromTestCase(LoggerTestCase)
     aggregator_suite = unittest.TestLoader().loadTestsFromTestCase(AggregatorTestCase)
     compressor_suite = unittest.TestLoader().loadTestsFromTestCase(CompressorTestCase)
     handler_suite = unittest.TestLoader().loadTestsFromTestCase(HandlerTestCase)
     network_suite = unittest.TestLoader().loadTestsFromTestCase(NetworkTestCase)
-    topology_suite = unittest.TestLoader().loadTestsFromTestCase(TopologyTestCase)
-
+    manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
+    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
     return unittest.TestSuite([serialization_suite,
                                message_code_suite,
-                               package_suite,
+                               processor_suite,
                                aggregator_suite,
                                compressor_suite,
                                handler_suite,
                                functional_suite,
                                logger_suite,
                                network_suite,
-                               topology_suite])
+                               manager_suite,
+                               package_suite])

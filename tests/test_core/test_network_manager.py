@@ -17,7 +17,7 @@ import unittest
 from fedlab.core.network_manager import NetworkManager
 
 
-class TopologyTestCase(unittest.TestCase):
+class ManagerTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         return super().setUp()
