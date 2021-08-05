@@ -85,7 +85,7 @@ class SerialTrainer(ClientTrainer):
         """Return a dataloader used in :meth:`train`
 
         Args:
-            client_id (int): client id to generate dataloader
+            id (int): client id to generate dataloader
             batch_size (int): batch size
 
         Returns:

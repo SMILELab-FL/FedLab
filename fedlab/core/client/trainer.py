@@ -65,8 +65,8 @@ class ClientSGDTrainer(ClientTrainer):
         criterion (torch.nn.Loss, optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
         logger (logger, optional): `fedlab_utils.logger`, 
-
     """
+    
     def __init__(self,
                  model: torch.nn.Module,
                  data_loader: torch.utils.data.DataLoader,
