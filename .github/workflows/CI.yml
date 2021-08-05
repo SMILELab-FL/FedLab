@@ -20,8 +20,8 @@ jobs:
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
-        - os: macos-latest
-          path: ~/Library/Caches/pip
+#        - os: macos-latest
+#          path: ~/Library/Caches/pip
         # check https://pypi.org/project/torchvision/ for torch-torchvision compatibility
         - torch-version: 1.7.1
           torchvision-version: 0.8.2
