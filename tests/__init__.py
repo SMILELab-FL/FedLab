@@ -25,10 +25,12 @@ def get_tests():
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
     from .test_core.test_communicator.test_compressor import CompressorTestCase
-    from .test_core.test_server.test_handler import HandlerTestCase
+    from .test_core.test_server.test_parameter_server_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
+
+    from .test_fedavg import FedAvgTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
@@ -41,6 +43,10 @@ def get_tests():
     network_suite = unittest.TestLoader().loadTestsFromTestCase(NetworkTestCase)
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
+
+    fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
+
+
     return unittest.TestSuite([serialization_suite,
                                message_code_suite,
                                processor_suite,
@@ -51,4 +57,5 @@ def get_tests():
                                logger_suite,
                                network_suite,
                                manager_suite,
-                               package_suite])
+                               package_suite,
+                               fedavg_suite])

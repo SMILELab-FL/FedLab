@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import unittest
 
-from fedlab.core.client.trainer import ClientSGDTrainer
 
-
-class TrainerTestCase(unittest.TestCase):
+class FedAsgdTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         return super().setUp()
@@ -25,11 +24,6 @@ class TrainerTestCase(unittest.TestCase):
     def tearDown(self) -> None:
         return super().tearDown()
 
-    def test_init(self):
+    def test_fedasgd(self):
         pass
-
-    def test_train(self):
-        pass
-
-
     
