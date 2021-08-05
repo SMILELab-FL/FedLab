@@ -6,13 +6,13 @@ import sys
 import os
 
 from torch import nn
-sys.path.append('../../../')
+sys.path.append('../../../../')
 
-from fedlab_core.client.manager import ClientActiveManager
-from fedlab_core.client.trainer import ClientSGDTrainer
-from fedlab_utils.dataset.sampler import DistributedSampler
-from fedlab_utils.models.lenet import LeNet
-from fedlab_core.network import DistNetwork
+from fedlab.core.client.manager import ClientActiveManager
+from fedlab.core.client.trainer import ClientSGDTrainer
+from fedlab.utils.dataset.sampler import FedDistributedSampler
+from fedlab.utils.models.lenet import LeNet
+from fedlab.core.network import DistNetwork
 
 def get_dataset(args):
     """
@@ -33,7 +33,7 @@ def get_dataset(args):
     testset = torchvision.datasets.MNIST(
         root=args.root, train=False, download=True, transform=test_transform)
 
-    trainloader = torch.utils.data.DataLoader(trainset, sampler=DistributedSampler(trainset, rank=args.local_rank,
+    trainloader = torch.utils.data.DataLoader(trainset, sampler=FedDistributedSampler(trainset, rank=args.local_rank,
                                                                                    num_replicas=args.world_size - 1),
                                               batch_size=128,
                                               drop_last=True, num_workers=2)
