@@ -50,6 +50,7 @@ class ClientPassiveManager(NetworkManager):
         """
         self._LOGGER.info("connecting with server")
         self._network.init_network_connection()
+        
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from
@@ -59,6 +60,7 @@ class ClientPassiveManager(NetworkManager):
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
                     "Recv {}, Process exiting".format(message_code))
+                self._network.close_network_connection()
                 exit(0)
             else:
                 # perform local training
@@ -66,6 +68,7 @@ class ClientPassiveManager(NetworkManager):
 
             # synchronize with server
             self.synchronize()
+
 
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform on receiving new message, including local training

@@ -56,7 +56,6 @@ class test_receiver(Process):
 
         self.net.close_network_connection()
 
-
 class ProcessorTestCase(unittest.TestCase):
     def setUp(self):
         tensor_num = 5
