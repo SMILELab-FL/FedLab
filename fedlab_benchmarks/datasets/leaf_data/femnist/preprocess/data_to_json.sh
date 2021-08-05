@@ -9,7 +9,7 @@ if [ ! -d "../data/raw_data" ]; then
   echo "------------------------------"
   echo "downloading data"
   mkdir ../data/raw_data
-  ./get_data.sh
+  bash get_data.sh
   echo "finished downloading data"
 fi
 
