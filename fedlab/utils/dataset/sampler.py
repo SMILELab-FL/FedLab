@@ -16,7 +16,6 @@ from copy import deepcopy
 import random
 import torch
 import torch.distributed as dist
-import math
 
 
 class SubsetSampler(torch.utils.data.Sampler):
@@ -40,15 +39,17 @@ class SubsetSampler(torch.utils.data.Sampler):
         return len(self.indices)
 
 
-# modified from DistributedSampler
 class FedDistributedSampler(torch.utils.data.Sampler):
-    """"""
-    def __init__(self, dataset, num_replicas, client_id=None, shuffle=True):
+    """Partition dataset according to num_replicas"""
+    def __init__(self, dataset, num_replicas=None, client_id=None, shuffle=True):
 
         self.dataset = dataset
         self.indices = [index for index in range(len(self.dataset))]
 
-        self.num_replicas = num_replicas
+        if num_replicas is None:
+            self.num_replicas = dist.get_world_size()
+        else:
+            self.num_replicas = num_replicas
         self.id = client_id
         
         self.num_samples = int(len(self.dataset) / self.num_replicas)
@@ -59,7 +60,6 @@ class FedDistributedSampler(torch.utils.data.Sampler):
     
         local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
         assert len(local_indices) == self.num_samples
-
         return iter(local_indices)
 
     def __len__(self):
