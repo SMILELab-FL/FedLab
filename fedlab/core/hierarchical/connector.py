@@ -88,8 +88,7 @@ class ConnectClient(Connector):
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package(
-            )  # package from clients
+            sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
             print("ConnectClient: recv data from {}, message code {}".format(
                 sender, message_code))
             self.on_receive(sender, message_code, payload)

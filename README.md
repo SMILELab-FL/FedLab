@@ -8,21 +8,23 @@ _Read this in other languages: [English](README.md), [简体中文](README.zh-cn
 
 ## Table of Contents
 
-- [Introduction](#introdcution)
-- [Framework Overview](#framework-overview)
-  - [Server](#server)
-  - [Client](#client)
-  - [Communication](#communication)
-- [Experiment Scene](#experiment-scene)
-  - [Standalone](#standalone)
-  - [Cross-Machine](#cross-machine)
-  - [Hierarchical](#hierarchical)
-- [How to Use?](#how-to-use)
-  - [Quick Start](#quick-start)
-  - [Document](#document)
-- [Citation](#citation)
-- [Contribution Guideline](#contribution-guideline)
-- [Contact](#contact)
+- [FedLab: A Flexible Federated Learning Framework](#fedlab-a-flexible-federated-learning-framework)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Framework Overview](#framework-overview)
+    - [Server](#server)
+    - [Client](#client)
+    - [Communication](#communication)
+  - [Experiment Scene](#experiment-scene)
+    - [Standalone](#standalone)
+    - [Cross-Machine](#cross-machine)
+    - [Hierarchical](#hierarchical)
+  - [How to use？](#how-to-use)
+    - [Quick Start](#quick-start)
+    - [Documentation](#documentation)
+  - [Citation](#citation)
+  - [Contribution Guideline](#contribution-guideline)
+  - [Contact](#contact)
 
 ## Introduction
 
@@ -42,8 +44,6 @@ __FedLab__ provides two basic roles in FL setting: `Server` and `Client`. Each `
 
 - `NetworkManager` module manages message process task, which provides interfaces to customize communication agreements and compression
 - `ParameterHandler` is responsible for backend computation in `Server`; and `Trainer` is in charge of backend computation in `Client` 
-
-
 
 
 ### Server
