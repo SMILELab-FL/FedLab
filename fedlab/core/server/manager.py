@@ -38,6 +38,7 @@ class ServerSynchronousManager(NetworkManager):
     Args:
         handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
         network (DistNetwork): object to manage torch.distributed network communication.
+        com_round (int): the global round of FL iteration.
         logger (logger, optional): output cmd info to file.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
@@ -50,8 +51,6 @@ class ServerSynchronousManager(NetworkManager):
         else:
             self._LOGGER = logger
 
-        self.global_round = 2  # for current test
-
     def run(self):
         """Main Process"""
         self._LOGGER.info(
@@ -60,24 +59,32 @@ class ServerSynchronousManager(NetworkManager):
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
-        time.sleep(3)
-        
-        for round_idx in range(self.global_round):
-            self._LOGGER.info("Global FL round {}/{}".format(
-                round_idx + 1, self.global_round))
-
-            activate = threading.Thread(target=self.activate_clients)
-            activate.start()
-
+        while self._handler.stop_condition():
+            self.activate_clients()
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
-                update_flag = self.on_receive(sender, message_code, payload)
-                if update_flag:
+                if self.on_receive(sender, message_code, payload):
                     break
+
         self.shutdown_clients()
         self._network.close_network_connection()
 
     def on_receive(self, sender, message_code, payload):
+        """Communication agreements of synchronous FL.
+
+        - Server receive parameter from client. Transmit to handler for aggregation.
+
+        Args:
+            sender (int): rank of current process.
+            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
+            payload (torch.Tensor): Tensor 
+
+        Raises:
+            Exception: [description]
+
+        Returns:
+            [type]: [description]
+        """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
             update_flag = self._handler.add_single_model(
@@ -93,8 +100,7 @@ class ServerSynchronousManager(NetworkManager):
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
-            model_params = SerializationTool.serialize_model(
-                self._handler.model)
+            model_params = self._handler.model
             pack = Package(message_code=MessageCode.ParameterUpdate,
                            content=model_params)
             PackageProcessor.send_package(pack, dst=client_idx)
@@ -114,7 +120,7 @@ class ServerAsynchronousManager(NetworkManager):
 
     Args:
         handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
-        newtork (DistNetwork): object to manage torch.distributed network communication.
+        network (DistNetwork): object to manage torch.distributed network communication.
         logger (logger, optional): output cmd info to file.
     """
     def __init__(self, handler, network: DistNetwork, logger: logger = None):
@@ -127,7 +133,6 @@ class ServerAsynchronousManager(NetworkManager):
         else:
             self._LOGGER = logger
 
-        self.total_round = 5  # control server to end receiving msg
         self.message_queue = Queue()
 
     def run(self):
@@ -141,17 +146,30 @@ class ServerAsynchronousManager(NetworkManager):
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        while self._handler.global_time < self.total_round:
+        while self._handler.stop_condition():
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
 
         self.shutdown_clients()
+        self._network.close_network_connection()
 
     def on_receive(self, sender, message_code, payload):
+        """Communication agreements of asynchronous FL.
+
+        - Server receive ParameterRequest from client. Send model parameter to client. 
+        - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
+
+        Args:
+            sender (int): rank of current process.
+            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
+            payload (torch.Tensor): Tensor 
+
+        Raises:
+            ValueError: [description]
+        """
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
-            model_params = SerializationTool.serialize_model(
-                self._handler.model)
+            model_params = self._handler.model
             pack.append_tensor_list([model_params, self._handler.global_time])
             self._LOGGER.info(
                 "Send model to rank {}, the model current updated time {}".
