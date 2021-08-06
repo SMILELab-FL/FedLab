@@ -31,9 +31,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Set openssl
-        run: |
-          ./configure --with-openssl=/home/liangsiqi/openssl
+#      - name: Set openssl
+#        run: |
+#          ./configure --with-openssl=/home/liangsiqi/openssl
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
