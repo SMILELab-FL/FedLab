@@ -14,8 +14,11 @@
 
 
 import unittest
-from fedlab.utils.functional import AverageMeter
 import random
+import os
+from fedlab.utils.functional import AverageMeter
+from fedlab.utils.functional import read_config_from_json
+
 
 class FunctionalTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -37,3 +40,12 @@ class FunctionalTestCase(unittest.TestCase):
         assert test.avg == sum/test_case and test.count == test_case and test.sum == sum
         test.reset()
         assert test.avg == 0.0 and test.count == 0.0 and test.sum == 0.0 and test.val == 0.0
+
+    def test_read_config_json(self):
+        json_file = '../data/config.json'
+        json_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), json_file)
+        test_config = ('127.0.0.1', '3002', 3, 0)
+        self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='server'))
+        test_config = ('127.0.0.1', '3002', 3, 1)
+        self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='client_0'))
+        self.assertRaises(KeyError, lambda: read_config_from_json(json_file=json_file, user_name='client_2'))
