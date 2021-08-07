@@ -50,7 +50,3 @@ class LeafTestCase(unittest.TestCase):
             trainset = FemnistDataset(client_id=client_id, data_root=self.datapath, is_train=True)
             assert trainset.data.shape[1:] == (1, 28, 28)
             assert isinstance(trainset.targets[0], torch.LongTensor)
-
-
-if __name__ == '__main__':
-    unittest.main()
