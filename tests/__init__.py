@@ -16,12 +16,12 @@ import unittest
 
 
 def get_tests():
+
     from .test_utils.test_serialization import SerializationTestCase
     from .test_utils.test_message_code import MessageCodeTestCase
     from .test_utils.test_aggregator import AggregatorTestCase
     from .test_utils.test_functional import FunctionalTestCase
     from .test_utils.test_logger import LoggerTestCase
-    
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
     from .test_core.test_communicator.test_compressor import CompressorTestCase
@@ -30,8 +30,8 @@ def get_tests():
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
 
-    from .test_fedavg import FedAvgTestCase
-
+    from .test_pipelines.test_fedavg import FedAvgTestCase
+    
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
     processor_suite = unittest.TestLoader().loadTestsFromTestCase(ProcessorTestCase)

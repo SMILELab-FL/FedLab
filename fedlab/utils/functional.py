@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import torch
-
+import json
 
 class AverageMeter(object):
     """Record train infomation"""
@@ -65,3 +65,45 @@ def evaluate(model, criterion, test_loader, cuda):
                                                        accuracy)
     print(log_str)
     return loss_sum, accuracy
+
+
+def read_config_from_json(json_file: str, user_name: str):
+    """Read config from `json_file` to get config for `user_name`
+
+    Args:
+        json_file (str): path for json_file
+        user_name (str): read config for this user, it can be 'server' or 'client_id'
+
+    Returns:
+        a tuple with ip, port, world_size, rank about user with `user_name`
+
+    Examples:
+        read_config_from_json('../../../tests/data/config.json', 'server')
+
+    Notes:
+        config.json example as follows
+        {
+          "server": {
+            "ip" : "127.0.0.1",
+            "port": "3002",
+            "world_size": 3,
+            "rank": 0
+          },
+          "client_0": {
+            "ip": "127.0.0.1",
+            "port": "3002",
+            "world_size": 3,
+            "rank": 1
+          },
+          "client_1": {
+            "ip": "127.0.0.1",
+            "port": "3002",
+            "world_size": 3,
+            "rank": 2
+          }
+        }
+    """
+    with open(json_file) as f:
+        config = json.load(f)
+    config_info = config[user_name]
+    return config_info['ip'], config_info['port'], config_info['world_size'], config_info['rank']

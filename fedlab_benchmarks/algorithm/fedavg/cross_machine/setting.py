@@ -15,7 +15,7 @@ from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.dataset_vocab.sample
 
 def get_dataset(args):
     if args.dataset == 'mnist':
-        root = '../../../../datasets/mnist/'
+        root = '../../../../../datasets/mnist/'
         train_transform = transforms.Compose([
             transforms.ToTensor(),
         ])

@@ -3,7 +3,7 @@ import argparse
 import sys
 import os
 
-sys.path.append('../../../../')
+sys.path.append('../../')
 
 from torch import nn
 from fedlab.core.client.manager import ClientPassiveManager

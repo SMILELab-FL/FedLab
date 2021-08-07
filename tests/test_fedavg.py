@@ -22,6 +22,7 @@ import torch
 from torch import nn
 import torchvision
 import torchvision.transforms as transforms
+from torch import distributed as dist
 
 from fedlab.utils.dataset.sampler import FedDistributedSampler
 from fedlab.core.client.trainer import ClientSGDTrainer
@@ -32,8 +33,10 @@ from fedlab.core.network import DistNetwork
 from fedlab.utils.models.lenet import LeNet
 
 
+
+
 class TestServer:
-    def __init__(self, ip, port, world_size, model) -> None:
+    def __init__(self, ip, port, world_size, model):
 
         model = deepcopy(model)
 
@@ -46,18 +49,19 @@ class TestServer:
 
         self.p = ServerSynchronousManager(handler=ps, network=network)
 
+
 class TestClient:
     def __init__(self, ip, port, world_size, rank, model, trainset) -> None:
         model = deepcopy(model)
-        lr = 0.01
-        momentum = 0.9
+        lr, momentum  = 0.01, 0.9
         criterion = nn.CrossEntropyLoss()
 
         trainloader = torch.utils.data.DataLoader(
             trainset,
             sampler=FedDistributedSampler(trainset,
                                           client_id=rank,
-                                          num_replicas=world_size - 1))
+                                          num_replicas=10),
+                                          batch_size=128)
 
         optimizer = torch.optim.SGD(model.parameters(),
                                     lr=lr,
@@ -76,11 +80,12 @@ class TestClient:
 
         self.p = ClientPassiveManager(handler=handler, network=network)
 
+
 class FedAvgTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
         port = "12345"
-        world_size = 3
+        world_size = 2
         model = LeNet()
         trainset = torchvision.datasets.MNIST(root="./data/mnist/",
                                               train=True,
@@ -98,12 +103,6 @@ class FedAvgTestCase(unittest.TestCase):
                                   rank=1,
                                   model=model,
                                   trainset=trainset)
-        self.client2 = TestClient(ip=ip,
-                                  port=port,
-                                  world_size=world_size,
-                                  rank=2,
-                                  model=model,
-                                  trainset=trainset)
 
     def tearDown(self) -> None:
         return super().tearDown()
@@ -113,8 +112,3 @@ class FedAvgTestCase(unittest.TestCase):
 
         self.server.p.start()
         self.client1.p.start()
-        self.client2.p.start()
-
-        self.server.p.join()
-        self.client1.p.join()
-        self.client2.p.join()

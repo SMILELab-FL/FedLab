@@ -69,7 +69,6 @@ class ClientPassiveManager(NetworkManager):
             # synchronize with server
             self.synchronize()
 
-
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform on receiving new message, including local training
 

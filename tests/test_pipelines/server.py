@@ -2,7 +2,7 @@ import os
 import sys
 import argparse
 
-sys.path.append('../../../../')
+sys.path.append('../../')
 from fedlab.utils.logger import logger
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.manager import ServerSynchronousManager
