@@ -15,7 +15,6 @@
 import threading
 from queue import Queue
 import logging
-import time
 
 from ..network_manager import NetworkManager
 from ..communicator.processor import Package, PackageProcessor
@@ -75,12 +74,12 @@ class ServerSynchronousManager(NetworkManager):
         - Server receive parameter from client. Transmit to handler for aggregation.
 
         Args:
-            sender (int): rank of current process.
+            sender (int): rank of sender process.
             message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (torch.Tensor): Tensor 
+            payload (list[torch.Tensor]): list of tensors.
 
         Raises:
-            Exception: [description]
+            Exception: Un expected MessageCode.
 
         Returns:
             [type]: [description]
@@ -160,9 +159,9 @@ class ServerAsynchronousManager(NetworkManager):
         - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
 
         Args:
-            sender (int): rank of current process.
+            sender (int): rank of sender process.
             message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (torch.Tensor): Tensor 
+            payload (list[torch.Tensor]): list of tensors.
 
         Raises:
             ValueError: [description]
@@ -183,8 +182,12 @@ class ServerAsynchronousManager(NetworkManager):
             raise ValueError("Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
-        while self._handler.global_time < self.total_round:
+        """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
 
+            Note:
+                Customize strategy by overwrite this function.
+        """
+        while self._handler.stop_condition():
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]

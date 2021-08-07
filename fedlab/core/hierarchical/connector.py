@@ -12,24 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ..network_manager import NetworkManager
+from ..communicator.processor import PackageProcessor
+from ..communicator.package import Package
+from ..network import DistNetwork
+from torch.multiprocessing import Queue
+import torch
 import threading
 import sys
 
 sys.path.append('../../../')
 
-import torch
-from torch.multiprocessing import Queue
 
 torch.multiprocessing.set_sharing_strategy("file_system")
-
-from ..network import DistNetwork
-from ..communicator.package import Package
-from ..communicator.processor import PackageProcessor
-from ..network_manager import NetworkManager
 
 
 class Connector(NetworkManager):
     """Abstract class for basic Connector, which is a sub-module of schedular.
+
+        Connector is a NetworkManager class, maintaining two Message Queue. 
+        One is for sending messages to collborator, the other is for read messages from others.
+    
+    Note:
+        Connector is a basic component for scheduler, example code can be seen in scheduler.py.
 
     Args:
         newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
@@ -58,8 +63,8 @@ class Connector(NetworkManager):
         pass
 
     def deal_queue():
+        """"""
         pass
-
 
 class ConnectClient(Connector):
     """Connect with clients.
@@ -67,7 +72,7 @@ class ConnectClient(Connector):
         This class is a part of middle server which used in hierarchical structure.
 
         TODO: middle server
-        
+
     Args:
         newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
         write_queue (Queue): message queue.
@@ -88,8 +93,7 @@ class ConnectClient(Connector):
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package(
-            )  # package from clients
+            sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
             print("ConnectClient: recv data from {}, message code {}".format(
                 sender, message_code))
             self.on_receive(sender, message_code, payload)
@@ -98,7 +102,10 @@ class ConnectClient(Connector):
         self.mq_write.put((sender, message_code, payload))
 
     def deal_queue(self):
-        """Process message queue"""
+        """Process message queue
+
+            Strategy of processing message from server.
+        """
         while True:
             sender, message_code, payload = self.mq_read.get()
             print("Watching Queue: data from {}, message code {}".format(
@@ -111,7 +118,7 @@ class ConnectServer(Connector):
     """Connect with server.
 
         This class is a part of middle server which used in hierarchical structure.
-        
+
         TODO:Rank mapper
 
     Args:

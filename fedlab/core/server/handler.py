@@ -21,6 +21,7 @@ from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils.logger import logger
 
+
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
 
@@ -29,6 +30,7 @@ class ParameterServerBackendHandler(ABC):
     Example:
         read sourcecode of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
+
     def __init__(self, model: torch.nn.Module, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
@@ -49,8 +51,7 @@ class ParameterServerBackendHandler(ABC):
     def stop_condition(self) -> bool:
         """Override this function to tell up layer when to stop process.
 
-        Returns:
-            [type]: [description]
+            NetworkManager will keep watching the return of this method, and it will stop all related process and threads when this function returns False.
         """
         raise NotImplementedError()
 
@@ -76,6 +77,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join every FL round. Default: ``1.0``
         logger (logger, optional): Tools, used to output information.
     """
+
     def __init__(self,
                  model: torch.nn.Module,
                  client_num_in_total: int,
@@ -170,6 +172,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not.
         logger (logger, optional): Tools, used to output information.
     """
+
     def __init__(self,
                  model: torch.nn.Module,
                  client_num_in_total,

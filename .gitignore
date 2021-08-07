@@ -150,4 +150,5 @@ cython_debug/
 # dataset
 fedlab_benchmarks/datasets/leaf_data/*/data
 fedlab_benchmarks/datasets/leaf_data/*/meta
-tests/data/mnist
+tests/data
+actions-runner
