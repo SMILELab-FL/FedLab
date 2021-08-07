@@ -2,6 +2,8 @@ import os
 import sys
 import argparse
 
+from torch import manager_path
+
 sys.path.append('../../../../')
 from fedlab.utils.logger import logger
 from fedlab.core.server.handler import SyncParameterServerHandler
@@ -19,13 +21,15 @@ if __name__ == "__main__":
 
     parser.add_argument('--round', type=int)
     parser.add_argument('--dataset', type=str)
+    parser.add_argument('--ethernet', type=str)
     args = parser.parse_args()
 
-    model = get_model(args)
+    os.environ["GLOO_SOCKET_IFNAME"] = args.ethernet
 
+    model = get_model(args)
     LOGGER = logger(log_name="server")
 
     ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER)
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=0)
-    Manager = ServerSynchronousManager(handler=ps, network=network, logger=LOGGER)
-    Manager.run()
+    manager = ServerSynchronousManager(handler=ps, network=network, logger=LOGGER)
+    manager.run()
