@@ -51,7 +51,18 @@ class ServerSynchronousManager(NetworkManager):
             self._LOGGER = logger
 
     def run(self):
-        """Main Process"""
+        """Main Process
+
+            1. network initialization.
+            2. Loop:
+                2.1 activate clients.
+                2.2 listening for message -> transimit parameters to backend.
+            3. stop loop when stop condition is satisfied.
+            4. shut down clients, then close network connection.
+
+        Note:
+            user can overwrite this function to customize main process of Server.
+        """
         self._LOGGER.info(
             "Initializing pytorch distributed group\n Waiting for connection requests from clients"
         )
@@ -71,7 +82,12 @@ class ServerSynchronousManager(NetworkManager):
     def on_receive(self, sender, message_code, payload):
         """Communication agreements of synchronous FL.
 
+        
         - Server receive parameter from client. Transmit to handler for aggregation.
+
+        Note:
+            communication agreements related:
+            user can overwrite this function to redefine communication agreements.
 
         Args:
             sender (int): rank of sender process.
@@ -80,20 +96,24 @@ class ServerSynchronousManager(NetworkManager):
 
         Raises:
             Exception: Un expected MessageCode.
-
-        Returns:
-            [type]: [description]
         """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
-            update_flag = self._handler.add_single_model(
+            update_flag = self._handler.add_model(
                 sender, model_parameters)
             return update_flag
         else:
             raise Exception("Unexpected message code {}".format(message_code))
 
     def activate_clients(self):
-        """Activate some of clients to join this FL round"""
+        """Activate some of clients to join this FL round
+        
+            The rank of clients are given by handler.sample_clients()
+
+        Note:
+            communication agreements related:
+            User can overwrite this function to define activation package.
+        """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
@@ -105,7 +125,15 @@ class ServerSynchronousManager(NetworkManager):
             PackageProcessor.send_package(pack, dst=client_idx)
 
     def shutdown_clients(self):
-        """Shutdown all clients"""
+        """Shutdown all clients.
+
+            Send package to clients with MessageCode.Exit.
+
+        Note:
+            communication agreements related:
+            User can overwrite this function to define close package.
+        
+        """
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)

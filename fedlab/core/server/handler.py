@@ -20,7 +20,6 @@ from abc import ABC, abstractmethod
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils.logger import logger
-from ...utils.functional import evaluate
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
@@ -51,7 +50,7 @@ class ParameterServerBackendHandler(ABC):
     def stop_condition(self) -> bool:
         """Override this function to tell up layer when to stop process.
 
-            NetworkManager will keep watching the return of this method, and it will stop all related process and threads when this function returns False.
+            NetworkManager will keep watching the return of this method, and it will stop all related processes and threads when this function returns False.
         """
         raise NotImplementedError()
 
@@ -114,8 +113,15 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.global_round = global_round
         self.round = 0
 
-    def update_model(self, serialized_params_list):
-        """update global model"""
+    def _update_model(self, serialized_params_list):
+        """update global model
+
+        Note:
+            Handler will call this method when cache is full.
+            User can overwrite the strategy of aggregation by modifying the parameters of self._model according to serialized_params_list.
+        Args:
+            serialized_params_list (list[torch.Tensor]): a list of parameters.
+        """
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             serialized_params_list)
@@ -135,7 +141,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         selection = random.sample(id_list, self.client_num_per_round)
         return selection
 
-    def add_single_model(self, sender_rank, serialized_params):
+    def add_model(self, sender_rank, serialized_params):
         """Deal with incoming model parameters
 
         Args:
@@ -151,14 +157,11 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_buffer_cache[sender_rank] = serialized_params.clone()
 
         if self.cache_cnt == self.client_num_per_round:
-            self.update_model(list(self.client_buffer_cache.values()))
+            self._update_model(list(self.client_buffer_cache.values()))
             self.round += 1
             return True
         else:
             return False
-
-    def train(self):
-        self.train_flag = True
 
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
