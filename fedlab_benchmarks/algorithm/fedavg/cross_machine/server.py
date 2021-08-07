@@ -13,17 +13,19 @@ from setting import get_model
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
 
-    parser.add_argument('--server_ip', type=str, default='127.0.0.1')
-    parser.add_argument('--server_port', type=str, default='3002')
+    parser.add_argument('--server_ip', type=str)
+    parser.add_argument('--server_port', type=str)
     parser.add_argument('--world_size', type=int)
 
+    parser.add_argument('--round', type=int)
     parser.add_argument('--dataset', type=str)
     args = parser.parse_args()
 
     model = get_model(args)
 
-    ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1)
+    LOGGER = logger(log_name="server")
+
+    ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER)
     network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=0)
-    Manager = ServerSynchronousManager(handler=ps, network=network)
-        
+    Manager = ServerSynchronousManager(handler=ps, network=network, logger=LOGGER)
     Manager.run()
