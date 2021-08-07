@@ -22,6 +22,7 @@ from ...datasets.leaf_data_process.nlp_utils.vocab import Vocab
 from ...datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
 from ...datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
 from ...datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
+from .nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
 
 
 def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
@@ -36,7 +37,7 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
         A tuple with train dataloader and test dataloader for the client with `client_id`
 
     Examples:
-        trainloader, testloader = get_dataloader(dataset='femnist', client_id=args.local_rank - 1)
+        trainloader, testloader = get_LEAF_dataloader(dataset='femnist', client_id=args.local_rank - 1)
     """
 
     if dataset == 'femnist':
@@ -48,8 +49,7 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     elif dataset == 'sent140':
         trainset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=True)
         testset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=False)
-        vocab_file = open('nlp_utils/dataset_vocab/sent140_vocab.pck', 'rb')  # get vocab based on sample data
-        vocab = pickle.load(vocab_file)
+        vocab = get_built_vocab(dataset)
         # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
         trainset.token2seq(vocab, maxlen=300)
         testset.token2seq(vocab, maxlen=300)
@@ -64,13 +64,3 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
         drop_last=False,
         shuffle=False)
     return trainloader, testloader
-
-
-if __name__ == '__main__':
-    trainloader, testloader = get_LEAF_dataloader(dataset='sent140')
-    for inputs, labels in trainloader:
-        print(inputs)
-        print(labels)
-    for inputs, labels in testloader:
-        print(inputs)
-        print(labels)
