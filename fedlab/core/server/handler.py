@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils.logger import logger
-
+from ...utils.functional import evaluate
 
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
@@ -100,6 +100,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             raise ValueError(
                 "Invalid total client number: {}".format(client_num_in_total))
 
+        # basic setting
         self.client_num_in_total = client_num_in_total
         self.sample_ratio = sample_ratio
         self.client_num_per_round = max(

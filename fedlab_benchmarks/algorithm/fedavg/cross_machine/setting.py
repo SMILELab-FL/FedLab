@@ -25,6 +25,7 @@ def get_dataset(args):
                                               train=True,
                                               download=True,
                                               transform=train_transform)
+
         testset = torchvision.datasets.MNIST(root=root,
                                              train=False,
                                              download=True,
@@ -35,11 +36,12 @@ def get_dataset(args):
             sampler=FedDistributedSampler(trainset,
                                           client_id=args.rank,
                                           num_replicas=args.world_size - 1),
-            batch_size=128,
+            batch_size=args.batch_size,
             drop_last=True,
-            num_workers=2)
+            num_workers=args.world_size)
+        
         testloader = torch.utils.data.DataLoader(testset,
-                                                 batch_size=len(testset),
+                                                 batch_size=len(testset)/10,
                                                  drop_last=False,
                                                  num_workers=2,
                                                  shuffle=False)

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import torch.distributed as dist
 
 class DistNetwork(object):
@@ -25,17 +26,17 @@ class DistNetwork(object):
         and ``nccl``. Default: ``"gloo"``.
     """
 
-    def __init__(self, address, world_size, rank, dist_backend='gloo'):
+    def __init__(self, address, world_size, rank, ethernet, dist_backend='gloo'):
         super(DistNetwork, self).__init__()
         self.address = address
         self.rank = rank
         self.world_size = world_size
         self.dist_backend = dist_backend
+        self.ethernet = ethernet
 
     def init_network_connection(self):
-        print(
-            "torch.distributed initializeing processing group with ip address {}:{}, rank {}, world size: {}, backend: {}".format(
-                self.address[0], self.address[1], self.rank, self.world_size, self.dist_backend))
+        print(self.__str__())
+        os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
         dist.init_process_group(backend=self.dist_backend,
                                 init_method='tcp://{}:{}'.format(
                                     self.address[0],
@@ -48,7 +49,6 @@ class DistNetwork(object):
             dist.destroy_process_group()
 
     def __str__(self):
-        info_str = "ip address {}:{}, rank {}, world size: {}, backend: {}".format(self.address[0], self.address[1],
-                                                                                   self.rank, self.world_size,
-                                                                                   self.dist_backend)
+        info_str = "torch.distributed is initializing process group with ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
+                self.address[0], self.address[1], self.rank, self.world_size, self.dist_backend, self.ethernet)
         return info_str
