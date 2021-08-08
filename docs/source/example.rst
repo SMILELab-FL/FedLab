@@ -1,5 +1,7 @@
-Examples
-==================
+.. _examples:
+
+Quick Start & Examples
+=======================
 
 
 FedAvg
