@@ -19,7 +19,7 @@ import logging
 import torch
 from torch import nn
 
-from ...utils.functional import AverageMeter
+from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import logger
 from ...utils.serialization import SerializationTool
 
@@ -41,7 +41,9 @@ class ClientTrainer(ABC):
         self.cuda = cuda
         
         if self.cuda:
-            self._model = model.cuda()
+            # dynamic model assign
+            self.gpu = get_best_gpu()
+            self._model = model.cuda(self.gpu)
         else:
             self._model = model.cpu()
 
@@ -116,7 +118,7 @@ class ClientSGDTrainer(ClientTrainer):
             loss_.reset()
             for inputs, labels in self._data_loader:
                 if self.cuda:
-                    inputs, labels = inputs.cuda(), labels.cuda()
+                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(self.gpu)
 
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)

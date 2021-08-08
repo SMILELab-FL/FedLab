@@ -11,8 +11,9 @@ for ((i=$4; i<=$5; i++))
 do
 {
     echo "client ${i} started"
-    python client.py --server_ip $1 --server_port $2 --world_size $3 --rank ${i} --dataset $6 --ethernet $7 --epoch $8 
+    python client.py --server_ip $1 --server_port $2 --world_size $3 --rank ${i} --dataset $6 --ethernet $7 --epoch $8 --gpu $9
 } & 
 done
 wait
+
 

@@ -14,10 +14,12 @@
 
 import torch
 import json
+import pynvml
+import numpy as np
+
 
 class AverageMeter(object):
     """Record train infomation"""
-
     def __init__(self):
         self.reset()
 
@@ -32,6 +34,7 @@ class AverageMeter(object):
         self.sum += val
         self.count += n
         self.avg = self.sum / self.count
+
 
 def evaluate(model, criterion, test_loader, cuda):
     """
@@ -56,7 +59,7 @@ def evaluate(model, criterion, test_loader, cuda):
             _, predicted = torch.max(outputs, 1)
             loss_.update(loss.item())
             acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
-            
+
     return loss_.sum, acc_.avg
 
 
@@ -99,4 +102,18 @@ def read_config_from_json(json_file: str, user_name: str):
     with open(json_file) as f:
         config = json.load(f)
     config_info = config[user_name]
-    return config_info['ip'], config_info['port'], config_info['world_size'], config_info['rank']
+    return config_info['ip'], config_info['port'], config_info[
+        'world_size'], config_info['rank']
+
+
+def get_best_gpu():  # return gpu(torch.device) with largest free memory.
+    pynvml.nvmlInit()
+    deviceCount = pynvml.nvmlDeviceGetCount()
+    deviceMemory = []
+    for i in range(deviceCount):
+        handle = pynvml.nvmlDeviceGetHandleByIndex(i)
+        mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+        deviceMemory.append(mem_info.free)
+    deviceMemory = np.array(deviceMemory, dtype=np.int64)
+    best_device_index = np.argmax(deviceMemory)
+    return torch.device("cuda:%d" % (best_device_index))
