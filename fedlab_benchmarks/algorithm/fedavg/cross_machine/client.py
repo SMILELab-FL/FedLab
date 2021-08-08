@@ -28,12 +28,15 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str)
     parser.add_argument("--batch_size", type=int, default=100)
 
-    parser.add_argument("--cuda", type=bool, default=True)
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str)
     args = parser.parse_args()
-
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+    
+    if args.gpu != "-1":
+        args.cuda = True
+        os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+    else:
+        args.cuda = False
 
     model = get_model(args)
     trainloader, testloader = get_dataset(args)

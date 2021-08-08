@@ -106,7 +106,8 @@ def read_config_from_json(json_file: str, user_name: str):
         'world_size'], config_info['rank']
 
 
-def get_best_gpu():  # return gpu(torch.device) with largest free memory.
+def get_best_gpu():  
+    """return gpu(torch.device) with largest free memory."""
     pynvml.nvmlInit()
     deviceCount = pynvml.nvmlDeviceGetCount()
     deviceMemory = []
