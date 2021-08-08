@@ -38,6 +38,6 @@ class NetworkManager(Process):
         Args:
             sender (int): rank of current process.
             message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (torch.Tensor): Tensor 
+            payload (torch.Tensor): list[torch.Tensor] 
         """
         pass

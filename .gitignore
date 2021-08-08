@@ -152,3 +152,4 @@ fedlab_benchmarks/datasets/leaf_data/*/data
 fedlab_benchmarks/datasets/leaf_data/*/meta
 tests/data
 actions-runner
+fedlab_benchmarks/datasets/mnist

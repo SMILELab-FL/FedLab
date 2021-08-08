@@ -19,7 +19,7 @@ import logging
 import torch
 from torch import nn
 
-from ...utils.functional import AverageMeter
+from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import logger
 from ...utils.serialization import SerializationTool
 
@@ -37,11 +37,14 @@ class ClientTrainer(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
     """
+
     def __init__(self, model: nn.Module, cuda: bool):
         self.cuda = cuda
-        
+
         if self.cuda:
-            self._model = model.cuda()
+            # dynamic model assign
+            self.gpu = get_best_gpu()
+            self._model = model.cuda(self.gpu)
         else:
             self._model = model.cpu()
 
@@ -53,7 +56,12 @@ class ClientTrainer(ABC):
     @property
     def model(self):
         """attribute"""
-        return self._model
+        return SerializationTool.serialize_model(self._model)
+
+    @property
+    def model_parameters(self):
+        """attribute"""
+        return SerializationTool.serialize_model(self._model)
 
 
 class ClientSGDTrainer(ClientTrainer):
@@ -68,7 +76,7 @@ class ClientSGDTrainer(ClientTrainer):
         cuda (bool, optional): use GPUs or not. Default: ``True``.
         logger (logger, optional): `fedlab_utils.logger`, 
     """
-    
+
     def __init__(self,
                  model: torch.nn.Module,
                  data_loader: torch.utils.data.DataLoader,
@@ -112,11 +120,12 @@ class ClientSGDTrainer(ClientTrainer):
         for epoch in range(epochs):
             start_time = time.time()
             self._model.train()
-            
+
             loss_.reset()
             for inputs, labels in self._data_loader:
                 if self.cuda:
-                    inputs, labels = inputs.cuda(), labels.cuda()
+                    inputs, labels = inputs.cuda(
+                        self.gpu), labels.cuda(self.gpu)
 
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)
@@ -126,7 +135,7 @@ class ClientSGDTrainer(ClientTrainer):
                 self.optimizer.step()
 
                 loss_.update(loss.detach().item())
-                
+
             end_time = time.time()
 
             self._LOGGER.info(

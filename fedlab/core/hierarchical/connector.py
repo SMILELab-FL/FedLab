@@ -31,7 +31,7 @@ class Connector(NetworkManager):
 
         Connector is a NetworkManager class, maintaining two Message Queue. 
         One is for sending messages to collborator, the other is for read messages from others.
-    
+
     Note:
         Connector is a basic component for scheduler, example code can be seen in scheduler.py.
 
@@ -64,6 +64,7 @@ class Connector(NetworkManager):
     def deal_queue():
         """"""
         pass
+
 
 class ConnectClient(Connector):
     """Connect with clients.

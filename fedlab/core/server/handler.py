@@ -21,7 +21,6 @@ from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils.logger import logger
 
-
 class ParameterServerBackendHandler(ABC):
     """An abstract class representing handler for parameter server.
 
@@ -39,7 +38,7 @@ class ParameterServerBackendHandler(ABC):
             self._model = model.cpu()
 
     @abstractmethod
-    def update_model(self, serialized_params_list) -> torch.Tensor:
+    def _update_model(self, serialized_params_list) -> torch.Tensor:
         """Override this function to update global model
 
         Args:
@@ -51,7 +50,7 @@ class ParameterServerBackendHandler(ABC):
     def stop_condition(self) -> bool:
         """Override this function to tell up layer when to stop process.
 
-            NetworkManager will keep watching the return of this method, and it will stop all related process and threads when this function returns False.
+            NetworkManager will keep watching the return of this method, and it will stop all related processes and threads when this function returns False.
         """
         raise NotImplementedError()
 
@@ -100,6 +99,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             raise ValueError(
                 "Invalid total client number: {}".format(client_num_in_total))
 
+        # basic setting
         self.client_num_in_total = client_num_in_total
         self.sample_ratio = sample_ratio
         self.client_num_per_round = max(
@@ -113,18 +113,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.global_round = global_round
         self.round = 0
 
-    def update_model(self, serialized_params_list):
-        """update global model"""
-        # use aggregator
-        serialized_parameters = Aggregators.fedavg_aggregate(
-            serialized_params_list)
-        SerializationTool.deserialize_model(self._model, serialized_parameters)
-
-        # reset
-        self.cache_cnt = 0
-        self.client_buffer_cache = {}
-        self.train_flag = False
-
     def stop_condition(self) -> bool:
         return self.round < self.global_round
 
@@ -134,7 +122,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         selection = random.sample(id_list, self.client_num_per_round)
         return selection
 
-    def add_single_model(self, sender_rank, serialized_params):
+    def add_model(self, sender_rank, serialized_params):
         """Deal with incoming model parameters
 
         Args:
@@ -150,15 +138,30 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_buffer_cache[sender_rank] = serialized_params.clone()
 
         if self.cache_cnt == self.client_num_per_round:
-            self.update_model(list(self.client_buffer_cache.values()))
+            self._update_model(list(self.client_buffer_cache.values()))
             self.round += 1
             return True
         else:
             return False
+    
+    def _update_model(self, serialized_params_list):
+        """update global model
 
-    def train(self):
-        self.train_flag = True
+        Note:
+            Handler will call this method when cache is full.
+            User can overwrite the strategy of aggregation by modifying the parameters of self._model according to serialized_params_list.
+        Args:
+            serialized_params_list (list[torch.Tensor]): a list of parameters.
+        """
+        # use aggregator
+        serialized_parameters = Aggregators.fedavg_aggregate(
+            serialized_params_list)
+        SerializationTool.deserialize_model(self._model, serialized_parameters)
 
+        # reset
+        self.cache_cnt = 0
+        self.client_buffer_cache = {}
+        self.train_flag = False
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous ParameterServer Handler

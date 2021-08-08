@@ -30,7 +30,7 @@ class ClientPassiveManager(NetworkManager):
     Args:
         handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
         network (DistNetwork): distributed network initialization.
-        logger (logger, optional): object of `...fedlab_utils.logger`
+        logger (logger, optional): object of `logger`
     """
 
     def __init__(self, handler, network: DistNetwork, logger=None):
@@ -53,7 +53,7 @@ class ClientPassiveManager(NetworkManager):
         
         while True:
             self._LOGGER.info("Waiting for server...")
-            # waits for data from
+            # waits for data from server
             sender_rank, message_code, payload = PackageProcessor.recv_package(
                 src=0)
             # exit
@@ -72,10 +72,13 @@ class ClientPassiveManager(NetworkManager):
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform on receiving new message, including local training
 
+        Note:
+            Customize the control flow of client corresponding with MessageCode.
+
         Args:
             sender_rank (int): Rank of sender
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): 
+            payload (list[torch.Tensor]): a list of tensor.
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
@@ -83,9 +86,14 @@ class ClientPassiveManager(NetworkManager):
         self._handler.train(model_parameters=s_parameters)
 
     def synchronize(self):
-        """Synchronize local model with server actively"""
+        """Synchronize local model with server actively
+        
+        Note:
+            communication agreements related:
+            Overwrite this function to customize package for synchronizing.
+        """
         self._LOGGER.info("synchronize model parameters with server")
-        model_params = SerializationTool.serialize_model(self._handler.model)
+        model_params = self._handler.model
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=model_params)
         PackageProcessor.send_package(pack, dst=0)
@@ -164,7 +172,7 @@ class ClientActiveManager(NetworkManager):
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        model_params = SerializationTool.serialize_model(self._handler.model)
+        model_params = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
         pack.append_tensor_list([model_params, self.model_gen_time])
         PackageProcessor.send_package(pack, dst=0)
