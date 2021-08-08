@@ -90,6 +90,5 @@ A hierarchical FL system with $K$​ client groups is depicted as below.
 How to use FedLab?
 ^^^^^^^^^^^^^^^^^^
 
-- `Installation and Setup` :ref:`installation`.
-- `Quick Start and Examples`  :ref:`examples`.
-- `API references`
+- :ref:`installation`.
+- :ref:`examples`.
