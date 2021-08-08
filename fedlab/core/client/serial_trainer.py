@@ -19,7 +19,7 @@ from time import time
 
 import torch
 
-from ...utils.logger import logger
+from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
 from ...utils.dataset.sampler import SubsetSampler
 from ...utils.aggregator import Aggregators
@@ -27,19 +27,20 @@ from ...utils.aggregator import Aggregators
 from .trainer import ClientTrainer
 
 
+# TODO: PUT `SerialTrainer` into trainer.py file
 class SerialTrainer(ClientTrainer):
-    """Train multiple clients with a single process or multiple threads.
+    """Train multiple clients in a single process.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        dataset (torch.utils.data.Dataset): local dataset for this group of clients.
+        dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
-        aggregator (Aggregators, callable, optional): function to aggregate a list of parameters.
-        logger (logger, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
-        cuda (bool): use GPUs or not.
+        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+        cuda (bool): Use GPUs or not.
 
     Notes:
-        len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
+        ``len(data_slices) == client_num``, which means that each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
 
