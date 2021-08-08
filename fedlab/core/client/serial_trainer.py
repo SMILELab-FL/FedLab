@@ -27,25 +27,6 @@ from ...utils.aggregator import Aggregators
 from .trainer import ClientTrainer
 
 
-class ReturnThread(threading.Thread):
-    def __init__(self, target, args):
-        super(ReturnThread, self).__init__()
-        self.func = target
-        self.args = args
-
-    def run(self):
-        self.result = self.func(*self.args)
-
-    def get_result(self):
-        try:
-            return self.result
-        except Exception:
-            return None
-
-
-#TODO: something wrong with multi_threading==True.
-
-
 class SerialTrainer(ClientTrainer):
     """Train multiple clients with a single process or multiple threads.
 
@@ -53,7 +34,7 @@ class SerialTrainer(ClientTrainer):
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.utils.data.Dataset): local dataset for this group of clients.
         data_slices (list): subset of indices of dataset.
-        aggregator (Aggregators, callable): function to deal with a list of parameters.
+        aggregator (Aggregators, callable, optional): function to aggregate a list of parameters.
         logger (logger, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
         cuda (bool): use GPUs or not.
 
@@ -61,13 +42,14 @@ class SerialTrainer(ClientTrainer):
         len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
 
     """
+
     def __init__(self,
-                 model: torch.nn.Module,
-                 dataset: torch.nn.utils.dataset,
-                 data_slices: list,
-                 aggregator: Aggregators,
-                 logger: logger = None,
-                 cuda: bool = True) -> None:
+                 model,
+                 dataset,
+                 data_slices,
+                 aggregator=None,
+                 logger=None,
+                 cuda=True) -> None:
 
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
 
@@ -82,7 +64,7 @@ class SerialTrainer(ClientTrainer):
         else:
             self._LOGGER = logger
 
-    def _get_dataloader(self, id, batch_size):
+    def _get_dataloader(self, id):
         """Return a dataloader used in :meth:`train`
 
         Args:
@@ -92,6 +74,8 @@ class SerialTrainer(ClientTrainer):
         Returns:
             Dataloader for specific client sub-dataset
         """
+        batch_size = 128
+
         trainloader = torch.utils.data.DataLoader(
             self.dataset,
             sampler=SubsetSampler(indices=self.data_slices[id - 1],
@@ -99,27 +83,30 @@ class SerialTrainer(ClientTrainer):
             batch_size=batch_size)
         return trainloader
 
-    def _train_alone(self, id, model, epochs, data_loader, optimizer,
-                     criterion, cuda):
+    def _train_alone(self, model_parameters, data_loader, cuda):
         """single round of training
+
+        Note:
+            Overwrite this method to customize the PyTorch traning pipeline.
 
         Args:
             id (int): client id of this round.
-            model (torch.nn.Module): model to be trained.
-            epochs (int): the local epoch of training.
+            model_parameters (torch.Tensor): model parameters.
             data_loader (torch.utils.data.DataLoader): dataloader for data iteration.
-            optimizer (torch.optim.Optimizer): Optimizer associated with model. Example, :class:`torch.nn.CrossEntropyLoss`.
-            critereion (torch.nn.Loss): loss function. 
             cuda (bool): use GPUs or not.
         """
-        model.train()
-        for epoch in range(epochs):
-            loss_sum = 0.0
-            time_begin = time()
-            for _, (data, target) in enumerate(data_loader):
+        SerializationTool.deserialize_model(self._model, model_parameters)
+        epochs = 5
+        criterion = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1)
+        self._model.train()
+
+        for _ in range(epochs):
+
+            for data, target in data_loader:
                 if cuda:
-                    data = data.cuda()
-                    target = target.cuda()
+                    data = data.cuda(self.gpu)
+                    target = target.cuda(self.gpu)
 
                 output = self.model(data)
 
@@ -129,27 +116,18 @@ class SerialTrainer(ClientTrainer):
                 loss.backward()
                 optimizer.step()
 
-                loss_sum += loss.detach().item()
+        return self.model_parameters
 
-            print("Client[{}] Traning. Epoch {}/{}, Loss {:.4f}, Time {:.2f}s".
-                  format(id, epoch + 1, epochs, loss_sum,
-                         time() - time_begin))
-        return SerializationTool.serialize_model(model)
-
-    def train(self, model_parameters, epochs, lr, batch_size, id_list, cuda):
+    def train(self, model_parameters, id_list, cuda, aggregate=True):
         """Train local model with different dataset according to id in id_list.
 
         Args:
             model_parameters (torch.Tensor): serialized model paremeters.
-            epochs (int): number of epoch for local training.
-            lr (float): learning rate
-            batch_size (int): batch size
-            id_list (list): client id in this train 
+            id_list (list): client id in this train.
             cuda (bool): use GPUs or not.
 
         Returns:
-            Merged serialized params
-
+            serialized model parameters / list of model parameters.
         """
         param_list = []
 
@@ -157,19 +135,16 @@ class SerialTrainer(ClientTrainer):
             self._LOGGER.info(
                 "starting training process of client [{}]".format(id))
 
-            SerializationTool.deserialize_model(self._model, model_parameters)
-            criterion = torch.nn.CrossEntropyLoss()
-            data_loader = self._get_dataloader(id=id, batch_size=batch_size)
+            data_loader = self._get_dataloader(id=id)
 
-            optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
-            self._train_alone(id,
-                              self._model,
-                              epochs=epochs,
+            self._train_alone(model_paramters=model_parameters,
                               data_loader=data_loader,
-                              optimizer=optimizer,
-                              criterion=criterion,
                               cuda=cuda)
-            param_list.append(SerializationTool.serialize_model(self.model))
 
-        # aggregate model parameters
-        return self.aggregator(param_list)
+            param_list.append(self.model)
+
+        if aggregate is True:
+            # aggregate model parameters
+            return self.aggregator(param_list)
+        else:
+            return param_list
