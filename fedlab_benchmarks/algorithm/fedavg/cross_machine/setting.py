@@ -41,7 +41,7 @@ def get_dataset(args):
             num_workers=args.world_size)
         
         testloader = torch.utils.data.DataLoader(testset,
-                                                 batch_size=len(testset)/10,
+                                                 batch_size=int(len(testset)/10),
                                                  drop_last=False,
                                                  num_workers=2,
                                                  shuffle=False)

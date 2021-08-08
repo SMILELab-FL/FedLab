@@ -21,7 +21,6 @@ from ..communicator.processor import Package, PackageProcessor
 from ..network import DistNetwork
 from ..server.handler import ParameterServerBackendHandler
 
-from ...utils.serialization import SerializationTool
 from ...utils.logger import logger
 from ...utils.message_code import MessageCode
 
@@ -70,7 +69,9 @@ class ServerSynchronousManager(NetworkManager):
         self._LOGGER.info("Connect to clients successfully")
 
         while self._handler.stop_condition():
-            self.activate_clients()
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
                 if self.on_receive(sender, message_code, payload):
@@ -87,7 +88,8 @@ class ServerSynchronousManager(NetworkManager):
 
         Note:
             communication agreements related:
-            user can overwrite this function to redefine communication agreements.
+            User can overwrite this function to customize communication agreements. This method is key component of organizing call-relation between ParameterHandler and NetworkManager.
+            
 
         Args:
             sender (int): rank of sender process.
@@ -107,12 +109,13 @@ class ServerSynchronousManager(NetworkManager):
 
     def activate_clients(self):
         """Activate some of clients to join this FL round
-        
-            The rank of clients are given by handler.sample_clients()
+
+            Manager will start a new thread to send activation package to specific ranks of clients.
+            The rank of clients are given by handler.sample_clients().
 
         Note:
             communication agreements related:
-            User can overwrite this function to define activation package.
+            User can overwrite this function to customize activation package.
         """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
@@ -222,7 +225,15 @@ class ServerAsynchronousManager(NetworkManager):
             self._handler.update_model(parameters, model_time)
 
     def shutdown_clients(self):
-        """Shutdown all clients"""
+        """Shutdown all clients.
+
+            Send package to clients with MessageCode.Exit.
+
+        Note:
+            communication agreements related:
+            User can overwrite this function to define close package.
+        
+        """
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
             if message_code == MessageCode.ParameterUpdate:

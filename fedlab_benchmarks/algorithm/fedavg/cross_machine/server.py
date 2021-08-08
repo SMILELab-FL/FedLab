@@ -22,19 +22,22 @@ class TestCustomizationServer(SyncParameterServerHandler):
         testset = torchvision.datasets.MNIST(root=root,
                                              train=False,
                                              download=True,
+
                                              transform=transforms.ToTensor())
         self.test_loader = torch.utils.data.DataLoader(testset,
-                                                 batch_size=len(testset)/10,
+                                                 batch_size=int(len(testset)/10),
                                                  drop_last=False,
                                                  num_workers=2,
                                                  shuffle=False)
+
         self.test_loss = torch.nn.CrossEntropyLoss()                              
 
-    def update_model(self, serialized_params_list):
-        super().update_model(serialized_params_list)
+    def _update_model(self, serialized_params_list):
+        self._LOGGER.info("updating global model")
+        super()._update_model(serialized_params_list)
 
         loss_, acc = evaluate(self._model, self.test_loss, self.test_loader, cuda=True)
-        
+
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')

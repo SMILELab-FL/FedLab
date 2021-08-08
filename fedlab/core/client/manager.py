@@ -53,7 +53,7 @@ class ClientPassiveManager(NetworkManager):
         
         while True:
             self._LOGGER.info("Waiting for server...")
-            # waits for data from
+            # waits for data from server
             sender_rank, message_code, payload = PackageProcessor.recv_package(
                 src=0)
             # exit
@@ -73,7 +73,7 @@ class ClientPassiveManager(NetworkManager):
         """Actions to perform on receiving new message, including local training
 
         Note:
-            define the reaction of client corresponds with message_code.
+            Customize the control flow of client corresponding with MessageCode.
 
         Args:
             sender_rank (int): Rank of sender

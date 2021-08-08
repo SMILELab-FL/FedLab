@@ -38,7 +38,7 @@ class ParameterServerBackendHandler(ABC):
             self._model = model.cpu()
 
     @abstractmethod
-    def update_model(self, serialized_params_list) -> torch.Tensor:
+    def _update_model(self, serialized_params_list) -> torch.Tensor:
         """Override this function to update global model
 
         Args:
@@ -113,25 +113,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.global_round = global_round
         self.round = 0
 
-    def _update_model(self, serialized_params_list):
-        """update global model
-
-        Note:
-            Handler will call this method when cache is full.
-            User can overwrite the strategy of aggregation by modifying the parameters of self._model according to serialized_params_list.
-        Args:
-            serialized_params_list (list[torch.Tensor]): a list of parameters.
-        """
-        # use aggregator
-        serialized_parameters = Aggregators.fedavg_aggregate(
-            serialized_params_list)
-        SerializationTool.deserialize_model(self._model, serialized_parameters)
-
-        # reset
-        self.cache_cnt = 0
-        self.client_buffer_cache = {}
-        self.train_flag = False
-
     def stop_condition(self) -> bool:
         return self.round < self.global_round
 
@@ -162,7 +143,25 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             return True
         else:
             return False
+    
+    def _update_model(self, serialized_params_list):
+        """update global model
 
+        Note:
+            Handler will call this method when cache is full.
+            User can overwrite the strategy of aggregation by modifying the parameters of self._model according to serialized_params_list.
+        Args:
+            serialized_params_list (list[torch.Tensor]): a list of parameters.
+        """
+        # use aggregator
+        serialized_parameters = Aggregators.fedavg_aggregate(
+            serialized_params_list)
+        SerializationTool.deserialize_model(self._model, serialized_parameters)
+
+        # reset
+        self.cache_cnt = 0
+        self.client_buffer_cache = {}
+        self.train_flag = False
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous ParameterServer Handler
