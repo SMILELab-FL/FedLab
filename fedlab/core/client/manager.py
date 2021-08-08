@@ -59,7 +59,7 @@ class ClientPassiveManager(NetworkManager):
             # exit
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "Recv {}, Process exiting".format(message_code))
+                    "Receive {}, Process exiting".format(message_code))
                 self._network.close_network_connection()
                 exit(0)
             else:
