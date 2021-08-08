@@ -172,7 +172,7 @@ class ClientActiveManager(NetworkManager):
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")
-        model_params = self._handler.model
+        model_params = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
         pack.append_tensor_list([model_params, self.model_gen_time])
         PackageProcessor.send_package(pack, dst=0)
