@@ -14,7 +14,6 @@ For more details, please read our `full paper`__.
 
 .. __: https://arxiv.org/abs/2107.11621
 
-'test <https://github.com/psf/black>'
 
 Overview
 ^^^^^^^^^^^
