@@ -20,12 +20,12 @@ class Aggregators(object):
 
     @staticmethod
     def fedavg_aggregate(serialized_params_list):
-        """Fedavg aggregator
+        """FedAvg aggregator
 
-        paper: http://proceedings.mlr.press/v54/mcmahan17a.html
+        Paper: http://proceedings.mlr.press/v54/mcmahan17a.html
 
         Args:
-            serialized_params_list (list[torch.Tensor])): merge all Tensors following FedAvg.
+            serialized_params_list (list[torch.Tensor])): Merge all tensors following FedAvg.
 
         Returns:
             torch.Tensor
@@ -36,9 +36,9 @@ class Aggregators(object):
 
     @staticmethod
     def fedasgd_aggregate(server_param, new_param, alpha):
-        """Fedasgd aggregator
+        """FedASGD aggregator
         
-        paper: https://arxiv.org/abs/1903.03934
+        Paper: https://arxiv.org/abs/1903.03934
         """
         serialized_parameters = torch.mul(1 - alpha, server_param) + \
                                 torch.mul(alpha, new_param)

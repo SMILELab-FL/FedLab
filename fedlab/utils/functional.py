@@ -20,6 +20,7 @@ import numpy as np
 
 class AverageMeter(object):
     """Record train infomation"""
+
     def __init__(self):
         self.reset()
 
@@ -106,8 +107,8 @@ def read_config_from_json(json_file: str, user_name: str):
         'world_size'], config_info['rank']
 
 
-def get_best_gpu():  
-    """return gpu(torch.device) with largest free memory."""
+def get_best_gpu():
+    """Return gpu (:class:`torch.device`) with largest free memory."""
     pynvml.nvmlInit()
     deviceCount = pynvml.nvmlDeviceGetCount()
     deviceMemory = []
