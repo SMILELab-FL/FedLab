@@ -21,67 +21,65 @@ import torch
 import threading
 import sys
 
-sys.path.append('../../../')
+sys.path.append("../../../")
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 class Connector(NetworkManager):
-    """Abstract class for basic Connector, which is a sub-module of schedular.
+    """Abstract class for basic Connector, which is a sub-module of :class:`Scheduler`.
 
-        Connector is a NetworkManager class, maintaining two Message Queue. 
-        One is for sending messages to collborator, the other is for read messages from others.
+    Connector inherits :class:`NetworkManager`, maintaining two Message Queue.
+    One is for sending messages to collaborator, the other is for read messages from others.
 
     Note:
-        Connector is a basic component for scheduler, example code can be seen in scheduler.py.
+        Connector is a basic component for scheduler, Example code can be seen in ``scheduler.py``.
 
     Args:
-        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
-        write_queue (Queue): message queue.
-        read_queue (Queue):  message queue.
+        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        write_queue (torch.multiprocessing.Queue): Message queue to write.
+        read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
+    def __init__(self, network, write_queue, read_queue):
         super(Connector, self).__init__(network)
 
         self.mq_read = read_queue
         self.mq_write = write_queue
 
     def run(self):
-        return super().run()
+        pass
 
     def on_receive(self, sender, message_code, payload):
-        """define the reaction of receiving message.
+        """Define the reaction of receiving message.
 
         Args:
             sender (int): rank of sender in dist group.
-            message_code (:class:`MessageCode`): message code.
-            payload (torch.Tensor): Tensors.
+            message_code (MessageCode): Message code.
+            payload (list(torch.Tensor)): A list of tensors received from other process.
         """
         pass
 
-    def deal_queue():
+    def deal_queue(self):
         """"""
         pass
 
 
-class ConnectClient(Connector):
+class ClientConnector(Connector):
     """Connect with clients.
 
-        This class is a part of middle server which used in hierarchical structure.
+    This class is a part of middle server which used in hierarchical structure.
 
-        TODO: middle server
+    TODO: middle server
 
     Args:
-        newtork (:class:`DistNetwork`): object to manage torch.distributed network communication.
-        write_queue (Queue): message queue.
-        read_queue (Queue):  message queue.
+        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        write_queue (torch.multiprocessing.Queue): Message queue to write.
+        read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
-        super(ConnectClient, self).__init__(network, write_queue, read_queue)
+    def __init__(self, network, write_queue, read_queue):
+        super(ClientConnector, self).__init__(network, write_queue, read_queue)
 
         self.mq_read = read_queue
         self.mq_write = write_queue
@@ -94,7 +92,7 @@ class ConnectClient(Connector):
 
         while True:
             sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
-            print("ConnectClient: recv data from {}, message code {}".format(
+            print("ClientConnector: recv data from {}, message code {}".format(
                 sender, message_code))
             self.on_receive(sender, message_code, payload)
 
@@ -104,32 +102,34 @@ class ConnectClient(Connector):
     def deal_queue(self):
         """Process message queue
 
-            Strategy of processing message from server.
+        Strategy of processing message from server.
         """
         while True:
             sender, message_code, payload = self.mq_read.get()
-            print("Watching Queue: data from {}, message code {}".format(
-                sender, message_code))
+            print(
+                "Watching Queue: data from {}, message code {}".format(
+                    sender, message_code
+                )
+            )
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=1)
 
 
-class ConnectServer(Connector):
+class ServerConnector(Connector):
     """Connect with server.
 
-        This class is a part of middle server which used in hierarchical structure.
+    This class is a part of middle server which used in hierarchical structure.
 
-        TODO:Rank mapper
+    TODO: Rank mapper
 
     Args:
-        newtork (`DistNetwork`): object to manage torch.distributed network communication.
-        write_queue (Queue): message queue
-        read_queue (Queue):  message queue
+        network (DistNetwork): object to manage torch.distributed network communication.
+        write_queue (torch.multiprocessing.Queue): message queue
+        read_queue (torch.multiprocessing.Queue):  message queue
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
-        super(ConnectServer, self).__init__(network, write_queue, read_queue)
+    def __init__(self, network, write_queue, read_queue):
+        super(ServerConnector, self).__init__(network, write_queue, read_queue)
 
         # self._network = network
         self.mq_write = write_queue

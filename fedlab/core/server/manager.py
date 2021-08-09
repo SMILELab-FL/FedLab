@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import threading
-from queue import Queue
+from torch.multiprocessing import Queue
 import logging
 
 from ..network_manager import NetworkManager
@@ -21,7 +21,7 @@ from ..communicator.processor import Package, PackageProcessor
 from ..network import DistNetwork
 from ..server.handler import ParameterServerBackendHandler
 
-from ...utils.logger import logger
+from ...utils.logger import Logger
 from ...utils.message_code import MessageCode
 
 DEFAULT_SERVER_RANK = 0
@@ -34,12 +34,12 @@ class ServerSynchronousManager(NetworkManager):
     Synchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
-        network (DistNetwork): object to manage torch.distributed network communication.
-        com_round (int): the global round of FL iteration.
-        logger (logger, optional): output cmd info to file.
+        handler (ParameterServerBackendHandler, optional): Backend calculation handler for parameter server.
+        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-    def __init__(self, handler, network: DistNetwork, logger: logger = None):
+
+    def __init__(self, handler, network, logger=None):
 
         super(ServerSynchronousManager, self).__init__(network, handler)
 
@@ -50,14 +50,17 @@ class ServerSynchronousManager(NetworkManager):
             self._LOGGER = logger
 
     def run(self):
-        """Main Process
+        """Main Process:
+            1. Network initialization.
 
-            1. network initialization.
             2. Loop:
                 2.1 activate clients.
-                2.2 listening for message -> transimit parameters to backend.
-            3. stop loop when stop condition is satisfied.
-            4. shut down clients, then close network connection.
+
+                2.2 listen for message from clients -> transmit received parameters to server backend.
+
+            3. Stop loop when stop condition is satisfied.
+
+            4. Shut down clients, then close network connection.
 
         Note:
             user can overwrite this function to customize main process of Server.
@@ -68,7 +71,7 @@ class ServerSynchronousManager(NetworkManager):
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
 
@@ -81,60 +84,61 @@ class ServerSynchronousManager(NetworkManager):
         self._network.close_network_connection()
 
     def on_receive(self, sender, message_code, payload):
-        """Communication agreements of synchronous FL.
-
+        """Actions to perform in server when receiving a package from one client.
         
-        - Server receive parameter from client. Transmit to handler for aggregation.
+        Server transmits received package to backend computation handler for aggregation or others
+        manipulations.
 
         Note:
-            communication agreements related:
-            User can overwrite this function to customize communication agreements. This method is key component of organizing call-relation between ParameterHandler and NetworkManager.
+            Communication agreements related: user can overwrite this function to customize
+            communication agreements. This method is key component connecting behaviors of
+            :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
             
 
         Args:
-            sender (int): rank of sender process.
-            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (list[torch.Tensor]): list of tensors.
+            sender (int): Rank of sender client process.
+            message_code (MessageCode): Predefined communication message code.
+            payload (list[torch.Tensor]): A list of tensor, unpacked package received from clients.
 
         Raises:
-            Exception: Un expected MessageCode.
+            Exception: Unexpected :class:`MessageCode`.
         """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
             update_flag = self._handler.add_model(
                 sender, model_parameters)
-            return update_flag
+            return update_flag  # TODO: the return of add_model() is None, True, False
         else:
             raise Exception("Unexpected message code {}".format(message_code))
 
     def activate_clients(self):
-        """Activate some of clients to join this FL round
+        """Activate subset of clients to join in one FL round
 
-            Manager will start a new thread to send activation package to specific ranks of clients.
-            The rank of clients are given by handler.sample_clients().
+        Manager will start a new thread to send activation package to chosen clients' process rank.
+        The ranks of clients are obtained from :meth:`handler.sample_clients`.
 
         Note:
-            communication agreements related:
-            User can overwrite this function to customize activation package.
+            Communication agreements related: User can overwrite this function to customize
+            activation package.
         """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
-            model_params = self._handler.model
+            model_params = self._handler.model_parameters  # serialized model params
             pack = Package(message_code=MessageCode.ParameterUpdate,
                            content=model_params)
             PackageProcessor.send_package(pack, dst=client_idx)
 
     def shutdown_clients(self):
-        """Shutdown all clients.
+        """Shut down all clients.
 
-            Send package to clients with MessageCode.Exit.
+        Send package to every client with :attr:`MessageCode.Exit` to ask client to exit.
 
         Note:
-            communication agreements related:
-            User can overwrite this function to define close package.
+            Communication agreements related: User can overwrite this function to define package
+            for exiting information.
         
         """
         for client_idx in range(1, self._handler.client_num_in_total + 1):
@@ -143,17 +147,18 @@ class ServerSynchronousManager(NetworkManager):
 
 
 class ServerAsynchronousManager(NetworkManager):
-    """Asynchronous communication
+    """Asynchronous communication network manager for server
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
     Asynchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (ParameterServerBackendHandler, optional): backend calculation class for parameter server.
-        network (DistNetwork): object to manage torch.distributed network communication.
-        logger (logger, optional): output cmd info to file.
+        handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
+        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-    def __init__(self, handler, network: DistNetwork, logger: logger = None):
+
+    def __init__(self, handler, network, logger=None):
 
         super(ServerAsynchronousManager, self).__init__(network, handler)
 
@@ -176,7 +181,7 @@ class ServerAsynchronousManager(NetworkManager):
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
 
@@ -190,9 +195,9 @@ class ServerAsynchronousManager(NetworkManager):
         - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
 
         Args:
-            sender (int): rank of sender process.
-            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (list[torch.Tensor]): list of tensors.
+            sender (int): Rank of sender client process.
+            message_code (MessageCode): message code
+            payload (list[torch.Tensor]): List of tensors.
 
         Raises:
             ValueError: [description]
@@ -203,7 +208,7 @@ class ServerAsynchronousManager(NetworkManager):
             pack.append_tensor_list([model_params, self._handler.global_time])
             self._LOGGER.info(
                 "Send model to rank {}, the model current updated time {}".
-                format(sender, int(self._handler.global_time.item())))
+                    format(sender, int(self._handler.global_time.item())))
             PackageProcessor.send_package(pack, dst=sender)
 
         elif message_code == MessageCode.ParameterUpdate:
@@ -215,10 +220,10 @@ class ServerAsynchronousManager(NetworkManager):
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
 
-            Note:
-                Customize strategy by overwrite this function.
+        Note:
+            Customize strategy by overwriting this function.
         """
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
@@ -227,11 +232,11 @@ class ServerAsynchronousManager(NetworkManager):
     def shutdown_clients(self):
         """Shutdown all clients.
 
-            Send package to clients with MessageCode.Exit.
+        Send package to clients with ``MessageCode.Exit``.
 
         Note:
-            communication agreements related:
-            User can overwrite this function to define close package.
+            Communication agreements related: user can overwrite this function to define close
+            package.
         
         """
         for client_idx in range(1, self._handler.client_num_in_total + 1):

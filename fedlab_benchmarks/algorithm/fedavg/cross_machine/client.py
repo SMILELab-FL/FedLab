@@ -10,7 +10,7 @@ from torch import nn
 from fedlab.core.client.manager import ClientPassiveManager
 from fedlab.core.client.trainer import ClientSGDTrainer
 from fedlab.core.network import DistNetwork
-from fedlab.utils.logger import logger
+from fedlab.utils.logger import Logger
 
 from setting import get_model, get_dataset
 
@@ -47,11 +47,11 @@ if __name__ == "__main__":
                           world_size=args.world_size,
                           rank=args.rank,
                           ethernet=args.ethernet)
-    LOGGER = logger(log_name="client " + str(args.rank))
+    LOGGER = Logger(log_name="client " + str(args.rank))
 
     handler = ClientSGDTrainer(model,
                                trainloader,
-                               epoch=args.epoch,
+                               epochs=args.epoch,
                                optimizer=optimizer,
                                criterion=criterion,
                                cuda=args.cuda,

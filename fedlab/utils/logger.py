@@ -21,7 +21,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
 logging.getLogger().setLevel(logging.INFO)
 
 
-class logger(object):
+class Logger(object):
     """record cmd info to file and print it to cmd at the same time
     
     Args:
@@ -30,18 +30,15 @@ class logger(object):
     """
 
     def __init__(self, log_name, log_file=None):
-        
         self.logger = logging.getLogger(log_name)
 
         if log_file is not None:
             handler = logging.FileHandler(log_file, mode='w')
             handler.setLevel(level=logging.INFO)
             formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-        
-        
 
     def info(self, log_str):
         """Print information to logger"""

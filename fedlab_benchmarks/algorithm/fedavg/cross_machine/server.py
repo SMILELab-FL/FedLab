@@ -3,7 +3,7 @@ import sys
 import argparse
 
 sys.path.append('../../../../')
-from fedlab.utils.logger import logger
+from fedlab.utils.logger import Logger
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.manager import ServerSynchronousManager
 from fedlab.core.network import DistNetwork
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = get_model(args)
-    LOGGER = logger(log_name="server")
+    LOGGER = Logger(log_name="server")
 
     #ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample)
     ps = TestCustomizationServer(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample, cuda=True)

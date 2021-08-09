@@ -14,26 +14,26 @@
 
 import logging
 
-
 from ...utils.message_code import MessageCode
 from ...utils.serialization import SerializationTool
-from ...utils.logger import logger
+from ...utils.logger import Logger
 
 from ..communicator.processor import Package, PackageProcessor
 from ..network import DistNetwork
 from ..client.trainer import ClientTrainer
 from ..network_manager import NetworkManager
 
+
 class ClientPassiveManager(NetworkManager):
-    """Passive communication Manager
+    """Passive communication :class:`NetworkManager` for client in synchronous FL
         
     Args:
-        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
-        network (DistNetwork): distributed network initialization.
-        logger (logger, optional): object of `logger`
+        handler (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
+        network (DistNetwork): Distributed network to use.
+        logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, handler, network: DistNetwork, logger=None):
+    def __init__(self, handler, network, logger=None):
         super(ClientPassiveManager, self).__init__(network, handler)
 
         if logger is None:
@@ -50,16 +50,16 @@ class ClientPassiveManager(NetworkManager):
         """
         self._LOGGER.info("connecting with server")
         self._network.init_network_connection()
-        
+
         while True:
             self._LOGGER.info("Waiting for server...")
-            # waits for data from server
+            # waits for data from server (default server rank is 0)
             sender_rank, message_code, payload = PackageProcessor.recv_package(
                 src=0)
             # exit
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "Recv {}, Process exiting".format(message_code))
+                    "Receive {}, Process exiting".format(message_code))
                 self._network.close_network_connection()
                 exit(0)
             else:
@@ -70,15 +70,15 @@ class ClientPassiveManager(NetworkManager):
             self.synchronize()
 
     def on_receive(self, sender_rank, message_code, payload):
-        """Actions to perform on receiving new message, including local training
+        """Actions to perform when receiving new message, including local training
 
         Note:
-            Customize the control flow of client corresponding with MessageCode.
+            Customize the control flow of client corresponding with :class:`MessageCode`.
 
         Args:
             sender_rank (int): Rank of sender
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): a list of tensor.
+            payload (list[torch.Tensor]): A list of tensors received from sender.
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
@@ -100,19 +100,20 @@ class ClientPassiveManager(NetworkManager):
 
 
 class ClientActiveManager(NetworkManager):
-    """Active communication Manager
+    """Active communication :class:`NetworkManager` for client in asynchronous FL
 
     Args:
-        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attribute:`model`.
-        network (DistNetwork): distributed network initialization.
-        logger (logger, optional): object of `...fedlab_utils.logger`
+        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attr:`model`.
+        network (DistNetwork): Distributed network to use.
+        local_epochs (int): Number of epochs for local training.
+        logger (Logger, optional): object of :class:`Logger`.
     """
 
     def __init__(self,
                  handler,
-                 network: DistNetwork,
-                 local_epochs: int = None,
-                 logger: logger = None):
+                 network,
+                 local_epochs=None,
+                 logger=None):
         super(ClientActiveManager, self).__init__(network, handler)
 
         # temp variables, can assign train epoch rather than initial epoch value in handler
@@ -133,7 +134,7 @@ class ClientActiveManager(NetworkManager):
         """
         self._LOGGER.info("connecting with server")
         self._network.init_network_connection()
-        
+
         while True:
             self._LOGGER.info("Waiting for server...")
             # request model actively
@@ -159,8 +160,8 @@ class ClientActiveManager(NetworkManager):
 
         Args:
             sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in: class:`MessageCode`
-            s_parameters (torch.Tensor): Serialized model parameters
+            message_code (MessageCode): Agreements code defined in: class:`MessageCode`.
+            payload (list[torch.Tensor]): Received package, a list of tensors.
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))

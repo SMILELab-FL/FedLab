@@ -1,6 +1,7 @@
-Installation & Set up
-=============
+.. _installation:
 
+Installation & Set up
+======================
 
 Pip
 ^^^^^^^^^^^^^^
