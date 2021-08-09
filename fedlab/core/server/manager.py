@@ -71,8 +71,7 @@ class ServerSynchronousManager(NetworkManager):
         self._network.init_network_connection()
         self._LOGGER.info("Connect to clients successfully")
 
-        # TODO: stop_condition() should return True when stop condition is satisfied
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
 
@@ -182,9 +181,7 @@ class ServerAsynchronousManager(NetworkManager):
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        # TODO: stop_condition() should return True when stopping condition is satisfied rather
-        #  than False
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             sender, message_code, payload = PackageProcessor.recv_package()
             self.on_receive(sender, message_code, payload)
 
@@ -226,9 +223,7 @@ class ServerAsynchronousManager(NetworkManager):
         Note:
             Customize strategy by overwriting this function.
         """
-        # TODO: stop_condition() should return True when stopping condition is satisfied rather
-        #  than False
-        while self._handler.stop_condition():
+        while self._handler.stop_condition() is not True:
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
