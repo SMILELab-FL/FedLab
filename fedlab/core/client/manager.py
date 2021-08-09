@@ -93,7 +93,7 @@ class ClientPassiveManager(NetworkManager):
             Overwrite this function to customize package for synchronizing.
         """
         self._LOGGER.info("synchronize model parameters with server")
-        model_params = self._handler.model
+        model_params = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=model_params)
         PackageProcessor.send_package(pack, dst=0)
