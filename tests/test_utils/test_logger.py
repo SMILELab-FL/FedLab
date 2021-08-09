@@ -15,7 +15,7 @@
 
 import unittest
 import os
-from fedlab.utils.logger import logger
+from fedlab.utils.logger import Logger
 
 
 class LoggerTestCase(unittest.TestCase):
@@ -26,5 +26,5 @@ class LoggerTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_logger(self):
-        LOGGER = logger(log_name="test", log_file="./test.txt")
+        LOGGER = Logger(log_name="test", log_file="./test.txt")
         os.remove("./test.txt")
