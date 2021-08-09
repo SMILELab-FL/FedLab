@@ -153,6 +153,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.cache_cnt += 1
         self.client_buffer_cache[sender_rank] = serialized_params.clone()
 
+        # cache is full.
         if self.cache_cnt == self.client_num_per_round:
             self._update_model(list(self.client_buffer_cache.values()))
             self.round += 1
