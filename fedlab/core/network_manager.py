@@ -15,6 +15,7 @@
 from torch.multiprocessing import Process
 from .network import DistNetwork
 
+
 class NetworkManager(Process):
     """Abstract class
 
@@ -34,10 +35,10 @@ class NetworkManager(Process):
 
     def on_receive(self, sender, message_code, payload):
         """Define the reaction of Topology get a package.
-    
+
         Args:
             sender (int): rank of current process.
             message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (torch.Tensor): list[torch.Tensor] 
+            payload (torch.Tensor): list[torch.Tensor]
         """
         pass

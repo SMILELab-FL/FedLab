@@ -15,7 +15,6 @@ Welcome to FedLab's documentation!
    overview
    install
    example
-   cusotmization
    contributing
 
 

@@ -21,7 +21,7 @@ import torch
 import threading
 import sys
 
-sys.path.append('../../../')
+sys.path.append("../../../")
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -29,7 +29,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 class Connector(NetworkManager):
     """Abstract class for basic Connector, which is a sub-module of schedular.
 
-        Connector is a NetworkManager class, maintaining two Message Queue. 
+        Connector is a NetworkManager class, maintaining two Message Queue.
         One is for sending messages to collborator, the other is for read messages from others.
 
     Note:
@@ -41,8 +41,7 @@ class Connector(NetworkManager):
         read_queue (Queue):  message queue.
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
+    def __init__(self, network: DistNetwork, write_queue: Queue, read_queue: Queue):
         super(Connector, self).__init__(network)
 
         self.mq_read = read_queue
@@ -79,8 +78,7 @@ class ConnectClient(Connector):
         read_queue (Queue):  message queue.
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
+    def __init__(self, network: DistNetwork, write_queue: Queue, read_queue: Queue):
         super(ConnectClient, self).__init__(network, write_queue, read_queue)
 
         self.mq_read = read_queue
@@ -93,9 +91,16 @@ class ConnectClient(Connector):
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
-            print("ConnectClient: recv data from {}, message code {}".format(
-                sender, message_code))
+            (
+                sender,
+                message_code,
+                payload,
+            ) = PackageProcessor.recv_package()  # package from clients
+            print(
+                "ConnectClient: recv data from {}, message code {}".format(
+                    sender, message_code
+                )
+            )
             self.on_receive(sender, message_code, payload)
 
     def on_receive(self, sender, message_code, payload):
@@ -104,12 +109,15 @@ class ConnectClient(Connector):
     def deal_queue(self):
         """Process message queue
 
-            Strategy of processing message from server.
+        Strategy of processing message from server.
         """
         while True:
             sender, message_code, payload = self.mq_read.get()
-            print("Watching Queue: data from {}, message code {}".format(
-                sender, message_code))
+            print(
+                "Watching Queue: data from {}, message code {}".format(
+                    sender, message_code
+                )
+            )
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=1)
 
@@ -127,8 +135,7 @@ class ConnectServer(Connector):
         read_queue (Queue):  message queue
     """
 
-    def __init__(self, network: DistNetwork, write_queue: Queue,
-                 read_queue: Queue):
+    def __init__(self, network: DistNetwork, write_queue: Queue, read_queue: Queue):
         super(ConnectServer, self).__init__(network, write_queue, read_queue)
 
         # self._network = network
