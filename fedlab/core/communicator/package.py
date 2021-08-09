@@ -39,14 +39,15 @@ class Package(object):
         :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``   
 
     Note:
-        slice_size_i = tensor_i.shape[0]
-        every element in slices indicates the size of a sub-Tensor in content.
+        ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
+        of a sub-Tensor in content.
 
     Args:
-        receiver_rank (int, optional): rank of receiver
-        message_code (MessageCode): message code
-        content (torch.Tensor, optional): Details shows above.
+        receiver_rank (int, optional): Rank of receiver
+        message_code (MessageCode): Message code
+        content (torch.Tensor, optional): Tensors contained in this package.
     """
+
     def __init__(self, receiver_rank=None, message_code=None, content=None):
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
@@ -54,7 +55,7 @@ class Package(object):
         assert isinstance(
             receiver_rank,
             int), 'receiver_rank should be integer, not {}'.format(
-                type(receiver_rank))
+            type(receiver_rank))
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -67,7 +68,7 @@ class Package(object):
             type(message_code))
 
         # initialize header
-        self.header = torch.Tensor(size=(HEADER_SIZE, ))
+        self.header = torch.Tensor(size=(HEADER_SIZE,))
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         else:
@@ -109,7 +110,7 @@ class Package(object):
         """Append a list of tensors to :attr:`Package.content`.
 
         Args:
-            tensor_list (list[torch.Tensor]): a list of tensors to append to :attr:`Package.content`
+            tensor_list (list[torch.Tensor]): A list of tensors to append to :attr:`Package.content`.
         """
         for tensor in tensor_list:
             self.append_tensor(tensor)
@@ -119,7 +120,7 @@ class Package(object):
         """Parse package content into a list of tensors
 
         Args:
-            slices (list): 
+            slices (list[int]): A list containing number of elements of each tensor. Each number is used as offset in parsing process.
             content (torch.Tensor): :attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and their
         corresponding offsets. For more details about :class:`Package`.
 
@@ -139,11 +140,10 @@ class Package(object):
         """Parse header to get information of current package
 
         Args:
-            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements:
-        ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code])``. For more details about :class:`Package`.
+            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code])``. For more details about :class:`Package`.
 
         Returns:
-            tuple: a tuple containing 4 elements ``(sender_rank, recv_rank, slice_size, message_code)``
+            tuple: A tuple containing 4 elements: ``(sender_rank, recv_rank, slice_size, message_code)``.
         """
         sender_rank = int(header[HEADER_SENDER_RANK_IDX])
         receiver_rank = int(header[HEADER_RECEIVER_RANK_IDX])

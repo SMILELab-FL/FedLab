@@ -13,16 +13,19 @@
 # limitations under the License.
 
 import os
+import sys
 import math
 import random
 import pickle
-from ...data_read_util import read_dir
-from ...nlp_utils.tokenizer import Tokenizer
-from ...nlp_utils.vocab import Vocab
+import argparse
+sys.path.append("../../../../../")
+from fedlab_benchmarks.datasets.leaf_data_process.data_read_util import read_dir
+from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.tokenizer import Tokenizer
+from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.vocab import Vocab
 
 
 class DataSample:
-    def __init__(self, dataset:str, data_path: str, select_ratio: float, is_to_tokens=True, tokenizer=None):
+    def __init__(self, dataset: str, data_path: str, select_ratio: float, is_to_tokens=True, tokenizer=None):
         self.dataset = dataset
         self.data_path = data_path  # for train data
         self.select_ratio = select_ratio
@@ -59,14 +62,54 @@ class DataSample:
         return raw_x
 
 
-def build_vocab(dataset: str, vocab_limit_size: int):
+def build_vocab(dataset: str, data_select_ratio: float, vocab_limit_size: int):
+    """Build vocab for dataset with random selected client
+
+    Args:
+        dataset (str): string of dataset name to build vocab
+        data_select_ratio (float): random select clients ratio
+        vocab_limit_size (int): limit max number of vocab size
+
+    Returns:
+        save vocab.pck for dataset
+    """
     data_path = '../leaf_data/' + dataset + '/data/train'
-    data_sample = DataSample(dataset='sent140', data_path=data_path, select_ratio=0.25)
+    data_sample = DataSample(dataset=dataset, data_path=data_path, select_ratio=data_select_ratio)
     vocab = Vocab(origin_data_tokens=data_sample.data_token, vocab_limit_size=vocab_limit_size)
     save_file_path = dataset + '_vocab.pck'
     pickle.dump(vocab, open(save_file_path, 'wb'))
     print('sample data to build vocab for {} dataset is completed!'.format(dataset))
 
 
-if __name__ == '__main__':
-    build_vocab(dataset='sent140', vocab_limit_size=30000)
+def get_built_vocab(dataset: str) -> Vocab:
+    """load vocab file for `dataset` to get Vocab based on selected client and data
+
+    Args:
+        dataset (str): string of dataset name to get vocab
+
+    Returns:
+        if there is no built vocab file for `dataset`, return None, else return Vocab
+    """
+    vocab_file_path = dataset + '_vocab.pck'
+    vocab_file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), vocab_file_path)
+    if not os.path.exists(vocab_file_path):
+        print('There is no built vocab file for {} dataset, please run `main` or `build_vocab.sh` to build it firstly.'
+              .format(dataset))
+        return None
+    vocab_file = open(vocab_file_path, 'rb')  # get vocab based on sample data
+    vocab = pickle.load(vocab_file)
+    return vocab
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Sample data to build nlp vocab')
+    parser.add_argument("--dataset", type=str, default='sent140')
+    parser.add_argument("--data_select_ratio", type=float, default=0.25)
+    parser.add_argument("--vocab_limit_size", type=int, default=30000)
+    args = parser.parse_args()
+
+    vocab_file_path = args.dataset + '_vocab.pck'
+    if os.path.exists(vocab_file_path):
+        print('There has been a built vocab file for {} dataset, please delete it before re-building'.format(args.dataset))
+    else:
+        build_vocab(args.dataset, args.data_select_ratio, args.vocab_limit_size)

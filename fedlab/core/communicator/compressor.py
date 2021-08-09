@@ -16,20 +16,21 @@ from abc import ABC, abstractmethod
 import math
 import torch
 
+
 class Compressor(ABC):
     def __init__(self) -> None:
         super().__init__()
 
     @abstractmethod
-    def initialize(self, named_parameters):
+    def initialize(self, *args, **kwargs):
         raise NotImplementedError()
 
     @abstractmethod
-    def compress(self):
+    def compress(self, *args, **kwargs):
         raise NotImplementedError()
 
     @abstractmethod
-    def decompress(self):
+    def decompress(self, *args, **kwargs):
         raise NotImplementedError()
 
 
@@ -43,6 +44,7 @@ class TopkCompressor(Compressor):
             fp16_values (bool): data type
             int32_indices (bool): data type
     """
+
     def __init__(self, compress_ratio, fp16_values=False, int32_indices=False):
 
         self.fp16_values = fp16_values
@@ -50,7 +52,10 @@ class TopkCompressor(Compressor):
 
         self.compress_ratio = compress_ratio if compress_ratio <= 1.0 else 1.0 / compress_ratio
 
-        self.attributes = {}  # 定义压缩矩阵的基本信息： [numel, shape, top_k_samples]
+        # define compression arguments for different tensors:
+        # {tensor_name: [numel, shape, top_k_samples],
+        # ...}
+        self.attributes = {}
 
     def initialize(self, named_parameters):
         for name, param in named_parameters:
@@ -64,6 +69,11 @@ class TopkCompressor(Compressor):
             self.attributes[name] = (numel, shape, top_k_samples)
 
     def compress(self, tensor, name):
+        """
+        Args:
+            tensor (torch.Tensor): Tensor to compress.
+            name (str): Name of tensor. It is used to find corresponding compression arguments in :attr:`self.attributes`.
+        """
         if self.compress_ratio < 1.0 and name in self.attributes:
 
             tensor = tensor.view(-1)
@@ -82,6 +92,11 @@ class TopkCompressor(Compressor):
             raise ValueError("invalid value")
 
     def decompress(self, tensor, ctx):
+        """
+        Args:
+            tensor (torch.Tensor): Compressed tensor.
+            ctx (tuple): A tuple consisting ``tensor_name`` and original ``tensor_shape``.
+        """
         name, shape = ctx
         if self.compress_ratio < 1.0 and name in self.attributes:
 
@@ -93,5 +108,3 @@ class TopkCompressor(Compressor):
             return de_tensor
         else:
             raise ValueError("invalid value")
-
-

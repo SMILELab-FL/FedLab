@@ -17,14 +17,14 @@ import torch.distributed as dist
 
 
 class DistNetwork(object):
-    """Manage torch.distributed network
-
+    """Manage ``torch.distributed`` network
+    
     Args:
         address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
         world_size (int): the size of this distributed group (including server).
         rank (int): the rank of process in distributed group.
-        dist_backend (str or Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``,
-        and ``nccl``. Default: ``"gloo"``.
+        ethernet (str)
+        dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
     """
 
     def __init__(self, address, world_size, rank, ethernet, dist_backend="gloo"):
@@ -36,26 +36,22 @@ class DistNetwork(object):
         self.ethernet = ethernet
 
     def init_network_connection(self):
+        """Initialize ``torch.distributed`` communication group"""
         print(self.__str__())
-        os.environ["GLOO_SOCKET_IFNAME"] = self.ethernet
-        dist.init_process_group(
-            backend=self.dist_backend,
-            init_method="tcp://{}:{}".format(self.address[0], self.address[1]),
-            rank=self.rank,
-            world_size=self.world_size,
-        )
+        os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
+        dist.init_process_group(backend=self.dist_backend,
+                                init_method='tcp://{}:{}'.format(
+                                    self.address[0],
+                                    self.address[1]),
+                                rank=self.rank,
+                                world_size=self.world_size)
 
     def close_network_connection(self):
+        """Destroy current ``torch.distributed`` process group"""
         if dist.is_initialized():
             dist.destroy_process_group()
 
     def __str__(self):
         info_str = "torch.distributed is initializing process group with ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
-            self.address[0],
-            self.address[1],
-            self.rank,
-            self.world_size,
-            self.dist_backend,
-            self.ethernet,
-        )
+            self.address[0], self.address[1], self.rank, self.world_size, self.dist_backend, self.ethernet)
         return info_str

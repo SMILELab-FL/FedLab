@@ -20,12 +20,12 @@ import torch
 from torch import nn
 
 from ...utils.functional import AverageMeter, get_best_gpu
-from ...utils.logger import logger
+from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
 
 
 class ClientTrainer(ABC):
-    """An abstract class representing handler for a client backend.
+    """An abstract class representing a client backend handler.
 
     In our framework, we define the backend of client handler show manage its local model.
     It should have a function to update its model called :meth:`train`.
@@ -38,7 +38,7 @@ class ClientTrainer(ABC):
         cuda (bool): Use GPUs or not
     """
 
-    def __init__(self, model: nn.Module, cuda: bool):
+    def __init__(self, model, cuda):
         self.cuda = cuda
 
         if self.cuda:
@@ -55,6 +55,7 @@ class ClientTrainer(ABC):
 
     @property
     def model(self):
+        # TODO: this should use `return self._model`
         """attribute"""
         return SerializationTool.serialize_model(self._model)
 
@@ -70,26 +71,26 @@ class ClientSGDTrainer(ClientTrainer):
     Args:
         model (torch.nn.Module): model used in federation.
         data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
-        epoch (int): the number of local epoch.
+        epochs (int): the number of local epoch.
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
         criterion (torch.nn.Loss, optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (logger, optional): `fedlab_utils.logger`, 
+        logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
 
     def __init__(self,
-                 model: torch.nn.Module,
-                 data_loader: torch.utils.data.DataLoader,
-                 epoch: int,
-                 optimizer: torch.optim.Optimizer,
-                 criterion: torch.nn.Module,
-                 cuda: bool = True,
-                 logger: logger = None):
+                 model,
+                 data_loader,
+                 epochs,
+                 optimizer,
+                 criterion,
+                 cuda=True,
+                 logger=None):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
 
-        self.epoch = epoch
+        self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion
 
@@ -99,22 +100,20 @@ class ClientSGDTrainer(ClientTrainer):
         else:
             self._LOGGER = logger
 
-    def train(self, model_parameters: torch.Tensor, epoch: int = None) -> None:
+    def train(self, model_parameters, epochs=None) -> None:
         """
         Client trains its local model on local dataset.
 
         Args:
-            model_parameters (torch.Tensor): serialized model paremeters.
-            epochs (int): number of epoch for current local training.
+            model_parameters (torch.Tensor): Serialized model parameters.
+            epochs (int): Number of epoch for current local training.
         """
         self._LOGGER.info("starting local train process")
         SerializationTool.deserialize_model(self._model,
-                                            model_parameters)  # load paramters
+                                            model_parameters)  # load parameters
 
-        if epoch is None:
-            epochs = self.epoch
-        else:
-            epochs = epoch
+        if epochs is None:
+            epochs = self.epochs
 
         loss_ = AverageMeter()
         for epoch in range(epochs):
@@ -124,8 +123,7 @@ class ClientSGDTrainer(ClientTrainer):
             loss_.reset()
             for inputs, labels in self._data_loader:
                 if self.cuda:
-                    inputs, labels = inputs.cuda(
-                        self.gpu), labels.cuda(self.gpu)
+                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(self.gpu)
 
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)

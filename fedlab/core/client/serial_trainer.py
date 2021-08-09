@@ -19,7 +19,7 @@ from time import time
 
 import torch
 
-from ...utils.logger import logger
+from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
 from ...utils.dataset.sampler import SubsetSampler
 from ...utils.aggregator import Aggregators
@@ -27,19 +27,20 @@ from ...utils.aggregator import Aggregators
 from .trainer import ClientTrainer
 
 
+# TODO: PUT `SerialTrainer` into trainer.py file
 class SerialTrainer(ClientTrainer):
-    """Train multiple clients with a single process or multiple threads.
+    """Train multiple clients in a single process.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        dataset (torch.utils.data.Dataset): local dataset for this group of clients.
-        data_slices (list): subset of indices of dataset.
-        aggregator (Aggregators, callable, optional): function to aggregate a list of parameters.
-        logger (logger, optional): an util class to print log info to specific file and cmd line. If None, only cmd line. 
-        cuda (bool): use GPUs or not.
+        dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
+        data_slices (list[list]): subset of indices of dataset.
+        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+        cuda (bool): Use GPUs or not. Default: ``True``.
 
     Notes:
-        len(data_slices) == client_num, which means that every sub-indices of dataset represents a client's local dataset.
+        ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
 
@@ -54,7 +55,7 @@ class SerialTrainer(ClientTrainer):
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
 
         self.dataset = dataset
-        self.data_slices = data_slices  # [0,sim_client_num)
+        self.data_slices = data_slices  # [0, client_num)
         self.client_num = len(data_slices)
         self.aggregator = aggregator
 
@@ -64,35 +65,36 @@ class SerialTrainer(ClientTrainer):
         else:
             self._LOGGER = logger
 
-    def _get_dataloader(self, id):
-        """Return a dataloader used in :meth:`train`
+    def _get_train_dataloader(self, idx):
+        """Return a training dataloader used in :meth:`train` for client with :attr:`id`
 
         Args:
-            id (int): client id to generate dataloader
-            batch_size (int): batch size
+            idx (int): :attr:`idx` of client to generate dataloader
+
+        Note:
+            :attr:`idx` here is not equal to ``client_id`` in the FL setting. It is the index of client in current :class:`SerialTrainer`.
 
         Returns:
-            Dataloader for specific client sub-dataset
+            :class:`DataLoader` for specific client sub-dataset
         """
         batch_size = 128
 
-        trainloader = torch.utils.data.DataLoader(
+        train_loader = torch.utils.data.DataLoader(
             self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[id - 1],
+            sampler=SubsetSampler(indices=self.data_slices[idx - 1],
                                   shuffle=True),
             batch_size=batch_size)
-        return trainloader
+        return train_loader
 
-    def _train_alone(self, model_parameters, data_loader, cuda):
-        """single round of training
+    def _train_alone(self, model_parameters, train_loader, cuda):
+        """Single round of local training for one client.
 
         Note:
-            Overwrite this method to customize the PyTorch traning pipeline.
+            Overwrite this method to customize the PyTorch training pipeline.
 
         Args:
-            id (int): client id of this round.
             model_parameters (torch.Tensor): model parameters.
-            data_loader (torch.utils.data.DataLoader): dataloader for data iteration.
+            train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
             cuda (bool): use GPUs or not.
         """
         SerializationTool.deserialize_model(self._model, model_parameters)
@@ -102,8 +104,7 @@ class SerialTrainer(ClientTrainer):
         self._model.train()
 
         for _ in range(epochs):
-
-            for data, target in data_loader:
+            for data, target in train_loader:
                 if cuda:
                     data = data.cuda(self.gpu)
                     target = target.cuda(self.gpu)
@@ -118,33 +119,40 @@ class SerialTrainer(ClientTrainer):
 
         return self.model_parameters
 
-    def train(self, model_parameters, id_list, cuda, aggregate=True):
-        """Train local model with different dataset according to id in id_list.
+    def train(self, model_parameters, id_list, cuda=True, aggregate=True):
+        """Train local model with different dataset according to :attr:`idx` in :attr:`id_list`.
 
         Args:
-            model_parameters (torch.Tensor): serialized model paremeters.
-            id_list (list): client id in this train.
-            cuda (bool): use GPUs or not.
+            model_parameters (torch.Tensor): Serialized model parameters.
+            id_list (list[int]): Client id in this training serial.
+            cuda (bool): Use GPUs or not. Default: ``True``.
+            aggregate (bool): Whether to perform partial aggregation on this group of clients' local model in the end of local training round.
+
+        Note:
+            Normally, aggregation is performed by server, while we provide :attr:`aggregate` option here to perform
+            partial aggregation on current client group. This partial aggregation can reduce the aggregation workload
+            of server.
+
 
         Returns:
-            serialized model parameters / list of model parameters.
+            Serialized model parameters / list of model parameters.
         """
         param_list = []
 
-        for id in id_list:
+        for idx in id_list:
             self._LOGGER.info(
-                "starting training process of client [{}]".format(id))
+                "starting training process of client [{}]".format(idx))
 
-            data_loader = self._get_dataloader(id=id)
+            data_loader = self._get_train_dataloader(idx=idx)
 
-            self._train_alone(model_paramters=model_parameters,
-                              data_loader=data_loader,
+            self._train_alone(model_parameters=model_parameters,
+                              train_loader=data_loader,
                               cuda=cuda)
 
-            param_list.append(self.model)
+            param_list.append(self.model_parameters)
 
         if aggregate is True:
-            # aggregate model parameters
+            # aggregate model parameters of this client group
             return self.aggregator(param_list)
         else:
             return param_list

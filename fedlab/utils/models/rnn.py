@@ -70,7 +70,7 @@ class LSTMModel(nn.Module):
         if using_pretrained:
             assert embedding_weights.shape[0] == vocab_size
             assert embedding_weights.shape[1] == embedding_dim
-            self.embedding.from_pretrained(embedding_weights)
+            self.embeddings.from_pretrained(embedding_weights)
 
         self.dropout = nn.Dropout(0.5)
         self.encoder = nn.LSTM(

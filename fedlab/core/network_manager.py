@@ -14,17 +14,21 @@
 
 from torch.multiprocessing import Process
 from .network import DistNetwork
+from fedlab.core.client.trainer import ClientTrainer
+from fedlab.core.server.handler import ParameterServerBackendHandler
+from fedlab.utils.message_code import MessageCode
+
 
 
 class NetworkManager(Process):
     """Abstract class
 
     Args:
-        handler (:class:`fedlab_core.client.trainer.ClientTrainer` or :class:`fedlab_core.server.handler.ParameterServerBackendHandler`, optional): backend computation class.
+        handler (ClientTrainer or ParameterServerBackendHandler, optional): Backend computation handler for client or server.
         newtork (DistNetwork): object to manage torch.distributed network communication.
     """
 
-    def __init__(self, network: DistNetwork, handler=None):
+    def __init__(self, network, handler=None):
         super(NetworkManager, self).__init__()
 
         self._handler = handler
@@ -34,11 +38,11 @@ class NetworkManager(Process):
         pass
 
     def on_receive(self, sender, message_code, payload):
-        """Define the reaction of Topology get a package.
-
+        """Define the action to take when receiving a package.
+    
         Args:
             sender (int): rank of current process.
-            message_code (:class:`fedlab_utils.message_code.MessageCode`): message code
-            payload (torch.Tensor): list[torch.Tensor]
+            message_code (MessageCode): message code
+            payload (torch.Tensor): list[torch.Tensor] 
         """
         pass
