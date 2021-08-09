@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import threading
-from queue import Queue
+from torch.multiprocessing import Queue
 import logging
 
 from ..network_manager import NetworkManager
