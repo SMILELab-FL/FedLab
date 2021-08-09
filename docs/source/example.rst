@@ -1,6 +1,6 @@
 .. _examples:
 
-Quick Start & Examples
+Examples
 =======================
 
 

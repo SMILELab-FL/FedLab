@@ -1,7 +1,7 @@
 .. _contributing:
 
-Contributing
-==============
+Contributing to FedLab
+========================
 
 You're welcome to contribute to this project through **Pull Request**.
 
