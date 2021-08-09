@@ -75,7 +75,7 @@ class ClientSGDTrainer(ClientTrainer):
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
         criterion (torch.nn.Loss, optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (Logger, optional): :attr:`logger` for client trainer.
+        logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
 
     def __init__(self,
