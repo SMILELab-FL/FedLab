@@ -21,7 +21,7 @@ from fedlab.core.network import DistNetwork
 class NetworkTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.cnet = DistNetwork(address=("localhost", "12345"), world_size=1, rank=0)
+        self.cnet = DistNetwork(address=("localhost", "3456"), world_size=1, rank=0)
         self.cnet.init_network_connection()
 
     def tearDown(self) -> None:

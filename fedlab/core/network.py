@@ -27,7 +27,7 @@ class DistNetwork(object):
         dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
     """
 
-    def __init__(self, address, world_size, rank, ethernet, dist_backend="gloo"):
+    def __init__(self, address, world_size, rank, ethernet=None, dist_backend="gloo"):
         super(DistNetwork, self).__init__()
         self.address = address
         self.rank = rank
@@ -38,7 +38,9 @@ class DistNetwork(object):
     def init_network_connection(self):
         """Initialize ``torch.distributed`` communication group"""
         print(self.__str__())
-        os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
+        if self.ethernet is not None:
+            os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
+
         dist.init_process_group(backend=self.dist_backend,
                                 init_method='tcp://{}:{}'.format(
                                     self.address[0],

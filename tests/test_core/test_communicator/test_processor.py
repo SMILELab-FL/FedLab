@@ -31,7 +31,7 @@ from torch.multiprocessing import Process
 class test_sender(Process):
     def __init__(self, content) -> None:
         super(test_sender,self).__init__()
-        self.net = DistNetwork(address=("localhost","12345"), world_size=2, rank=1)
+        self.net = DistNetwork(address=("localhost","3456"), world_size=2, rank=1)
         self.tensor_list = content
 
     def run(self):
@@ -44,7 +44,7 @@ class test_sender(Process):
 class test_receiver(Process):
     def __init__(self, check_content) -> None:
         super(test_receiver, self).__init__()
-        self.net = DistNetwork(address=("localhost","12345"), world_size=2, rank=0)
+        self.net = DistNetwork(address=("localhost","3456"), world_size=2, rank=0)
         self.check_list = check_content
 
     def run(self):

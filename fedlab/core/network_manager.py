@@ -46,3 +46,8 @@ class NetworkManager(Process):
             payload (torch.Tensor): list[torch.Tensor] 
         """
         pass
+    
+    def initialize(self):
+        """Initialize network
+        """
+        self._handler.init_network_connection()
