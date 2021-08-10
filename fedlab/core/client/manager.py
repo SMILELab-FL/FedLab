@@ -97,7 +97,7 @@ class ClientPassiveManager(NetworkManager):
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=model_params)
         PackageProcessor.send_package(pack, dst=0)
-
+    
 
 class ClientActiveManager(NetworkManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL

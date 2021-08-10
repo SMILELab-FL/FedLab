@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     handler = ClientSGDTrainer(model,
                                trainloader,
-                               epoch=args.epoch,
+                               epochs=args.epoch,
                                optimizer=optimizer,
                                criterion=criterion,
                                cuda=args.cuda)

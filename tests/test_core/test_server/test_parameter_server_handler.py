@@ -47,17 +47,17 @@ class HandlerTestCase(unittest.TestCase):
         coming_model = LeNet()
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
-        self.AsyncHandler.update_model(model_parameters=coming_parameters,
+        self.AsyncHandler._update_model(model_parameters=coming_parameters,
                                        model_time=random.randint(1, 10))
 
         parameter_list = []
         for id in range(self.SyncHandler.client_num_per_round):
             tensors = torch.Tensor(size=coming_parameters.shape)
             parameter_list.append(tensors)
-            flag = self.SyncHandler.add_single_model(id, tensors)
+            flag = self.SyncHandler.add_model(id, tensors)
         assert flag
 
-        self.SyncHandler.update_model(parameter_list)
+        self.SyncHandler._update_model(parameter_list)
 
     def test_sample(self):
         samples = self.SyncHandler.sample_clients()

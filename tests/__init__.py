@@ -44,7 +44,7 @@ def get_tests():
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
 
-    fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
+    #fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
 
 
     return unittest.TestSuite([serialization_suite,
@@ -57,5 +57,4 @@ def get_tests():
                                logger_suite,
                                network_suite,
                                manager_suite,
-                               package_suite,
-                               fedavg_suite])
+                               package_suite])

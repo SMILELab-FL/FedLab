@@ -211,9 +211,9 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         self.global_time = 5
         self.current_time = torch.zeros(1)
 
-    def update_model(self, model_parameters, model_time):
+    def _update_model(self, model_parameters, model_time):
         """ "update global model from client_model_queue"""
-        latest_serialized_parameters = self.model
+        latest_serialized_parameters = self.model_parameters
         merged_params = Aggregators.fedasgd_aggregate(
             latest_serialized_parameters, model_parameters, self.alpha
         )  # use aggregator
