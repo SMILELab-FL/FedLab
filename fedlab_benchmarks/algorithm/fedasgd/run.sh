@@ -8,6 +8,7 @@ do
 {
     echo "client ${i} started"
     CUDA_VISIBLE_DEVICES=3 python client.py --server_ip 127.0.0.1 --server_port 3002 --local_rank ${i} --world_size 3
+    sleep 2s
 } & 
 done
 wait
