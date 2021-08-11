@@ -240,7 +240,6 @@ class SerialTrainer(ClientTrainer):
             partial aggregation on current client group. This partial aggregation can reduce the aggregation workload
             of server.
 
-
         Returns:
             Serialized model parameters / list of model parameters.
         """
@@ -259,6 +258,8 @@ class SerialTrainer(ClientTrainer):
 
         if aggregate is True:
             # aggregate model parameters of this client group
-            return self.aggregator(param_list)
+            aggregated_parameters = self.aggregator(param_list)
+            SerializationTool.deserialize_model(self.model, aggregated_parameters)
+            return None
         else:
             return param_list

@@ -32,13 +32,27 @@ class TestCustomizationServer(SyncParameterServerHandler):
 
         self.test_loss = torch.nn.CrossEntropyLoss()                              
 
+        self.losses = []
+        self.accuracy = []
+
     def _update_model(self, serialized_params_list):
         self._LOGGER.info("updating global model")
         super()._update_model(serialized_params_list)
 
         loss_, acc = evaluate(self._model, self.test_loss, self.test_loader, cuda=True)
+        self.losses.append(loss_)
+        self.accuracy.append(acc)
+    
+    def __del__(self):
+        f = open("loss.txt","r")
+        f.write(str(self.losses))
+        f.close()
 
-        
+        f = open("accuracy.txt","r")
+        f.write(str(self.accuracy))
+        f.close()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
 
