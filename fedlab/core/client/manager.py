@@ -50,7 +50,7 @@ class ClientPassiveManager(NetworkManager):
         """
         self._LOGGER.info("connecting with server")
         #self._network.init_network_connection()
-        self.initialize_network()
+        self.setup()
 
         while True:
             self._LOGGER.info("Waiting for server...")
@@ -86,7 +86,7 @@ class ClientPassiveManager(NetworkManager):
         s_parameters = payload[0]
         self._handler.train(model_parameters=s_parameters)
 
-    def initialize_network(self):
+    def setup(self):
         """Initialize network."""
         self._network.init_network_connection()
     
@@ -138,7 +138,7 @@ class ClientActiveManager(NetworkManager):
             3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        self.initialize_network()
+        self.setup()
 
         while True:
             self._LOGGER.info("Waiting for server...")
@@ -175,7 +175,7 @@ class ClientActiveManager(NetworkManager):
         # move loading model params to the start of training
         self._handler.train(epoch=self.epochs, model_parameters=s_parameters)
 
-    def initialize_network(self):
+    def setup(self):
         """Initialize network."""
         self._network.init_network_connection()
     
