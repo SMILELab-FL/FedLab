@@ -42,8 +42,8 @@ class TestCustomizationServer(SyncParameterServerHandler):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Distbelief training example')
 
-    parser.add_argument('--server_ip', type=str)
-    parser.add_argument('--server_port', type=str)
+    parser.add_argument('--ip', type=str)
+    parser.add_argument('--port', type=str)
     parser.add_argument('--world_size', type=int)
 
     parser.add_argument('--round', type=int)
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     #ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample)
     ps = TestCustomizationServer(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample, cuda=True)
     
-    network = DistNetwork(address=(args.server_ip, args.server_port), world_size=args.world_size, rank=0, ethernet=args.ethernet)
+    network = DistNetwork(address=(args.ip, args.port), world_size=args.world_size, rank=0, ethernet=args.ethernet)
     manager_ = ServerSynchronousManager(handler=ps, network=network, logger=LOGGER)
     manager_.run()
  

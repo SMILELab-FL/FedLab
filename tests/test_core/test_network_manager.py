@@ -28,3 +28,4 @@ class ManagerTestCase(unittest.TestCase):
     def test_topology(self):
         top = NetworkManager(network=None)
         top.on_receive(sender=None, message_code=None, payload=None)
+

@@ -68,10 +68,12 @@ class ServerSynchronousManager(NetworkManager):
         self._LOGGER.info(
             "Initializing pytorch distributed group\n Waiting for connection requests from clients"
         )
-        self._network.init_network_connection()
+        self.setup()
+
         self._LOGGER.info("Connect to clients successfully")
 
         while self._handler.stop_condition() is not True:
+
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
 
@@ -111,6 +113,10 @@ class ServerSynchronousManager(NetworkManager):
         else:
             raise Exception("Unexpected message code {}".format(message_code))
 
+    def setup(self):
+        """Initialize network."""
+        self._network.init_network_connection()
+    
     def activate_clients(self):
         """Activate subset of clients to join in one FL round
 
@@ -217,6 +223,10 @@ class ServerAsynchronousManager(NetworkManager):
         else:
             raise ValueError("Unexpected message code {}".format(message_code))
 
+    def setup(self):
+        """Initialize network."""
+        self._network.init_network_connection()
+    
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
 
