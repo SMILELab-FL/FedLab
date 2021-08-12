@@ -49,7 +49,6 @@ class ClientPassiveManager(NetworkManager):
             3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        #self._network.init_network_connection()
         self.setup()
 
         while True:

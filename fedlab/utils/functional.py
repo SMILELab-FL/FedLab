@@ -37,7 +37,7 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def evaluate(model, criterion, test_loader, cuda):
+def evaluate(model, criterion, test_loader, ):
     """
     Evaluate local model based on given test :class:`torch.DataLoader`
     Args:
@@ -45,14 +45,16 @@ def evaluate(model, criterion, test_loader, cuda):
         cuda (bool): Use GPUs or not
     """
     model.eval()
+    gpu = next(model.parameters()).device
+    
     loss_ = AverageMeter()
     acc_ = AverageMeter()
 
     with torch.no_grad():
         for inputs, labels in test_loader:
-            if cuda:
-                inputs = inputs.cuda()
-                labels = labels.cuda()
+            
+            inputs = inputs.to(gpu)
+            labels = labels.to(gpu)
 
             outputs = model(inputs)
             loss = criterion(outputs, labels)

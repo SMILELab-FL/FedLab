@@ -154,9 +154,8 @@ class SerialTrainer(ClientTrainer):
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
-
     def __init__(
-        self, model, dataset, data_slices, aggregator=None, logger=None, cuda=True
+        self, model, dataset, data_slices, aggregator=None, logger=None, cuda=True, args=None
     ) -> None:
 
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
@@ -172,6 +171,8 @@ class SerialTrainer(ClientTrainer):
         else:
             self._LOGGER = logger
 
+        self.args = args
+        
     def _get_train_dataloader(self, idx):
         """Return a training dataloader used in :meth:`train` for client with :attr:`id`
 
@@ -184,7 +185,7 @@ class SerialTrainer(ClientTrainer):
         Returns:
             :class:`DataLoader` for specific client sub-dataset
         """
-        batch_size = 128
+        batch_size = self.args.batch_size
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
@@ -204,10 +205,11 @@ class SerialTrainer(ClientTrainer):
             train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
             cuda (bool): use GPUs or not.
         """
+        epochs, lr = self.args.epochs, self.args.lr
+
         SerializationTool.deserialize_model(self._model, model_parameters)
-        epochs = 5
         criterion = torch.nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(self._model.parameters(), lr=0.1)
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
         self._model.train()
 
         for _ in range(epochs):
@@ -259,7 +261,6 @@ class SerialTrainer(ClientTrainer):
         if aggregate is True:
             # aggregate model parameters of this client group
             aggregated_parameters = self.aggregator(param_list)
-            SerializationTool.deserialize_model(self.model, aggregated_parameters)
-            return None
+            return aggregated_parameters
         else:
             return param_list

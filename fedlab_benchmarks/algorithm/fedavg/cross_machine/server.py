@@ -45,6 +45,10 @@ class TestCustomizationServer(SyncParameterServerHandler):
         self.losses.append(loss_)
         self.accuracy.append(acc)
     
+    def stop_condition(self) -> bool:
+        if self.accuracy[-1] > 0.98:
+            return True
+
     def __del__(self):
         self.loss_f.write(str(self.losses))
         self.loss_f.close()
