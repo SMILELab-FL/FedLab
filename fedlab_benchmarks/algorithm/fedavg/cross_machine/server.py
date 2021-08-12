@@ -33,7 +33,9 @@ class TestCustomizationServer(SyncParameterServerHandler):
         self.test_loss = torch.nn.CrossEntropyLoss()                              
 
         self.losses = []
+        self.loss_f = open("loss.txt","w")
         self.accuracy = []
+        self.acc_f = open("accuracy.txt","w")
 
     def _update_model(self, serialized_params_list):
         self._LOGGER.info("updating global model")
@@ -44,13 +46,11 @@ class TestCustomizationServer(SyncParameterServerHandler):
         self.accuracy.append(acc)
     
     def __del__(self):
-        f = open("loss.txt","r")
-        f.write(str(self.losses))
-        f.close()
+        self.loss_f.write(str(self.losses))
+        self.loss_f.close()
+        self.acc_f.write(str(self.accuracy))
+        self.acc_f.close()
 
-        f = open("accuracy.txt","r")
-        f.write(str(self.accuracy))
-        f.close()
 
 
 if __name__ == "__main__":
