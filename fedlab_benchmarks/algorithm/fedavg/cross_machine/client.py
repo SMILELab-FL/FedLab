@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 
-sys.path.append('../../../../')
+sys.path.append("../../../../")
 
 from torch import nn
 from fedlab.core.client.manager import ClientPassiveManager
@@ -16,12 +16,12 @@ from setting import get_model, get_dataset
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Distbelief training example')
+    parser = argparse.ArgumentParser(description="Distbelief training example")
 
-    parser.add_argument('--server_ip', type=str)
-    parser.add_argument('--server_port', type=str)
-    parser.add_argument('--world_size', type=int)
-    parser.add_argument('--rank', type=int)
+    parser.add_argument("--server_ip", type=str)
+    parser.add_argument("--server_port", type=str)
+    parser.add_argument("--world_size", type=int)
+    parser.add_argument("--rank", type=int)
 
     parser.add_argument("--lr", type=float, default=0.01)
     parser.add_argument("--epoch", type=int)
@@ -31,10 +31,10 @@ if __name__ == "__main__":
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str)
     args = parser.parse_args()
-    
+
     if args.gpu != "-1":
         args.cuda = True
-        os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     else:
         args.cuda = False
 
@@ -43,21 +43,23 @@ if __name__ == "__main__":
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
 
-    network = DistNetwork(address=(args.server_ip, args.server_port),
-                          world_size=args.world_size,
-                          rank=args.rank,
-                          ethernet=args.ethernet)
+    network = DistNetwork(
+        address=(args.server_ip, args.server_port),
+        world_size=args.world_size,
+        rank=args.rank,
+        ethernet=args.ethernet,
+    )
     LOGGER = Logger(log_name="client " + str(args.rank))
 
-    handler = ClientSGDTrainer(model,
-                               trainloader,
-                               epochs=args.epoch,
-                               optimizer=optimizer,
-                               criterion=criterion,
-                               cuda=args.cuda,
-                               logger=LOGGER)
+    handler = ClientSGDTrainer(
+        model,
+        trainloader,
+        epochs=args.epoch,
+        optimizer=optimizer,
+        criterion=criterion,
+        cuda=args.cuda,
+        logger=LOGGER,
+    )
 
-    manager_ = ClientPassiveManager(handler=handler,
-                                    network=network,
-                                    logger=LOGGER)
+    manager_ = ClientPassiveManager(handler=handler, network=network, logger=LOGGER)
     manager_.run()

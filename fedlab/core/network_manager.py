@@ -47,7 +47,11 @@ class NetworkManager(Process):
         """
         pass
     
-    def initialize(self):
-        """Initialize network
+    def setup(self):
+        """Initialize network connection and necessary setups.
+
+            Note:
+                At first, ``self._network.init_network_connection()`` is required to be called.
+                Overwrite this method to implement system setup message communication procedure.
         """
-        self._handler.init_network_connection()
+        pass
