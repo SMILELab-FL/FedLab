@@ -15,7 +15,7 @@
 >
 > 子文件夹`datasets/leaf_data`中包含了LEAF中各数据集的下载和预处理脚本，来源于[LEAF-Github](https://github.com/TalwalkarLab/leaf)。
 
-- 进入子文件夹`datasets/leaf_data`，选择需要下载的数据集文件夹进入，通过运行`preprocess.sh` 并提供一定的参数选择实现数据集的下载与划分，具体参数见于各数据集文件夹中的`README.md`
+- 进入子文件夹`datasets/data`，选择需要下载的数据集文件夹进入，通过运行`preprocess.sh` 并提供一定的参数选择实现数据集的下载与划分，具体参数见于各数据集文件夹中的`README.md`
 - 各数据集文件夹下的`download.sh`提供了一种数据划分参数选择示例，通过运行该文件可获得处理后可用于实验的数据集。
 
 **注意事项：**
