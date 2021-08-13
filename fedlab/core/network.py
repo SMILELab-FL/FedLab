@@ -38,6 +38,7 @@ class DistNetwork(object):
     def init_network_connection(self):
         """Initialize ``torch.distributed`` communication group"""
         print(self.__str__())
+        
         if self.ethernet is not None:
             os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
 
@@ -54,6 +55,6 @@ class DistNetwork(object):
             dist.destroy_process_group()
 
     def __str__(self):
-        info_str = "torch.distributed is initializing process group with ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
+        info_str = "torch.distributed is initializing process group with server ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
             self.address[0], self.address[1], self.rank, self.world_size, self.dist_backend, self.ethernet)
         return info_str

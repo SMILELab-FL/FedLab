@@ -65,18 +65,14 @@ class ServerSynchronousManager(NetworkManager):
         Note:
             user can overwrite this function to customize main process of Server.
         """
-        self._LOGGER.info(
-            "Initializing pytorch distributed group\n Waiting for connection requests from clients"
-        )
+
         self.setup()
-
-        self._LOGGER.info("Connect to clients successfully")
-
         while self._handler.stop_condition() is not True:
 
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
 
+            # waiting for packages
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
                 if self.on_receive(sender, message_code, payload):
@@ -109,7 +105,7 @@ class ServerSynchronousManager(NetworkManager):
             model_parameters = payload[0]
             update_flag = self._handler.add_model(
                 sender, model_parameters)
-            return update_flag  # TODO: the return of add_model() is None, True, False
+            return update_flag 
         else:
             raise Exception("Unexpected message code {}".format(message_code))
 

@@ -57,6 +57,7 @@ class ParameterServerBackendHandler(ABC):
 
     @property
     def model(self):
+        """Return torch.nn.module"""
         return self._model
 
     @property
@@ -138,17 +139,18 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def add_model(self, sender_rank, serialized_params):
         """Deal with incoming model parameters from one client.
 
+        Note:
+            Return True when self._update_model is called.
+        
         Args:
             sender_rank (int): Rank of sender client in ``torch.distributed`` group.
             serialized_params (torch.Tensor): Serialized model parameters from one client.
         """
-        # TODO: Reconsider what to return for different condition, and whether to decouple the
-        #  update of single client model cache and update of global model? Not done yet
         if self.client_buffer_cache.get(sender_rank) is not None:
             self._LOGGER.info(
                 "parameters from {} have already existed".format(sender_rank)
             )
-            return
+            return False
 
         self.cache_cnt += 1
         self.client_buffer_cache[sender_rank] = serialized_params.clone()
@@ -177,7 +179,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         serialized_parameters = Aggregators.fedavg_aggregate(serialized_params_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
-        # reset
+        # reset cache cnt
         self.cache_cnt = 0
         self.client_buffer_cache = {}
         self.train_flag = False
