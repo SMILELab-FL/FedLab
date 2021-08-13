@@ -41,14 +41,14 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     """
 
     if dataset == 'femnist':
-        trainset = FemnistDataset(client_id=client_id, data_root='../leaf_data/femnist/data', is_train=True)
-        testset = FemnistDataset(client_id=client_id, data_root='../leaf_data/femnist/data', is_train=False)
+        trainset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=True)
+        testset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=False)
     elif dataset == 'shakespeare':
-        trainset = ShakespeareDataset(client_id=client_id, data_root='../leaf_data/shakespeare/data', is_train=True)
-        testset = ShakespeareDataset(client_id=client_id, data_root='../leaf_data/shakespeare/data', is_train=False)
+        trainset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=True)
+        testset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=False)
     elif dataset == 'sent140':
-        trainset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=True)
-        testset = Sent140Dataset(client_id=client_id, data_root='../leaf_data/sent140/data', is_train=False)
+        trainset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=True)
+        testset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=False)
         vocab = get_built_vocab(dataset)
         # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
         trainset.token2seq(vocab, maxlen=300)
