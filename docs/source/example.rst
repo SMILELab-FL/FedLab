@@ -3,14 +3,6 @@
 Examples
 =======================
 
+Details are incoming.
 
-FedAvg
-^^^^^^
-
-
-FedAsgd
-^^^^^^^^
-
-
-Benchmarks
-^^^^^^^^^^
+Please read codes in fedlab_benchmarks/algorithm/fedavg for now.
