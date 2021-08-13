@@ -82,9 +82,9 @@ Hierarchical
 
 **Hierarchical** mode for **FedLab** is designed for situations where both **standalone** and **cross-machine** are insufficient for simulation. **FedLab** promotes `Scheduler` as middle-server to organize client groups. Each `Scheduler` manages the communication between server and a client group containing a subset of clients. And server can communicate with clients in different LAN via corresponding `Scheduler`. 
 
-> The client group for each schedular can be either **standalone** or **cross-machine**.
+The client group for each schedular can be either **standalone** or **cross-machine**.
 
-A hierarchical FL system with $K$​ client groups is depicted as below.
+A hierarchical FL system with `K` client groups is depicted as below.
 
 .. image:: ../imgs/fedlab-hierarchical.svg
 

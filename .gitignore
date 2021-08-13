@@ -153,3 +153,4 @@ fedlab_benchmarks/datasets/leaf_data/*/meta
 tests/data
 actions-runner
 fedlab_benchmarks/datasets/mnist
+fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
