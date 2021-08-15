@@ -18,7 +18,8 @@ Welcome to FedLab's documentation!
    contributing
 
 
-
+Gallery
+.......
 .. card-carousel:: 2
 
     .. card:: card 1
