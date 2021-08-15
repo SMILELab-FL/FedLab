@@ -24,9 +24,9 @@ Gallery
 
     .. card::
        :shadow: md
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.svg
+       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
 
     .. card::
        :shadow: md
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.svg
+       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
 
