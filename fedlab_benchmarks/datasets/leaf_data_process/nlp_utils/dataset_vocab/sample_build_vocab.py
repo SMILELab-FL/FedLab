@@ -73,7 +73,7 @@ def build_vocab(dataset: str, data_select_ratio: float, vocab_limit_size: int):
     Returns:
         save vocab.pck for dataset
     """
-    data_path = '../leaf_data/' + dataset + '/data/train'
+    data_path = '../data/' + dataset + '/data/train'
     data_sample = DataSample(dataset=dataset, data_path=data_path, select_ratio=data_select_ratio)
     vocab = Vocab(origin_data_tokens=data_sample.data_token, vocab_limit_size=vocab_limit_size)
     save_file_path = dataset + '_vocab.pck'

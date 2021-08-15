@@ -154,3 +154,4 @@ tests/data
 actions-runner
 fedlab_benchmarks/datasets/mnist
 fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
+fedlab_benchmarks/algorithm/fedavg/standalone/*.ipynb
