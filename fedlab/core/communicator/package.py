@@ -22,21 +22,24 @@ HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
 HEADER_SLICE_SIZE_IDX = 2
 HEADER_MESSAGE_CODE_IDX = 3
+HEADER_DATA_TYPE_IDX = 4
 
 DEFAULT_RECEIVER_RANK = -1
 DEFAULT_SLICE_SIZE = 0
 DEFAULT_MESSAGE_CODE_VALUE = 0
+DEFAULT_DATA_TYPE_VALUE = 0
 
-HEADER_SIZE = 4
+
+HEADER_SIZE = 5
 
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
     :class:`Package` maintains 3 variables:
-        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code])``   
-        :attr:`slices` : ``list[slice_size_1, slice_size_2]``   
-        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``   
+        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
+        :attr:`slices` : ``list[slice_size_1, slice_size_2]``
+        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
     Note:
         ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
@@ -46,16 +49,18 @@ class Package(object):
         receiver_rank (int, optional): Rank of receiver
         message_code (MessageCode): Message code
         content (torch.Tensor, optional): Tensors contained in this package.
+        data_type (int): 0 for float, 1 for int.
     """
 
-    def __init__(self, receiver_rank=None, message_code=None, content=None):
+    def __init__(
+        self, receiver_rank=None, message_code=None, content=None, data_type=0
+    ):
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
 
         assert isinstance(
-            receiver_rank,
-            int), 'receiver_rank should be integer, not {}'.format(
-            type(receiver_rank))
+            receiver_rank, int
+        ), "receiver_rank should be integer, not {}".format(type(receiver_rank))
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -64,8 +69,9 @@ class Package(object):
                 message_code = message_code.value
         assert isinstance(
             message_code, int
-        ), 'message_code can only be MessageCode or integer, not {}'.format(
-            type(message_code))
+        ), "message_code can only be MessageCode or integer, not {}".format(
+            type(message_code)
+        )
 
         # initialize header
         self.header = torch.Tensor(size=(HEADER_SIZE,))
@@ -73,9 +79,15 @@ class Package(object):
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         else:
             self.header[HEADER_SENDER_RANK_IDX] = -1
+
         self.header[HEADER_RECEIVER_RANK_IDX] = receiver_rank
         self.header[HEADER_MESSAGE_CODE_IDX] = message_code
         self.header[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
+
+        if data_type == 1:
+            self.header[HEADER_DATA_TYPE_IDX] = 1
+        else:
+            self.header[HEADER_DATA_TYPE_IDX] = DEFAULT_DATA_TYPE_VALUE
 
         # initialize content and slices
         self.slices = []
@@ -88,7 +100,7 @@ class Package(object):
 
     def append_tensor(self, tensor):
         """Append new tensor to :attr:`Package.content`
-            
+
         Args:
             tensor (torch.Tensor): Tensor to append in content.
         """
@@ -130,7 +142,7 @@ class Package(object):
         index = 0
         parse_result = []
         for offset in slices:
-            seg_tensor = content[index:index + offset]
+            seg_tensor = content[index : index + offset]
             parse_result.append(seg_tensor)
             index += offset
         return parse_result
@@ -140,14 +152,15 @@ class Package(object):
         """Parse header to get information of current package
 
         Args:
-            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code])``. For more details about :class:`Package`.
+            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``. For more details about :class:`Package`.
 
         Returns:
-            tuple: A tuple containing 4 elements: ``(sender_rank, recv_rank, slice_size, message_code)``.
+            tuple: A tuple containing 5 elements: ``(sender_rank, recv_rank, slice_size, message_code, data_type)``.
         """
         sender_rank = int(header[HEADER_SENDER_RANK_IDX])
         receiver_rank = int(header[HEADER_RECEIVER_RANK_IDX])
         slice_size = int(header[HEADER_SLICE_SIZE_IDX])
         message_code = MessageCode(int(header[HEADER_MESSAGE_CODE_IDX]))
+        data_type = int(header[HEADER_DATA_TYPE_IDX])
 
-        return sender_rank, receiver_rank, slice_size, message_code
+        return sender_rank, receiver_rank, slice_size, message_code, data_type

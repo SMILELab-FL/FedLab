@@ -22,18 +22,20 @@ def get_tests():
     from .test_utils.test_aggregator import AggregatorTestCase
     from .test_utils.test_functional import FunctionalTestCase
     from .test_utils.test_logger import LoggerTestCase
+    from .test_utils.test_compressor import CompressorTestCase
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
-    from .test_core.test_communicator.test_compressor import CompressorTestCase
     from .test_core.test_server.test_parameter_server_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
 
-    from .test_pipelines.test_fedavg import FedAvgTestCase
-    
-    serialization_suite = unittest.TestLoader().loadTestsFromTestCase(SerializationTestCase)
-    message_code_suite = unittest.TestLoader().loadTestsFromTestCase(MessageCodeTestCase)
+    serialization_suite = unittest.TestLoader().loadTestsFromTestCase(
+        SerializationTestCase
+    )
+    message_code_suite = unittest.TestLoader().loadTestsFromTestCase(
+        MessageCodeTestCase
+    )
     processor_suite = unittest.TestLoader().loadTestsFromTestCase(ProcessorTestCase)
     functional_suite = unittest.TestLoader().loadTestsFromTestCase(FunctionalTestCase)
     logger_suite = unittest.TestLoader().loadTestsFromTestCase(LoggerTestCase)
@@ -44,17 +46,18 @@ def get_tests():
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
 
-    #fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
-
-
-    return unittest.TestSuite([serialization_suite,
-                               message_code_suite,
-                               processor_suite,
-                               aggregator_suite,
-                               compressor_suite,
-                               handler_suite,
-                               functional_suite,
-                               logger_suite,
-                               network_suite,
-                               manager_suite,
-                               package_suite])
+    return unittest.TestSuite(
+        [
+            serialization_suite,
+            message_code_suite,
+            processor_suite,
+            aggregator_suite,
+            compressor_suite,
+            handler_suite,
+            functional_suite,
+            logger_suite,
+            network_suite,
+            manager_suite,
+            package_suite,
+        ]
+    )

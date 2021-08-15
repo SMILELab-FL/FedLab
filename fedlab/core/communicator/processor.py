@@ -16,13 +16,18 @@ import numpy as np
 
 import torch
 import torch.distributed as dist
-from .package import Package, HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
+from .package import (
+    Package,
+    HEADER_SIZE,
+    HEADER_RECEIVER_RANK_IDX,
+    HEADER_SLICE_SIZE_IDX,
+)
 
 
 class PackageProcessor(object):
     """Provide more flexible distributed tensor communication functions based on
     :func:`torch.distributed.send` and :func:`torch.distributed.recv`.
-    
+
     Notes:
         EVERYTHING is :class:`torch.Tensor` in FedLab.
     """
@@ -54,23 +59,25 @@ class PackageProcessor(object):
                 return buffer
 
         def recv_slices(slices_size, src):
-            buffer_slices = torch.zeros(size=(slices_size,),
-                                        dtype=torch.int32)
+            buffer_slices = torch.zeros(size=(slices_size,), dtype=torch.int32)
             dist.recv(buffer_slices, src=src)
             slices = [x.item() for x in buffer_slices]
             return slices
 
-        def recv_content(slices, src):
+        def recv_content(slices, data_type, src):
             content_size = sum(slices)
-            buffer = torch.zeros(size=(content_size,))
+            if data_type == 0:
+                buffer = torch.zeros(size=(content_size,), dtype=torch.float32)
+            else:
+                buffer = torch.zeros(size=(content_size,), dtype=torch.int32)
             dist.recv(buffer, src=src)
             return Package.parse_content(slices, buffer)
 
-        sender_rank, _, slices_size, message_code = recv_header(src=src)
+        sender_rank, _, slices_size, message_code, data_type = recv_header(src=src)
 
         if slices_size > 0:
             slices = recv_slices(slices_size=slices_size, src=sender_rank)
-            content = recv_content(slices, src=sender_rank)
+            content = recv_content(slices, data_type, src=sender_rank)
         else:
             content = None
 

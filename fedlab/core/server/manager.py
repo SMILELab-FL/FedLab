@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import threading
+import torch
 from torch.multiprocessing import Queue
 import logging
 
@@ -83,7 +84,7 @@ class ServerSynchronousManager(NetworkManager):
 
     def on_receive(self, sender, message_code, payload):
         """Actions to perform in server when receiving a package from one client.
-        
+
         Server transmits received package to backend computation handler for aggregation or others
         manipulations.
 
@@ -91,7 +92,7 @@ class ServerSynchronousManager(NetworkManager):
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
             :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
-            
+
 
         Args:
             sender (int): Rank of sender client process.
@@ -103,16 +104,11 @@ class ServerSynchronousManager(NetworkManager):
         """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
-            update_flag = self._handler.add_model(
-                sender, model_parameters)
-            return update_flag 
+            update_flag = self._handler.add_model(sender, model_parameters)
+            return update_flag
         else:
             raise Exception("Unexpected message code {}".format(message_code))
 
-    def setup(self):
-        """Initialize network."""
-        self._network.init_network_connection()
-    
     def activate_clients(self):
         """Activate subset of clients to join in one FL round
 
@@ -125,12 +121,14 @@ class ServerSynchronousManager(NetworkManager):
         """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
-            "client id list for this FL round: {}".format(clients_this_round))
+            "client id list for this FL round: {}".format(clients_this_round)
+        )
 
         for client_idx in clients_this_round:
             model_params = self._handler.model_parameters  # serialized model params
-            pack = Package(message_code=MessageCode.ParameterUpdate,
-                           content=model_params)
+            pack = Package(
+                message_code=MessageCode.ParameterUpdate, content=model_params
+            )
             PackageProcessor.send_package(pack, dst=client_idx)
 
     def shutdown_clients(self):
@@ -141,7 +139,7 @@ class ServerSynchronousManager(NetworkManager):
         Note:
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
-        
+
         """
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             pack = Package(message_code=MessageCode.Exit)
@@ -174,11 +172,7 @@ class ServerAsynchronousManager(NetworkManager):
 
     def run(self):
         """Main process"""
-        self._LOGGER.info(
-            "Initializing pytorch distributed group \nWaiting for connection requests from clients"
-        )
-        self._network.init_network_connection()
-        self._LOGGER.info("Connect to clients successfully")
+        self.setup()
 
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
@@ -193,7 +187,7 @@ class ServerAsynchronousManager(NetworkManager):
     def on_receive(self, sender, message_code, payload):
         """Communication agreements of asynchronous FL.
 
-        - Server receive ParameterRequest from client. Send model parameter to client. 
+        - Server receive ParameterRequest from client. Send model parameter to client.
         - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
 
         Args:
@@ -206,11 +200,15 @@ class ServerAsynchronousManager(NetworkManager):
         """
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
-            model_params = self._handler.model
-            pack.append_tensor_list([model_params, self._handler.global_time])
+            model_params = self._handler.model_parameters
+            pack.append_tensor_list(
+                [model_params, torch.Tensor(self._handler.server_time)]
+            )
             self._LOGGER.info(
-                "Send model to rank {}, the model current updated time {}".
-                    format(sender, int(self._handler.global_time.item())))
+                "Send model to rank {}, current server model time is {}".format(
+                    sender, self._handler.server_time
+                )
+            )
             PackageProcessor.send_package(pack, dst=sender)
 
         elif message_code == MessageCode.ParameterUpdate:
@@ -219,10 +217,6 @@ class ServerAsynchronousManager(NetworkManager):
         else:
             raise ValueError("Unexpected message code {}".format(message_code))
 
-    def setup(self):
-        """Initialize network."""
-        self._network.init_network_connection()
-    
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
 
@@ -233,7 +227,7 @@ class ServerAsynchronousManager(NetworkManager):
             _, _, payload = self.message_queue.get()
             parameters = payload[0]
             model_time = payload[1]
-            self._handler.update_model(parameters, model_time)
+            self._handler._update_model(parameters, model_time)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -243,12 +237,13 @@ class ServerAsynchronousManager(NetworkManager):
         Note:
             Communication agreements related: user can overwrite this function to define close
             package.
-        
+
         """
         for client_idx in range(1, self._handler.client_num_in_total + 1):
             _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
-                    src=client_idx)  # the next package is model request
+                    src=client_idx
+                )  # the next package is model request
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)

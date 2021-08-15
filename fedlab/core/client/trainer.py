@@ -138,7 +138,6 @@ class ClientSGDTrainer(ClientTrainer):
                 )
             )
 
-
 class SerialTrainer(ClientTrainer):
     """Train multiple clients in a single process.
 
