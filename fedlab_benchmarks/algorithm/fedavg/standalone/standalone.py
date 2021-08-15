@@ -7,6 +7,7 @@ from torch import nn
 import torchvision
 import sys
 import torch
+torch.manual_seed(0)
 
 sys.path.append("../../../../")
 
@@ -16,7 +17,7 @@ from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
-
+from fedlab.utils.functional import get_best_gpu
 
 class mlp(nn.Module):
     def __init__(self):
@@ -32,7 +33,6 @@ class mlp(nn.Module):
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
         return x
-
 
 class cnn(nn.Module):
     def __init__(self):
@@ -52,11 +52,28 @@ class cnn(nn.Module):
         x = self.fc2(x)
         return x
 
+def write_file(acces,losses, args, round):
+    record = open("exp_" + args.name + ".txt", "w")
+    record.write(
+        "current {}, sample ratio {}, lr {}, epoch {}, bs {}, partition {}, model {}\n\n".format(
+            round+1,
+            args.sample_ratio,
+            args.lr,
+            args.epochs,
+            args.batch_size,
+            args.partition,
+            args.model
+        )
+    )
+    record.write(str(losses) + "\n\n")
+    record.write(str(acces) + "\n\n")
+    record.close()
+
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
-parser.add_argument("--com_round", type=int)
+parser.add_argument("--com_round", type=int, default=5000)
 
 parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
@@ -87,10 +104,13 @@ test_loader = torch.utils.data.DataLoader(
 # setup
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
+
 if args.model == "mlp":
-    model = mlp().cuda()
+    gpu = get_best_gpu()
+    model = mlp().cuda(gpu)
 elif args.model == "cnn":
-    model = cnn().cuda()
+    gpu = get_best_gpu()
+    model = cnn().cuda(gpu)
 else:
     raise ValueError("invalid model name ", args.model)
 
@@ -125,35 +145,27 @@ acces = []
 
 
 # train procedure
-model_params = SerializationTool.serialize_model(model)
+
 to_select = [i + 1 for i in range(total_client_num)]  # client_id 从1开始
 for round in range(args.com_round):
+    model_parameters = SerializationTool.serialize_model(model)
     selection = random.sample(to_select, num_per_round)
-    print(selection)
+    #print(selection)
     aggregated_parameters = trainer.train(
-        model_parameters=model_params, id_list=selection, aggregate=True
+        model_parameters=model_parameters, id_list=selection, aggregate=True
     )
 
     SerializationTool.deserialize_model(model, aggregated_parameters)
     criterion = nn.CrossEntropyLoss()
     loss, acc = evaluate(model, criterion, test_loader)
-    print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
+    #print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
 
     losses.append(loss)
     acces.append(acc)
 
-    if (round + 1) % 10 == 0:
-        record = open("exp_" + args.name + "_.txt", "w")
-        record.write(
-            "round {}, sample ratio {}, lr {}, epoch {}, bs {}, partition {}\n\n".format(
-                round,
-                args.sample_ratio,
-                args.lr,
-                args.epochs,
-                args.batch_size,
-                args.partition,
-            )
-        )
-        record.write(str(losses) + "\n\n")
-        record.write(str(acces) + "\n\n")
-        record.close()
+    if acc >= 0.99:
+        write_file(acces, losses, args, round)
+        break
+
+    if (round + 1) % 5 == 0:
+        write_file(acces, losses, args, round)

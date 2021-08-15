@@ -3,7 +3,7 @@
 Examples
 =======================
 
-Details are incoming.
+Detailed doc is comming soon.
 
 Please read codes in fedlab_benchmarks/algorithm/fedavg for now.
 

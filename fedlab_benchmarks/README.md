@@ -1,14 +1,23 @@
 # Benchmarks
-
+FedLab 提供了常见的联邦学习基准方法的PyTorch实现包括：同步联邦算法（FedAvg）、异步联邦算法（FedAsgd）、通信压缩策略（Top-k & DGC）、联邦数据集（LEAF）。更多的算法的FedLab实现会在未来提供。
 
 ## FedAvg
 
+FedAvg是同步联邦学习算法的baseline，FedLab实现了FedAvg的算法流程，包括standalone和cross machine的场景。
+
+### Standalone
+
+单机单进程模拟由`SerialTrainer`模块负责，其源代码可见`fedlab/core/client/trainer.py`，
+可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/standalone/`。
+
+### Cross Machine
+**多机多进程**和**单机多进程**场景的联邦模拟是FedLab的核心模块，由`core\client`和`core\server`中的各项模块组成，具体细节请见overview。
+
+可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/cross_machine/`
 
 ## FedAsgd
 
-
 ## Leaf
-
 ### 下载并划分数据
 
 > LEAF benchmark 包含`celeba`, `femnist`, `reddit`, `sent140`, `shakespeare`, `synthetic`六类数据集的联邦设置。
