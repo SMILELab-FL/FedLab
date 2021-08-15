@@ -44,22 +44,22 @@ Welcome to FedLab's documentation!
     <div class="container-fluid hidden-xs hidden-sm">
       <div class="row">
         <a href=".">
-          <div class="thumbnail">
+          <div class="col-md-2 thumbnail">
             <img src="../imgs/ex-results/fedavg-CNN-MLP-acc.svg" width="200">
           </div>
         </a>
         <a href=".">
-          <div class="thumbnail">
+          <div class="col-md-2 thumbnail">
             <img src="../imgs/ex-results/fedavg-CNN-MLP-loss.svg" width="200">
           </div>
         </a>
         <a href=".">
-          <div class="thumbnail">
+          <div class="col-md-2 thumbnail">
             <img src="../imgs/ex-results/fedavg-CNN-MLP-acc-dark.svg" width="200">
           </div>
         </a>
         <a href=".">
-          <div class="thumbnail">
+          <div class="col-md-2 thumbnail">
             <img src="../imgs/ex-results/fedavg-CNN-MLP-loss-dark.svg" width="200">
           </div>
         </a>
