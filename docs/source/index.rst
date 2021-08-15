@@ -22,15 +22,11 @@ Gallery
 .......
 .. card-carousel:: 2
 
-    .. card:: card 1
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc.svg
-
-    .. card:: card 2
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss.svg
-
-    .. card:: card 3
+    .. card::
+       :shadow: md
        :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.svg
 
-    .. card:: card 4
+    .. card::
+       :shadow: md
        :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.svg
 
