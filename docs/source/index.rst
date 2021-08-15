@@ -23,10 +23,10 @@ Gallery
 .. card-carousel:: 2
 
     .. card::
-       :shadow: md
+       :shadow: sm
        :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
 
     .. card::
-       :shadow: md
+       :shadow: sm
        :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
 
