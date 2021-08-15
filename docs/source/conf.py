@@ -40,8 +40,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinxcontrib.napoleon',
-    'sphinx.ext.autosectionlabel',
-    # allows you to refer sections its title. This affects to the reference role (ref)
+    'sphinx.ext.autosectionlabel',  # allows referring sections its title, affects `ref`
+    'sphinx_design',
 ]
 
 autodoc_mock_imports = ["numpy", "torch", "torchvision"]
@@ -100,5 +100,5 @@ html_theme_options = {
     "sidebar_hide_name": True,
     "light_logo": "FedLab-logo.svg",
     "dark_logo": "FedLab-logo.svg",
- }
+}
 # html_logo = "FedLab-logo.svg"

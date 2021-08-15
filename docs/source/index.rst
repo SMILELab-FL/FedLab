@@ -18,6 +18,15 @@ Welcome to FedLab's documentation!
    contributing
 
 
+Gallery
+.......
+.. card-carousel:: 2
 
+    .. card::
+       :shadow: sm
+       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
 
+    .. card::
+       :shadow: sm
+       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
 
