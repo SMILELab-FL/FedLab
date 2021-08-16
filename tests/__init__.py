@@ -25,7 +25,7 @@ def get_tests():
     from .test_utils.test_compressor import CompressorTestCase
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
-    from .test_core.test_server.test_parameter_server_handler import HandlerTestCase
+    from .test_core.test_server.test_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase

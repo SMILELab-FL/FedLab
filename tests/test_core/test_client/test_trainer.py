@@ -14,8 +14,7 @@
 
 import unittest
 
-from fedlab.core.client.trainer import ClientSGDTrainer
-
+from fedlab.core.client.trainer import ClientTrainer, ClientSGDTrainer, SerialTrainer
 
 class TrainerTestCase(unittest.TestCase):
 
