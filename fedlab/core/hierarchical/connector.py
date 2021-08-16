@@ -21,8 +21,6 @@ import torch
 import threading
 import sys
 
-sys.path.append("../../../")
-
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 
@@ -48,7 +46,7 @@ class Connector(NetworkManager):
         self.mq_write = write_queue
 
     def run(self):
-        pass
+        raise NotImplementedError()
 
     def on_receive(self, sender, message_code, payload):
         """Define the reaction of receiving message.
@@ -58,19 +56,17 @@ class Connector(NetworkManager):
             message_code (MessageCode): Message code.
             payload (list(torch.Tensor)): A list of tensors received from other process.
         """
-        pass
+        raise NotImplementedError()
 
     def deal_queue(self):
-        """"""
-        pass
+        """Define the procedure of dealing with message queue."""
+        raise NotImplementedError()
 
 
 class ClientConnector(Connector):
     """Connect with clients.
 
     This class is a part of middle server which used in hierarchical structure.
-
-    TODO: middle server
 
     Args:
         network (DistNetwork): Manage ``torch.distributed`` network communication.
@@ -120,8 +116,6 @@ class ServerConnector(Connector):
 
     This class is a part of middle server which used in hierarchical structure.
 
-    TODO: Rank mapper
-
     Args:
         network (DistNetwork): object to manage torch.distributed network communication.
         write_queue (torch.multiprocessing.Queue): message queue
@@ -149,7 +143,6 @@ class ServerConnector(Connector):
         self.mq_write.put((sender, message_code, payload))
 
     def deal_queue(self):
-        """Process message queue"""
         while True:
             sender, message_code, payload = self.mq_read.get()
             print("data from {}, message code {}".format(sender, message_code))
