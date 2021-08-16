@@ -55,7 +55,7 @@ class DistNetwork(object):
             dist.destroy_process_group()
 
     def __str__(self):
-        info_str = "torch.distributed is initializing process group with server ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
+        info_str = "torch.distributed connection is initializing with server ip address {}:{}, rank {}, world size: {}, backend {}, ethernet {}.".format(
             self.address[0],
             self.address[1],
             self.rank,

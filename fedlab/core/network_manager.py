@@ -34,7 +34,7 @@ class NetworkManager(Process):
         self._network = network
 
     def run(self):
-        pass
+        raise NotImplementedError()
 
     def on_receive(self, sender, message_code, payload):
         """Define the action to take when receiving a package.
@@ -44,7 +44,7 @@ class NetworkManager(Process):
             message_code (MessageCode): message code
             payload (torch.Tensor): list[torch.Tensor]
         """
-        pass
+        raise NotImplementedError()
 
     def setup(self):
         """Initialize network connection and necessary setups.
@@ -53,8 +53,4 @@ class NetworkManager(Process):
             At first, ``self._network.init_network_connection()`` is required to be called.
             Overwrite this method to implement system setup message communication procedure.
         """
-        print(
-            "Initializing pytorch distributed group \nWaiting for connection requests from clients"
-        )
         self._network.init_network_connection()
-        print("network connection initialization finished.")

@@ -103,20 +103,15 @@ class ClientSGDTrainer(ClientTrainer):
             model_parameters (torch.Tensor): Serialized model parameters.
             epochs (int): Number of epoch for current local training.
         """
-        self._LOGGER.info("starting local train process")
+        self._LOGGER.info("Local train procedure is started")
         SerializationTool.deserialize_model(
             self._model, model_parameters
         )  # load parameters
-
         if epochs is None:
             epochs = self.epochs
-
-        loss_ = AverageMeter()
-        for epoch in range(epochs):
-            start_time = time.time()
+        self._LOGGER.info("Local train procedure is running")
+        for _ in range(epochs):
             self._model.train()
-
-            loss_.reset()
             for inputs, labels in self._data_loader:
                 if self.cuda:
                     inputs, labels = inputs.cuda(self.gpu), labels.cuda(self.gpu)
@@ -127,17 +122,7 @@ class ClientSGDTrainer(ClientTrainer):
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-
-                loss_.update(loss.detach().item())
-
-            end_time = time.time()
-
-            self._LOGGER.info(
-                "Epoch {}/{}, Loss: {:.4f}, Time cost: {:.2f}s".format(
-                    epoch + 1, epochs, loss_.sum, end_time - start_time
-                )
-            )
-
+        self._LOGGER.info("Local train procedure is finished")
 
 class SerialTrainer(ClientTrainer):
     """Train multiple clients in a single process.
@@ -254,7 +239,6 @@ class SerialTrainer(ClientTrainer):
             Serialized model parameters / list of model parameters.
         """
         param_list = []
-
         for idx in id_list:
             self._LOGGER.info("starting training process of client [{}]".format(idx))
 
@@ -263,7 +247,6 @@ class SerialTrainer(ClientTrainer):
             self._train_alone(
                 model_parameters=model_parameters, train_loader=data_loader, cuda=cuda
             )
-
             param_list.append(self.model_parameters)
 
         if aggregate is True:
