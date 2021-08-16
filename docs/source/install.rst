@@ -7,13 +7,13 @@ PIP
 ^^^^^^^^^^^^^^
 (unpublished yet)
 
-You can install ``FedLab`` with:
+You can install FedLab with:
 
 .. code-block:: shell-session
 
    $ pip install fedlab
 
-Install FL benchmarks of ``FedLab`` version with
+Install FL benchmarks of FedLab version with
 
 .. code-block:: shell-session
 
@@ -38,7 +38,7 @@ Install dependencies:
 Dataset Download
 ^^^^^^^^^^^^^^^^
 
-``FedLab`` provides common dataset used in FL researches.
+FedLab provides common dataset used in FL researches.
 
 Download procedure scripts are available in `fedlab_benchmarks/datasets <https://github.com/SMILELab-FL/FedLab/tree/main/fedlab_benchmarks>`_.
 For details of dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab/blob/main/fedlab_benchmarks/README.md>`_.
