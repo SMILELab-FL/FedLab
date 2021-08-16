@@ -31,7 +31,7 @@ class ParameterServerBackendHandler(ABC):
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
 
-    def __init__(self, model: torch.nn.Module, cuda=False) -> None:
+    def __init__(self, model, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
             self._model = model.cuda()
