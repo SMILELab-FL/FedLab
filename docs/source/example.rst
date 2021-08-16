@@ -80,7 +80,7 @@ Sychronous is given by ServerSynchronousManager and ClientPassiveManager. Commun
 Note:
     1. overwrite ``setup()`` in both ServerSynchronousManager and ClientPassiveManager to define initialization procedure.
     2. overwrite ``activate_clients()`` int ServerSynchronousManager to customize broadcast stage.
-    3. overweite ``on_receive(self, sender, message_code, payload)`` in ServerSynchronousManager and ClientPassiveManager to customize control flow.
+    3. overwrite ``on_receive(self, sender, message_code, payload)`` in ServerSynchronousManager and ClientPassiveManager to customize control flow.
     4. overwrite ``synchronize()`` in ClientPassiveManager to customize synchronize procedure.
 
 
@@ -91,6 +91,6 @@ Aychronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager``
 Note:
     1. overwrite ``setup()`` in both client and server to define initialization procedure.
     2. overwrite ``request_model`` in ``ClientActiveManager`` to customize request procedure.
-    3. overweite ``on_receive(self, sender, message_code, payload)`` in ``ServerAsynchronousManager`` and ``ClientActiveManager`` to customize control flow.
+    3. overwrite ``on_receive(self, sender, message_code, payload)`` in ``ServerAsynchronousManager`` and ``ClientActiveManager`` to customize control flow.
     4. overwrite ``synchronize()`` in ``ClientActiveManager`` to customize synchronize procedure.
 
