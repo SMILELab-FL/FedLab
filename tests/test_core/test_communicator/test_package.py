@@ -24,7 +24,7 @@ from fedlab.utils.message_code import MessageCode
 from fedlab.core.communicator.package import (
     HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
     HEADER_MESSAGE_CODE_IDX, DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE,
-    DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE)
+    DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE, HEADER_DATA_TYPE_IDX)
 
 
 class PackageTestCase(unittest.TestCase):
@@ -112,9 +112,10 @@ class PackageTestCase(unittest.TestCase):
         p = Package()
         p.append_tensor_list(self.tensor_list)
 
-        sender_rank, receiver_rank, slice_size, message_code = Package.parse_header(p.header)
+        sender_rank, receiver_rank, slice_size, message_code, data_type = Package.parse_header(p.header)
 
         assert sender_rank == p.header[HEADER_SENDER_RANK_IDX]
         assert receiver_rank == p.header[HEADER_RECEIVER_RANK_IDX]
         assert slice_size == p.header[HEADER_SLICE_SIZE_IDX]
         assert message_code.value == p.header[HEADER_MESSAGE_CODE_IDX]
+        assert data_type == p.header[HEADER_DATA_TYPE_IDX]

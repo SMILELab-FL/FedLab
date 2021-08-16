@@ -11,7 +11,7 @@ FedAvg是同步联邦学习算法的baseline，FedLab实现了FedAvg的算法流
 可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/standalone/`。
 
 ### Cross Machine
-**多机多进程**和**单机多进程**场景的联邦模拟是FedLab的核心模块，由`core\client`和`core\server`中的各项模块组成，具体细节请见overview。
+**多机多进程**和**单机多进程**场景的联邦模拟是FedLab的核心模块，由`core/client`和`core/server`中的各项模块组成，具体细节请见overview。
 
 可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/cross_machine/`
 

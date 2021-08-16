@@ -31,7 +31,7 @@ class ParameterServerBackendHandler(ABC):
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
 
-    def __init__(self, model: torch.nn.Module, cuda=False) -> None:
+    def __init__(self, model, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
             self._model = model.cuda()
@@ -141,7 +141,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         Note:
             Return True when self._update_model is called.
-        
+
         Args:
             sender_rank (int): Rank of sender client in ``torch.distributed`` group.
             serialized_params (torch.Tensor): Serialized model parameters from one client.
@@ -194,11 +194,13 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     Args:
         model (torch.nn.Module): Global model in server
         client_num_in_total (int): Total number of clients in federation.
+        alpha (float): weight used in async aggregation.
+        strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
 
-    def __init__(self, model, client_num_in_total, cuda=False, logger=None):
+    def __init__(self, model, client_num_in_total, alpha=0.5, strategy="constant", cuda=False, logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
 
         if logger is None:
@@ -207,25 +209,40 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         else:
             self._LOGGER = logger
 
-        self.alpha = 0.5
         self.client_num_in_total = client_num_in_total
 
-        self.global_time = 5
-        self.current_time = torch.zeros(1)
-
-    def _update_model(self, model_parameters, model_time):
-        """ "update global model from client_model_queue"""
-        latest_serialized_parameters = self.model_parameters
-        merged_params = Aggregators.fedasgd_aggregate(
-            latest_serialized_parameters, model_parameters, self.alpha
-        )  # use aggregator
-        SerializationTool.deserialize_model(self._model, merged_params)
-        self.current_time += 1
+        self.current_time = 1
+        # async aggregation params
+        self.alpha = alpha
+        self.strategy = strategy  # "constant", "hinge", "polynomial"
+        self.a = None
+        self.b = None
+        
+    @property
+    def server_time(self):
+        return self.current_time
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= self.global_time
+        return self.current_time >= 10 # test
+    
+    def _update_model(self, client_model_parameters, model_time):
+        """ "update global model from client_model_queue"""
+        alpha = self._adapt_alpha(model_time)
+        aggregated_params = Aggregators.fedasgd_aggregate(
+            self.model_parameters, client_model_parameters, alpha
+        )  # use aggregator
+        SerializationTool.deserialize_model(self._model, aggregated_params)
+        self.current_time += 1
 
-    def adapt_alpha(self, receive_model_time):
+    def _adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
-        self.alpha = torch.mul(self.alpha, 1)
+        # TODO
+        if self.strategy == "constant":
+            return torch.mul(self.alpha, 1)
+        elif self.strategy == "hinge":
+            pass
+        elif self.strategy == "polynomial":
+            pass
+        else:
+            raise ValueError("Invalid strategy {}".format(self.strategy))

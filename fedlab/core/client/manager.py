@@ -26,7 +26,7 @@ from ..network_manager import NetworkManager
 
 class ClientPassiveManager(NetworkManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL
-        
+
     Args:
         handler (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
@@ -44,9 +44,9 @@ class ClientPassiveManager(NetworkManager):
 
     def run(self):
         """Main procedure of each client is defined here:
-            1. client waits for data from server （PASSIVE）
-            2. after receiving data, client will train local model
-            3. client will synchronize with server actively
+        1. client waits for data from server （PASSIVE）
+        2. after receiving data, client will train local model
+        3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
         self.setup()
@@ -54,12 +54,10 @@ class ClientPassiveManager(NetworkManager):
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
-            sender_rank, message_code, payload = PackageProcessor.recv_package(
-                src=0)
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
             # exit
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Receive {}, Process exiting".format(message_code))
+                self._LOGGER.info("Receive {}, Process exiting".format(message_code))
                 self._network.close_network_connection()
                 exit(0)
             else:
@@ -80,28 +78,30 @@ class ClientPassiveManager(NetworkManager):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
             payload (list[torch.Tensor]): A list of tensors received from sender.
         """
-        self._LOGGER.info("Package received from {}, message code {}".format(
-            sender_rank, message_code))
+        self._LOGGER.info(
+            "Package received from {}, message code {}".format(
+                sender_rank, message_code
+            )
+        )
         s_parameters = payload[0]
         self._handler.train(model_parameters=s_parameters)
 
     def setup(self):
         """Initialize network."""
         self._network.init_network_connection()
-    
+
     def synchronize(self):
         """Synchronize local model with server actively
-        
+
         Note:
             communication agreements related:
             Overwrite this function to customize package for synchronizing.
         """
         self._LOGGER.info("synchronize model parameters with server")
         model_params = self._handler.model_parameters
-        pack = Package(message_code=MessageCode.ParameterUpdate,
-                       content=model_params)
+        pack = Package(message_code=MessageCode.ParameterUpdate, content=model_params)
         PackageProcessor.send_package(pack, dst=0)
-    
+
 
 class ClientActiveManager(NetworkManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL
@@ -113,11 +113,7 @@ class ClientActiveManager(NetworkManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self,
-                 handler,
-                 network,
-                 local_epochs=None,
-                 logger=None):
+    def __init__(self, handler, network, local_epochs=None, logger=None):
         super(ClientActiveManager, self).__init__(network, handler)
 
         # temp variables, can assign train epoch rather than initial epoch value in handler
@@ -132,9 +128,9 @@ class ClientActiveManager(NetworkManager):
 
     def run(self):
         """Main procedure of each client is defined here:
-            1. client requests data from server (ACTIVE)
-            2. after receiving data, client will train local model
-            3. client will synchronize with server actively
+        1. client requests data from server (ACTIVE)
+        2. after receiving data, client will train local model
+        3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
         self.setup()
@@ -144,13 +140,11 @@ class ClientActiveManager(NetworkManager):
             # request model actively
             self.request_model()
             # waits for data from
-            sender_rank, message_code, payload = PackageProcessor.recv_package(
-                src=0)
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
 
             # exit
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Recv {}, Process exiting".format(message_code))
+                self._LOGGER.info("Recv {}, Process exiting".format(message_code))
                 exit(0)
 
             # perform local training
@@ -167,8 +161,11 @@ class ClientActiveManager(NetworkManager):
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`.
             payload (list[torch.Tensor]): Received package, a list of tensors.
         """
-        self._LOGGER.info("Package received from {}, message code {}".format(
-            sender_rank, message_code))
+        self._LOGGER.info(
+            "Package received from {}, message code {}".format(
+                sender_rank, message_code
+            )
+        )
         s_parameters = payload[0]
         self.model_gen_time = payload[1]
         # move loading model params to the start of training
@@ -177,7 +174,7 @@ class ClientActiveManager(NetworkManager):
     def setup(self):
         """Initialize network."""
         self._network.init_network_connection()
-    
+
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize model parameters with server")

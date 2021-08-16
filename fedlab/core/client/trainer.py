@@ -97,7 +97,7 @@ class ClientSGDTrainer(ClientTrainer):
 
     def train(self, model_parameters, epochs=None) -> None:
         """
-        Client trains its local model on local dataset.
+        Client trains its local model on local dataset.åß
 
         Args:
             model_parameters (torch.Tensor): Serialized model parameters.
@@ -154,8 +154,16 @@ class SerialTrainer(ClientTrainer):
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
+
     def __init__(
-        self, model, dataset, data_slices, aggregator=None, logger=None, cuda=True, args=None
+        self,
+        model,
+        dataset,
+        data_slices,
+        aggregator=None,
+        logger=None,
+        cuda=True,
+        args=None,
     ) -> None:
 
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
@@ -172,7 +180,7 @@ class SerialTrainer(ClientTrainer):
             self._LOGGER = logger
 
         self.args = args
-        
+
     def _get_train_dataloader(self, idx):
         """Return a training dataloader used in :meth:`train` for client with :attr:`id`
 

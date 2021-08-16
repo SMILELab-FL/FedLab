@@ -51,7 +51,7 @@ if __name__ == "__main__":
     )
     LOGGER = Logger(log_name="client " + str(args.rank))
 
-    handler = ClientSGDTrainer(
+    trainer = ClientSGDTrainer(
         model,
         trainloader,
         epochs=args.epoch,
@@ -61,5 +61,5 @@ if __name__ == "__main__":
         logger=LOGGER,
     )
 
-    manager_ = ClientPassiveManager(handler=handler, network=network, logger=LOGGER)
+    manager_ = ClientPassiveManager(handler=trainer, network=network, logger=LOGGER)
     manager_.run()

@@ -54,4 +54,6 @@ class NetworkManager(Process):
                 At first, ``self._network.init_network_connection()`` is required to be called.
                 Overwrite this method to implement system setup message communication procedure.
         """
-        pass
+        print("Initializing pytorch distributed group \nWaiting for connection requests from clients")
+        self._network.init_network_connection()
+        print("network connection initialization finished.")

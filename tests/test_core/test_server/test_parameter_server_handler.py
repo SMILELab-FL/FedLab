@@ -47,8 +47,7 @@ class HandlerTestCase(unittest.TestCase):
         coming_model = LeNet()
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
-        self.AsyncHandler._update_model(model_parameters=coming_parameters,
-                                       model_time=random.randint(1, 10))
+        self.AsyncHandler._update_model(coming_parameters,random.randint(1, 10))
 
         parameter_list = []
         for id in range(self.SyncHandler.client_num_per_round):
