@@ -14,51 +14,8 @@ import torchvision
 from torchvision import transforms
 from fedlab.utils.functional import evaluate
 
-class TestCustomizationServer(SyncParameterServerHandler):
-    def __init__(self, model: torch.nn.Module, client_num_in_total: int, global_round, cuda, sample_ratio, logger):
-        super().__init__(model, client_num_in_total, global_round=global_round, cuda=cuda, sample_ratio=sample_ratio, logger=logger)
-        
-        root = '../../../../../datasets/mnist/'
-        testset = torchvision.datasets.MNIST(root=root,
-                                             train=False,
-                                             download=True,
-
-                                             transform=transforms.ToTensor())
-        self.test_loader = torch.utils.data.DataLoader(testset,
-                                                 batch_size=int(len(testset)/10),
-                                                 drop_last=False,
-                                                 num_workers=2,
-                                                 shuffle=False)
-
-        self.test_loss = torch.nn.CrossEntropyLoss()                              
-
-        self.losses = []
-        self.loss_f = open("loss.txt","w")
-        self.accuracy = []
-        self.acc_f = open("accuracy.txt","w")
-
-    def _update_model(self, serialized_params_list):
-        self._LOGGER.info("updating global model")
-        super()._update_model(serialized_params_list)
-
-        loss_, acc = evaluate(self._model, self.test_loss, self.test_loader, cuda=True)
-        self.losses.append(loss_)
-        self.accuracy.append(acc)
-    
-    def stop_condition(self) -> bool:
-        if self.accuracy[-1] > 0.98:
-            return True
-
-    def __del__(self):
-        self.loss_f.write(str(self.losses))
-        self.loss_f.close()
-        self.acc_f.write(str(self.accuracy))
-        self.acc_f.close()
-
-
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Distbelief training example')
+    parser = argparse.ArgumentParser(description='FL server example')
 
     parser.add_argument('--ip', type=str)
     parser.add_argument('--port', type=str)
@@ -66,18 +23,15 @@ if __name__ == "__main__":
 
     parser.add_argument('--round', type=int)
     parser.add_argument('--dataset', type=str)
-    parser.add_argument('--ethernet', type=str)
-    parser.add_argument('--sample', type=float)
+    parser.add_argument('--ethernet', type=str, default=None)
+    parser.add_argument('--sample', type=float, default=1)
 
     args = parser.parse_args()
 
     model = get_model(args)
     LOGGER = Logger(log_name="server")
-
-    #ps = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample)
-    ps = TestCustomizationServer(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample, cuda=True)
-    
+    handler = SyncParameterServerHandler(model, client_num_in_total=args.world_size-1, global_round=args.round, logger=LOGGER, sample_ratio=args.sample)
     network = DistNetwork(address=(args.ip, args.port), world_size=args.world_size, rank=0, ethernet=args.ethernet)
-    manager_ = ServerSynchronousManager(handler=ps, network=network, logger=LOGGER)
+    manager_ = ServerSynchronousManager(handler=handler, network=network, logger=LOGGER)
     manager_.run()
  

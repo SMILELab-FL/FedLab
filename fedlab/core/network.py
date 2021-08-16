@@ -18,7 +18,7 @@ import torch.distributed as dist
 
 class DistNetwork(object):
     """Manage ``torch.distributed`` network
-    
+
     Args:
         address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
         world_size (int): the size of this distributed group (including server).
@@ -38,16 +38,16 @@ class DistNetwork(object):
     def init_network_connection(self):
         """Initialize ``torch.distributed`` communication group"""
         print(self.__str__())
-        
-        if self.ethernet is not None:
-            os.environ['GLOO_SOCKET_IFNAME'] = self.ethernet
 
-        dist.init_process_group(backend=self.dist_backend,
-                                init_method='tcp://{}:{}'.format(
-                                    self.address[0],
-                                    self.address[1]),
-                                rank=self.rank,
-                                world_size=self.world_size)
+        if self.ethernet is not None:
+            os.environ["GLOO_SOCKET_IFNAME"] = self.ethernet
+
+        dist.init_process_group(
+            backend=self.dist_backend,
+            init_method="tcp://{}:{}".format(self.address[0], self.address[1]),
+            rank=self.rank,
+            world_size=self.world_size,
+        )
 
     def close_network_connection(self):
         """Destroy current ``torch.distributed`` process group"""
@@ -56,5 +56,11 @@ class DistNetwork(object):
 
     def __str__(self):
         info_str = "torch.distributed is initializing process group with server ip address {}:{}, rank {}, world size: {}, backend {} on ethernet {}.".format(
-            self.address[0], self.address[1], self.rank, self.world_size, self.dist_backend, self.ethernet)
+            self.address[0],
+            self.address[1],
+            self.rank,
+            self.world_size,
+            self.dist_backend,
+            self.ethernet,
+        )
         return info_str
