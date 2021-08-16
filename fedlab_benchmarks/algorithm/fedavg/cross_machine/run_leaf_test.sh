@@ -8,13 +8,13 @@ do
   echo "${key} client_num is ${dataset_world_size[${key}]}"
 
   echo "server started"
-  python server.py --server_ip 127.0.0.1 --server_port 3002 --world_size ${dataset_world_size[${key}]}  --dataset ${key} &
+  python server.py --ip 127.0.0.1 --port 3002 --world_size ${dataset_world_size[${key}]}  --dataset ${key} &
 
   for ((i=1; i<${dataset_world_size[$key]}; i++))
   do
   {
       echo "client ${i} started"
-      python client.py --server_ip 127.0.0.1 --server_port 3002 --world_size ${dataset_world_size[${key}]} --rank ${i} --dataset ${key} --epoch 2
+      python client.py --ip 127.0.0.1 --port 3002 --world_size ${dataset_world_size[${key}]} --rank ${i} --dataset ${key} --epoch 2
   } &
   done
   wait
