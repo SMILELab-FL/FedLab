@@ -19,7 +19,6 @@ from fedlab.core.server.handler import ParameterServerBackendHandler
 from fedlab.utils.message_code import MessageCode
 
 
-
 class NetworkManager(Process):
     """Abstract class
 
@@ -39,21 +38,23 @@ class NetworkManager(Process):
 
     def on_receive(self, sender, message_code, payload):
         """Define the action to take when receiving a package.
-    
+
         Args:
             sender (int): rank of current process.
             message_code (MessageCode): message code
-            payload (torch.Tensor): list[torch.Tensor] 
+            payload (torch.Tensor): list[torch.Tensor]
         """
         pass
-    
+
     def setup(self):
         """Initialize network connection and necessary setups.
 
-            Note:
-                At first, ``self._network.init_network_connection()`` is required to be called.
-                Overwrite this method to implement system setup message communication procedure.
+        Note:
+            At first, ``self._network.init_network_connection()`` is required to be called.
+            Overwrite this method to implement system setup message communication procedure.
         """
-        print("Initializing pytorch distributed group \nWaiting for connection requests from clients")
+        print(
+            "Initializing pytorch distributed group \nWaiting for connection requests from clients"
+        )
         self._network.init_network_connection()
         print("network connection initialization finished.")
