@@ -153,5 +153,10 @@ fedlab_benchmarks/datasets/leaf_data/*/meta
 tests/data
 actions-runner
 fedlab_benchmarks/datasets/mnist
+
+# tests
 fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
 fedlab_benchmarks/algorithm/fedavg/standalone/*.ipynb
+fedlab_benchmarks/algorithm/fedavg/standalone/*.sh
+.coverage
+codecov

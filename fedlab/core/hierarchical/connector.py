@@ -125,7 +125,6 @@ class ServerConnector(Connector):
     def __init__(self, network, write_queue, read_queue):
         super(ServerConnector, self).__init__(network, write_queue, read_queue)
 
-        # self._network = network
         self.mq_write = write_queue
         self.mq_read = read_queue
 

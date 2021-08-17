@@ -19,7 +19,6 @@ You're welcome to contribute to this project through **Pull Request**. By contri
 
 Coding
 ----------------
-- We recommand you to use `black <https://github.com/psf/black>`_ as python formatting provider.
 - The code should provide test cases using `unittest.TestCase`
 
 Docstring
