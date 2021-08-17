@@ -20,7 +20,6 @@ from torch.multiprocessing import Process, Queue
 from .connector import ClientConnector, ServerConnector
 from ..network import DistNetwork
 
-sys.path.append('../../../')
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 

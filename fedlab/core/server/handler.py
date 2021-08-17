@@ -200,7 +200,15 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
 
-    def __init__(self, model, client_num_in_total, alpha=0.5, strategy="constant", cuda=False, logger=None):
+    def __init__(
+        self,
+        model,
+        client_num_in_total,
+        alpha=0.5,
+        strategy="constant",
+        cuda=False,
+        logger=None,
+    ):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
 
         if logger is None:
@@ -217,15 +225,15 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         self.strategy = strategy  # "constant", "hinge", "polynomial"
         self.a = None
         self.b = None
-        
+
     @property
     def server_time(self):
         return self.current_time
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= 10 # test
-    
+        return self.current_time >= 10  # test
+
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""
         alpha = self._adapt_alpha(model_time)

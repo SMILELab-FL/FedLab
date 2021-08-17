@@ -47,8 +47,6 @@ def get_dataset(args):
                                                  drop_last=False,
                                                  num_workers=2,
                                                  shuffle=False)
-    elif args.dataset == 'cifar10':
-        pass
     elif args.dataset == 'femnist':
         trainloader, testloader = get_LEAF_dataloader(dataset=args.dataset,
                                                       client_id=args.rank)
@@ -67,8 +65,6 @@ def get_dataset(args):
 def get_model(args):
     if args.dataset == "mnist":
         model = LeNet()
-    elif args.dataset == 'cifar10':
-        pass
     elif args.dataset == 'femnist':
         model = LeNet(out_dim=62)
     elif args.dataset == 'shakespeare':

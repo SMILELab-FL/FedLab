@@ -15,8 +15,6 @@ FedAvg是同步联邦学习算法的baseline，FedLab实现了FedAvg的算法流
 
 可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/cross_machine/`
 
-## FedAsgd
-
 ## Leaf
 ### 下载并划分数据
 
