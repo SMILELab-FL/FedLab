@@ -12,12 +12,13 @@ torch.manual_seed(0)
 sys.path.append("../../../../")
 
 from fedlab.core.client.trainer import SerialTrainer
-from fedlab.utils.models.lenet import LeNet
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.functional import get_best_gpu
+
+from fedlab_benchmarks.models.lenet import LeNet
 
 class mlp(nn.Module):
     def __init__(self):

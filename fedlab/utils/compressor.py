@@ -23,19 +23,19 @@ class Compressor(ABC):
 
     @abstractmethod
     def compress_tensor(self, *args, **kwargs):
-        raise NotImplementedError()
+        pass
 
     @abstractmethod
     def decompress_tensor(self, *args, **kwargs):
-        raise NotImplementedError()
+        pass
 
     @abstractmethod
     def compress_model(self, *args, **kwargs):
-        raise NotImplementedError()
+        pass
 
     @abstractmethod
     def decompress_model(self, *args, **kwargs):
-        raise NotImplementedError()
+        pass
 
 
 class TopkCompressor(Compressor):
@@ -80,10 +80,10 @@ class TopkCompressor(Compressor):
             model_values.append(values)
             model_indices.append(indices)
 
-        #model_values = torch.cat(model_values)
-        #model_indices = torch.cat(model_indices)
         return model_values, model_indices
 
-    def decompress_model(self, model_values, model_indices):
-        
-        pass
+    def decompress_model(self, model, model_values, model_indices):
+        for parameter, values, indices in zip(model.parameters(), model_values, model_indices):
+            de_tensor = self.decompress_tensor(values, indices, parameter.shape)
+            parameter.data.copy_(de_tensor)
+

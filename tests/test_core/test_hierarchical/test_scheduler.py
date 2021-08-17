@@ -13,3 +13,11 @@
 # limitations under the License.
 
 import unittest
+
+
+
+class SchedulerTestCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        return super().setUp()
+
