@@ -2,11 +2,20 @@ import torch
 from torch import nn
 from torch.utils.data import IterableDataset, dataloader
 from torch.utils.data.dataset import Dataset
-
+from fedlab.core.client.trainer import ClientTrainer
 
 model = nn.Sequential(nn.Linear(20,10), nn.Linear(10,5))
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.L1Loss()
+
+
+
+class TestTrainer(ClientTrainer):
+    def __init__(self, model, cuda):
+        super().__init__(model, cuda)
+
+    def train(self, model_parameters):
+        pass
 
 class unittestDataset(Dataset):
     def __init__(self, data,label) -> None:

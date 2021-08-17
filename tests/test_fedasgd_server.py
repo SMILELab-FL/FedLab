@@ -26,39 +26,36 @@ from fedlab.core.server.manager import ServerAsynchronousManager
 from fedlab.core.network import DistNetwork
 
 from tests.test_core.task_setting_for_test import (
-    unittest_dataloader,
+    TestTrainer,
     model,
-    criterion,
-    optimizer,
 )
 
-class FedAsgdTestCase(unittest.TestCase):
+
+class FedAsgdServerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "12345"
+        port = "3456"
         world_size = 2
 
-        ps = AsyncParameterServerHandler(deepcopy(model), client_num_in_total=world_size - 1)
+        hanlder = AsyncParameterServerHandler(
+            deepcopy(model), client_num_in_total=world_size - 1
+        )
+
         self.server = ServerAsynchronousManager(
-            handler=ps,
+            handler=hanlder,
             network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
         )
 
-        self.server.start()
-
-        dataloader = unittest_dataloader()
-        handler = ClientSGDTrainer(
+        handler = TestTrainer(
             model,
-            dataloader,
-            epochs=1,
-            optimizer=optimizer,
-            criterion=criterion,
             cuda=False,
         )
-        self.client = ClientActiveManager(handler=handler, network=DistNetwork(address=(ip, port), world_size=world_size, rank=1))
+        self.client = ClientActiveManager(
+            handler=handler,
+            network=DistNetwork(address=(ip, port), world_size=world_size, rank=1),
+        )
 
-    def tearDown(self) -> None:
-        return super().tearDown()
+        self.client.start()
 
     def test_fedavg(self):
-        self.client.run()
+        self.server.run()

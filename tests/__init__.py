@@ -31,8 +31,11 @@ def get_tests():
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
 
-    from .test_fedavg import FedAvgTestCase
-    from .test_fedasgd import FedAsgdTestCase
+    from .test_fedavg_client import FedAvgClientTestCase
+    from .test_fedavg_server import FedAvgServerTestCase
+    
+    from .test_fedasgd_client import FedAsgdClientTestCase
+    from .test_fedasgd_server import FedAsgdServerTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(
         SerializationTestCase
@@ -50,8 +53,12 @@ def get_tests():
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
 
-    fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
-    fedasgd_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdTestCase)
+    fedavg_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgClientTestCase)
+    fedavg_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgServerTestCase)
+
+    fedasgd_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdClientTestCase)
+    fedasgd_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdServerTestCase)
+
 
     return unittest.TestSuite(
         [
@@ -66,7 +73,9 @@ def get_tests():
             network_suite,
             manager_suite,
             package_suite,
-            fedavg_suite,
-            fedasgd_suite,
+            fedavg_client_suite,
+            fedavg_server_suite,
+            fedasgd_server_suite,
+            fedasgd_client_suite,
         ]
     )

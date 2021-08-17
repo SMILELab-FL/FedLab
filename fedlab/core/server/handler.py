@@ -220,7 +220,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_num_in_total = client_num_in_total
 
         self.current_time = 1
-        self.stop_time = 10
+        self.stop_time = 5
         
         # async aggregation params
         self.alpha = alpha
