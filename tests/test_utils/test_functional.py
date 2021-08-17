@@ -16,9 +16,13 @@
 import unittest
 import random
 import os
-from fedlab.utils.functional import AverageMeter
-from fedlab.utils.functional import read_config_from_json
+import torch
+from torch import nn
+import torchvision
+import torchvision.transforms as transforms
 
+from fedlab.utils.functional import AverageMeter, evaluate, get_best_gpu
+from fedlab.utils.functional import read_config_from_json
 
 class FunctionalTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -36,16 +40,63 @@ class FunctionalTestCase(unittest.TestCase):
             test.update(val=sample)
             sum += sample
             assert test.val == sample
-        
-        assert test.avg == sum/test_case and test.count == test_case and test.sum == sum
+
+        assert (
+            test.avg == sum / test_case and test.count == test_case and test.sum == sum
+        )
         test.reset()
-        assert test.avg == 0.0 and test.count == 0.0 and test.sum == 0.0 and test.val == 0.0
+        assert (
+            test.avg == 0.0
+            and test.count == 0.0
+            and test.sum == 0.0
+            and test.val == 0.0
+        )
 
     def test_read_config_json(self):
-        json_file = '../data/config.json'
+        json_file = "../data/config.json"
         json_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), json_file)
-        test_config = ('127.0.0.1', '3002', 3, 0)
-        self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='server'))
-        test_config = ('127.0.0.1', '3002', 3, 1)
-        self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='client_0'))
-        self.assertRaises(KeyError, lambda: read_config_from_json(json_file=json_file, user_name='client_2'))
+        test_config = ("127.0.0.1", "3002", 3, 0)
+        self.assertEqual(
+            test_config, read_config_from_json(json_file=json_file, user_name="server")
+        )
+        test_config = ("127.0.0.1", "3002", 3, 1)
+        self.assertEqual(
+            test_config,
+            read_config_from_json(json_file=json_file, user_name="client_0"),
+        )
+        self.assertRaises(
+            KeyError,
+            lambda: read_config_from_json(json_file=json_file, user_name="client_2"),
+        )
+
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+    def test_evaluate(self):
+        class mlp(nn.Module):
+            def __init__(self):
+                super(mlp, self).__init__()
+                self.fc1 = nn.Linear(784, 200)
+                self.fc2 = nn.Linear(200, 200)
+                self.fc3 = nn.Linear(200, 10)
+                self.relu = nn.ReLU()
+
+            def forward(self, x):
+                x = x.view(x.shape[0], -1)
+                x = self.relu(self.fc1(x))
+                x = self.relu(self.fc2(x))
+                x = self.fc3(x)
+                return x
+        
+        model = mlp()
+        root = "./tests/data/mnist/"
+        testset = torchvision.datasets.MNIST(
+            root=root, train=False, download=False, transform=transforms.ToTensor()
+        )
+        criterion = nn.CrossEntropyLoss()
+        test_loader = torch.utils.data.DataLoader(
+            testset, batch_size=len(testset), drop_last=False, shuffle=False
+        )
+        evaluate(model, criterion, test_loader)
+
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+    def test_get_gpu(self):
+        gpu = get_best_gpu()

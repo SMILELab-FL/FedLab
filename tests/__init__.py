@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from random import sample
+from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
 
@@ -23,12 +25,21 @@ def get_tests():
     from .test_utils.test_functional import FunctionalTestCase
     from .test_utils.test_logger import LoggerTestCase
     from .test_utils.test_compressor import CompressorTestCase
+    from .test_utils.test_dataset.test_sampler import SamplerTestCase
+
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
-    from .test_core.test_server.test_parameter_server_handler import HandlerTestCase
+    from .test_core.test_server.test_handler import HandlerTestCase
     from .test_core.test_network import NetworkTestCase
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
+    from .test_core.test_client.test_trainer import TrainerTestCase
+
+    from .test_fedavg_client import FedAvgClientTestCase
+    from .test_fedavg_server import FedAvgServerTestCase
+    
+    from .test_fedasgd_client import FedAsgdClientTestCase
+    from .test_fedasgd_server import FedAsgdServerTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(
         SerializationTestCase
@@ -44,7 +55,16 @@ def get_tests():
     handler_suite = unittest.TestLoader().loadTestsFromTestCase(HandlerTestCase)
     network_suite = unittest.TestLoader().loadTestsFromTestCase(NetworkTestCase)
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
-    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
+    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)    
+    sampler_suite = unittest.TestLoader().loadTestsFromTestCase(SamplerTestCase)
+    trainer_suite = unittest.TestLoader().loadTestsFromTestCase(TrainerTestCase)
+
+
+    fedavg_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgClientTestCase)
+    fedavg_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgServerTestCase)
+
+    fedasgd_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdClientTestCase)
+    fedasgd_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdServerTestCase)
 
     return unittest.TestSuite(
         [
@@ -59,5 +79,11 @@ def get_tests():
             network_suite,
             manager_suite,
             package_suite,
+            sampler_suite,
+            fedavg_client_suite,
+            fedavg_server_suite,
+            fedasgd_server_suite,
+            fedasgd_client_suite,
+            trainer_suite,
         ]
     )

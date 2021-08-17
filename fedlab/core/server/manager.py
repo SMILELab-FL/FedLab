@@ -70,9 +70,9 @@ class ServerSynchronousManager(NetworkManager):
         self.setup()
         while self._handler.stop_condition() is not True:
 
-            activate = threading.Thread(target=self.activate_clients)
-            activate.start()
-
+            #activate = threading.Thread(target=self.activate_clients)
+            #activate.start()
+            self.activate_clients()
             # waiting for packages
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()

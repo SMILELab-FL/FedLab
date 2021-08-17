@@ -28,7 +28,7 @@ class AverageMeter(object):
         self.val = 0.0
         self.avg = 0.0
         self.sum = 0.0
-        self.count = 0.
+        self.count = 0.0
 
     def update(self, val, n=1):
         self.val = val
@@ -37,7 +37,11 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def evaluate(model, criterion, test_loader, ):
+def evaluate(
+    model,
+    criterion,
+    test_loader,
+):
     """
     Evaluate local model based on given test :class:`torch.DataLoader`
     Args:
@@ -46,13 +50,13 @@ def evaluate(model, criterion, test_loader, ):
     """
     model.eval()
     gpu = next(model.parameters()).device
-    
+
     loss_ = AverageMeter()
     acc_ = AverageMeter()
 
     with torch.no_grad():
         for inputs, labels in test_loader:
-            
+
             inputs = inputs.to(gpu)
             labels = labels.to(gpu)
 
@@ -105,8 +109,12 @@ def read_config_from_json(json_file: str, user_name: str):
     with open(json_file) as f:
         config = json.load(f)
     config_info = config[user_name]
-    return config_info['ip'], config_info['port'], config_info[
-        'world_size'], config_info['rank']
+    return (
+        config_info["ip"],
+        config_info["port"],
+        config_info["world_size"],
+        config_info["rank"],
+    )
 
 
 def get_best_gpu():

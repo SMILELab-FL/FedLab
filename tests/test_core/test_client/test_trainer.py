@@ -13,23 +13,86 @@
 # limitations under the License.
 
 import unittest
+import argparse
+import torch
+from torch import nn
+import torchvision
+import torchvision.transforms as transforms
 
-from fedlab.core.client.trainer import ClientSGDTrainer
+import random
+
+from fedlab.utils.functional import get_best_gpu
+from fedlab.core.client.trainer import ClientTrainer, ClientSGDTrainer, SerialTrainer
+from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
+from fedlab.utils.aggregator import Aggregators
+from fedlab.utils.serialization import SerializationTool
+
+from ..task_setting_for_test import mlp
 
 
 class TrainerTestCase(unittest.TestCase):
-
     def setUp(self) -> None:
-        return super().setUp()
+        self.total_client = 10
+        self.num_per_round = 5
+        self.aggregator = Aggregators.fedavg_aggregate
+
+        parser = argparse.ArgumentParser()
+        self.args = parser.parse_args()
+        self.args.batch_size = 100
+        self.args.epochs = 1
+        self.args.lr = 0.1
+
+        self.root = "./tests/data/mnist/"
 
     def tearDown(self) -> None:
         return super().tearDown()
 
-    def test_init(self):
-        pass
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+    def test_serial_train_iid(self):
 
-    def test_train(self):
-        pass
+        trainset = torchvision.datasets.MNIST(
+            root=self.root, train=True, download=True, transform=transforms.ToTensor()
+        )
+        data_indices = random_slicing(trainset, num_clients=self.total_client)
+        gpu = get_best_gpu()
+        model = mlp().cuda(gpu)
+        trainer = SerialTrainer(
+            model=model,
+            dataset=trainset,
+            data_slices=data_indices,
+            aggregator=self.aggregator,
+            args=self.args,
+        )
 
+        to_select = [i + 1 for i in range(self.total_client)]
+        model_parameters = SerializationTool.serialize_model(model)
+        selection = random.sample(to_select, self.num_per_round)
+        aggregated_parameters = trainer.train(
+            model_parameters=model_parameters, id_list=selection, aggregate=True
+        )
 
-    
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+    def test_serial_train_noniid(self):
+
+        root = "./tests/data/mnist/"
+        trainset = torchvision.datasets.MNIST(
+            root=root, train=True, download=True, transform=transforms.ToTensor()
+        )
+        data_indices = data_indices = noniid_slicing(
+            trainset, num_clients=self.total_client, num_shards=200
+        )
+        gpu = get_best_gpu()
+        model = mlp().cuda(gpu)
+        trainer = SerialTrainer(
+            model=model,
+            dataset=trainset,
+            data_slices=data_indices,
+            aggregator=self.aggregator,
+            args=self.args,
+        )
+        to_select = [i + 1 for i in range(self.total_client)]
+        model_parameters = SerializationTool.serialize_model(model)
+        selection = random.sample(to_select, self.num_per_round)
+        aggregated_parameters = trainer.train(
+            model_parameters=model_parameters, id_list=selection, aggregate=True
+        )

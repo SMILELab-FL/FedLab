@@ -14,9 +14,8 @@
 
 import unittest
 
-from fedlab.utils.models.lenet import LeNet
+from fedlab_benchmarks.models.lenet import LeNet
 from fedlab.utils.compressor import TopkCompressor
-
 
 class CompressorTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -28,7 +27,7 @@ class CompressorTestCase(unittest.TestCase):
     def tearDown(self) -> None:
         return super().tearDown()
 
-    def test_compress(self):
+    def test_compress_tensor(self):
         for parameter in self.model.parameters():
             values, indices = self.compressor.compress_tensor(parameter)
             decompressed = self.compressor.decompress_tensor(
@@ -36,3 +35,7 @@ class CompressorTestCase(unittest.TestCase):
             )
 
             assert decompressed.shape == parameter.shape
+    
+    def test_compress_model(self):
+        model_values, model_indices = self.compressor.compress_model(self.model)
+        self.compressor.decompress_model(self.model, model_values, model_indices)
