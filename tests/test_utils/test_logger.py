@@ -27,4 +27,6 @@ class LoggerTestCase(unittest.TestCase):
 
     def test_logger(self):
         LOGGER = Logger(log_name="test", log_file="./test.txt")
+        LOGGER.info("test logger info")
+        LOGGER.warning("test logger warning")
         os.remove("./test.txt")

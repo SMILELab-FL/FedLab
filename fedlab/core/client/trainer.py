@@ -249,7 +249,7 @@ class SerialTrainer(ClientTrainer):
             )
             param_list.append(self.model_parameters)
 
-        if aggregate is True:
+        if aggregate is True and self.aggregator is not None:
             # aggregate model parameters of this client group
             aggregated_parameters = self.aggregator(param_list)
             return aggregated_parameters

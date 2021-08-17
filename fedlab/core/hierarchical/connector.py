@@ -81,7 +81,7 @@ class ClientConnector(Connector):
         self.mq_write = write_queue
 
     def run(self):
-        self._network.init_network_connection()
+        self.setup()
         # start a thread to watch message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
@@ -130,7 +130,7 @@ class ServerConnector(Connector):
         self.mq_read = read_queue
 
     def run(self):
-        self._network.init_network_connection()
+        self.setup()
         # start a thread watching message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()

@@ -15,3 +15,10 @@
 import unittest
 
 
+class ConnectorTestCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        return super().setUp()
+
+    
+    
