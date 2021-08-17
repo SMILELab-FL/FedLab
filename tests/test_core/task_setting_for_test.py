@@ -20,7 +20,7 @@ class unittestDataset(Dataset):
     def __len__(self):
         return len(self.label)
 
-def unittest_dataset():
+def unittest_reg_dataset():
     data = []
     for _ in range(10):
         data.append(torch.Tensor(size=(20,)))
@@ -29,11 +29,25 @@ def unittest_dataset():
         target.append(torch.Tensor(size=(5,)))
     dataset = unittestDataset(data,target)
     return dataset
-    
-def unittest_dataloader():
-    dataset = unittest_dataset()
+
+def unittest_cls_dataset():
+    data = []
+    for _ in range(10):
+        data.append(torch.Tensor(size=(20,)))
+    target = [int(x.argmax().item()) for x in data]
+    dataset = unittestDataset(data,target)
+    return dataset
+
+def unittest_dataloader(type="reg"):
+    if type=="reg":
+        dataset = unittest_reg_dataset()
+    if type=="cls":
+        dataset = unittest_cls_dataset()
     loader = dataloader.DataLoader(dataset=dataset, batch_size=len(dataset))
     return loader
+
+
+
 
 
     

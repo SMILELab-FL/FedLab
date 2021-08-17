@@ -34,6 +34,7 @@ from tests.test_core.task_setting_for_test import (
 
 
 class FedAvgTestCase(unittest.TestCase):
+    
     def setUp(self) -> None:
         ip = "127.0.0.1"
         port = "12345"
@@ -44,6 +45,8 @@ class FedAvgTestCase(unittest.TestCase):
             handler=ps,
             network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
         )
+
+        self.server.start()
 
         dataloader = unittest_dataloader()
         handler = ClientSGDTrainer(
@@ -57,12 +60,7 @@ class FedAvgTestCase(unittest.TestCase):
         self.client = ClientPassiveManager(handler=handler, network=DistNetwork(address=(ip, port), world_size=world_size, rank=1))
 
     def tearDown(self) -> None:
-        return super().tearDown()
+        pass
 
     def test_fedavg(self):
-
-        self.server.start()
-        self.client.start()
-
-        self.server.join()
-        self.client.join()
+        self.client.run()

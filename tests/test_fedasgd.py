@@ -32,7 +32,6 @@ from tests.test_core.task_setting_for_test import (
     optimizer,
 )
 
-
 class FedAsgdTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
@@ -44,6 +43,8 @@ class FedAsgdTestCase(unittest.TestCase):
             handler=ps,
             network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
         )
+
+        self.server.start()
 
         dataloader = unittest_dataloader()
         handler = ClientSGDTrainer(
@@ -60,9 +61,4 @@ class FedAsgdTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_fedavg(self):
-
-        self.server.start()
-        self.client.start()
-
-        self.server.join()
-        self.client.join()
+        self.client.run()
