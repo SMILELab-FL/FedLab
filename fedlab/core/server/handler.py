@@ -76,8 +76,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     Details in paper: http://proceedings.mlr.press/v54/mcmahan17a.html
 
     Args:
-        model (torch.nn.Module): Model used in this federation
-        client_num_in_total (int): Total number of clients in this federation
+        model (torch.nn.Module): Model used in this federation.
+        client_num_in_total (int): Total number of clients in this federation.
+        global_round (int): stop condition. Shut down FL system when global round is reached.
         cuda (bool): Use GPUs or not. Default: ``False``
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
@@ -190,6 +191,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model (torch.nn.Module): Global model in server
         client_num_in_total (int): Total number of clients in federation.
         alpha (float): weight used in async aggregation.
+        total_time (int): stop condition. Shut down FL system when total_time is reached.
         strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
@@ -199,6 +201,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         model,
         client_num_in_total,
         alpha=0.5,
+        total_time=5,
         strategy="constant",
         cuda=False,
         logger=None,
@@ -214,7 +217,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_num_in_total = client_num_in_total
 
         self.current_time = 1
-        self.stop_time = 5
+        self.total_time = total_time
 
         # async aggregation params
         self.alpha = alpha
@@ -228,7 +231,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= self.stop_time  # test
+        return self.current_time >= self.total_time 
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""

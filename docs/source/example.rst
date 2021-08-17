@@ -20,6 +20,15 @@ Run quick start demo following commands:
 to start a FL simulation with 1 server and 2 clients, communicating through localhost with each
 other and following FedAvg optimization algorithm.
 
+Follow commands below, run a asynchronous FL simulation with 1 server and 2 clients.
+
+.. code-block:: shell-session
+
+   $ cd fedlab_benchamrks/algorithm/fedasgd/
+   $ bash quick_start.sh
+
+Finally, the demo of ``SerialTrainer`` is in fedlab_benchamrks/algorithm/fedavg/standalone/standalone.py.
+
 Customization
 ^^^^^^^^^^^^^^
 
