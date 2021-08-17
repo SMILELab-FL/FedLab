@@ -9,7 +9,32 @@ _Read this in other languages: [English](README.md), [简体中文](README.zh-cn
 
 Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning research area of machine learning, which aims to protect individual data privacy in distributed machine learning process, especially in ﬁnance, smart healthcare and edge computing. Different from traditional data-centered distributed machine learning, participants in FL setting utilize localized data to train local model, then leverages speciﬁc strategies with other participants to acquire the ﬁnal model collaboratively, avoiding direct data sharing behavior.
 
-To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. __FedLab__ users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
+To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
+
+<table>
+  <tr valign="top">
+    <td width="50%" >
+        <a href=".">
+            <br>
+            <b>FedAvg demo accuracy curve</b>
+            <br>
+            <br>
+            <img src="./docs/imgs/ex-results/fedavg-CNN-MLP-acc-dark.png">
+        </a>
+    </td>
+    <td width="50%">
+        <a href=".">
+            <br>
+            <b>FedAvg demo loss curve</b>
+            <br>
+            <br>
+            <img src="./docs/imgs/ex-results/fedavg-CNN-MLP-loss-dark.png">
+        </a>
+    </td>
+  </tr>
+</table>
+
+
 
 - [Documentation](https://fedlab.readthedocs.io/en/latest/)
 - [Overview of FedLab](https://fedlab.readthedocs.io/en/latest/overview.html)
@@ -17,6 +42,8 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [Examples](https://fedlab.readthedocs.io/en/latest/example.html)
 - [Contribute Guideline](https://fedlab.readthedocs.io/en/latest/contributing.html)
 - [API Reference](https://fedlab.readthedocs.io/en/latest/autoapi/index.html)
+
+
 
 ## Contribution
 
