@@ -16,9 +16,11 @@
 import unittest
 import random
 import os
-from fedlab.utils.functional import AverageMeter
+
+from fedlab.utils.functional import AverageMeter, evaluate, get_best_gpu
 from fedlab.utils.functional import read_config_from_json
 
+from tests.test_core.task_setting_for_test import criterion, unittest_dataloader, model
 
 class FunctionalTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -49,3 +51,10 @@ class FunctionalTestCase(unittest.TestCase):
         test_config = ('127.0.0.1', '3002', 3, 1)
         self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='client_0'))
         self.assertRaises(KeyError, lambda: read_config_from_json(json_file=json_file, user_name='client_2'))
+
+    def test_evaluate(self):
+        #evaluate(model, criterion, unittest_dataloader(type="cls"))
+        pass
+    
+    def test_gpu(self):
+        get_best_gpu()

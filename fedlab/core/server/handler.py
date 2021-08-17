@@ -220,6 +220,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_num_in_total = client_num_in_total
 
         self.current_time = 1
+        self.stop_time = 10
+        
         # async aggregation params
         self.alpha = alpha
         self.strategy = strategy  # "constant", "hinge", "polynomial"
@@ -232,7 +234,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= 2  # test
+        return self.current_time >= self.stop_time  # test
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""

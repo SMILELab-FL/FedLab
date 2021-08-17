@@ -59,7 +59,7 @@ class ClientPassiveManager(NetworkManager):
             if message_code == MessageCode.Exit:
                 self._LOGGER.info("Receive {}, Process exiting".format(message_code))
                 self._network.close_network_connection()
-                exit(0)
+                break
             else:
                 # perform local training
                 self.on_receive(sender_rank, message_code, payload)
@@ -141,7 +141,7 @@ class ClientActiveManager(NetworkManager):
             # exit
             if message_code == MessageCode.Exit:
                 self._LOGGER.info("Recv {}, Process exiting".format(message_code))
-                exit(0)
+                break
 
             # perform local training
             self.on_receive(sender_rank, message_code, payload)
