@@ -30,7 +30,6 @@ class ParameterServerBackendHandler(ABC):
     Example:
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
-
     def __init__(self, model, cuda=False) -> None:
         self.cuda = cuda
         if cuda:
@@ -83,7 +82,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-
     def __init__(
         self,
         model,
@@ -106,15 +104,13 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         if client_num_in_total < 1:
             raise ValueError(
-                "Invalid total client number: {}".format(client_num_in_total)
-            )
+                "Invalid total client number: {}".format(client_num_in_total))
 
         # basic setting
         self.client_num_in_total = client_num_in_total
         self.sample_ratio = sample_ratio
         self.client_num_per_round = max(
-            1, int(self.sample_ratio * self.client_num_in_total)
-        )
+            1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = {}
@@ -131,9 +127,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
         ``self.client_num_in_total + 1``."""
-        selection = random.sample(
-            range(1, self.client_num_in_total + 1), self.client_num_per_round
-        )
+        selection = random.sample(range(1, self.client_num_in_total + 1),
+                                  self.client_num_per_round)
         return selection
 
     def add_model(self, sender_rank, serialized_params):
@@ -148,8 +143,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """
         if self.client_buffer_cache.get(sender_rank) is not None:
             self._LOGGER.info(
-                "parameters from {} have already existed".format(sender_rank)
-            )
+                "parameters from {} have already existed".format(sender_rank))
             return False
 
         self.cache_cnt += 1
@@ -176,7 +170,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             serialized_params_list (list[torch.Tensor]): A list of parameters.
         """
         # use aggregator
-        serialized_parameters = Aggregators.fedavg_aggregate(serialized_params_list)
+        serialized_parameters = Aggregators.fedavg_aggregate(
+            serialized_params_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
         # reset cache cnt
@@ -199,7 +194,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-
     def __init__(
         self,
         model,
@@ -221,7 +215,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.current_time = 1
         self.stop_time = 5
-        
+
         # async aggregation params
         self.alpha = alpha
         self.strategy = strategy  # "constant", "hinge", "polynomial"
@@ -238,21 +232,25 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""
-        alpha = self._adapt_alpha(model_time)
+        alpha_T = self._adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasgd_aggregate(
-            self.model_parameters, client_model_parameters, alpha
-        )  # use aggregator
+            self.model_parameters, client_model_parameters,
+            alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
         self.current_time += 1
 
     def _adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
-        # TODO
+        staleness = self.current_time - receive_model_time
         if self.strategy == "constant":
             return torch.mul(self.alpha, 1)
-        elif self.strategy == "hinge":
-            pass
-        elif self.strategy == "polynomial":
-            pass
+        elif self.strategy == "hinge" and self.b is not None and self.a is not None:
+            if staleness <= self.b:
+                return torch.mul(self.alpha, 1)
+            else:
+                return torch.mul(self.alpha,
+                                 1 / (self.a * ((staleness - self.b) + 1)))
+        elif self.strategy == "polynomial" and self.a is not None:
+            return (staleness + 1)**(-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
