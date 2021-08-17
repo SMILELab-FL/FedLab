@@ -51,10 +51,3 @@ class FunctionalTestCase(unittest.TestCase):
         test_config = ('127.0.0.1', '3002', 3, 1)
         self.assertEqual(test_config, read_config_from_json(json_file=json_file, user_name='client_0'))
         self.assertRaises(KeyError, lambda: read_config_from_json(json_file=json_file, user_name='client_2'))
-
-    def test_evaluate(self):
-        #evaluate(model, criterion, unittest_dataloader(type="cls"))
-        pass
-    
-    def test_gpu(self):
-        get_best_gpu()
