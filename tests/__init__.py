@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
 
@@ -30,6 +31,9 @@ def get_tests():
     from .test_core.test_network_manager import ManagerTestCase
     from .test_core.test_communicator.test_package import PackageTestCase
 
+    from .test_fedavg import FedAvgTestCase
+    from .test_fedasgd import FedAsgdTestCase
+
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(
         SerializationTestCase
     )
@@ -46,6 +50,9 @@ def get_tests():
     manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)
 
+    fedavg_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgTestCase)
+    fedasgd_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdTestCase)
+
     return unittest.TestSuite(
         [
             serialization_suite,
@@ -59,5 +66,7 @@ def get_tests():
             network_suite,
             manager_suite,
             package_suite,
+            fedavg_suite,
+            fedasgd_suite,
         ]
     )
