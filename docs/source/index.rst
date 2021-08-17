@@ -7,6 +7,7 @@
 
 .. image:: ../imgs/FedLab-logo.svg
    :align: center
+   :width: 70%
 
 ==================================
 
