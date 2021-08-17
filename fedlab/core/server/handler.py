@@ -232,7 +232,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= 10  # test
+        return self.current_time >= 2  # test
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""

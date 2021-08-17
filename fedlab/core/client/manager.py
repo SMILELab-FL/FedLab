@@ -109,16 +109,11 @@ class ClientActiveManager(NetworkManager):
     Args:
         handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
-        local_epochs (int): Number of epochs for local training.
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, handler, network, local_epochs=None, logger=None):
+    def __init__(self, handler, network, logger=None):
         super(ClientActiveManager, self).__init__(network, handler)
-
-        # temp variables, can assign train epoch rather than initial epoch value in handler
-        self.epochs = local_epochs
-        self.model_gen_time = None  # record received model's generated update time
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -126,19 +121,20 @@ class ClientActiveManager(NetworkManager):
         else:
             self._LOGGER = logger
 
+        self.model_time = None
+
     def run(self):
         """Main procedure of each client is defined here:
         1. client requests data from server (ACTIVE)
         2. after receiving data, client will train local model
         3. client will synchronize with server actively
         """
-        self._LOGGER.info("connecting with server")
-        self.setup()
 
+        self.setup()
         while True:
             self._LOGGER.info("Waiting for server...")
             # request model actively
-            self.request_model()
+            self._request_parameter()
             # waits for data from
             sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
 
@@ -167,9 +163,9 @@ class ClientActiveManager(NetworkManager):
             )
         )
         s_parameters = payload[0]
-        self.model_gen_time = payload[1]
+        self.model_time = payload[1]
         # move loading model params to the start of training
-        self._handler.train(epoch=self.epochs, model_parameters=s_parameters)
+        self._handler.train(model_parameters=s_parameters)
 
     def setup(self):
         """Initialize network."""
@@ -177,14 +173,14 @@ class ClientActiveManager(NetworkManager):
 
     def synchronize(self):
         """Synchronize local model with server actively"""
-        self._LOGGER.info("synchronize model parameters with server")
+        self._LOGGER.info("synchronize procedure")
         model_params = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
-        pack.append_tensor_list([model_params, self.model_gen_time])
+        pack.append_tensor_list([model_params, self.model_time+1])
         PackageProcessor.send_package(pack, dst=0)
 
-    def request_model(self):
+    def _request_parameter(self):
         """send ParameterRequest"""
-        self._LOGGER.info("request model parameters from server")
+        self._LOGGER.info("request parameter procedure")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)
