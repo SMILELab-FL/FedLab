@@ -37,54 +37,64 @@ def get_tests():
 
     from .test_fedavg_client import FedAvgClientTestCase
     from .test_fedavg_server import FedAvgServerTestCase
-    
+
     from .test_fedasgd_client import FedAsgdClientTestCase
     from .test_fedasgd_server import FedAsgdServerTestCase
 
     serialization_suite = unittest.TestLoader().loadTestsFromTestCase(
-        SerializationTestCase
-    )
+        SerializationTestCase)
     message_code_suite = unittest.TestLoader().loadTestsFromTestCase(
-        MessageCodeTestCase
-    )
-    processor_suite = unittest.TestLoader().loadTestsFromTestCase(ProcessorTestCase)
-    functional_suite = unittest.TestLoader().loadTestsFromTestCase(FunctionalTestCase)
+        MessageCodeTestCase)
+    processor_suite = unittest.TestLoader().loadTestsFromTestCase(
+        ProcessorTestCase)
+    functional_suite = unittest.TestLoader().loadTestsFromTestCase(
+        FunctionalTestCase)
     logger_suite = unittest.TestLoader().loadTestsFromTestCase(LoggerTestCase)
-    aggregator_suite = unittest.TestLoader().loadTestsFromTestCase(AggregatorTestCase)
-    compressor_suite = unittest.TestLoader().loadTestsFromTestCase(CompressorTestCase)
-    handler_suite = unittest.TestLoader().loadTestsFromTestCase(HandlerTestCase)
-    network_suite = unittest.TestLoader().loadTestsFromTestCase(NetworkTestCase)
-    manager_suite = unittest.TestLoader().loadTestsFromTestCase(ManagerTestCase)
-    package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)    
-    sampler_suite = unittest.TestLoader().loadTestsFromTestCase(SamplerTestCase)
-    trainer_suite = unittest.TestLoader().loadTestsFromTestCase(TrainerTestCase)
+    aggregator_suite = unittest.TestLoader().loadTestsFromTestCase(
+        AggregatorTestCase)
+    compressor_suite = unittest.TestLoader().loadTestsFromTestCase(
+        CompressorTestCase)
+    handler_suite = unittest.TestLoader().loadTestsFromTestCase(
+        HandlerTestCase)
+    network_suite = unittest.TestLoader().loadTestsFromTestCase(
+        NetworkTestCase)
+    manager_suite = unittest.TestLoader().loadTestsFromTestCase(
+        ManagerTestCase)
+    package_suite = unittest.TestLoader().loadTestsFromTestCase(
+        PackageTestCase)
+    sampler_suite = unittest.TestLoader().loadTestsFromTestCase(
+        SamplerTestCase)
+    trainer_suite = unittest.TestLoader().loadTestsFromTestCase(
+        TrainerTestCase)
     slice_suite = unittest.TestLoader().loadTestsFromTestCase(SliceTestCase)
 
-    fedavg_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgClientTestCase)
-    fedavg_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgServerTestCase)
+    fedavg_client_suite = unittest.TestLoader().loadTestsFromTestCase(
+        FedAvgClientTestCase)
+    fedavg_server_suite = unittest.TestLoader().loadTestsFromTestCase(
+        FedAvgServerTestCase)
 
-    fedasgd_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdClientTestCase)
-    fedasgd_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAsgdServerTestCase)
+    fedasgd_client_suite = unittest.TestLoader().loadTestsFromTestCase(
+        FedAsgdClientTestCase)
+    fedasgd_server_suite = unittest.TestLoader().loadTestsFromTestCase(
+        FedAsgdServerTestCase)
 
-    return unittest.TestSuite(
-        [
-            serialization_suite,
-            message_code_suite,
-            processor_suite,
-            aggregator_suite,
-            compressor_suite,
-            handler_suite,
-            functional_suite,
-            logger_suite,
-            network_suite,
-            manager_suite,
-            package_suite,
-            sampler_suite,
-            fedavg_client_suite,
-            fedavg_server_suite,
-            fedasgd_server_suite,
-            fedasgd_client_suite,
-            trainer_suite,
-            slice_suite,
-        ]
-    )
+    return unittest.TestSuite([
+        serialization_suite,
+        message_code_suite,
+        processor_suite,
+        aggregator_suite,
+        compressor_suite,
+        handler_suite,
+        functional_suite,
+        logger_suite,
+        network_suite,
+        manager_suite,
+        package_suite,
+        sampler_suite,
+        fedavg_client_suite,
+        fedavg_server_suite,
+        fedasgd_server_suite,
+        fedasgd_client_suite,
+        trainer_suite,
+        slice_suite,
+    ])
