@@ -1,4 +1,5 @@
 # Benchmarks
+
 FedLab 提供了常见的联邦学习基准方法的PyTorch实现包括：同步联邦算法（FedAvg）、异步联邦算法（FedAsgd）、通信压缩策略（Top-k & DGC）、联邦数据集（LEAF）。更多的算法的FedLab实现会在未来提供。
 
 ## FedAvg
@@ -11,31 +12,47 @@ FedAvg是同步联邦学习算法的baseline，FedLab实现了FedAvg的算法流
 可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/standalone/`。
 
 ### Cross Machine
+
 **多机多进程**和**单机多进程**场景的联邦模拟是FedLab的核心模块，由`core/client`和`core/server`中的各项模块组成，具体细节请见overview。
 
 可执行的脚本在`fedlab_benchmarks/algorithm/fedavg/cross_machine/`
 
 ## Leaf
 
-**FedLab将TensorFlow版本的leaf数据集迁移到了PyTorch框架下，并提供了相应数据集的dataload的实现脚本，统一的接口在`fedlab_benchmarks/dataset/leaf_data_process/dataloader.py`**
+**FedLab将TensorFlow版本的LEAF数据集迁移到了PyTorch框架下，并提供了相应数据集的dataload的实现脚本，统一的接口在`fedlab_benchmarks/dataset/leaf_data_process/dataloader.py`**
 
 ### 下载并划分数据
 
-> LEAF benchmark 包含`celeba`, `femnist`, `reddit`, `sent140`, `shakespeare`, `synthetic`六类数据集的联邦设置。
+> `fedlab_benchmarks/datasets`提供了常用数据集的下载脚本，通过运行脚本可获得相应数据。
 >
-> 子文件夹`datasets/data`中包含了LEAF中各数据集的下载和预处理脚本，来源于[LEAF-Github](https://github.com/TalwalkarLab/leaf)。
+> LEAF benchmark 包含了celeba, femnist, reddit, sent140, shakespeare, synthetic 六类数据集的联邦设置，在`fedlab_benchmarks/datasets`提供了相关的数据下载和预处理脚本，参考[LEAF-Github](https://github.com/TalwalkarLab/leaf) 
+>
+> **对于LEAF实验，FedLab为每个数据集提供了一种数据下载、采样和划分参数示例脚本，位于`fedlab_benchmarks/datasets/{dataset_name}/download.sh`，运行后可直接用于实验。**
 
-- 进入子文件夹`datasets/data`，选择需要下载的数据集文件夹进入，通过运行`preprocess.sh` 并提供一定的参数选择实现数据集的下载与划分，具体参数见于各数据集文件夹中的`README.md`
-- 各数据集文件夹下的`download.sh`提供了一种数据划分参数选择示例，通过运行该文件可获得处理后可用于实验的数据集。
 
-**注意事项：**
 
-1. 对于各数据集而言，单独运行该数据集文件夹下的`preprocess.sh` 而不提供相应的参数，则只会获得原始下载数据`raw_data`和处理原数据但未进行划分的`all_data`两类位于`data`文件夹中。
-2. 目前实验数据需要提供训练数据和测试数据的划分，即`data`文件夹下需要存在`train`和`test`文件夹保存相应的数据。
-   训练数据和测试数据的划分可通过为`preprocess.sh` 提供相应的参数来实现，如：`-t`参数指定划分用户到训练-测试集合中的方法，`-tf`参数指定训练集的数据比例。
-3. 若需要重新获取数据或划分数据，则需要先删除`data`文件夹再运行数据获取或划分脚本。
+**以下对脚本使用进行说明：**
+
+进入`fedlab_benchmarks/datasets/{dataset_name}`，运行`preprocess.sh` 得到相关数据并存储于`./data`文件夹，包含原始下载数据`raw_data`和处理后的全部数据`all_data`两类。
+
+- [LEAF - README.md](https://github.com/TalwalkarLab/leaf) 给出了六类数据集的简介、总用户数和对应任务类别，如FEMNIST数据集是用于图像识别的图像数据集，总类别包含大小写字母和数字在内共62个类，每张图像大小为28x28，共有3500个用户。
+- 下载完数据后，开发者可对各数据集运行`./stas.sh`得到`./data/all_data/all_data.json`的统计信息。
+- 若提供相关参数可对原始数据进行采样、划分，实现数据的联邦应用设置，**常用参数有**：
+  1. ```-s```表示采样方式，取值有'iid'和'niid'两种选择，表示是否使用i.i.d方式进行采样；
+  2. ```--sf```表示采样数据比例，取值为小数，默认为0.1；
+  3. ```-k``` 表示采样时所要求的用户最少样本数目，筛选掉拥有过少样本的用户，若取值为0表示不进行样本数目的筛选。
+  4. ```-t```表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中；
+  5. ```--tf``` 表示训练集的数据占比，取值为小数，默认为0.9，表示训练集:测试集=9:1。
+
+目前FedLab对LEAF六类数据集的实验需要提供训练数据和测试数据，因此**需要对`preprocess.sh`提供相关的数据划分参数**。
+
+- **`./download.sh`为开发者提供了一种数据采样和划分参数示例用于实验**，使用者可运行该脚本获取处理后的训练集和测试集，存储于`./data/train`和`./data/test`中。
+  如：```bash preprocess.sh -s niid --sf 0.05 -k 0 -t sample```
+
+- 若需要重新获取数据或划分数据，需要先删除`data`文件夹再运行相关脚本进行数据下载和处理。
 
 ### 运行实验
 
-- 当前leaf数据集所进行的实验为FedAvg联邦平均算法的实现，实验代码位于`fedavg`文件夹中。目前leaf数据集的fedavg实验完成了`femnist`和`shakespeare`两类。
-- `fedavg`文件夹下的`run_leaf_test.sh`脚本包含了leaf数据集客户端数的小规模模拟，通过各数据集名称和提供的总进程数，创建对应的服务器进程和剩余客户端进程，并进行实验。***（具体进程创建脚本可参见##FedAvg中运行脚本说明）***
+当前LEAF数据集所进行的实验为FedAvg的cross machine下的和**单机多进程**场景，目前已完成femnist和shakespeare两类数据集的测试。
+
+可执行脚本位于 `fedlab_benchmarks/fedavg/cross_machine/run_leaf_test.sh`，包含了LEAF数据集客户端的小规模模拟，通过各数据集名称和提供的总进程数，创建对应的服务器进程和剩余客户端进程，并进行实验。
