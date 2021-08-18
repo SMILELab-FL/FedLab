@@ -17,9 +17,27 @@ Guidelines
 ^^^^^^^^^^^^^^^^^^^^
 You're welcome to contribute to this project through **Pull Request**. By contributing, you agree that your contributions will be licensed under `Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0.html>`_ 
 
+We encourage you to contribute to the improvement of FedLab or the FedLab reproduction of existing FL methods. Before your pull request, please make sure that your are familiar with the code structure:
+
+.. code-block:: shell-session
+
+    fedlab
+    │   ├── core 
+    │   │   ├── client                  # client related implementations
+    │   │   ├── communicator            # communication module of FedLab
+    │   │   ├── hierarchical            # hierarchical communication pattern modules
+    │   │   └── server                  # server related implementations
+    │   └── utils                       # functional modules
+    │       └── dataset                 # functional modules associated with dataset
+    │
+    fedlab_benchmarks
+        ├── algorithm                   # implementations of existing FL methods
+        └── datasets                    # FL dataset
+
 Coding
 ----------------
-- The code should provide test cases using `unittest.TestCase`
+- Please make sure your contributions corresponds to the code structure.
+- The code should provide test cases using `unittest.TestCase`.
 
 Docstring
 ----------

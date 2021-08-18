@@ -27,10 +27,13 @@ Follow commands below, run a asynchronous FL simulation with 1 server and 2 clie
    $ cd fedlab_benchamrks/algorithm/fedasgd/
    $ bash quick_start.sh
 
-Finally, the demo of ``SerialTrainer`` is in fedlab_benchamrks/algorithm/fedavg/standalone/standalone.py.
+
+Finally, the demo of ``SerialTrainer`` is in `fedlab_benchamrks/algorithm/fedavg/standalone/ <https://github.com/SMILELab-FL/FedLab/tree/main/fedlab_benchmarks/algorithm/fedavg/standalone>`_.
 
 Customization
 ^^^^^^^^^^^^^^
+
+We encourage you to read the FedLab source code to better understand the structure of FedLab.
 
 Network Configuration
 ----------------------
