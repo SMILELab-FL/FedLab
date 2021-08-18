@@ -31,7 +31,6 @@ class PackageProcessor(object):
     Notes:
         EVERYTHING is :class:`torch.Tensor` in FedLab.
     """
-
     @staticmethod
     def recv_package(src=None):
         """Three-segment tensor communication pattern based on ``torch.distributed``
@@ -49,9 +48,8 @@ class PackageProcessor(object):
 
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
-
         def recv_header(src=src, parse=True):
-            buffer = torch.zeros(size=(HEADER_SIZE,))
+            buffer = torch.zeros(size=(HEADER_SIZE, ))
             dist.recv(buffer, src=src)
             if parse is True:
                 return Package.parse_header(buffer)
@@ -59,7 +57,8 @@ class PackageProcessor(object):
                 return buffer
 
         def recv_slices(slices_size, src):
-            buffer_slices = torch.zeros(size=(slices_size,), dtype=torch.int32)
+            buffer_slices = torch.zeros(size=(slices_size, ),
+                                        dtype=torch.int32)
             dist.recv(buffer_slices, src=src)
             slices = [x.item() for x in buffer_slices]
             return slices
@@ -67,13 +66,15 @@ class PackageProcessor(object):
         def recv_content(slices, data_type, src):
             content_size = sum(slices)
             if data_type == 0:
-                buffer = torch.zeros(size=(content_size,), dtype=torch.float32)
+                buffer = torch.zeros(size=(content_size, ),
+                                     dtype=torch.float32)
             else:
-                buffer = torch.zeros(size=(content_size,), dtype=torch.int32)
+                buffer = torch.zeros(size=(content_size, ), dtype=torch.int32)
             dist.recv(buffer, src=src)
             return Package.parse_content(slices, buffer)
 
-        sender_rank, _, slices_size, message_code, data_type = recv_header(src=src)
+        sender_rank, _, slices_size, message_code, data_type = recv_header(
+            src=src)
 
         if slices_size > 0:
             slices = recv_slices(slices_size=slices_size, src=sender_rank)
@@ -100,7 +101,6 @@ class PackageProcessor(object):
 
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
-
         def send_header(header, dst):
             header[HEADER_RECEIVER_RANK_IDX] = dst
             dist.send(header, dst=dst)

@@ -26,8 +26,12 @@ class DistNetwork(object):
         ethernet (str)
         dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
     """
-
-    def __init__(self, address, world_size, rank, ethernet=None, dist_backend="gloo"):
+    def __init__(self,
+                 address,
+                 world_size,
+                 rank,
+                 ethernet=None,
+                 dist_backend="gloo"):
         super(DistNetwork, self).__init__()
         self.address = address
         self.rank = rank

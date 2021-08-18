@@ -21,7 +21,6 @@ from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing, divide_
 
 
 class SliceTestCase(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         if torch.cuda.is_available():

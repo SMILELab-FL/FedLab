@@ -32,7 +32,6 @@ class ClientPassiveManager(NetworkManager):
         network (DistNetwork): Distributed network to use.
         logger (Logger, optional): object of :class:`Logger`.
     """
-
     def __init__(self, handler, network, logger=None):
         super(ClientPassiveManager, self).__init__(network, handler)
 
@@ -54,10 +53,12 @@ class ClientPassiveManager(NetworkManager):
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            sender_rank, message_code, payload = PackageProcessor.recv_package(
+                src=0)
             # exit
             if message_code == MessageCode.Exit:
-                self._LOGGER.info("Receive {}, Process exiting".format(message_code))
+                self._LOGGER.info(
+                    "Receive {}, Process exiting".format(message_code))
                 self._network.close_network_connection()
                 break
             else:
@@ -78,11 +79,8 @@ class ClientPassiveManager(NetworkManager):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
             payload (list[torch.Tensor]): A list of tensors received from sender.
         """
-        self._LOGGER.info(
-            "Package received from {}, message code {}".format(
-                sender_rank, message_code
-            )
-        )
+        self._LOGGER.info("Package received from {}, message code {}".format(
+            sender_rank, message_code))
         s_parameters = payload[0]
         self._handler.train(model_parameters=s_parameters)
 
@@ -99,7 +97,8 @@ class ClientPassiveManager(NetworkManager):
         """
         self._LOGGER.info("synchronize model parameters with server")
         model_params = self._handler.model_parameters
-        pack = Package(message_code=MessageCode.ParameterUpdate, content=model_params)
+        pack = Package(message_code=MessageCode.ParameterUpdate,
+                       content=model_params)
         PackageProcessor.send_package(pack, dst=0)
 
 
@@ -111,7 +110,6 @@ class ClientActiveManager(NetworkManager):
         network (DistNetwork): Distributed network to use.
         logger (Logger, optional): object of :class:`Logger`.
     """
-
     def __init__(self, handler, network, logger=None):
         super(ClientActiveManager, self).__init__(network, handler)
 
@@ -136,11 +134,13 @@ class ClientActiveManager(NetworkManager):
             # request model actively
             self._request_parameter()
             # waits for data from
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            sender_rank, message_code, payload = PackageProcessor.recv_package(
+                src=0)
 
             # exit
             if message_code == MessageCode.Exit:
-                self._LOGGER.info("Recv {}, Process exiting".format(message_code))
+                self._LOGGER.info(
+                    "Recv {}, Process exiting".format(message_code))
                 break
 
             # perform local training
@@ -157,11 +157,8 @@ class ClientActiveManager(NetworkManager):
             message_code (MessageCode): Agreements code defined in: class:`MessageCode`.
             payload (list[torch.Tensor]): Received package, a list of tensors.
         """
-        self._LOGGER.info(
-            "Package received from {}, message code {}".format(
-                sender_rank, message_code
-            )
-        )
+        self._LOGGER.info("Package received from {}, message code {}".format(
+            sender_rank, message_code))
         s_parameters = payload[0]
         self.model_time = payload[1]
         # move loading model params to the start of training
@@ -176,7 +173,7 @@ class ClientActiveManager(NetworkManager):
         self._LOGGER.info("synchronize procedure")
         model_params = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
-        pack.append_tensor_list([model_params, self.model_time+1])
+        pack.append_tensor_list([model_params, self.model_time + 1])
         PackageProcessor.send_package(pack, dst=0)
 
     def _request_parameter(self):

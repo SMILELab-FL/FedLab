@@ -26,7 +26,6 @@ class SubsetSampler(torch.utils.data.Sampler):
         indices (list): Indices in the whole set selected for subset
         shuffle (bool): shuffle the indices or not.
     """
-
     def __init__(self, indices: list, shuffle=False) -> None:
         self.indices = indices
         if shuffle is True:
@@ -41,7 +40,11 @@ class SubsetSampler(torch.utils.data.Sampler):
 
 class FedDistributedSampler(torch.utils.data.Sampler):
     """Partition dataset according to num_replicas"""
-    def __init__(self, dataset, num_replicas=None, client_id=None, shuffle=True):
+    def __init__(self,
+                 dataset,
+                 num_replicas=None,
+                 client_id=None,
+                 shuffle=True):
 
         self.dataset = dataset
         self.indices = [index for index in range(len(self.dataset))]
@@ -51,14 +54,15 @@ class FedDistributedSampler(torch.utils.data.Sampler):
         else:
             self.num_replicas = num_replicas
         self.id = client_id
-        
+
         self.num_samples = int(len(self.dataset) / self.num_replicas)
 
         self.shuffle = shuffle
 
     def __iter__(self):
-    
-        local_indices = self.indices[ (self.id-1)*self.num_samples : self.id*self.num_samples ]
+
+        local_indices = self.indices[(self.id - 1) * self.num_samples:self.id *
+                                     self.num_samples]
         assert len(local_indices) == self.num_samples
         return iter(local_indices)
 

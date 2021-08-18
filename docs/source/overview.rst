@@ -140,7 +140,9 @@ configuration. More flexibly in parallel, ``SerialTrainer`` is able to replace t
 ``Trainer``. In this way, machine with more computation resources can be assigned with more
 workload of simulating.
 
-> All machines must be in the same network (LAN or WAN) for cross-machine deployment.
+.. note::
+
+   All machines must be in the same network (LAN or WAN) for cross-machine deployment.
 
 .. image:: ../imgs/fedlab-multi_process.svg
    :align: center

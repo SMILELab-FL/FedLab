@@ -39,7 +39,6 @@ class ServerSynchronousManager(NetworkManager):
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-
     def __init__(self, handler, network, logger=None):
 
         super(ServerSynchronousManager, self).__init__(network, handler)
@@ -121,14 +120,12 @@ class ServerSynchronousManager(NetworkManager):
         """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
-            "client id list for this FL round: {}".format(clients_this_round)
-        )
+            "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
             model_params = self._handler.model_parameters  # serialized model params
-            pack = Package(
-                message_code=MessageCode.ParameterUpdate, content=model_params
-            )
+            pack = Package(message_code=MessageCode.ParameterUpdate,
+                           content=model_params)
             PackageProcessor.send_package(pack, dst=client_idx)
 
     def shutdown_clients(self):
@@ -157,7 +154,6 @@ class ServerAsynchronousManager(NetworkManager):
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-
     def __init__(self, handler, network, logger=None):
 
         super(ServerAsynchronousManager, self).__init__(network, handler)
@@ -202,13 +198,11 @@ class ServerAsynchronousManager(NetworkManager):
             pack = Package(message_code=MessageCode.ParameterUpdate)
             model_params = self._handler.model_parameters
             pack.append_tensor_list(
-                [model_params, torch.Tensor(self._handler.server_time)]
-            )
+                [model_params,
+                 torch.Tensor(self._handler.server_time)])
             self._LOGGER.info(
-                "Send model to rank {}, current server model time is {}".format(
-                    sender, self._handler.server_time
-                )
-            )
+                "Send model to rank {}, current server model time is {}".
+                format(sender, self._handler.server_time))
             PackageProcessor.send_package(pack, dst=sender)
 
         elif message_code == MessageCode.ParameterUpdate:
@@ -243,7 +237,6 @@ class ServerAsynchronousManager(NetworkManager):
             _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
-                    src=client_idx
-                )  # the next package is model request
+                    src=client_idx)  # the next package is model request
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=client_idx)

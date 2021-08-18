@@ -61,5 +61,7 @@ if __name__ == "__main__":
         logger=LOGGER,
     )
 
-    manager_ = ClientPassiveManager(handler=trainer, network=network, logger=LOGGER)
+    manager_ = ClientPassiveManager(handler=trainer,
+                                    network=network,
+                                    logger=LOGGER)
     manager_.run()

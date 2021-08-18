@@ -32,7 +32,6 @@ class Scheduler(Process):
         net_upper (DistNetwork): Distributed network manager of server from upper level.
         net_lower (DistNetwork): Distributed network manager of clients from lower level.
     """
-
     def __init__(self, net_upper, net_lower):
         super(Scheduler, self).__init__()
         self.MQs = [Queue(), Queue()]

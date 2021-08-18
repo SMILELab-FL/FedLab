@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from torch.multiprocessing import Process
 from .network import DistNetwork
 from fedlab.core.client.trainer import ClientTrainer
@@ -27,7 +26,6 @@ class NetworkManager(Process):
         handler (ClientTrainer or ParameterServerBackendHandler, optional): Backend computation handler for client or server.
         newtork (DistNetwork): object to manage torch.distributed network communication.
     """
-
     def __init__(self, network, handler=None):
         super(NetworkManager, self).__init__()
 

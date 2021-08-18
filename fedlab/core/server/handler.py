@@ -83,15 +83,13 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-    def __init__(
-        self,
-        model,
-        client_num_in_total,
-        global_round=1,
-        cuda=False,
-        sample_ratio=1.0,
-        logger=None,
-    ):
+    def __init__(self,
+                 model,
+                 client_num_in_total,
+                 global_round=1,
+                 cuda=False,
+                 sample_ratio=1.0,
+                 logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         if logger is None:
@@ -196,16 +194,14 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-    def __init__(
-        self,
-        model,
-        client_num_in_total,
-        alpha=0.5,
-        total_time=5,
-        strategy="constant",
-        cuda=False,
-        logger=None,
-    ):
+    def __init__(self,
+                 model,
+                 client_num_in_total,
+                 alpha=0.5,
+                 total_time=5,
+                 strategy="constant",
+                 cuda=False,
+                 logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
 
         if logger is None:
@@ -231,7 +227,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def stop_condition(self) -> bool:
         """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= self.total_time 
+        return self.current_time >= self.total_time
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""
