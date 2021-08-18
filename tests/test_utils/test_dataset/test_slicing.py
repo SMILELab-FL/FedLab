@@ -12,4 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
+import torch
+from torch import nn
+import torchvision
+import torchvision.transforms as transforms
+from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing, divide_dataset
 
+
+class SliceTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.trainset = torchvision.datasets.MNIST(
+            root="./tests/data/mnist/",
+            train=True,
+            download=True,
+            transform=transforms.ToTensor())
+        cls.total_client = 100
+
+    def test_noniid_slicing(self):
+        random_slicing(self.trainset, num_clients=self.total_client)
+
+    def test_random_slicing(self):
+        noniid_slicing(self.trainset,
+                       num_clients=self.total_client,
+                       num_shards=200)
+
+    def test_divide_dataset(self):
+        slice = random_slicing(self.trainset, num_clients=self.total_client)
+        divide_dataset(self.trainset, slice)
