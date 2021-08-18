@@ -9,9 +9,11 @@
    :align: center
    :width: 70%
 
+FedLab provides the necessary modules for FL simulation, including communication, compression, model optimization, data partition and other functional modules. Users can build FL simulation environment with custom modules like playing with LEGO bricks.
+
 ==================================
 
-
+FedLab provides the necessary modules for FL simulation, including communication, compression, model optimization, data partition and other functional modules. Users can build FL simulation environment with custom modules like playing with LEGO bricks.
 
 .. toctree::
    :maxdepth: 1
