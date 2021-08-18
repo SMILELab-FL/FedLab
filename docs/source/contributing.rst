@@ -42,6 +42,3 @@ Coding
 Docstring
 ----------
 Docstring and code should follow Google Python Style Guide: `中文版 <https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/>`_ | `English <https://google.github.io/styleguide/pyguide.html>`_.
-
-
-

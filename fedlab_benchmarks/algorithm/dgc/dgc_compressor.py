@@ -6,6 +6,7 @@ import torch
 import random
 from .memory import Memory
 
+
 class DGCCompressor:
     def __init__(self,
                  compress_ratio,
@@ -193,10 +194,7 @@ class DGCCompressor:
             if self.int32_indices and not idtype.is_floating_point:
                 indices = indices.type(idtype)
             grad.zero_().index_put_([indices], values, accumulate=True)
-            """
-            if self.op == Average:
-                grad.mul_(1. / self.world_size)
-            """
+
             return grad.view(shape)
         else:
             if self.fp16_values and vdtype.is_floating_point:

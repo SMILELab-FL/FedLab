@@ -158,5 +158,4 @@ fedlab_benchmarks/datasets/mnist
 fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
 fedlab_benchmarks/algorithm/fedavg/standalone/*.ipynb
 fedlab_benchmarks/algorithm/fedavg/standalone/*.sh
-.coverage
-codecov
+codecov_upload.sh

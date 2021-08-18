@@ -26,7 +26,7 @@ def get_tests():
     from .test_utils.test_logger import LoggerTestCase
     from .test_utils.test_compressor import CompressorTestCase
     from .test_utils.test_dataset.test_sampler import SamplerTestCase
-
+    from .test_utils.test_dataset.test_slicing import SliceTestCase
 
     from .test_core.test_communicator.test_processor import ProcessorTestCase
     from .test_core.test_server.test_handler import HandlerTestCase
@@ -58,7 +58,7 @@ def get_tests():
     package_suite = unittest.TestLoader().loadTestsFromTestCase(PackageTestCase)    
     sampler_suite = unittest.TestLoader().loadTestsFromTestCase(SamplerTestCase)
     trainer_suite = unittest.TestLoader().loadTestsFromTestCase(TrainerTestCase)
-
+    slice_suite = unittest.TestLoader().loadTestsFromTestCase(SliceTestCase)
 
     fedavg_client_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgClientTestCase)
     fedavg_server_suite = unittest.TestLoader().loadTestsFromTestCase(FedAvgServerTestCase)
@@ -85,5 +85,6 @@ def get_tests():
             fedasgd_server_suite,
             fedasgd_client_suite,
             trainer_suite,
+            slice_suite,
         ]
     )

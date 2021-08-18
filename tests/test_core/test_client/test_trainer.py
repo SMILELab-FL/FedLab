@@ -30,14 +30,19 @@ from fedlab.utils.serialization import SerializationTool
 from ..task_setting_for_test import mlp
 
 
+class Args:
+    batch_size = 100
+    epochs = 1
+    lr = 0.1
+
 class TrainerTestCase(unittest.TestCase):
+
     def setUp(self) -> None:
         self.total_client = 10
         self.num_per_round = 5
         self.aggregator = Aggregators.fedavg_aggregate
 
-        parser = argparse.ArgumentParser()
-        self.args = parser.parse_args()
+        self.args = Args()
         self.args.batch_size = 100
         self.args.epochs = 1
         self.args.lr = 0.1
