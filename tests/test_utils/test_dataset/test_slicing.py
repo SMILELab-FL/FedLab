@@ -31,14 +31,17 @@ class SliceTestCase(unittest.TestCase):
             transform=transforms.ToTensor())
         cls.total_client = 100
 
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_noniid_slicing(self):
         random_slicing(self.trainset, num_clients=self.total_client)
 
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_random_slicing(self):
         noniid_slicing(self.trainset,
                        num_clients=self.total_client,
                        num_shards=200)
 
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_divide_dataset(self):
         slice = random_slicing(self.trainset, num_clients=self.total_client)
         divide_dataset(self.trainset, slice)
