@@ -18,10 +18,10 @@
 
 import torch
 import pickle
-from ...datasets.leaf_data_process.nlp_utils.vocab import Vocab
-from ...datasets.leaf_data_process.dataset.femnist_dataset import FemnistDataset
-from ...datasets.leaf_data_process.dataset.shakespeare_dataset import ShakespeareDataset
-from ...datasets.leaf_data_process.dataset.sent140_dataset import Sent140Dataset
+from .nlp_utils.vocab import Vocab
+from .dataset.femnist_dataset import FemnistDataset
+from .dataset.shakespeare_dataset import ShakespeareDataset
+from .dataset.sent140_dataset import Sent140Dataset
 from .nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
 
 
