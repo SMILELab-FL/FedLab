@@ -20,7 +20,7 @@ def get_readme():
 
 setup(
     name="FedLab",
-    version="0.1",
+    version="1.0",
     author="Dun Zeng, Siqi Liang, Congjian Luo",
     author_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
     maintainer="Dun Zeng, Siqi Liang",
