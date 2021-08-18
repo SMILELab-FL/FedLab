@@ -1,4 +1,4 @@
-# LEAF_DATA README
+# LEAF DATA README
 
 This folder contains LEAF data download and preprocessed scripts, which are modified
     from [LEAF-Github](https://github.com/TalwalkarLab/leaf).
