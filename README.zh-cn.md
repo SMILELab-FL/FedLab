@@ -10,28 +10,6 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 
 ​        为了减轻研究者实现联邦学习算法的负担，我们向大家介绍非常灵活的联邦学习框架__FedLab__。__FedLab__为联邦学习的模拟实验提供了必要的模块，包括通信、压缩、模型优化、数据切分，及其他功能性模块。用户们可以像使用乐高积木一样，根据需求构建他们的联邦模拟环境。我们还提供了一些联邦学习的基准算法的实现，方便用户能更好的理解并使用__FedLab__。
 
-<table>
-  <tr valign="top">
-    <td width="50%" >
-        <a href=".">
-            <br>
-            <b>联邦平均实现的精确率曲线</b>
-            <br>
-            <br>
-            <img src="./docs/imgs/ex-results/fedavg-CNN-MLP-acc-dark.png">
-        </a>
-    </td>
-    <td width="50%">
-        <a href=".">
-            <br>
-            <b>联邦平均实现的损失函数曲线</b>
-            <br>
-            <br>
-            <img src="./docs/imgs/ex-results/fedavg-CNN-MLP-loss-dark.png">
-        </a>
-    </td>
-  </tr>
-</table>
 
 
 - [文档](https://fedlab.readthedocs.io/en/latest/)
