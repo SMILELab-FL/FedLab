@@ -122,8 +122,13 @@ Synchronous
 Synchronous communication involves ``ServerSynchronousManager`` and ``ClientPassiveManager``. Communication
 procedure is shown as follows.
 
-.. image:: ../imgs/fedlab-sychronous.svg
-   :align: center
+.. image:: ../imgs/fedlab-synchronous.svg
+      :align: center
+      :class: only-light
+
+.. image:: ../imgs/fedlab-synchronous-dark.svg
+  :align: center
+  :class: only-dark
 
 .. note::
    1. Overwrite ``setup()`` in both ``ServerSynchronousManager`` and ``ClientPassiveManager`` to define
@@ -140,7 +145,13 @@ Asynchronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager
 procedure is shown as follows.
 
 .. image:: ../imgs/fedlab-asynchronous.svg
-   :align: center
+      :align: center
+      :class: only-light
+
+.. image:: ../imgs/fedlab-asynchronous-dark.svg
+  :align: center
+  :class: only-dark
+
 
 .. note::
    1. overwrite ``setup()`` in both client and server to define initialization procedure.
