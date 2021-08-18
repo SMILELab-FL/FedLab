@@ -67,9 +67,8 @@ class TopkCompressor(Compressor):
 
     def decompress_tensor(self, values, indices, shape):
         de_tensor = torch.zeros(size=shape).view(-1)
-        de_tensor = de_tensor.index_put_([indices],
-                                            values,
-                                            accumulate=True).view(shape)
+        de_tensor = de_tensor.index_put_([indices], values,
+                                         accumulate=True).view(shape)
         return de_tensor
 
     def compress_model(self, model):
@@ -83,7 +82,8 @@ class TopkCompressor(Compressor):
         return model_values, model_indices
 
     def decompress_model(self, model, model_values, model_indices):
-        for parameter, values, indices in zip(model.parameters(), model_values, model_indices):
-            de_tensor = self.decompress_tensor(values, indices, parameter.shape)
+        for parameter, values, indices in zip(model.parameters(), model_values,
+                                              model_indices):
+            de_tensor = self.decompress_tensor(values, indices,
+                                               parameter.shape)
             parameter.data.copy_(de_tensor)
-

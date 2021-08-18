@@ -15,8 +15,10 @@
 import logging
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -28,7 +30,6 @@ class Logger(object):
         log_file (str): a file path of log file
         log_name (str): log name for output
     """
-
     def __init__(self, log_name, log_file=None):
         self.logger = logging.getLogger(log_name)
 

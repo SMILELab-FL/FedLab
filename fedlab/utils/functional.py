@@ -20,7 +20,6 @@ import numpy as np
 
 class AverageMeter(object):
     """Record train infomation"""
-
     def __init__(self):
         self.reset()
 

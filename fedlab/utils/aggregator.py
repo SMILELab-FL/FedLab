@@ -17,7 +17,6 @@ import torch
 
 class Aggregators(object):
     """Define the algorithm of parameters aggregation"""
-
     @staticmethod
     def fedavg_aggregate(serialized_params_list):
         """FedAvg aggregator
@@ -30,8 +29,8 @@ class Aggregators(object):
         Returns:
             torch.Tensor
         """
-        serialized_parameters = torch.mean(
-            torch.stack(serialized_params_list), dim=0)
+        serialized_parameters = torch.mean(torch.stack(serialized_params_list),
+                                           dim=0)
         return serialized_parameters
 
     @staticmethod
