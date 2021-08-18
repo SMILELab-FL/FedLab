@@ -38,7 +38,6 @@ class Connector(NetworkManager):
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
-
     def __init__(self, network, write_queue, read_queue):
         super(Connector, self).__init__(network)
 
@@ -73,7 +72,6 @@ class ClientConnector(Connector):
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
-
     def __init__(self, network, write_queue, read_queue):
         super(ClientConnector, self).__init__(network, write_queue, read_queue)
 
@@ -87,7 +85,8 @@ class ClientConnector(Connector):
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package()  # package from clients
+            sender, message_code, payload = PackageProcessor.recv_package(
+            )  # package from clients
             print("ClientConnector: recv data from {}, message code {}".format(
                 sender, message_code))
             self.on_receive(sender, message_code, payload)
@@ -102,11 +101,8 @@ class ClientConnector(Connector):
         """
         while True:
             sender, message_code, payload = self.mq_read.get()
-            print(
-                "Watching Queue: data from {}, message code {}".format(
-                    sender, message_code
-                )
-            )
+            print("Watching Queue: data from {}, message code {}".format(
+                sender, message_code))
             pack = Package(message_code=message_code, content=payload)
             PackageProcessor.send_package(pack, dst=1)
 
@@ -121,7 +117,6 @@ class ServerConnector(Connector):
         write_queue (torch.multiprocessing.Queue): message queue
         read_queue (torch.multiprocessing.Queue):  message queue
     """
-
     def __init__(self, network, write_queue, read_queue):
         super(ServerConnector, self).__init__(network, write_queue, read_queue)
 

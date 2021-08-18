@@ -52,5 +52,5 @@ class SerializationTool(object):
             size = parameter.data.size()
             parameter.data.copy_(
                 serialized_parameters[current_index:current_index +
-                                                    numel].view(size))
+                                      numel].view(size))
             current_index += numel

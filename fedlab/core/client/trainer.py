@@ -38,7 +38,6 @@ class ClientTrainer(ABC):
         model (torch.nn.Module): Model used in this federation
         cuda (bool): Use GPUs or not
     """
-
     def __init__(self, model, cuda):
         self.cuda = cuda
 
@@ -77,10 +76,14 @@ class ClientSGDTrainer(ClientTrainer):
         cuda (bool, optional): use GPUs or not. Default: ``True``.
         logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-
-    def __init__(
-        self, model, data_loader, epochs, optimizer, criterion, cuda=True, logger=None
-    ):
+    def __init__(self,
+                 model,
+                 data_loader,
+                 epochs,
+                 optimizer,
+                 criterion,
+                 cuda=True,
+                 logger=None):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
@@ -105,8 +108,7 @@ class ClientSGDTrainer(ClientTrainer):
         """
         self._LOGGER.info("Local train procedure is started")
         SerializationTool.deserialize_model(
-            self._model, model_parameters
-        )  # load parameters
+            self._model, model_parameters)  # load parameters
         if epochs is None:
             epochs = self.epochs
         self._LOGGER.info("Local train procedure is running")
@@ -114,7 +116,8 @@ class ClientSGDTrainer(ClientTrainer):
             self._model.train()
             for inputs, labels in self._data_loader:
                 if self.cuda:
-                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(self.gpu)
+                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(
+                        self.gpu)
 
                 outputs = self._model(inputs)
                 loss = self.criterion(outputs, labels)
@@ -123,6 +126,7 @@ class ClientSGDTrainer(ClientTrainer):
                 loss.backward()
                 self.optimizer.step()
         self._LOGGER.info("Local train procedure is finished")
+
 
 class SerialTrainer(ClientTrainer):
     """Train multiple clients in a single process.
@@ -139,7 +143,6 @@ class SerialTrainer(ClientTrainer):
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
-
     def __init__(
         self,
         model,
@@ -182,7 +185,8 @@ class SerialTrainer(ClientTrainer):
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[idx - 1], shuffle=True),
+            sampler=SubsetSampler(indices=self.data_slices[idx - 1],
+                                  shuffle=True),
             batch_size=batch_size,
         )
         return train_loader
@@ -240,13 +244,14 @@ class SerialTrainer(ClientTrainer):
         """
         param_list = []
         for idx in id_list:
-            self._LOGGER.info("starting training process of client [{}]".format(idx))
+            self._LOGGER.info(
+                "starting training process of client [{}]".format(idx))
 
             data_loader = self._get_train_dataloader(idx=idx)
 
-            self._train_alone(
-                model_parameters=model_parameters, train_loader=data_loader, cuda=cuda
-            )
+            self._train_alone(model_parameters=model_parameters,
+                              train_loader=data_loader,
+                              cuda=cuda)
             param_list.append(self.model_parameters)
 
         if aggregate is True and self.aggregator is not None:

@@ -29,7 +29,6 @@ DEFAULT_SLICE_SIZE = 0
 DEFAULT_MESSAGE_CODE_VALUE = 0
 DEFAULT_DATA_TYPE_VALUE = 0
 
-
 HEADER_SIZE = 5
 
 
@@ -51,16 +50,18 @@ class Package(object):
         content (torch.Tensor, optional): Tensors contained in this package.
         data_type (int): 0 for float, 1 for int.
     """
-
-    def __init__(
-        self, receiver_rank=None, message_code=None, content=None, data_type=0
-    ):
+    def __init__(self,
+                 receiver_rank=None,
+                 message_code=None,
+                 content=None,
+                 data_type=0):
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
 
         assert isinstance(
-            receiver_rank, int
-        ), "receiver_rank should be integer, not {}".format(type(receiver_rank))
+            receiver_rank,
+            int), "receiver_rank should be integer, not {}".format(
+                type(receiver_rank))
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -70,11 +71,10 @@ class Package(object):
         assert isinstance(
             message_code, int
         ), "message_code can only be MessageCode or integer, not {}".format(
-            type(message_code)
-        )
+            type(message_code))
 
         # initialize header
-        self.header = torch.Tensor(size=(HEADER_SIZE,))
+        self.header = torch.Tensor(size=(HEADER_SIZE, ))
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         else:
@@ -142,7 +142,7 @@ class Package(object):
         index = 0
         parse_result = []
         for offset in slices:
-            seg_tensor = content[index : index + offset]
+            seg_tensor = content[index:index + offset]
             parse_result.append(seg_tensor)
             index += offset
         return parse_result

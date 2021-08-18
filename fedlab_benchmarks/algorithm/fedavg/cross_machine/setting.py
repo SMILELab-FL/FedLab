@@ -41,9 +41,10 @@ def get_dataset(args):
             batch_size=args.batch_size,
             drop_last=True,
             num_workers=args.world_size)
-        
+
         testloader = torch.utils.data.DataLoader(testset,
-                                                 batch_size=int(len(testset)/10),
+                                                 batch_size=int(
+                                                     len(testset) / 10),
                                                  drop_last=False,
                                                  num_workers=2,
                                                  shuffle=False)
@@ -71,8 +72,14 @@ def get_model(args):
         model = RNN_Shakespeare()
     elif args.dataset == 'sent140':
         vocab = get_built_vocab(dataset=args.dataset)
-        model = LSTMModel(vocab_size=vocab.num, embedding_dim=vocab.word_dim, hidden_size=256, num_layers=2,
-                          output_dim=3, using_pretrained=True, embedding_weights=torch.tensor(vocab.vectors), bid=True)
+        model = LSTMModel(vocab_size=vocab.num,
+                          embedding_dim=vocab.word_dim,
+                          hidden_size=256,
+                          num_layers=2,
+                          output_dim=3,
+                          using_pretrained=True,
+                          embedding_weights=torch.tensor(vocab.vectors),
+                          bid=True)
         pass
     else:
         raise ValueError("Invalid dataset:", args.dataset)
