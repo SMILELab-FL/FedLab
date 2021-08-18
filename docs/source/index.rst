@@ -31,9 +31,9 @@ Gallery
 
         .. card:: FedAvg-MNIST Accuracy
             :text-align: center
-            :shadow: sm
+            :shadow: md
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
-            :class-card: sd-rounded-3 sd-shadow-md
+            :class-card: sd-rounded-3
             :link: examples
             :link-type: ref
 
@@ -41,9 +41,9 @@ Gallery
 
         .. card:: FedAvg-MNIST Loss
             :text-align: center
-            :shadow: sm
+            :shadow: md
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
-            :class-card: sd-rounded-3 sd-shadow-md
+            :class-card: sd-rounded-3
             :link: examples
             :link-type: ref
 
