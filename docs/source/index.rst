@@ -25,13 +25,27 @@
 
 Gallery
 .......
-.. card-carousel:: 2
+.. grid:: 2
 
-    .. card::
-       :shadow: sm
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
+    .. grid-item::
 
-    .. card::
-       :shadow: sm
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
+        .. card:: FedAvg-MNIST Accuracy
+            :text-align: center
+            :shadow: sm
+            :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
+            :class-card: sd-rounded-3
+            :link: examples
+            :link-type: ref
+
+    .. grid-item::
+
+        .. card:: FedAvg-MNIST Loss
+            :text-align: center
+            :shadow: sm
+            :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
+            :class-card: sd-rounded-3
+            :link: examples
+            :link-type: ref
+
+
 
