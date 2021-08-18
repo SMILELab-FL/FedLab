@@ -25,7 +25,7 @@
 
 Gallery
 .......
-.. grid:: 2
+.. grid:: 1 2 2 2
 
     .. grid-item::
 
@@ -33,7 +33,7 @@ Gallery
             :text-align: center
             :shadow: sm
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
-            :class-card: sd-rounded-3
+            :class-card: sd-rounded-3 sd-shadow-md
             :link: examples
             :link-type: ref
 
@@ -43,7 +43,7 @@ Gallery
             :text-align: center
             :shadow: sm
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
-            :class-card: sd-rounded-3
+            :class-card: sd-rounded-3 sd-shadow-md
             :link: examples
             :link-type: ref
 
