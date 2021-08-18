@@ -3,21 +3,7 @@
 Installation & Set up
 ======================
 
-PIP 
-^^^^^^^^^^^^^^
-(unpublished yet)
-
-You can install FedLab with:
-
-.. code-block:: shell-session
-
-   $ pip install fedlab
-
-Install FL benchmarks of FedLab version with
-
-.. code-block:: shell-session
-
-   $ pip install fedlab_benchmarks
+FedLab can be installed by source code or pip.
 
 Source Code
 ^^^^^^^^^^^^^^
@@ -34,6 +20,11 @@ Install dependencies:
 .. code-block:: shell-session
 
    $ pip install -r requirements.txt
+
+Pip
+^^^^
+
+Pip install is coming soon.
 
 Dataset Download
 ^^^^^^^^^^^^^^^^
