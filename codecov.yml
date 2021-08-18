@@ -4,7 +4,7 @@ codecov:
   require_ci_to_pass: yes
 
 ignore:
-  - "fedlab/utils/models"  # ignore folders and all its contents
+  - "fedlab/core/hierarchical"
 
 coverage:
   precision: 2  # decimal number for coverage report on codecov web
