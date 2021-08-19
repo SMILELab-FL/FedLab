@@ -4,8 +4,8 @@
 Examples
 ********
 
-FedLab standardizes FL simulation procedure, including synchronous algorithm, asynchronous
-algorithm and communication compression. FedLab provides modular tools and standard implementations
+**FedLab** standardizes FL simulation procedure, including synchronous algorithm, asynchronous
+algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`. **FedLa** provides modular tools and standard implementations
 to simplify FL research. Users can quickly learn about FedLab from our standard implementation.
 Please follow `Quick Start`_ and `Customization`_ to learn more.
 
@@ -159,4 +159,5 @@ procedure is shown as follows.
    3. overwrite ``on_receive(self, sender, message_code, payload)`` in
       ``ServerAsynchronousManager`` and ``ClientActiveManager`` to customize control flow.
    4. overwrite ``synchronize()`` in ``ClientActiveManager`` to customize synchronize procedure.
+
 

@@ -37,12 +37,12 @@ Overview
    :align: center
    :class: only-dark
 
-**FedLab** provides two basic roles in FL setting: `Server` and `Client`. Each `Server`/`Client`
+**FedLab** provides two basic roles in FL setting: ``Server`` and ``Client``. Each ``Server``/``Client``
 consists of two components called ``NetworkManager`` and ``ParameterHandler``/``Trainer``.
 
 - ``NetworkManager`` module manages message process task, which provides interfaces to customize
   communication agreements and compression
-- ``ParameterHandler`` is responsible for backend computation in `Server`; and `Trainer` is in
+- ``ParameterHandler`` is responsible for backend computation in ``Server``; and ``Trainer`` is in
   charge of backend computation in ``Client``
 
 
@@ -51,7 +51,7 @@ Server
 
 The connection between ``NetworkManager`` and ``ParameterServerHandler`` in ``Server`` is shown as
 below. ``NetworkManager`` processes message and calls ``ParameterServerHandler.on_receive()``
-method, while `ParameterServerHandler` performs training as well as computation process of server
+method, while ``ParameterServerHandler`` performs training as well as computation process of server
 (model aggregation for example), and updates the global model.
 
 .. image:: ../imgs/fedlab-server.svg
@@ -95,7 +95,7 @@ corresponding communication logics of ``NetworkManager`` is shown as below.
       :align: center
       :class: only-dark
 
-2. Asynchronous FL: each round is launched by clients, that is, clients request current global
+2. Asynchronous FL :cite:p:`xie2019asynchronous`: each round is launched by clients, that is, clients request current global
    model parameters then perform local training.
 
    .. image:: ../imgs/fedlab-asynchronous.svg
@@ -108,8 +108,6 @@ corresponding communication logics of ``NetworkManager`` is shown as below.
 
 
 
-
-
 Experimental Scene
 ==================
 
@@ -119,6 +117,7 @@ experiments.
 
 Standalone
 -----------
+
 **FedLab** implements ``SerialTrainer`` for FL simulation in single system process.
 ``SerialTrainer`` allows user to simulate a FL system with multiple clients executing one by one in
 serial in one ``SerialTrainer``. It is designed for simulation in environment with limited
@@ -173,8 +172,16 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
    :align: center
    :class: only-dark
 
+Benchmarks
+==========
+
+**FedLab** also contains data partition scripts from LEAF :cite:p:`caldas2018leaf`, and implementations
+of some FL algorithms, like FedAvg :cite:p:`mcmahan2017communication`.
+
 How to use FedLab?
 ==================
 
 - :ref:`installation`.
 - :ref:`examples`.
+
+
