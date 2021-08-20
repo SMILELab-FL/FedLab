@@ -24,7 +24,7 @@ The executable script is in `fedlab_benchmarks/algorithm/fedavg/cross_machine/`
 
 **FedLab migrates the TensorFlow version of LEAF dataset to the PyTorch framework, and provides the implementation of dataloader for the corresponding dataset. The unified interface is in `fedlab_benchmarks/dataset/leaf_data_process/dataloader.py`**
 
-### Leaf数据集说明
+### description of Leaf datasets
 
 The LEAF benchmark contains the federation settings of Celeba, femnist, Reddit, sent140, shakespeare and synthetic datasets. With reference to [leaf-readme.md](https://github.com/talwalkarlab/leaf) , the introduction the total number of users and the corresponding task categories of leaf datasets are given below.
 
