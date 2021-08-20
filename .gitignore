@@ -157,5 +157,6 @@ actions-runner
 fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
 fedlab_benchmarks/algorithm/fedavg/standalone/*.ipynb
 fedlab_benchmarks/algorithm/fedavg/standalone/*.sh
+tests/data/mnist
 codecov
 codecov_upload.sh
