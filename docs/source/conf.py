@@ -42,7 +42,12 @@ extensions = [
     'sphinxcontrib.napoleon',
     'sphinx.ext.autosectionlabel',  # allows referring sections its title, affects `ref`
     'sphinx_design',
+    'sphinxcontrib.bibtex',
 ]
+
+# for 'sphinxcontrib.bibtex' extension
+bibtex_bibfiles = ['refs.bib']
+bibtex_default_style = 'unsrt'
 
 autodoc_mock_imports = ["numpy", "torch", "torchvision"]
 autoclass_content = 'both'
