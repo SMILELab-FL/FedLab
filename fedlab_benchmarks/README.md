@@ -2,8 +2,8 @@
 
 FedLab provides PyTorch implementations of common federated learning benchmarks, including Synchronous Federated Algorithm (FedAvg), Asynchronous Federated Algorithm (FedAsgd), Communication Compression Strategy (top-K & DGC), Federated DataSet benchmark (LEAF).
 
-More implementation of algorithms will be provided in the future.
-
+More implementation of algorithms will be provided in the future.  
+Read this in another language: [简体中文](./README_zh-cn.md).
 ## FedAvg
 
 FedAvg is the baseline of synchronous federated learning algorithm, and FedLab implements the algorithm flow of FedAvg, including standalone and Cross Machine scenarios.
