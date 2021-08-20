@@ -148,8 +148,8 @@ dmypy.json
 cython_debug/
 
 # dataset
-fedlab_benchmarks/datasets/leaf_data/*/data
-fedlab_benchmarks/datasets/leaf_data/*/meta
+fedlab_benchmarks/datasets/data/*/data
+fedlab_benchmarks/datasets/data/*/meta
 tests/data
 actions-runner
 fedlab_benchmarks/datasets/mnist
