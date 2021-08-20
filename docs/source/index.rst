@@ -3,10 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to FedLab's documentation!
 ==================================
 
+.. image:: ../imgs/FedLab-logo.svg
+   :align: center
+   :width: 70%
 
+==================================
+
+FedLab provides the necessary modules for FL simulation, including communication, compression, model optimization, data partition and other functional modules. Users can build FL simulation environment with custom modules like playing with LEGO bricks.
 
 .. toctree::
    :maxdepth: 1
@@ -14,19 +19,34 @@ Welcome to FedLab's documentation!
 
    overview
    install
-   example
+   examples
    contributing
+   reference
 
 
 Gallery
 .......
-.. card-carousel:: 2
+.. grid:: 1 2 2 2
 
-    .. card::
-       :shadow: sm
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
+    .. grid-item::
 
-    .. card::
-       :shadow: sm
-       :img-background: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
+        .. card:: FedAvg-MNIST Accuracy
+            :text-align: center
+            :shadow: md
+            :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
+            :class-card: sd-rounded-3
+            :link: examples
+            :link-type: ref
+
+    .. grid-item::
+
+        .. card:: FedAvg-MNIST Loss
+            :text-align: center
+            :shadow: md
+            :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
+            :class-card: sd-rounded-3
+            :link: examples
+            :link-type: ref
+
+
 

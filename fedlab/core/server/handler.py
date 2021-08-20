@@ -86,7 +86,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def __init__(self,
                  model,
                  client_num_in_total,
-                 global_round=1,
+                 global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
                  logger=None):

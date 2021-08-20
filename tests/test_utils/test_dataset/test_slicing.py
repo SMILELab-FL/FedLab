@@ -23,12 +23,13 @@ from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing, divide_
 class SliceTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.trainset = torchvision.datasets.MNIST(
-            root="./tests/data/mnist/",
-            train=True,
-            download=True,
-            transform=transforms.ToTensor())
-        cls.total_client = 100
+        if torch.cuda.is_available():
+            cls.trainset = torchvision.datasets.MNIST(
+                root="./tests/data/mnist/",
+                train=True,
+                download=True,
+                transform=transforms.ToTensor())
+            cls.total_client = 100
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_noniid_slicing(self):

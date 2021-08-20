@@ -1,9 +1,10 @@
+******************
 Overview of FedLab
-=====================
+******************
 
 
 Introduction
-^^^^^^^^^^^^^^^
+============
 
 Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning
 research area of machine learning, which aims to protect individual data privacy in distributed
@@ -26,34 +27,44 @@ For more details, please read our `full paper`__.
 
 
 Overview
-^^^^^^^^^^^
+========
 
 .. image:: ../imgs/fedlab-overview.svg
    :align: center
+   :class: only-light
 
-**FedLab** provides two basic roles in FL setting: `Server` and `Client`. Each `Server`/`Client`
+.. image:: ../imgs/fedlab-overview-dark.svg
+   :align: center
+   :class: only-dark
+
+**FedLab** provides two basic roles in FL setting: ``Server`` and ``Client``. Each ``Server``/``Client``
 consists of two components called ``NetworkManager`` and ``ParameterHandler``/``Trainer``.
 
 - ``NetworkManager`` module manages message process task, which provides interfaces to customize
   communication agreements and compression
-- ``ParameterHandler`` is responsible for backend computation in `Server`; and `Trainer` is in
+- ``ParameterHandler`` is responsible for backend computation in ``Server``; and ``Trainer`` is in
   charge of backend computation in ``Client``
 
 
 Server
--------
+------
 
 The connection between ``NetworkManager`` and ``ParameterServerHandler`` in ``Server`` is shown as
-below. ``NetworkManager`` processes message and calls ``ParameterServerHandler.on**receive()``
-method, while `ParameterServerHandler` performs training as well as computation process of server
+below. ``NetworkManager`` processes message and calls ``ParameterServerHandler.on_receive()``
+method, while ``ParameterServerHandler`` performs training as well as computation process of server
 (model aggregation for example), and updates the global model.
 
 .. image:: ../imgs/fedlab-server.svg
    :align: center
+   :class: only-light
+
+.. image:: ../imgs/fedlab-server-dark.svg
+   :align: center
+   :class: only-dark
 
 
 Client
--------
+------
 
 ``Client`` shares similar design and structure with ``Server``, with ``NetworkManager`` in charge
 of message processing as well as network communication with server, and `Trainer` for client local
@@ -61,6 +72,11 @@ training procedure.
 
 .. image:: ../imgs/fedlab-client.svg
    :align: center
+   :class: only-light
+
+.. image:: ../imgs/fedlab-client-dark.svg
+   :align: center
+   :class: only-dark
 
 Communication
 -------------
@@ -71,20 +87,29 @@ corresponding communication logics of ``NetworkManager`` is shown as below.
 1. Synchronous FL: each round is launched by server, that is, server performs clients sampling
    first then broadcasts global model parameters.
 
-   .. image:: ../imgs/fedlab-sychronous.svg
+   .. image:: ../imgs/fedlab-synchronous.svg
       :align: center
+      :class: only-light
 
-2. Asynchronous FL: each round is launched by clients, that is, clients request current global
+   .. image:: ../imgs/fedlab-synchronous-dark.svg
+      :align: center
+      :class: only-dark
+
+2. Asynchronous FL :cite:p:`xie2019asynchronous`: each round is launched by clients, that is, clients request current global
    model parameters then perform local training.
 
    .. image:: ../imgs/fedlab-asynchronous.svg
       :align: center
+      :class: only-light
 
+   .. image:: ../imgs/fedlab-asynchronous-dark.svg
+      :align: center
+      :class: only-dark
 
 
 
 Experimental Scene
-^^^^^^^^^^^^^^^^^^
+==================
 
 **FedLab** supports both single machine and  multi-machine FL simulations, with **standalone** mode
 for single machine experiments, while cross-machine mode and **hierarchical** mode for multi-machine
@@ -92,6 +117,7 @@ experiments.
 
 Standalone
 -----------
+
 **FedLab** implements ``SerialTrainer`` for FL simulation in single system process.
 ``SerialTrainer`` allows user to simulate a FL system with multiple clients executing one by one in
 serial in one ``SerialTrainer``. It is designed for simulation in environment with limited
@@ -99,9 +125,15 @@ computation resources.
 
 .. image:: ../imgs/fedlab-SerialTrainer.svg
    :align: center
+   :class: only-light
+
+.. image:: ../imgs/fedlab-SerialTrainer-dark.svg
+   :align: center
+   :class: only-dark
 
 Cross-Machine
---------------
+-------------
+
 **FedLab** supports simulation executed on multiple machines with correct network topology
 configuration. More flexibly in parallel, ``SerialTrainer`` is able to replace the regular
 ``Trainer``. In this way, machine with more computation resources can be assigned with more
@@ -113,9 +145,14 @@ workload of simulating.
 
 .. image:: ../imgs/fedlab-multi_process.svg
    :align: center
+   :class: only-light
+
+.. image:: ../imgs/fedlab-multi_process-dark.svg
+   :align: center
+   :class: only-dark
 
 Hierarchical
--------------
+------------
 
 **Hierarchical** mode for **FedLab** is designed for situations where both **standalone** and
 **cross-machine** are insufficient for simulation. **FedLab** promotes ``Scheduler`` as
@@ -129,9 +166,22 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
 
 .. image:: ../imgs/fedlab-hierarchical.svg
    :align: center
+   :class: only-light
+
+.. image:: ../imgs/fedlab-hierarchical-dark.svg
+   :align: center
+   :class: only-dark
+
+Benchmarks
+==========
+
+**FedLab** also contains data partition scripts from LEAF :cite:p:`caldas2018leaf`, and implementations
+of some FL algorithms, like FedAvg :cite:p:`mcmahan2017communication`.
 
 How to use FedLab?
-^^^^^^^^^^^^^^^^^^
+==================
 
 - :ref:`installation`.
 - :ref:`examples`.
+
+
