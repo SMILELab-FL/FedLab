@@ -1,7 +1,5 @@
 # Sentiment140 Dataset
 
-> run download.sh to get processed data as a sample directly
-
 ## Setup Instructions
 
 Run preprocess.sh with a choice of the following tags:
