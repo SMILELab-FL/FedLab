@@ -1,5 +1,5 @@
 # FEMNIST Dataset
-> run `download.sh` to get processed data as a sample directly
+
 ## Setup Instructions
 - pip3 install numpy
 - pip3 install pillow
