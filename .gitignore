@@ -150,8 +150,8 @@ cython_debug/
 # dataset
 fedlab_benchmarks/datasets/data/*/data
 fedlab_benchmarks/datasets/data/*/meta
-actions-runner
 fedlab_benchmarks/datasets/mnist
+actions-runner
 
 # tests
 fedlab_benchmarks/algorithm/fedavg/standalone/*.txt
