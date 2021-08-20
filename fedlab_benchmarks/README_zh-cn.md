@@ -23,50 +23,49 @@ FedAvg是同步联邦学习算法的baseline，FedLab实现了FedAvg的算法流
 
 ### Leaf数据集说明
 
-LEAF benchmark 包含了celeba, femnist, reddit, sent140, shakespeare, synthetic 六类数据集的联邦设置。参考[leaf - README.md](https://github.com/TalwalkarLab/leaf)，给出六类数据集的简介、总用户数和对应任务类别。
+LEAF benchmark 包含了celeba, femnist, reddit, sent140, shakespeare, synthetic 六类数据集的联邦设置。参考[leaf - README.md](https://github.com/TalwalkarLab/leaf) ，给出六类数据集的简介、总用户数和对应任务类别。
 
 1. FEMNIST
-
 - **概述：** 图像数据集
 - **详情：**
   共有62个不同类别（10个数字，26个小写字母，26个大写字母）；
   每张图像是28 * 28像素（可选择全部处理为128 * 128像素）；
   共有3500位用户。
-- **任务:** 图像分类
+- **任务：** 图像分类
 
 2. Sentiment140
 
-- **概述：**推特推文文本数据集
-- **详情：**共660120位用户
-- **任务：**情感分析
+- **概述：** 推特推文文本数据集
+- **详情：** 共660120位用户
+- **任务：** 情感分析
 
 3. Shakespeare
 
-- **概述：**莎士比亚对话文本数据集
-- **详情：**共1129位用户（后续根据序列长度减少到660位，详情查看[bug](https://github.com/TalwalkarLab/leaf/issues/19)）
-- **任务：**下一字符预测
+- **概述：** 莎士比亚对话文本数据集
+- **详情：** 共1129位用户（后续根据序列长度减少到660位，详情查看[bug](https://github.com/TalwalkarLab/leaf/issues/19) ）
+- **任务：** 下一字符预测
 
 4. Celeba
 
-- **概述：**基于 [大规模名人面孔属性数据集](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)的图像数据集
-- **详情：**共9343位用户（排除了样本数小于等于5的名人）
-- **任务：**图像识别（微笑检测）
+- **概述：** 基于 [大规模名人面孔属性数据集](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) 的图像数据集
+- **详情：** 共9343位用户（排除了样本数小于等于5的名人）
+- **任务：** 图像识别（微笑检测）
 
 5. Synthetic Dataset
 
-- **概述：**提出了一个生成具有挑战性的合成联合数据集的过程，高级目标是创建真实模型依赖于各设备的设备。可参阅论文["LEAF: A Benchmark for Federated Settings"](https://arxiv.org/abs/1812.01097)查看整个生成过程的描述。
-- **详情：**用户可以自定义设备数量、类别数量和维度数量等
-- **任务：**分类
+- **概述：** 提出了一个生成具有挑战性的合成联合数据集的过程，高级目标是创建真实模型依赖于各设备的设备。可参阅论文["LEAF: A Benchmark for Federated Settings"](https://arxiv.org/abs/1812.01097) 查看整个生成过程的描述。
+- **详情：** 用户可以自定义设备数量、类别数量和维度数量等
+- **任务：** 分类
 
 6. Reddit
 
-- **概述：** 对[pushshift.io](https://files.pushshift.io/reddit/)发布的2017年12月的Reddit数据进行了预处理
-- **详情：**共1,660,820位用户，总评论56,587,343条。
+- **概述：** 对[pushshift.io](https://files.pushshift.io/reddit/) 发布的2017年12月的Reddit数据进行了预处理
+- **详情：** 共1,660,820位用户，总评论56,587,343条。
 - **任务：** 下一单词预测
 
 ### 下载并处理数据
 
-> 关于leaf六类数据集，参考[leaf/data](https://github.com/TalwalkarLab/leaf/tree/master/data)在`fedlab_benchmarks/datasets/data`中提供了数据下载和预处理脚本。
+> 关于leaf六类数据集，参考[leaf/data](https://github.com/TalwalkarLab/leaf/tree/master/data) 在`fedlab_benchmarks/datasets/data`中提供了数据下载和预处理脚本。
 
 leaf数据集文件夹常用结构：
 
@@ -100,11 +99,11 @@ bash ./preprocess.sh -s niid --sf 1.0 -k 5 -t sample --tf 0.6
 
 通过对`preprocess.sh`设定参数，实现对原始数据的采样、划分等处理，**各数据集文件夹下的README.md均提供了脚本参数示例和解释，常见参数有：**
 
-1. ```-s```表示采样方式，取值有'iid'和'niid'两种选择，表示是否使用i.i.d方式进行采样；
-2. ```--sf```表示采样数据比例，取值为小数，默认为0.1；
-3. ```-k``` 表示采样时所要求的用户最少样本数目，筛选掉拥有过少样本的用户，若取值为0表示不进行样本数目的筛选。
-4. ```-t```表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中；
-5. ```--tf``` 表示训练集的数据占比，取值为小数，默认为0.9，表示训练集:测试集=9:1。
+1. `-s`表示采样方式，取值有'iid'和'niid'两种选择，表示是否使用i.i.d方式进行采样；
+2. `--sf`表示采样数据比例，取值为小数，默认为0.1；
+3. `-k` 表示采样时所要求的用户最少样本数目，筛选掉拥有过少样本的用户，若取值为0表示不进行样本数目的筛选。
+4. `-t`表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中；
+5. `--tf` 表示训练集的数据占比，取值为小数，默认为0.9，表示训练集:测试集=9:1。
 
 目前FedLab的Leaf实验需要提供训练数据和测试数据，因此**需要对`preprocess.sh`提供相关的数据训练集-测试集划分参数**来进行实验。
 
@@ -112,10 +111,10 @@ bash ./preprocess.sh -s niid --sf 1.0 -k 5 -t sample --tf 0.6
 
 ### 数据集使用 - dataloader
 
-leaf数据集由`dataloader.py`加载(位于`fedlab_benchmarks/dataset/leaf_data_process`)，所有返回数据类型均为pytorch [Dataloader](https://pytorch.org/docs/stable/data.html)。
+leaf数据集由`dataloader.py`加载(位于`fedlab_benchmarks/dataset/leaf_data_process`)，所有返回数据类型均为pytorch [Dataloader](https://pytorch.org/docs/stable/data.html) 。
 
 ### 运行实验
 
-当前LEAF数据集所进行的实验为FedAvg的cross machine下的和**单机多进程**场景，目前已完成femnist和shakespeare两类数据集的测试。
+当前LEAF数据集所进行的实验为FedAvg的cross machine下的**单机多进程**场景，目前已完成femnist和shakespeare两类数据集的测试。
 
 可执行脚本位于 `fedlab_benchmarks/fedavg/cross_machine/run_leaf_test.sh`，包含了LEAF数据集客户端的小规模模拟，通过各数据集名称和提供的总进程数，创建对应的服务器进程和剩余客户端进程，并进行实验。
