@@ -25,6 +25,13 @@ class RNN_Shakespeare(nn.Module):
 
         Returns:
             A `torch.nn.Module`.
+
+        Examples:
+            RNN_Shakespeare(
+              (embeddings): Embedding(90, 8, padding_idx=0)
+              (lstm): LSTM(8, 256, num_layers=2, batch_first=True)
+              (fc): Linear(in_features=256, out_features=90, bias=True)
+            ), total 822570 parameters
         """
         super(RNN_Shakespeare, self).__init__()
         self.embeddings = nn.Embedding(num_embeddings=vocab_size,
