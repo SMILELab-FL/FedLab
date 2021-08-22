@@ -16,8 +16,31 @@
 class coordinator(object):
     """Deal with the map relation between client id in FL system and rank in communication.
 
+    通过SetUp(), 全局同步client id -> rank的映射
+    生成coordinator数据结构
+
+    Procedure:
+        1. init group
+        2. server -> quest basic info.
+        3. rank (1-world_size-1) answer basic info(client num)
+        4. server receive info, init Coordinator.
+
     Args:
         object ([type]): [description]
     """
-    def __init__(self) -> None:
-        self.map = None
+    def __init__(self, setup_dict) -> None:
+        self.map = setup_dict
+
+    def map_id_list(self, id_list):
+        map_dict = {}
+        for id in id_list:
+            for rank, num in self.map:
+                if id >= num:
+                    id -= num
+                else:
+                    if rank in map_dict.keys():
+                        map_dict[rank].append(id)
+                    else:
+                        map_dict[rank] = [id]
+                    break
+        return map_dict

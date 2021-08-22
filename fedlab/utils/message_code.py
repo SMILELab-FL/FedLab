@@ -23,3 +23,5 @@ class MessageCode(Enum):
     ParameterUpdate = 2
     EvaluateParams = 3
     Exit = 4
+    SetUp = 5
+    
