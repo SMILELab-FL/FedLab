@@ -26,7 +26,7 @@ Follow commands below, run a asynchronous FL simulation with 1 server and 2 clie
 
 .. code-block:: shell-session
 
-   $ cd fedlab_benchamrks/algorithm/fedasgd/
+   $ cd fedlab_benchamrks/algorithm/fedasync/
    $ bash quick_start.sh
 
 
