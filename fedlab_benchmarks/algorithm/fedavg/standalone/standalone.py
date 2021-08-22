@@ -104,7 +104,6 @@ test_loader = torch.utils.data.DataLoader(testset,
                                           shuffle=False)
 
 # setup
-
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
 if args.model == "mlp":
@@ -133,13 +132,12 @@ else:
 # fedlab setup
 local_model = deepcopy(model)
 
-trainer = SerialTrainer(
-    model=local_model,
-    dataset=trainset,
-    data_slices=data_indices,
-    aggregator=aggregator,
-    args=args,
-)
+trainer = SerialTrainer(model=local_model,
+                        dataset=trainset,
+                        data_slices=data_indices,
+                        aggregator=aggregator,
+                        args=args)
+
 losses = []
 acces = []
 
@@ -155,6 +153,7 @@ for round in range(args.com_round):
                                           aggregate=True)
 
     SerializationTool.deserialize_model(model, aggregated_parameters)
+
     criterion = nn.CrossEntropyLoss()
     loss, acc = evaluate(model, criterion, test_loader)
     #print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
