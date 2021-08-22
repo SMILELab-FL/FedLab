@@ -42,7 +42,7 @@ class ClientTrainer(ABC):
         self.cuda = cuda
 
         if self.cuda:
-            # dynamic model assign
+            # dynamic gpu acquire.
             self.gpu = get_best_gpu()
             self._model = model.cuda(self.gpu)
         else:

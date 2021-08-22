@@ -69,9 +69,9 @@ class ServerSynchronousManager(NetworkManager):
         self.setup()
         while self._handler.stop_condition() is not True:
 
-            #activate = threading.Thread(target=self.activate_clients)
-            #activate.start()
-            self.activate_clients()
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+            #self.activate_clients()
             # waiting for packages
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
@@ -123,9 +123,9 @@ class ServerSynchronousManager(NetworkManager):
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_idx in clients_this_round:
-            model_params = self._handler.model_parameters  # serialized model params
+            model_parameters = self._handler.model_parameters  # serialized model params
             pack = Package(message_code=MessageCode.ParameterUpdate,
-                           content=model_params)
+                           content=model_parameters)
             PackageProcessor.send_package(pack, dst=client_idx)
 
     def shutdown_clients(self):
@@ -196,9 +196,9 @@ class ServerAsynchronousManager(NetworkManager):
         """
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
-            model_params = self._handler.model_parameters
+            model_parameters = self._handler.model_parameters
             pack.append_tensor_list(
-                [model_params,
+                [model_parameters,
                  torch.Tensor(self._handler.server_time)])
             self._LOGGER.info(
                 "Send model to rank {}, current server model time is {}".
@@ -219,9 +219,9 @@ class ServerAsynchronousManager(NetworkManager):
         """
         while self._handler.stop_condition() is not True:
             _, _, payload = self.message_queue.get()
-            parameters = payload[0]
+            model_parameters = payload[0]
             model_time = payload[1]
-            self._handler._update_model(parameters, model_time)
+            self._handler._update_model(model_parameters, model_time)
 
     def shutdown_clients(self):
         """Shutdown all clients.

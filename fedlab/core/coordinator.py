@@ -11,3 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
+class coordinator(object):
+    """Deal with the map relation between client id in FL system and rank in communication.
+
+    Args:
+        object ([type]): [description]
+    """
+    def __init__(self) -> None:
+        self.map = None
