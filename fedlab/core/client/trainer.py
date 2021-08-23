@@ -18,6 +18,10 @@ import logging
 
 import torch
 from torch import nn
+import threading
+import heapq as hp
+import random
+
 
 from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import Logger
@@ -260,3 +264,117 @@ class SerialTrainer(ClientTrainer):
             return aggregated_parameters
         else:
             return param_list
+
+
+class SerialAsyncTrainer(SerialTrainer):
+    """Train multiple clients in a single process.
+
+    Args:
+        model (torch.nn.Module): Model used in this federation.
+        dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
+        data_slices (list[list]): subset of indices of dataset.
+        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+        cuda (bool): Use GPUs or not. Default: ``True``.
+
+    Notes:
+        ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
+
+    """
+    def __init__(
+        self,
+        model,
+        dataset,
+        data_slices,
+        aggregator=None,
+        logger=None,
+        cuda=True,
+        args=None,
+    ) -> None:
+
+        super(SerialAsyncTrainer, self).__init__(model=model, dataset=dataset, data_slices=data_slices,
+                                                 aggregator=aggregator, logger=logger, cuda=cuda, args=args)
+        self.global_model_params = SerializationTool.serialize_model(self._model)
+        self.current_time = 0
+        # heap sort (aggregate_time, params, params_time)
+        self.params_info = []
+
+        self.stop_running = False
+        # adapt alpha
+        self.alpha = args.alpha
+        self.strategy = args.strategy
+        self.a = args.a
+        self.b = args.b
+
+    def train(self, id_list, cuda=True, aggregate=True):
+        """Train local model with different dataset according to :attr:`idx` in :attr:`id_list`.
+
+        Args:
+            id_list (list[int]): Client id in this training serial.
+            cuda (bool): Use GPUs or not. Default: ``True``.
+            aggregate (bool): Whether to perform partial aggregation on this group of clients' local model in the end of local training round.
+
+        Note:
+            Normally, aggregation is performed by server, while we provide :attr:`aggregate` option here to perform
+            partial aggregation on current client group. This partial aggregation can reduce the aggregation workload
+            of server.
+
+        Returns:
+            Serialized model parameters / list of model parameters.
+        """
+        watch_aggregate = threading.Thread(target=self.watching_model_aggregate)
+        watch_aggregate.start()
+
+        aggregate_time_list = list(range(len(id_list)))
+        random.shuffle(aggregate_time_list)
+
+        for i, idx in enumerate(id_list):
+            self._LOGGER.info(
+                "starting training process of client [{}]".format(idx))
+
+            data_loader = self._get_train_dataloader(idx=idx)
+
+            self._train_alone(model_parameters=self.global_model_params,
+                              train_loader=data_loader,
+                              cuda=cuda)
+
+            hp.heappush(self.params_info,
+                        (aggregate_time_list[i], self.model_parameters, self.current_time))
+
+        print("len:{}".format(len(self.params_info)))
+        print("current_time:{}".format(self.current_time))
+
+        # deal remaining update and close thread
+        watch_aggregate.join(30)
+        self.stop_running = False
+
+        print("len:{}".format(len(self.params_info)))
+        print("current_time:{}".format(self.current_time))
+        return self.global_model_params
+
+    def watching_model_aggregate(self):
+        while self.stop_running is not True:
+            if len(self.params_info) != 0 and self.current_time == self.params_info[0][0]:
+                param_info = hp.heappop(self.params_info)  # (aggregate_time, params, params_time)
+                alpha_T = self._adapt_alpha(receive_model_time=param_info[2])
+                aggregated_params = self.aggregator(self.global_model_params, param_info[1], alpha_T)  # use aggregator
+                self.global_model_params = aggregated_params
+                self.current_time += 1
+
+    def _adapt_alpha(self, receive_model_time):
+        """update the alpha according to staleness"""
+        staleness = self.current_time - receive_model_time
+        if self.strategy == "constant":
+            return torch.mul(self.alpha, 1)
+        elif self.strategy == "hinge" and self.b is not None and self.a is not None:
+            if staleness <= self.b:
+                return torch.mul(self.alpha, 1)
+            else:
+                return torch.mul(self.alpha,
+                                 1 / (self.a * ((staleness - self.b) + 1)))
+        elif self.strategy == "polynomial" and self.a is not None:
+            return (staleness + 1) ** (-self.a)
+        else:
+            raise ValueError("Invalid strategy {}".format(self.strategy))
+
+
