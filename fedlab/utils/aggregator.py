@@ -34,8 +34,8 @@ class Aggregators(object):
         return serialized_parameters
 
     @staticmethod
-    def fedasgd_aggregate(server_param, new_param, alpha):
-        """FedASGD aggregator
+    def fedasync_aggregate(server_param, new_param, alpha):
+        """FedAsync aggregator
         
         Paper: https://arxiv.org/abs/1903.03934
         """
