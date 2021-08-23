@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-class coordinator(object):
+class Coordinator(object):
     """Deal with the map relation between client id in FL system and rank in communication.
 
     通过SetUp(), 全局同步client id -> rank的映射
@@ -34,7 +34,7 @@ class coordinator(object):
     def map_id_list(self, id_list):
         map_dict = {}
         for id in id_list:
-            for rank, num in self.map:
+            for rank, num in self.map.items():
                 if id >= num:
                     id -= num
                 else:
@@ -44,3 +44,6 @@ class coordinator(object):
                         map_dict[rank] = [id]
                     break
         return map_dict
+
+    def __str__(self) -> str:
+        return str(self.map)

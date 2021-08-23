@@ -2,9 +2,9 @@ import os
 import argparse
 import random
 from copy import deepcopy
+import torchvision
 import torchvision.transforms as transforms
 from torch import nn
-import torchvision
 import sys
 import torch
 
@@ -22,7 +22,6 @@ from fedlab.utils.functional import get_best_gpu
 from fedlab_benchmarks.models.lenet import LeNet
 
 # python standalone.py --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --name test1 --model mlp --lr 0.02
-
 
 class mlp(nn.Module):
     def __init__(self):
