@@ -266,112 +266,87 @@ class SerialTrainer(ClientTrainer):
 class SerialAsyncTrainer(SerialTrainer):
     """Train multiple clients in a single process.
 
-    Args:
-        model (torch.nn.Module): Model used in this federation.
-        dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
-        data_slices (list[list]): subset of indices of dataset.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
-        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
-        cuda (bool): Use GPUs or not. Default: ``True``.
+        Args:
+            model (torch.nn.Module): Model used in this federation.
+            dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
+            data_slices (list[list]): subset of indices of dataset.
+            aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+            logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+            cuda (bool): Use GPUs or not. Default: ``True``.
+            args (dict, optional): Uncertain variables.
+        Notes:
+            ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
-    Notes:
-        ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
+        """
 
-    """
-    def __init__(
-        self,
-        model,
-        dataset,
-        data_slices,
-        aggregator=None,
-        logger=None,
-        cuda=True,
-        args=None,
-    ) -> None:
+    def __init__(self,
+                 model,
+                 dataset,
+                 data_slices,
+                 aggregator=None,
+                 logger=None,
+                 cuda=True,
+                 args=None) -> None:
 
         super(SerialAsyncTrainer, self).__init__(model=model, dataset=dataset, data_slices=data_slices,
                                                  aggregator=aggregator, logger=logger, cuda=cuda, args=args)
-        self.global_model_params = SerializationTool.serialize_model(self._model)
-        self.current_time = 0
-        # heap sort (aggregate_time, params, params_time)
-        self.params_info = []
 
-        self.stop_running = False
-        # adapt alpha
-        self.alpha = args.alpha
-        self.strategy = args.strategy
-        self.a = args.a
-        self.b = args.b
-
-    def train(self, id_list, cuda=True, aggregate=True):
-        """Train local model with different dataset according to :attr:`idx` in :attr:`id_list`.
-
-        Args:
-            id_list (list[int]): Client id in this training serial.
-            cuda (bool): Use GPUs or not. Default: ``True``.
-            aggregate (bool): Whether to perform partial aggregation on this group of clients' local model in the end of local training round.
+    def _train_alone(self, model_parameters, train_loader, cuda):
+        """Single round of local training for one client.
 
         Note:
-            Normally, aggregation is performed by server, while we provide :attr:`aggregate` option here to perform
-            partial aggregation on current client group. This partial aggregation can reduce the aggregation workload
-            of server.
+            Overwrite this method to customize the PyTorch training pipeline.
 
-        Returns:
-            Serialized model parameters / list of model parameters.
+        Args:
+            model_parameters (torch.Tensor): model parameters.
+            train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
+            cuda (bool): use GPUs or not.
         """
-        watch_aggregate = threading.Thread(target=self.watching_model_aggregate)
-        watch_aggregate.start()
+        epochs, lr = self.args["epochs"], self.args["lr"]
 
-        aggregate_time_list = list(range(len(id_list)))
-        random.shuffle(aggregate_time_list)
+        SerializationTool.deserialize_model(self._model, model_parameters)
+        criterion = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
+        self._model.train()
 
-        for i, idx in enumerate(id_list):
-            self._LOGGER.info(
-                "starting training process of client [{}]".format(idx))
+        for _ in range(epochs):
+            for data, target in train_loader:
+                if cuda:
+                    data = data.cuda(self.gpu)
+                    target = target.cuda(self.gpu)
 
-            data_loader = self._get_train_dataloader(idx=idx)
+                output = self.model(data)
 
-            self._train_alone(model_parameters=self.global_model_params,
-                              train_loader=data_loader,
-                              cuda=cuda)
+                l2_reg = self._l2_reg_params(global_model_parameters=model_parameters,
+                                             reg_lambda=self.args["reg_lambda"],
+                                             reg_condition=0)
+                if l2_reg is not None:
+                    loss = criterion(output, target) + l2_reg * self.args["reg_lambda"]
+                else:
+                    loss = criterion(output, target)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
-            hp.heappush(self.params_info,
-                        (aggregate_time_list[i], self.model_parameters, self.current_time))
+        return self.model_parameters
 
-        print("len:{}".format(len(self.params_info)))
-        print("current_time:{}".format(self.current_time))
+    def _l2_reg_params(self, global_model_parameters, reg_lambda, reg_condition):
+        l2_reg = None
+        if reg_lambda <= reg_condition:
+            return l2_reg
 
-        # deal remaining update and close thread
-        watch_aggregate.join(30)
-        self.stop_running = False
-
-        print("len:{}".format(len(self.params_info)))
-        print("current_time:{}".format(self.current_time))
-        return self.global_model_params
-
-    def watching_model_aggregate(self):
-        while self.stop_running is not True:
-            if len(self.params_info) != 0 and self.current_time == self.params_info[0][0]:
-                param_info = hp.heappop(self.params_info)  # (aggregate_time, params, params_time)
-                alpha_T = self._adapt_alpha(receive_model_time=param_info[2])
-                aggregated_params = self.aggregator(self.global_model_params, param_info[1], alpha_T)  # use aggregator
-                self.global_model_params = aggregated_params
-                self.current_time += 1
-
-    def _adapt_alpha(self, receive_model_time):
-        """update the alpha according to staleness"""
-        staleness = self.current_time - receive_model_time
-        if self.strategy == "constant":
-            return torch.mul(self.alpha, 1)
-        elif self.strategy == "hinge" and self.b is not None and self.a is not None:
-            if staleness <= self.b:
-                return torch.mul(self.alpha, 1)
+        current_index = 0
+        for parameter in self.model.parameters():
+            parameter = parameter.cpu()
+            numel = parameter.data.numel()
+            size = parameter.data.size()
+            global_parameter = global_model_parameters[current_index:current_index +
+                                                              numel].view(size)
+            current_index += numel
+            if l2_reg is None:
+                l2_reg = (parameter - global_parameter).norm(2)
             else:
-                return torch.mul(self.alpha,
-                                 1 / (self.a * ((staleness - self.b) + 1)))
-        elif self.strategy == "polynomial" and self.a is not None:
-            return (staleness + 1) ** (-self.a)
-        else:
-            raise ValueError("Invalid strategy {}".format(self.strategy))
+                l2_reg = l2_reg + (parameter - global_parameter).norm(2)
 
+        return l2_reg * reg_lambda
 

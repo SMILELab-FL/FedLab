@@ -20,6 +20,8 @@ from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.functional import get_best_gpu
 
 from fedlab_benchmarks.models.lenet import LeNet
+import heapq as hp
+import threading
 
 
 # python standalone.py --com_round 3 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --name test1 --model mlp --lr 0.02 --alpha 0.5
@@ -71,6 +73,79 @@ def write_file(acces, losses, args, round):
     record.close()
 
 
+class AsyncAggregate:
+    """aggregate asynchronously server util
+
+    Args:
+        model_parameters (torch.Tensor): model parameters.
+        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+        alpha (float): mixing hyperparameter in FedAsync algorithm, range (0,1)
+        strategy (str): strategy for weighting function, values ``constant``, ``hinge`` and ``polynomial``
+        a (int): parameter for ``hinge`` and ``polynomial`` strategy
+        b (int): parameter for ``hinge`` strategy
+
+    """
+    def __init__(self, model_parameters, aggregator, alpha, strategy, a, b):
+        self.model_parameters = model_parameters
+        self.aggregator = aggregator
+        self.alpha = alpha
+        self.strategy = strategy
+        self.a = a
+        self.b = b
+        self.current_time = 0
+        self.param_counter = 0
+        self.params_info_hp = []  # each (model_time+staleness, param_counter, model_param, model_time)
+        self.stop_running = False
+        self.watching_aggregate = threading.Thread(target=self.model_aggregate)
+        self.watching_aggregate.start()
+
+    def model_aggregate(self):
+        while self.stop_running is not True:
+            if len(self.params_info_hp) != 0:
+                if self.current_time > self.params_info_hp[0][0]:
+                    # remove old aggregate_time, which has been implemented
+                    hp.heappop(self.params_info_hp)
+
+                if self.current_time == self.params_info_hp[0][0]:
+                    param_info = hp.heappop(self.params_info_hp)  # (model_time+staleness, counter, model_param, model_time)
+                    # solve same aggregate_time(model_time+staleness) conflict question, drop remaining same
+                    while len(self.params_info_hp) != 0 and param_info[0] == self.params_info_hp[0][0]:
+                        hp.heappop(self.params_info_hp)
+
+                    alpha_T = self._adapt_alpha(receive_model_time=param_info[3])
+                    aggregated_params = self.aggregator(self.model_parameters, param_info[2], alpha_T)  # use aggregator
+                    self.model_parameters = aggregated_params
+                    self.current_time += 1
+
+    def _adapt_alpha(self, receive_model_time):
+        """update the alpha according to staleness"""
+        staleness = self.current_time - receive_model_time
+        if self.strategy == "constant":
+            return torch.mul(self.alpha, 1)
+        elif self.strategy == "hinge" and self.b is not None and self.a is not None:
+            if staleness <= self.b:
+                return torch.mul(self.alpha, 1)
+            else:
+                return torch.mul(self.alpha,
+                                 1 / (self.a * ((staleness - self.b) + 1)))
+        elif self.strategy == "polynomial" and self.a is not None:
+            return (staleness + 1)**(-self.a)
+        else:
+            raise ValueError("Invalid strategy {}".format(self.strategy))
+
+    def append_params_to_hp(self, params_list):
+        staleness_limit = 6
+        current_time = self.current_time
+        for param in params_list:
+            staleness = random.randint(0, staleness_limit)
+            hp.heappush(self.params_info_hp,
+                        (staleness + current_time, self.param_counter, param, current_time))
+            self.param_counter += 1
+
+    def stop_aggregate(self):
+        self.stop_running = True
+
+
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
@@ -89,6 +164,7 @@ parser.add_argument("--alpha", type=float)
 parser.add_argument("--strategy", type=str, default='constant')
 parser.add_argument("--a", type=int, default=None)
 parser.add_argument("--b", type=int, default=None)
+parser.add_argument("--reg_lambda", type=float, default=0.1)
 # cuda config
 parser.add_argument("--gpu", type=str, default="0,1,2,3")
 
@@ -139,26 +215,43 @@ else:
 # fedlab setup
 local_model = deepcopy(model)
 
+args_test = {"batch_size": args.batch_size, "epochs": args.epochs, "lr": args.lr, "reg_lambda":args.reg_lambda}
 trainer = SerialAsyncTrainer(
     model=local_model,
     dataset=trainset,
     data_slices=data_indices,
     aggregator=aggregator,
-    args=args,
+    args=args_test,
 )
 losses = []
 acces = []
 
-to_select = [i + 1 for i in range(total_client_num)]  # client_id 从1开始
-for round in range(args.com_round):
-    selection = random.sample(to_select, num_per_round)
-    aggregated_parameters = trainer.train(id_list=selection,
-                                          aggregate=True)
+# train procedure
 
-    SerializationTool.deserialize_model(model, aggregated_parameters)
+to_select = [i + 1 for i in range(total_client_num)]  # client_id 从1开始
+async_aggregate = AsyncAggregate(
+    model_parameters=SerializationTool.serialize_model(model),
+    aggregator=aggregator,
+    alpha=args.alpha,
+    strategy=args.strategy,
+    a=args.a,
+    b=args.b,
+)
+
+for round in range(args.com_round):
+    model_parameters = async_aggregate.model_parameters
+    selection = random.sample(to_select, num_per_round)
+    #print(selection)
+    params_list = trainer.train(model_parameters=model_parameters,
+                                id_list=selection,
+                                aggregate=False)
+
+    async_aggregate.append_params_to_hp(params_list)
+    SerializationTool.deserialize_model(model, async_aggregate.model_parameters)
+
     criterion = nn.CrossEntropyLoss()
     loss, acc = evaluate(model, criterion, test_loader)
-    # print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
+    #print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
 
     losses.append(loss)
     acces.append(acc)
@@ -167,5 +260,7 @@ for round in range(args.com_round):
         write_file(acces, losses, args, round)
         break
 
-    if (round + 1) % 5 == 0:  # %5
+    if (round + 1) % 5 == 0:
         write_file(acces, losses, args, round)
+
+async_aggregate.stop_aggregate()
