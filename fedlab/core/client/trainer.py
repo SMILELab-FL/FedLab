@@ -142,21 +142,19 @@ class SerialTrainer(ClientTrainer):
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
         logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
         cuda (bool): Use GPUs or not. Default: ``True``.
-
+        args (dict, optional): Uncertain variables.
     Notes:
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
-    def __init__(
-        self,
-        model,
-        dataset,
-        data_slices,
-        aggregator=None,
-        logger=None,
-        cuda=True,
-        args=None,
-    ) -> None:
+    def __init__(self,
+                 model,
+                 dataset,
+                 data_slices,
+                 aggregator=None,
+                 logger=None,
+                 cuda=True,
+                 args=None) -> None:
 
         super(SerialTrainer, self).__init__(model=model, cuda=cuda)
 
@@ -185,7 +183,7 @@ class SerialTrainer(ClientTrainer):
         Returns:
             :class:`DataLoader` for specific client sub-dataset
         """
-        batch_size = self.args.batch_size
+        batch_size = self.args["batch_size"]
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
@@ -206,7 +204,7 @@ class SerialTrainer(ClientTrainer):
             train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
             cuda (bool): use GPUs or not.
         """
-        epochs, lr = self.args.epochs, self.args.lr
+        epochs, lr = self.args["epochs"], self.args["lr"]
 
         SerializationTool.deserialize_model(self._model, model_parameters)
         criterion = torch.nn.CrossEntropyLoss()
@@ -252,7 +250,6 @@ class SerialTrainer(ClientTrainer):
                 "starting training process of client [{}]".format(idx))
 
             data_loader = self._get_train_dataloader(idx=idx)
-
             self._train_alone(model_parameters=model_parameters,
                               train_loader=data_loader,
                               cuda=cuda)

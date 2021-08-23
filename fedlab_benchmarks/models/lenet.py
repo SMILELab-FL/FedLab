@@ -25,7 +25,6 @@ class Lenet(nn.Module):
 
 
 class LeNet(nn.Module):
-
     def __init__(self, out_dim=10, in_channel=1, img_sz=28):
         super(LeNet, self).__init__()
         feat_map_sz = img_sz // 4

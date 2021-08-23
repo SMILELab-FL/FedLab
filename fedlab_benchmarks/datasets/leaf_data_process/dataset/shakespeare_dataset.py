@@ -36,6 +36,9 @@ class ShakespeareDataset(Dataset):
     def build_vocab(self):
         """ according all letters to build vocab
 
+        Vocabulary re-used from the Federated Learning for Text Generation tutorial.
+        https://www.tensorflow.org/federated/tutorials/federated_learning_for_text_generation
+
         Returns:
             all letters vocabulary list and length of vocab list
         """
