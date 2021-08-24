@@ -178,6 +178,19 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.client_buffer_cache = {}
         self.train_flag = False
 
+    @property
+    def client_num_in_total(self):
+        return self.client_num_in_total
+
+    @client_num_in_total.setter
+    def client_num_in_total(self, value):
+        if int(value) < 1:
+            raise ValueError(
+                "Invalid total client number: {}".format(value))
+        self.client_num_in_total = int(value)
+        self.client_num_per_round = max(
+            1, int(self.sample_ratio * self.client_num_in_total))
+
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous Parameter Server Handler
