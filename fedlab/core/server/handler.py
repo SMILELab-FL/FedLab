@@ -226,13 +226,14 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         return self.current_time
 
     def stop_condition(self) -> bool:
-        """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
+        """:class:`NetworkManager` keeps monitoring the return of this method,
+        and it will stop all related processes and threads when ``True`` returned."""
         return self.current_time >= self.total_time
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
-        aggregated_params = Aggregators.fedasgd_aggregate(
+        aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
