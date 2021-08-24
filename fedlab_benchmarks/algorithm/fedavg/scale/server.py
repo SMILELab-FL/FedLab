@@ -45,11 +45,9 @@ class ScaleSynchronousServer(ServerSynchronousManager):
 
         print(len(clients_this_round))
         print("client id :" , clients_this_round)
-        for key, values in rank_dict.items():
-            print(key, values)
-        
-        for rank, values in rank_dict.items():
 
+        for rank, values in rank_dict.items():
+            print(rank, values)
             param_pack = Package(message_code=MessageCode.ParameterUpdate,
                                  content=self._handler.model_parameters)
             PackageProcessor.send_package(package=param_pack, dst=rank)

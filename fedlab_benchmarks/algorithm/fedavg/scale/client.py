@@ -49,6 +49,8 @@ class ScaleClientManager(ClientPassiveManager):
 
             PackageProcessor.send_package(package=pack, dst=0)
 
+    def synchronize(self):
+        pass
     """
     def run(self):
         self.setup()
