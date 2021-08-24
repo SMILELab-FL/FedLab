@@ -140,6 +140,7 @@ class ServerSynchronousManager(NetworkManager):
 
         """
         for rank in range(1, self._network.world_size):
+            print("stopping clients rank:", rank)
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=rank)
 

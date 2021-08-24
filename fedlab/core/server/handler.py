@@ -164,6 +164,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         Args:
             model_parameters_list (list[torch.Tensor]): A list of parameters.
         """
+        print("aggregating")
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             model_parameters_list)
