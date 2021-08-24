@@ -106,7 +106,7 @@ class AsyncAggregate:
                     # remove old aggregate_time, which has been implemented
                     hp.heappop(self.params_info_hp)
 
-                if self.current_time == self.params_info_hp[0][0]:
+                elif self.current_time == self.params_info_hp[0][0]:
                     param_info = hp.heappop(self.params_info_hp)  # (model_time+staleness, counter, model_param, model_time)
                     # solve same aggregate_time(model_time+staleness) conflict question, drop remaining same
                     while len(self.params_info_hp) != 0 and param_info[0] == self.params_info_hp[0][0]:
@@ -129,7 +129,7 @@ class AsyncAggregate:
                 return torch.mul(self.alpha,
                                  1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return (staleness + 1)**(-self.a)
+            return (staleness + 1) ** (-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
 
