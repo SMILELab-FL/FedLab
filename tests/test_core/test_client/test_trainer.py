@@ -59,7 +59,7 @@ class TrainerTestCase(unittest.TestCase):
             args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
 
-        to_select = [i + 1 for i in range(self.total_client)]
+        to_select = [i for i in range(self.total_client)]
         model_parameters = SerializationTool.serialize_model(model)
         selection = random.sample(to_select, self.num_per_round)
         aggregated_parameters = trainer.train(
@@ -86,7 +86,7 @@ class TrainerTestCase(unittest.TestCase):
             aggregator=self.aggregator,
             args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
-        to_select = [i + 1 for i in range(self.total_client)]
+        to_select = [i for i in range(self.total_client)]
         model_parameters = SerializationTool.serialize_model(model)
         selection = random.sample(to_select, self.num_per_round)
         aggregated_parameters = trainer.train(

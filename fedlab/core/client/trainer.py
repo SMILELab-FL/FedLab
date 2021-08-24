@@ -187,7 +187,7 @@ class SerialTrainer(ClientTrainer):
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[idx - 1],
+            sampler=SubsetSampler(indices=self.data_slices[idx],
                                   shuffle=True),
             batch_size=batch_size,
         )

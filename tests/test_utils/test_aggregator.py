@@ -44,7 +44,7 @@ class AggregatorTestCase(unittest.TestCase):
         server_params = torch.Tensor(size=self.shape)
         comming_params = torch.Tensor(size=self.shape)
 
-        merged_params = Aggregators.fedasgd_aggregate(server_params, comming_params, 0.5)
+        merged_params = Aggregators.fedasync_aggregate(server_params, comming_params, 0.5)
 
         assert self.shape == merged_params.shape
 

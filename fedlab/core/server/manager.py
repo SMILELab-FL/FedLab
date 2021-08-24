@@ -71,7 +71,7 @@ class ServerSynchronousManager(NetworkManager):
 
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
-            #self.activate_clients()
+
             # waiting for packages
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
@@ -91,7 +91,6 @@ class ServerSynchronousManager(NetworkManager):
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
             :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
-
 
         Args:
             sender (int): Rank of sender client process.
@@ -122,11 +121,13 @@ class ServerSynchronousManager(NetworkManager):
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
-        for client_idx in clients_this_round:
+        for client_id in clients_this_round:
+            rank = client_id+1
+
             model_parameters = self._handler.model_parameters  # serialized model params
             pack = Package(message_code=MessageCode.ParameterUpdate,
                            content=model_parameters)
-            PackageProcessor.send_package(pack, dst=client_idx)
+            PackageProcessor.send_package(pack, dst=rank)
 
     def shutdown_clients(self):
         """Shut down all clients.
@@ -138,9 +139,9 @@ class ServerSynchronousManager(NetworkManager):
             for exiting information.
 
         """
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
+        for rank in range(1, self._network.world_size):
             pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
+            PackageProcessor.send_package(pack, dst=rank)
 
 
 class ServerAsynchronousManager(NetworkManager):
@@ -233,10 +234,10 @@ class ServerAsynchronousManager(NetworkManager):
             package.
 
         """
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
-            _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
+        for rank in range(1, self._network.world_size):
+            _, message_code, _ = PackageProcessor.recv_package(src=rank)
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
-                    src=client_idx)  # the next package is model request
+                    src=rank)  # the next package is model request
             pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
+            PackageProcessor.send_package(pack, dst=rank)

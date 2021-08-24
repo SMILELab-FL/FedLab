@@ -33,25 +33,21 @@ class ScaleSynchronousServer(ServerSynchronousManager):
         map = {}
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)
-            data = content[0].item()
-            map[rank] = data
+            map[rank] = content[0].item()
+
         self.coordinator = Coordinator(map)
         self._handler.client_num_in_total = int(
             sum(self.coordinator.map.values()))
-        self._handler.client_num_per_round = max(
-            1, int(self._handler.sample_ratio * self._handler.client_num_in_total))
-
-    def run(self):
-        self.setup()
-        self.activate_clients()
 
     def activate_clients(self):
         clients_this_round = self._handler.sample_clients()
-        print(clients_this_round)
         rank_dict = self.coordinator.map_id_list(clients_this_round)
 
-        print(rank_dict)
-
+        print(len(clients_this_round))
+        print("client id :" , clients_this_round)
+        for key, values in rank_dict.items():
+            print(key, values)
+        
         for rank, values in rank_dict.items():
 
             param_pack = Package(message_code=MessageCode.ParameterUpdate,
@@ -59,10 +55,19 @@ class ScaleSynchronousServer(ServerSynchronousManager):
             PackageProcessor.send_package(package=param_pack, dst=rank)
 
             id_lis = torch.Tensor(values).int()
-            print(id_lis)
             act_pack = Package(message_code=MessageCode.ParameterUpdate,
-                               content=id_lis, data_type=1)
+                               content=id_lis,
+                               data_type=1)
             PackageProcessor.send_package(package=act_pack, dst=rank)
+
+    def on_receive(self, sender, message_code, payload):
+        if message_code == MessageCode.ParameterUpdate:
+            for model_parameters in payload:
+                update_flag = self._handler.add_model(sender, model_parameters)
+                if update_flag is True:
+                    return update_flag
+        else:
+            raise Exception("Unexpected message code {}".format(message_code))
 
 
 if __name__ == "__main__":
@@ -72,7 +77,7 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=str, default="3002")
     parser.add_argument('--world_size', type=int)
 
-    parser.add_argument('--round', type=int, default=5)
+    parser.add_argument('--round', type=int, default=2)
     parser.add_argument('--dataset', type=str, default="mnist")
     parser.add_argument('--ethernet', type=str, default=None)
     parser.add_argument('--sample', type=float, default=1)

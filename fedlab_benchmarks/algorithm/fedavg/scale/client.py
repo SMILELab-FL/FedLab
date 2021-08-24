@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 
 sys.path.append("../../../../")
 
+from fedlab.core.client.manager import ClientPassiveManager
 from fedlab.core.network_manager import NetworkManager
 from fedlab.core.client.trainer import SerialTrainer
 from fedlab.core.network import DistNetwork
@@ -23,9 +24,9 @@ from fedlab.utils.message_code import MessageCode
 from setting import get_model
 
 
-class ScaleClientManager(NetworkManager):
+class ScaleClientManager(ClientPassiveManager):
     def __init__(self, handler, network):
-        super().__init__(network, handler)
+        super().__init__(network=network, handler=handler)
 
     def setup(self):
         super().setup()
@@ -36,14 +37,25 @@ class ScaleClientManager(NetworkManager):
     def on_receive(self, sender_rank, message_code, payload):
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
-            print(payload)
+            _, message_code, payload = PackageProcessor.recv_package(src=0)
+            id_list = payload[0].tolist()
+            model_parameters_list = self._handler.train(
+                model_parameters=model_parameters,
+                id_list=id_list,
+                aggregate=False)
 
+            pack = Package(message_code=MessageCode.ParameterUpdate,
+                           content=model_parameters_list)
+
+            PackageProcessor.send_package(package=pack, dst=0)
+
+    """
     def run(self):
         self.setup()
-
-        sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+        sender_rank, message_code, payload = PackageProcessor.recv_package(
+            src=0)
         self.on_receive(sender_rank, message_code, payload)
+    """
 
 if __name__ == "__main__":
 
@@ -53,7 +65,7 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=str, default="3002")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
-    parser.add_argument("--num", type=int)
+    #parser.add_argument("--num", type=int)
 
     parser.add_argument("--dataset", type=str, default="mnist")
     parser.add_argument("--partition", type=str, default="iid")
@@ -100,7 +112,11 @@ if __name__ == "__main__":
                             dataset=trainset,
                             data_slices=data_indices,
                             aggregator=aggregator,
-                            args=args)
+                            args={
+                                "batch_size": 100,
+                                "lr": 0.1,
+                                "epochs": 5
+                            })
 
     manager_ = ScaleClientManager(handler=trainer, network=network)
 

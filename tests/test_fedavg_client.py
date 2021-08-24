@@ -40,7 +40,7 @@ class FedAvgClientTestCase(unittest.TestCase):
         port = "12345"
         world_size = 2
 
-        ps = SyncParameterServerHandler(deepcopy(model), client_num_in_total=world_size - 1)
+        ps = SyncParameterServerHandler(deepcopy(model), client_num_in_total=1)
         self.server = ServerSynchronousManager(
             handler=ps,
             network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),

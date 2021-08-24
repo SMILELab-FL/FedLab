@@ -142,7 +142,7 @@ acces = []
 
 # train procedure
 
-to_select = [i + 1 for i in range(total_client_num)]  # client_id 从1开始
+to_select = [i for i in range(total_client_num)]
 for round in range(args.com_round):
     model_parameters = SerializationTool.serialize_model(model)
     selection = random.sample(to_select, num_per_round)
