@@ -74,14 +74,14 @@ parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
 parser.add_argument("--com_round", type=int, default=5000)
 
-parser.add_argument("--sample_ratio", type=float)
-parser.add_argument("--batch_size", type=int)
-parser.add_argument("--lr", type=float)
-parser.add_argument("--epochs", type=int)
-parser.add_argument("--partition", type=str)
+parser.add_argument("--sample_ratio", type=float, default=0.1)
+parser.add_argument("--batch_size", type=int, default=10)
+parser.add_argument("--lr", type=float, default=0.1)
+parser.add_argument("--epochs", type=int, default=3)
+parser.add_argument("--partition", type=str, default='iid')
 
-parser.add_argument("--name", type=str)
-parser.add_argument("--model", type=str)
+parser.add_argument("--name", type=str, default='test')
+parser.add_argument("--model", type=str, default='mlp')
 # cuda config
 parser.add_argument("--gpu", type=str, default="0,1,2,3")
 

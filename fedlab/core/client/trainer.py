@@ -18,6 +18,10 @@ import logging
 
 import torch
 from torch import nn
+import threading
+import heapq as hp
+import random
+
 
 from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import Logger
@@ -257,3 +261,92 @@ class SerialTrainer(ClientTrainer):
             return aggregated_parameters
         else:
             return param_list
+
+
+class SerialAsyncTrainer(SerialTrainer):
+    """Train multiple clients in a single process.
+
+        Args:
+            model (torch.nn.Module): Model used in this federation.
+            dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
+            data_slices (list[list]): subset of indices of dataset.
+            aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+            logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+            cuda (bool): Use GPUs or not. Default: ``True``.
+            args (dict, optional): Uncertain variables.
+        Notes:
+            ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
+
+        """
+
+    def __init__(self,
+                 model,
+                 dataset,
+                 data_slices,
+                 aggregator=None,
+                 logger=None,
+                 cuda=True,
+                 args=None) -> None:
+
+        super(SerialAsyncTrainer, self).__init__(model=model, dataset=dataset, data_slices=data_slices,
+                                                 aggregator=aggregator, logger=logger, cuda=cuda, args=args)
+
+    def _train_alone(self, model_parameters, train_loader, cuda):
+        """Single round of local training for one client.
+
+        Note:
+            Overwrite this method to customize the PyTorch training pipeline.
+
+        Args:
+            model_parameters (torch.Tensor): model parameters.
+            train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
+            cuda (bool): use GPUs or not.
+        """
+        epochs, lr = self.args["epochs"], self.args["lr"]
+
+        SerializationTool.deserialize_model(self._model, model_parameters)
+        criterion = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
+        self._model.train()
+
+        for _ in range(epochs):
+            for data, target in train_loader:
+                if cuda:
+                    data = data.cuda(self.gpu)
+                    target = target.cuda(self.gpu)
+
+                output = self.model(data)
+
+                l2_reg = self._l2_reg_params(global_model_parameters=model_parameters,
+                                             reg_lambda=self.args["reg_lambda"],
+                                             reg_condition=0)
+                if l2_reg is not None:
+                    loss = criterion(output, target) + l2_reg * self.args["reg_lambda"]
+                else:
+                    loss = criterion(output, target)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+        return self.model_parameters
+
+    def _l2_reg_params(self, global_model_parameters, reg_lambda, reg_condition):
+        l2_reg = None
+        if reg_lambda <= reg_condition:
+            return l2_reg
+
+        current_index = 0
+        for parameter in self.model.parameters():
+            parameter = parameter.cpu()
+            numel = parameter.data.numel()
+            size = parameter.data.size()
+            global_parameter = global_model_parameters[current_index:current_index +
+                                                              numel].view(size)
+            current_index += numel
+            if l2_reg is None:
+                l2_reg = (parameter - global_parameter).norm(2)
+            else:
+                l2_reg = l2_reg + (parameter - global_parameter).norm(2)
+
+        return l2_reg * reg_lambda
+

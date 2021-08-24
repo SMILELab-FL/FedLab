@@ -65,6 +65,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--epoch", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.1)
+    parser.add_argument("--wd", type=float, default=0)
     parser.add_argument("--cuda", type=bool, default=True)
     args = parser.parse_args()
     args.root = '../../../../datasets/mnist/'
