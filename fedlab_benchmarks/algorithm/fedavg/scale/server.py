@@ -1,17 +1,12 @@
-import os
-import random
 import sys
 import argparse
 
 import torch
-import torchvision
-from torchvision import transforms
 
 sys.path.append('../../../../')
 
-from fedlab.core.server.handler import SyncParameterServerHandler, ParameterServerBackendHandler
+from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.manager import ServerSynchronousManager
-from fedlab.core.network_manager import NetworkManager
 from fedlab.core.network import DistNetwork
 from fedlab.core.coordinator import Coordinator
 from fedlab.core.communicator.processor import PackageProcessor
@@ -21,7 +16,8 @@ from fedlab.utils.functional import evaluate
 from fedlab.utils.logger import Logger
 from fedlab.utils.message_code import MessageCode
 
-from setting import get_model, get_dataset
+from setting import get_model
+
 
 class ScaleSynchronousServer(ServerSynchronousManager):
     def __init__(self, network, handler):
@@ -29,7 +25,7 @@ class ScaleSynchronousServer(ServerSynchronousManager):
 
     def setup(self):
         super().setup()
-        
+
         map = {}
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)
@@ -44,7 +40,7 @@ class ScaleSynchronousServer(ServerSynchronousManager):
         rank_dict = self.coordinator.map_id_list(clients_this_round)
 
         print(len(clients_this_round))
-        print("client id :" , clients_this_round)
+        print("client id :", clients_this_round)
 
         for rank, values in rank_dict.items():
             print(rank, values)
@@ -95,8 +91,6 @@ if __name__ == "__main__":
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,
                           rank=0)
-
-    LOGGER = Logger(log_name="server")
 
     manager_ = ScaleSynchronousServer(network=network, handler=handler)
     manager_.run()
