@@ -20,6 +20,7 @@ from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.message_code import MessageCode
+from fedlab.utils.functional import load_dict
 
 from setting import get_model
 
@@ -39,25 +40,16 @@ class ScaleClientManager(ClientPassiveManager):
             model_parameters = payload[0]
             _, message_code, payload = PackageProcessor.recv_package(src=0)
             id_list = payload[0].tolist()
-            model_parameters_list = self._handler.train(
+            self.model_parameters_list = self._handler.train(
                 model_parameters=model_parameters,
                 id_list=id_list,
                 aggregate=False)
 
-            pack = Package(message_code=MessageCode.ParameterUpdate,
-                           content=model_parameters_list)
-
-            PackageProcessor.send_package(package=pack, dst=0)
-
     def synchronize(self):
-        pass
-    """
-    def run(self):
-        self.setup()
-        sender_rank, message_code, payload = PackageProcessor.recv_package(
-            src=0)
-        self.on_receive(sender_rank, message_code, payload)
-    """
+        pack = Package(message_code=MessageCode.ParameterUpdate,
+                       content=self.model_parameters_list)
+        PackageProcessor.send_package(package=pack, dst=0)
+
 
 if __name__ == "__main__":
 
@@ -67,11 +59,9 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=str, default="3002")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
-    #parser.add_argument("--num", type=int)
 
     parser.add_argument("--dataset", type=str, default="mnist")
     parser.add_argument("--partition", type=str, default="iid")
-    parser.add_argument("--total_client", type=int, default=10)
 
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str, default=None)
@@ -91,18 +81,21 @@ if __name__ == "__main__":
                                           transform=transforms.ToTensor())
 
     if args.partition == "noniid":
-        data_indices = noniid_slicing(trainset,
-                                      num_clients=args.total_client,
-                                      num_shards=200)
+        data_indices = load_dict("mnist_noniid.pkl")
     elif args.partition == "iid":
-        data_indices = random_slicing(trainset, num_clients=args.total_client)
+        data_indices = load_dict("mnist_iid.pkl")
     else:
         raise ValueError("invalid partition type ", args.partition)
+
+    client_id_list = [i for i in range((args.rank-1)*10, (args.rank-1)*10+10)]
+    sub_data_indices = {
+        idx: data_indices[cid]
+        for idx, cid in enumerate(client_id_list)
+    }
 
     model = get_model(args)
     aggregator = Aggregators.fedavg_aggregate
 
-    total_client_num = args.total_client  # client总数
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,
                           rank=args.rank,
@@ -112,7 +105,7 @@ if __name__ == "__main__":
 
     trainer = SerialTrainer(model=model,
                             dataset=trainset,
-                            data_slices=data_indices,
+                            data_slices=sub_data_indices,
                             aggregator=aggregator,
                             args={
                                 "batch_size": 100,

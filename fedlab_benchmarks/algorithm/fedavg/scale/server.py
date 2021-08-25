@@ -30,6 +30,7 @@ class ScaleSynchronousServer(ServerSynchronousManager):
 
     def setup(self):
         super().setup()
+        
         map = {}
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)

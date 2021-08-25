@@ -1,3 +1,4 @@
+pickle
 numpy
 spacy
 pynvml
