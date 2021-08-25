@@ -23,7 +23,6 @@ from fedlab.utils.message_code import MessageCode
 
 from setting import get_model, get_dataset
 
-
 class ScaleSynchronousServer(ServerSynchronousManager):
     def __init__(self, network, handler):
         super().__init__(network=network, handler=handler)

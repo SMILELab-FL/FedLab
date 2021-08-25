@@ -92,7 +92,7 @@ def random_slicing(dataset, num_clients):
         all_idxs = list(set(all_idxs) - set(dict_users[i]))
     return dict_users
 
-def divide_dataset(dataset, slicing_dict, to_file):
+def divide_dataset(dataset, slicing_dict, to_file=None):
     """cut a dataset
     
     Args:
