@@ -152,7 +152,6 @@ class SerialTrainer(ClientTrainer):
                  dataset,
                  data_slices,
                  aggregator=None,
-                 test_loader=None,
                  logger=None,
                  cuda=True,
                  args=None) -> None:
@@ -163,8 +162,6 @@ class SerialTrainer(ClientTrainer):
         self.data_slices = data_slices  # [0, client_num)
         self.client_num = len(data_slices)
         self.aggregator = aggregator
-
-        self.test_loader = test_loader
         
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -263,40 +260,6 @@ class SerialTrainer(ClientTrainer):
             return aggregated_parameters
         else:
             return param_list
-
-    def evalueate(self, model=None, test_loader=None):
-        """
-        Evaluate local model based on given test :class:`torch.DataLoader`
-        Args:
-            model (nn.Module):
-            test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
-        """
-
-        model = model if model is not None else self._model
-
-        test_loader = test_loader if test_loader is not None else self.test_loader
-
-        model.eval()
-        gpu = next(model.parameters()).device
-
-        loss_ = AverageMeter()
-        acc_ = AverageMeter()
-
-        with torch.no_grad():
-            for inputs, labels in test_loader:
-
-                inputs = inputs.to(gpu)
-                labels = labels.to(gpu)
-
-                outputs = model(inputs)
-                loss = self.criterion(outputs, labels)
-
-                _, predicted = torch.max(outputs, 1)
-                loss_.update(loss.item())
-                acc_.update(
-                    torch.sum(predicted.eq(labels)).item(), len(labels))
-
-        return loss_.sum, acc_.avg
 
 class SerialAsyncTrainer(SerialTrainer):
     """Train multiple clients in a single process.

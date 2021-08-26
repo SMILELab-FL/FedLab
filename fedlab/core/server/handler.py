@@ -143,7 +143,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.client_buffer_cache.append(model_parameters.clone())
         self.cache_cnt += 1
-        
+
         # cache is full
         if self.cache_cnt == self.client_num_per_round:
             self._update_model(self.client_buffer_cache)
@@ -162,9 +162,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             aggregation into :attr:`self._model`.
 
         Args:
-            model_parameters_list (list[torch.Tensor]): A list of parameters.
+            model_parameters_list (list[torch.Tensor]): A list of parameters.aq
         """
-        print("aggregating")
+        self._LOGGER.info("Model parameters aggregation, number of aggregation elements {}".format(len(model_parameters_list)))
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             model_parameters_list)
@@ -182,8 +182,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     @client_num_in_total.setter
     def client_num_in_total(self, value):
         if int(value) < 1:
-            raise ValueError(
-                "Invalid total client number: {}".format(value))
+            raise ValueError("Invalid total client number: {}".format(value))
         self._client_num_in_total = int(value)
         self.client_num_per_round = max(
             1, int(self.sample_ratio * self._client_num_in_total))

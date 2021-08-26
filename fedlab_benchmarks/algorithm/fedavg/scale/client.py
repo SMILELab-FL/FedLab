@@ -8,48 +8,15 @@ import torchvision.transforms as transforms
 
 sys.path.append("../../../../")
 
-from fedlab.core.client.manager import ClientPassiveManager
-from fedlab.core.network_manager import NetworkManager
 from fedlab.core.client.trainer import SerialTrainer
+from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
-
-from fedlab.core.communicator.package import Package
-from fedlab.core.communicator.processor import PackageProcessor
 
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
-from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
-from fedlab.utils.message_code import MessageCode
 from fedlab.utils.functional import load_dict
 
 from setting import get_model
-
-
-class ScaleClientManager(ClientPassiveManager):
-    def __init__(self, handler, network):
-        super().__init__(network=network, handler=handler)
-
-    def setup(self):
-        super().setup()
-        content = torch.Tensor([self._handler.client_num]).int()
-        setup_pack = Package(content=content, data_type=1)
-        PackageProcessor.send_package(setup_pack, dst=0)
-
-    def on_receive(self, sender_rank, message_code, payload):
-        if message_code == MessageCode.ParameterUpdate:
-            model_parameters = payload[0]
-            _, message_code, payload = PackageProcessor.recv_package(src=0)
-            id_list = payload[0].tolist()
-            self.model_parameters_list = self._handler.train(
-                model_parameters=model_parameters,
-                id_list=id_list,
-                aggregate=False)
-
-    def synchronize(self):
-        pack = Package(message_code=MessageCode.ParameterUpdate,
-                       content=self.model_parameters_list)
-        PackageProcessor.send_package(package=pack, dst=0)
-
 
 if __name__ == "__main__":
 
@@ -111,7 +78,7 @@ if __name__ == "__main__":
                             aggregator=aggregator,
                             args={
                                 "batch_size": 100,
-                                "lr": 0.1,
+                                "lr": 0.02,
                                 "epochs": 5
                             })
 

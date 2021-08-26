@@ -20,7 +20,8 @@ from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
 from ....utils.message_code import MessageCode
 
-class ScaleSynchronousServer(ServerSynchronousManager):
+
+class ScaleSynchronousManager(ServerSynchronousManager):
     def __init__(self, network, handler):
         super().__init__(network=network, handler=handler)
 
@@ -40,11 +41,10 @@ class ScaleSynchronousServer(ServerSynchronousManager):
         clients_this_round = self._handler.sample_clients()
         rank_dict = self.coordinator.map_id_list(clients_this_round)
 
-        print(len(clients_this_round))
-        print("client id :", clients_this_round)
-
+        self._LOGGER.info("Client Activation Procedure")
         for rank, values in rank_dict.items():
-            print(rank, values)
+            self._LOGGER.info("rank {}, client ids {}".format(rank, values))
+
             param_pack = Package(message_code=MessageCode.ParameterUpdate,
                                  content=self._handler.model_parameters)
             PackageProcessor.send_package(package=param_pack, dst=rank)
