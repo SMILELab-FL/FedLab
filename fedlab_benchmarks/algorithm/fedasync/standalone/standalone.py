@@ -25,7 +25,6 @@ import threading
 
 # python standalone.py --com_round 3 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --name test1 --model mlp --lr 0.02 --alpha 0.5
 
-
 class mlp(nn.Module):
     def __init__(self):
         super(mlp, self).__init__()

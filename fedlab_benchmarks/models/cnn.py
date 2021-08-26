@@ -7,8 +7,6 @@ References:
 
 import torch.nn as nn
 
-IMAGE_SIZE = 28
-
 
 class LeNet(nn.Module):
     def __init__(self, out_dim=10, in_channel=1, img_sz=28):
@@ -48,7 +46,7 @@ class LeNet(nn.Module):
         return x
 
 
-class CNN_DropOut(nn.Module):
+class CNN_Femnist(nn.Module):
     """Used for EMNIST experiments in references[1]
     Args:
         only_digits (bool, optional): If True, uses a final layer with 10 outputs, for use with the
@@ -60,7 +58,7 @@ class CNN_DropOut(nn.Module):
         A `torch.nn.Module`.
     """
     def __init__(self, only_digits=True):
-        super(CNN_DropOut, self).__init__()
+        super(CNN_Femnist, self).__init__()
         self.conv2d_1 = nn.Conv2d(1, 32, kernel_size=3)
         self.max_pooling = nn.MaxPool2d(2, stride=2)
         self.conv2d_2 = nn.Conv2d(32, 64, kernel_size=3)
@@ -104,12 +102,4 @@ class CNN_Mnist(nn.Module):
         x = x.view(x.shape[0], -1)
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
-        return x
-
-
-class CNN_Cifar10(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, x):
         return x

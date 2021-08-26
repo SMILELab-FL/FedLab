@@ -148,6 +148,12 @@ dmypy.json
 cython_debug/
 
 # dataset
+!fedlab_benchmarks/datasets/data/mnist/download_mnist.py
+fedlab_benchmarks/datasets/data/mnist/*
+
+!fedlab_benchmarks/datasets/data/cifar10/download_cifar10.py
+fedlab_benchmarks/datasets/data/cifar10/*
+
 fedlab_benchmarks/datasets/data/*/data
 fedlab_benchmarks/datasets/data/*/meta
 tests/data/mnist/*
