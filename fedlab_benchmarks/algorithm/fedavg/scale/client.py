@@ -16,7 +16,7 @@ from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
-from setting import get_model
+from setting import get_model, get_dataset
 
 if __name__ == "__main__":
 
@@ -41,11 +41,7 @@ if __name__ == "__main__":
     else:
         args.cuda = False
 
-    root = "../../../../../datasets/mnist/"
-    trainset = torchvision.datasets.MNIST(root=root,
-                                          train=True,
-                                          download=True,
-                                          transform=transforms.ToTensor())
+    trainset, _ = get_dataset(args.dataset)
 
     if args.partition == "noniid":
         data_indices = load_dict("mnist_noniid.pkl")
@@ -54,15 +50,19 @@ if __name__ == "__main__":
     else:
         raise ValueError("invalid partition type ", args.partition)
 
+    # Process rank x represent client id from (x-1)*10 - (x-1)*10 +10
+    # e.g. rank 5 <--> client 40-50
     client_id_list = [
         i for i in range((args.rank - 1) * 10, (args.rank - 1) * 10 + 10)
     ]
+    
+    # get corresponding data partition indices
     sub_data_indices = {
         idx: data_indices[cid]
         for idx, cid in enumerate(client_id_list)
     }
 
-    model = get_model(args)
+    model = get_model(args.dataset)
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
