@@ -21,7 +21,7 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.utils.functional import AverageMeter, evaluate, get_best_gpu
+from fedlab.utils.functional import AverageMeter, get_best_gpu
 from fedlab.utils.functional import read_config_from_json
 
 class FunctionalTestCase(unittest.TestCase):
@@ -69,6 +69,7 @@ class FunctionalTestCase(unittest.TestCase):
             lambda: read_config_from_json(json_file=json_file, user_name="client_2"),
         )
 
+    """
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_evaluate(self):
         class mlp(nn.Module):
@@ -96,7 +97,8 @@ class FunctionalTestCase(unittest.TestCase):
             testset, batch_size=len(testset), drop_last=False, shuffle=False
         )
         evaluate(model, criterion, test_loader)
-
+    """
+    
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_get_gpu(self):
         gpu = get_best_gpu()

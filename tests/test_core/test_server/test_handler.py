@@ -17,13 +17,12 @@ import unittest
 
 import torch
 
-from fedlab_benchmarks.models.lenet import LeNet
+from fedlab_benchmarks.models.cnn import LeNet
 from fedlab.utils.serialization import SerializationTool
 from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
 
 
 class HandlerTestCase(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         cls.model = LeNet()
@@ -31,7 +30,7 @@ class HandlerTestCase(unittest.TestCase):
         cls.total_num = 100
 
     def setUp(self) -> None:
-        
+
         self.AsyncHandler = AsyncParameterServerHandler(
             model=self.model, client_num_in_total=self.total_num)
 
@@ -47,7 +46,8 @@ class HandlerTestCase(unittest.TestCase):
         coming_model = LeNet()
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
-        self.AsyncHandler._update_model(coming_parameters,random.randint(1, 10))
+        self.AsyncHandler._update_model(coming_parameters,
+                                        random.randint(1, 10))
 
         parameter_list = []
         for id in range(self.SyncHandler.client_num_per_round):

@@ -87,7 +87,9 @@ if __name__ == "__main__":
     else:
         raise ValueError("invalid partition type ", args.partition)
 
-    client_id_list = [i for i in range((args.rank-1)*10, (args.rank-1)*10+10)]
+    client_id_list = [
+        i for i in range((args.rank - 1) * 10, (args.rank - 1) * 10 + 10)
+    ]
     sub_data_indices = {
         idx: data_indices[cid]
         for idx, cid in enumerate(client_id_list)

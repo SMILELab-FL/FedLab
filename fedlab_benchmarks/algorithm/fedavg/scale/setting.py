@@ -7,7 +7,7 @@ sys.path.append('../../../')
 
 from fedlab.utils.dataset.sampler import FedDistributedSampler
 
-from fedlab_benchmarks.models.lenet import LeNet
+from fedlab_benchmarks.models.cnn import CNN_Mnist, LeNet
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare, LSTMModel
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
@@ -62,10 +62,9 @@ def get_dataset(args):
 
     return trainloader, testloader
 
-
 def get_model(args):
     if args.dataset == "mnist":
-        model = LeNet()
+        model = CNN_Mnist()
     elif args.dataset == 'femnist':
         model = LeNet(out_dim=62)
     elif args.dataset == 'shakespeare':

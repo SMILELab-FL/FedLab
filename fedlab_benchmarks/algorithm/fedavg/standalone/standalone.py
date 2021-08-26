@@ -19,13 +19,13 @@ from fedlab.utils.functional import evaluate
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.functional import get_best_gpu
 
-from fedlab_benchmarks.models.lenet import LeNet
-
+from fedlab_benchmarks.models.cnn import CNN_Mnist
 # python standalone.py --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --name test1 --model mlp --lr 0.02
 
-class mlp(nn.Module):
+
+class MLP_Mnist(nn.Module):
     def __init__(self):
-        super(mlp, self).__init__()
+        super(MLP_Mnist, self).__init__()
         self.fc1 = nn.Linear(784, 200)
         self.fc2 = nn.Linear(200, 200)
         self.fc3 = nn.Linear(200, 10)
@@ -36,25 +36,6 @@ class mlp(nn.Module):
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
-        return x
-
-
-class cnn(nn.Module):
-    def __init__(self):
-        super(cnn, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, kernel_size=(5, 5))
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=(5, 5))
-        self.pool = nn.MaxPool2d(kernel_size=(2, 2))
-        self.fc1 = nn.Linear(in_features=1024, out_features=512)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(512, 10)
-
-    def forward(self, x):
-        x = self.pool(self.conv1(x))
-        x = self.pool(self.conv2(x))
-        x = x.view(x.shape[0], -1)
-        x = self.relu(self.fc1(x))
-        x = self.fc2(x)
         return x
 
 
@@ -87,6 +68,9 @@ parser.add_argument("--gpu", type=str, default="0,1,2,3")
 
 args = parser.parse_args()
 
+print(args)
+exit
+
 # get raw dataset
 root = "../../../../../datasets/mnist/"
 trainset = torchvision.datasets.MNIST(root=root,
@@ -107,10 +91,10 @@ os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
 if args.model == "mlp":
     gpu = get_best_gpu()
-    model = mlp().cuda(gpu)
+    model = MLP_Mnist().cuda(gpu)
 elif args.model == "cnn":
     gpu = get_best_gpu()
-    model = cnn().cuda(gpu)
+    model = CNN_Mnist().cuda(gpu)
 else:
     raise ValueError("invalid model name ", args.model)
 
@@ -141,7 +125,6 @@ losses = []
 acces = []
 
 # train procedure
-
 to_select = [i for i in range(total_client_num)]
 for round in range(args.com_round):
     model_parameters = SerializationTool.serialize_model(model)
@@ -160,9 +143,5 @@ for round in range(args.com_round):
     losses.append(loss)
     acces.append(acc)
 
-    if acc >= 0.99:
-        write_file(acces, losses, args, round)
-        break
-
-    if (round + 1) % 5 == 0:
+    if (round + 1) % 10 == 0:
         write_file(acces, losses, args, round)

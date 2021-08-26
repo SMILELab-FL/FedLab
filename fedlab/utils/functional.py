@@ -37,13 +37,8 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
+"""
 def evaluate(model, criterion, test_loader):
-    """
-    Evaluate local model based on given test :class:`torch.DataLoader`
-    Args:
-        test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
-        cuda (bool): Use GPUs or not
-    """
     model.eval()
     gpu = next(model.parameters()).device
 
@@ -64,7 +59,7 @@ def evaluate(model, criterion, test_loader):
             acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
 
     return loss_.sum, acc_.avg
-
+"""
 
 def read_config_from_json(json_file: str, user_name: str):
     """Read config from `json_file` to get config for `user_name`
@@ -107,7 +102,6 @@ def read_config_from_json(json_file: str, user_name: str):
     config_info = config[user_name]
     return (config_info["ip"], config_info["port"], config_info["world_size"],
             config_info["rank"])
-
 
 def get_best_gpu():
     """Return gpu (:class:`torch.device`) with largest free memory."""

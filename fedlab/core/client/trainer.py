@@ -22,7 +22,6 @@ import threading
 import heapq as hp
 import random
 
-
 from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
@@ -140,6 +139,7 @@ class SerialTrainer(ClientTrainer):
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
         data_slices (list[list]): subset of indices of dataset.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
+        test_loader(): TODO
         logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
         cuda (bool): Use GPUs or not. Default: ``True``.
         args (dict, optional): Uncertain variables.
@@ -152,6 +152,7 @@ class SerialTrainer(ClientTrainer):
                  dataset,
                  data_slices,
                  aggregator=None,
+                 test_loader=None,
                  logger=None,
                  cuda=True,
                  args=None) -> None:
@@ -163,6 +164,8 @@ class SerialTrainer(ClientTrainer):
         self.client_num = len(data_slices)
         self.aggregator = aggregator
 
+        self.test_loader = test_loader
+        
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
             self._LOGGER = logging
@@ -187,8 +190,7 @@ class SerialTrainer(ClientTrainer):
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[idx],
-                                  shuffle=True),
+            sampler=SubsetSampler(indices=self.data_slices[idx], shuffle=True),
             batch_size=batch_size,
         )
         return train_loader
@@ -262,6 +264,39 @@ class SerialTrainer(ClientTrainer):
         else:
             return param_list
 
+    def evalueate(self, model=None, test_loader=None):
+        """
+        Evaluate local model based on given test :class:`torch.DataLoader`
+        Args:
+            model (nn.Module):
+            test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
+        """
+
+        model = model if model is not None else self._model
+
+        test_loader = test_loader if test_loader is not None else self.test_loader
+
+        model.eval()
+        gpu = next(model.parameters()).device
+
+        loss_ = AverageMeter()
+        acc_ = AverageMeter()
+
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+
+                inputs = inputs.to(gpu)
+                labels = labels.to(gpu)
+
+                outputs = model(inputs)
+                loss = self.criterion(outputs, labels)
+
+                _, predicted = torch.max(outputs, 1)
+                loss_.update(loss.item())
+                acc_.update(
+                    torch.sum(predicted.eq(labels)).item(), len(labels))
+
+        return loss_.sum, acc_.avg
 
 class SerialAsyncTrainer(SerialTrainer):
     """Train multiple clients in a single process.
@@ -278,7 +313,6 @@ class SerialAsyncTrainer(SerialTrainer):
             ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
         """
-
     def __init__(self,
                  model,
                  dataset,
@@ -288,8 +322,13 @@ class SerialAsyncTrainer(SerialTrainer):
                  cuda=True,
                  args=None) -> None:
 
-        super(SerialAsyncTrainer, self).__init__(model=model, dataset=dataset, data_slices=data_slices,
-                                                 aggregator=aggregator, logger=logger, cuda=cuda, args=args)
+        super(SerialAsyncTrainer, self).__init__(model=model,
+                                                 dataset=dataset,
+                                                 data_slices=data_slices,
+                                                 aggregator=aggregator,
+                                                 logger=logger,
+                                                 cuda=cuda,
+                                                 args=args)
 
     def _train_alone(self, model_parameters, train_loader, cuda):
         """Single round of local training for one client.
@@ -317,11 +356,13 @@ class SerialAsyncTrainer(SerialTrainer):
 
                 output = self.model(data)
 
-                l2_reg = self._l2_reg_params(global_model_parameters=model_parameters,
-                                             reg_lambda=self.args["reg_lambda"],
-                                             reg_condition=0)
+                l2_reg = self._l2_reg_params(
+                    global_model_parameters=model_parameters,
+                    reg_lambda=self.args["reg_lambda"],
+                    reg_condition=0)
                 if l2_reg is not None:
-                    loss = criterion(output, target) + l2_reg * self.args["reg_lambda"]
+                    loss = criterion(output,
+                                     target) + l2_reg * self.args["reg_lambda"]
                 else:
                     loss = criterion(output, target)
                 optimizer.zero_grad()
@@ -330,7 +371,8 @@ class SerialAsyncTrainer(SerialTrainer):
 
         return self.model_parameters
 
-    def _l2_reg_params(self, global_model_parameters, reg_lambda, reg_condition):
+    def _l2_reg_params(self, global_model_parameters, reg_lambda,
+                       reg_condition):
         l2_reg = None
         if reg_lambda <= reg_condition:
             return l2_reg
@@ -340,8 +382,8 @@ class SerialAsyncTrainer(SerialTrainer):
             parameter = parameter.cpu()
             numel = parameter.data.numel()
             size = parameter.data.size()
-            global_parameter = global_model_parameters[current_index:current_index +
-                                                              numel].view(size)
+            global_parameter = global_model_parameters[
+                current_index:current_index + numel].view(size)
             current_index += numel
             if l2_reg is None:
                 l2_reg = (parameter - global_parameter).norm(2)
@@ -349,4 +391,3 @@ class SerialAsyncTrainer(SerialTrainer):
                 l2_reg = l2_reg + (parameter - global_parameter).norm(2)
 
         return l2_reg * reg_lambda
-

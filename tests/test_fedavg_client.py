@@ -18,7 +18,6 @@ import sys
 sys.path.append("../")
 from copy import deepcopy
 
-
 from fedlab.core.client.trainer import ClientSGDTrainer
 from fedlab.core.client.manager import ClientPassiveManager
 from fedlab.core.server.handler import SyncParameterServerHandler
@@ -34,7 +33,6 @@ from tests.test_core.task_setting_for_test import (
 
 
 class FedAvgClientTestCase(unittest.TestCase):
-    
     def setUp(self) -> None:
         ip = "127.0.0.1"
         port = "12345"
@@ -43,7 +41,9 @@ class FedAvgClientTestCase(unittest.TestCase):
         ps = SyncParameterServerHandler(deepcopy(model), client_num_in_total=1)
         self.server = ServerSynchronousManager(
             handler=ps,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=0),
         )
 
         self.server.start()
@@ -57,7 +57,11 @@ class FedAvgClientTestCase(unittest.TestCase):
             criterion=criterion,
             cuda=False,
         )
-        self.client = ClientPassiveManager(handler=handler, network=DistNetwork(address=(ip, port), world_size=world_size, rank=1))
+        self.client = ClientPassiveManager(handler=handler,
+                                           network=DistNetwork(
+                                               address=(ip, port),
+                                               world_size=world_size,
+                                               rank=1))
 
     def tearDown(self) -> None:
         pass
