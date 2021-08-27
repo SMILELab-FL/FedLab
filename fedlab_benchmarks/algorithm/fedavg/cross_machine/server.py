@@ -12,7 +12,6 @@ import torch
 from setting import get_dataset
 import torchvision
 from torchvision import transforms
-from fedlab.utils.functional import evaluate
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FL server example')

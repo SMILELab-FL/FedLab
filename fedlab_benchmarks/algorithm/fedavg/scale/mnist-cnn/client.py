@@ -6,7 +6,7 @@ import os
 import torchvision
 import torchvision.transforms as transforms
 
-sys.path.append("../../../../")
+sys.path.append("../../../../../")
 
 from fedlab.core.client.trainer import SerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
@@ -15,8 +15,8 @@ from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
+
 from fedlab_benchmarks.models.cnn import CNN_Mnist
-from setting import get_model, get_dataset
 
 if __name__ == "__main__":
 

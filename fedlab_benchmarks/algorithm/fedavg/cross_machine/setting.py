@@ -7,7 +7,7 @@ sys.path.append('../../../')
 
 from fedlab.utils.dataset.sampler import FedDistributedSampler
 
-from fedlab_benchmarks.models.lenet import LeNet
+from fedlab_benchmarks.models.cnn import LeNet
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare, LSTMModel
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab

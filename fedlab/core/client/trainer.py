@@ -162,7 +162,7 @@ class SerialTrainer(ClientTrainer):
         self.data_slices = data_slices  # [0, client_num)
         self.client_num = len(data_slices)
         self.aggregator = aggregator
-        
+
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
             self._LOGGER = logging
@@ -188,8 +188,7 @@ class SerialTrainer(ClientTrainer):
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
             sampler=SubsetSampler(indices=self.data_slices[idx], shuffle=True),
-            batch_size=batch_size,
-        )
+            batch_size=batch_size)
         return train_loader
 
     def _train_alone(self, model_parameters, train_loader, cuda):
@@ -260,6 +259,7 @@ class SerialTrainer(ClientTrainer):
             return aggregated_parameters
         else:
             return param_list
+
 
 class SerialAsyncTrainer(SerialTrainer):
     """Train multiple clients in a single process.

@@ -5,7 +5,7 @@ import torch
 import torchvision
 from torchvision import transforms
 
-sys.path.append('../../../../')
+sys.path.append('../../../../../')
 
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.scale import ScaleSynchronousManager
@@ -13,7 +13,7 @@ from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.utils.functional import AverageMeter
 
-from setting import get_model, get_dataset
+from fedlab_benchmarks.models.cnn import CNN_Mnist
 
 
 def evaluate(model, criterion, test_loader):
@@ -39,7 +39,7 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="cifar10"):
+def write_file(acces, losses, name="mnist"):
     print("wtring")
     record = open(name + ".txt", "w")
 
@@ -89,18 +89,18 @@ if __name__ == "__main__":
     parser.add_argument('--world_size', type=int)
 
     parser.add_argument('--round', type=int, default=100)
-    parser.add_argument('--dataset', type=str, default="mnist")
     parser.add_argument('--ethernet', type=str, default=None)
     parser.add_argument('--sample', type=float, default=0.1)
 
     args = parser.parse_args()
 
-    model = get_model(args.dataset)
+    model = CNN_Mnist()
 
-    testset = torchvision.datasets.MNIST(root='../../../../../datasets/mnist/',
-                                         train=False,
-                                         download=True,
-                                         transform=transforms.ToTensor())
+    testset = torchvision.datasets.MNIST(
+        root='../../../../datasets/data/mnist/',
+        train=False,
+        download=True,
+        transform=transforms.ToTensor())
 
     testloader = torch.utils.data.DataLoader(testset,
                                              batch_size=int(len(testset) / 10),
@@ -108,12 +108,9 @@ if __name__ == "__main__":
                                              num_workers=2,
                                              shuffle=False)
 
-    LOGGER = Logger(log_name="server")
-
     handler = RecodeHandler(model,
                             client_num_in_total=1,
                             global_round=args.round,
-                            logger=LOGGER,
                             sample_ratio=args.sample,
                             test_loader=testloader,
                             cuda=True)

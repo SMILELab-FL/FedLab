@@ -1,12 +1,12 @@
 import sys
 
-sys.path.append("../../../../")
+sys.path.append("../../../../../")
 from fedlab.utils.functional import save_dict
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 
 import torchvision
 
-root = "../../../../../datasets/mnist/"
+root = '../../../../datasets/data/mnist/'
 trainset = torchvision.datasets.MNIST(root=root, train=True, download=True)
 
 data_indices = noniid_slicing(trainset, num_clients=100, num_shards=200)

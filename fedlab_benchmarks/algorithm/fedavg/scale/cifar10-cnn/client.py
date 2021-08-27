@@ -3,23 +3,44 @@ import argparse
 import sys
 import os
 
+from torch import nn
+import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
 
-sys.path.append("../../../../")
+
+torch.manual_seed(0)
+sys.path.append("../../../../../")
 
 from fedlab.core.client.trainer import SerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
-
+from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
-from fedlab_benchmarks.models.cnn import CNN_Mnist
-from setting import get_model, get_dataset
+
+
+class Net(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = torch.flatten(x, 1)  # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Distbelief training example")
 
     parser.add_argument("--ip", type=str, default="127.0.0.1")
@@ -27,8 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
 
-    parser.add_argument("--partition", type=str, default="noniid")
-
+    parser.add_argument("--partition", type=str, default="iid")
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str, default=None)
 
@@ -40,16 +60,23 @@ if __name__ == "__main__":
     else:
         args.cuda = False
 
-    trainset = torchvision.datasets.MNIST(
-        root='../../../../datasets/data/mnist/',
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465),
+                             (0.2023, 0.1994, 0.2010))
+    ])
+    trainset = torchvision.datasets.CIFAR10(
+        root='../../../../datasets/data/cifar10/',
         train=True,
         download=True,
-        transform=transforms.ToTensor())
+        transform=transform_train)
 
     if args.partition == "noniid":
-        data_indices = load_dict("mnist_noniid.pkl")
+        data_indices = load_dict("cifar10_noniid.pkl")
     elif args.partition == "iid":
-        data_indices = load_dict("mnist_iid.pkl")
+        data_indices = load_dict("cifar10_iid.pkl")
     else:
         raise ValueError("invalid partition type ", args.partition)
 
@@ -65,8 +92,9 @@ if __name__ == "__main__":
         for idx, cid in enumerate(client_id_list)
     }
 
-    model = CNN_Mnist()
-    
+    #model = torchvision.models.resnet34()
+
+    model = Net()
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
@@ -75,14 +103,14 @@ if __name__ == "__main__":
                           ethernet=args.ethernet)
 
     trainer = SerialTrainer(model=model,
-                            dataset=trainset,
-                            data_slices=sub_data_indices,
-                            aggregator=aggregator,
-                            args={
-                                "batch_size": 100,
-                                "lr": 0.02,
-                                "epochs": 5
-                            })
+                                    dataset=trainset,
+                                    data_slices=sub_data_indices,
+                                    aggregator=aggregator,
+                                    args={
+                                        "batch_size": 100,
+                                        "lr": 0.002,
+                                        "epochs": 5
+                                    })
 
     manager_ = ScaleClientManager(handler=trainer, network=network)
 

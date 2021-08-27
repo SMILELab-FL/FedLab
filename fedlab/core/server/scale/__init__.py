@@ -58,6 +58,7 @@ class ScaleSynchronousManager(ServerSynchronousManager):
     def on_receive(self, sender, message_code, payload):
         if message_code == MessageCode.ParameterUpdate:
             for model_parameters in payload:
+                print("model size:", model_parameters.shape)
                 update_flag = self._handler.add_model(sender, model_parameters)
                 if update_flag is True:
                     return update_flag

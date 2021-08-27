@@ -35,6 +35,7 @@ class ScaleClientManager(ClientPassiveManager):
     def on_receive(self, sender_rank, message_code, payload):
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
+            print("model size:", model_parameters.shape)
             _, message_code, payload = PackageProcessor.recv_package(src=0)
             id_list = payload[0].tolist()
             self.model_parameters_list = self._handler.train(
