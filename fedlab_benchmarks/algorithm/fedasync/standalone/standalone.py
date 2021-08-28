@@ -12,7 +12,7 @@ torch.manual_seed(0)
 
 sys.path.append("../../../../")
 
-from fedlab.core.client.scale.trainer import SerialAsyncTrainer
+from fedlab.core.client.scale.trainer import AsyncSerialTrainer
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
@@ -222,7 +222,7 @@ args_test = {
     "reg_lambda": args.reg_lambda
 }
 
-trainer = SerialAsyncTrainer(
+trainer = AsyncSerialTrainer(
     model=local_model,
     dataset=trainset,
     data_slices=data_indices,

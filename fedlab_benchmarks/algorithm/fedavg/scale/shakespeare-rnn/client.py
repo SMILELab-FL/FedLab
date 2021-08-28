@@ -8,33 +8,19 @@ import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.core.client import scale
-
 torch.manual_seed(0)
 sys.path.append("../../../../../")
 
-from fedlab.core.client.scale.trainer import SerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
+from fedlab.core.client.scale.trainer import SerialTrainer
 
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
-
-
-class RNN_STrainer(SerialTrainer):
-    def __init__(self, model, dataset, data_slices, aggregator, logger, cuda, args) -> None:
-        super().__init__(model, dataset, data_slices, aggregator=aggregator, logger=logger, cuda=cuda, args=args)
-
-
-    def _get_train_dataloader(self, idx):
-        return get_LEAF_dataloader(dataset="shakespeare", client_id=idx)
-
-    def _train_alone(self, model_parameters, train_loader, cuda):
-        return super()._train_alone(model_parameters, train_loader, cuda)
 
 
 if __name__ == "__main__":
@@ -67,14 +53,12 @@ if __name__ == "__main__":
                           ethernet=args.ethernet)
 
     trainer = SerialTrainer(model=model,
-                            dataset=None,
-                            data_slices=None,
-                            aggregator=aggregator,
-                            args={
-                                "batch_size": 100,
-                                "lr": 0.001,
-                                "epochs": 5
-                            })
+                           aggregator=aggregator,
+                           args={
+                               "batch_size": 100,
+                               "lr": 0.001,
+                               "epochs": 5
+                           })
 
     manager_ = ScaleClientManager(handler=trainer, network=network)
 

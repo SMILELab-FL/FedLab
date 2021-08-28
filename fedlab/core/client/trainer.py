@@ -66,6 +66,7 @@ class ClientTrainer(ABC):
         """attribute"""
         return SerializationTool.serialize_model(self._model)
 
+
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
