@@ -5,45 +5,9 @@ References:
     https://arxiv.org/pdf/2003.00295.pdf
 """
 
+import torch
 import torch.nn as nn
-
-
-class LeNet(nn.Module):
-    def __init__(self, out_dim=10, in_channel=1, img_sz=28):
-        super(LeNet, self).__init__()
-        feat_map_sz = img_sz // 4
-        self.n_feat = 50 * feat_map_sz * feat_map_sz
-
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_channel, 20, 5, padding=2),
-            # nn.BatchNorm2d(20),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(20, 50, 5, padding=2),
-            # nn.BatchNorm2d(50),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, 2))
-        self.linear = nn.Sequential(
-            nn.Linear(self.n_feat, 500),
-            # nn.BatchNorm1d(500),
-            #            nn.ReLU(inplace=True),
-        )
-        self.last = nn.Linear(
-            500, out_dim)  # Subject to be replaced dependent on task
-
-    def features(self, x):
-        x = self.conv(x)
-        x = self.linear(x.view(-1, self.n_feat))
-        return x
-
-    def logits(self, x):
-        x = self.last(x)
-        return x
-
-    def forward(self, x):
-        x = self.features(x)
-        x = self.logits(x)
-        return x
+import torch.nn.functional as F
 
 
 class CNN_Femnist(nn.Module):
@@ -102,4 +66,28 @@ class CNN_Mnist(nn.Module):
         x = x.view(x.shape[0], -1)
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
+        return x
+
+
+class CNN_Cifar10(nn.Module):
+    """from torch tutorial
+
+        https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
+    """
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = torch.flatten(x, 1)  # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
         return x

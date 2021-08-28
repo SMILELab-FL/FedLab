@@ -8,7 +8,6 @@ import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
 
-
 torch.manual_seed(0)
 sys.path.append("../../../../../")
 
@@ -20,31 +19,13 @@ from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
-
-class Net(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1)  # flatten all dimensions except batch
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
+from fedlab_benchmarks.models.cnn import CNN_Cifar10
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distbelief training example")
 
     parser.add_argument("--ip", type=str, default="127.0.0.1")
-    parser.add_argument("--port", type=str, default="3002")
+    parser.add_argument("--port", type=str, default="3003")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
 
@@ -92,9 +73,8 @@ if __name__ == "__main__":
         for idx, cid in enumerate(client_id_list)
     }
 
-    #model = torchvision.models.resnet34()
+    model = CNN_Cifar10()
 
-    model = Net()
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
@@ -103,14 +83,14 @@ if __name__ == "__main__":
                           ethernet=args.ethernet)
 
     trainer = SerialTrainer(model=model,
-                                    dataset=trainset,
-                                    data_slices=sub_data_indices,
-                                    aggregator=aggregator,
-                                    args={
-                                        "batch_size": 100,
-                                        "lr": 0.002,
-                                        "epochs": 5
-                                    })
+                            dataset=trainset,
+                            data_slices=sub_data_indices,
+                            aggregator=aggregator,
+                            args={
+                                "batch_size": 100,
+                                "lr": 0.001,
+                                "epochs": 5
+                            })
 
     manager_ = ScaleClientManager(handler=trainer, network=network)
 
