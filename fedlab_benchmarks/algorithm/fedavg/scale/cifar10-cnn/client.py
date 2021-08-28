@@ -11,9 +11,10 @@ import torchvision.transforms as transforms
 torch.manual_seed(0)
 sys.path.append("../../../../../")
 
-from fedlab.core.client.trainer import SerialTrainer
+from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
+
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
@@ -82,7 +83,7 @@ if __name__ == "__main__":
                           rank=args.rank,
                           ethernet=args.ethernet)
 
-    trainer = SerialTrainer(model=model,
+    trainer = SubsetSerialTrainer(model=model,
                             dataset=trainset,
                             data_slices=sub_data_indices,
                             aggregator=aggregator,

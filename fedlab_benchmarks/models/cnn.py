@@ -21,7 +21,7 @@ class CNN_Femnist(nn.Module):
     Returns:
         A `torch.nn.Module`.
     """
-    def __init__(self, only_digits=True):
+    def __init__(self, only_digits=False):
         super(CNN_Femnist, self).__init__()
         self.conv2d_1 = nn.Conv2d(1, 32, kernel_size=3)
         self.max_pooling = nn.MaxPool2d(2, stride=2)

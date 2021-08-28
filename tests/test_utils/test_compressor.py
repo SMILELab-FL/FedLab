@@ -14,13 +14,13 @@
 
 import unittest
 
-from fedlab_benchmarks.models.cnn import LeNet
+from fedlab_benchmarks.models.cnn import CNN_Mnist
 from fedlab.utils.compressor import TopkCompressor
 
 
 class CompressorTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.model = LeNet()
+        self.model = CNN_Mnist()
         self.compressor = TopkCompressor(compress_ratio=0.5)
 
         return super().setUp()

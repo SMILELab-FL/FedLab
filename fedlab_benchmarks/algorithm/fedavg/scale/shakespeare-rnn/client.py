@@ -3,32 +3,49 @@ import argparse
 import sys
 import os
 
+from torch import nn
+import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
 
-sys.path.append("../../../../")
+from fedlab.core.client import scale
 
-from fedlab.core.client.trainer import SerialTrainer
+torch.manual_seed(0)
+sys.path.append("../../../../../")
+
+from fedlab.core.client.scale.trainer import SerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
-
+from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
-from fedlab_benchmarks.models.cnn import CNN_Mnist
-from setting import get_model, get_dataset
+
+from fedlab_benchmarks.models.rnn import RNN_Shakespeare
+from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
+
+
+class RNN_STrainer(SerialTrainer):
+    def __init__(self, model, dataset, data_slices, aggregator, logger, cuda, args) -> None:
+        super().__init__(model, dataset, data_slices, aggregator=aggregator, logger=logger, cuda=cuda, args=args)
+
+
+    def _get_train_dataloader(self, idx):
+        return get_LEAF_dataloader(dataset="shakespeare", client_id=idx)
+
+    def _train_alone(self, model_parameters, train_loader, cuda):
+        return super()._train_alone(model_parameters, train_loader, cuda)
+
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Distbelief training example")
 
     parser.add_argument("--ip", type=str, default="127.0.0.1")
-    parser.add_argument("--port", type=str, default="3002")
+    parser.add_argument("--port", type=str, default="3003")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
 
-    parser.add_argument("--partition", type=str, default="noniid")
-
+    parser.add_argument("--partition", type=str, default="iid")
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str, default=None)
 
@@ -40,33 +57,8 @@ if __name__ == "__main__":
     else:
         args.cuda = False
 
-    trainset = torchvision.datasets.MNIST(
-        root='../../../../datasets/data/mnist/',
-        train=True,
-        download=True,
-        transform=transforms.ToTensor())
+    model = RNN_Shakespeare()
 
-    if args.partition == "noniid":
-        data_indices = load_dict("mnist_noniid.pkl")
-    elif args.partition == "iid":
-        data_indices = load_dict("mnist_iid.pkl")
-    else:
-        raise ValueError("invalid partition type ", args.partition)
-
-    # Process rank x represent client id from (x-1)*10 - (x-1)*10 +10
-    # e.g. rank 5 <--> client 40-50
-    client_id_list = [
-        i for i in range((args.rank - 1) * 10, (args.rank - 1) * 10 + 10)
-    ]
-
-    # get corresponding data partition indices
-    sub_data_indices = {
-        idx: data_indices[cid]
-        for idx, cid in enumerate(client_id_list)
-    }
-
-    model = CNN_Mnist()
-    
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
@@ -75,12 +67,12 @@ if __name__ == "__main__":
                           ethernet=args.ethernet)
 
     trainer = SerialTrainer(model=model,
-                            dataset=trainset,
-                            data_slices=sub_data_indices,
+                            dataset=None,
+                            data_slices=None,
                             aggregator=aggregator,
                             args={
                                 "batch_size": 100,
-                                "lr": 0.02,
+                                "lr": 0.001,
                                 "epochs": 5
                             })
 

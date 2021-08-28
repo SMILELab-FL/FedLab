@@ -12,7 +12,7 @@ torch.manual_seed(0)
 
 sys.path.append("../../../../")
 
-from fedlab.core.client.trainer import SerialTrainer
+from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
@@ -115,7 +115,7 @@ else:
 # fedlab setup
 local_model = deepcopy(model)
 
-trainer = SerialTrainer(model=local_model,
+trainer = SubsetSerialTrainer(model=local_model,
                         dataset=trainset,
                         data_slices=data_indices,
                         aggregator=aggregator,

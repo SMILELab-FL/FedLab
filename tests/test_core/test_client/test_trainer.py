@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 import random
 
 from fedlab.utils.functional import get_best_gpu
-from fedlab.core.client.trainer import ClientTrainer, ClientSGDTrainer, SerialTrainer
+from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
@@ -51,7 +51,7 @@ class TrainerTestCase(unittest.TestCase):
         data_indices = random_slicing(trainset, num_clients=self.total_client)
         gpu = get_best_gpu()
         model = mlp().cuda(gpu)
-        trainer = SerialTrainer(
+        trainer = SubsetSerialTrainer(
             model=model,
             dataset=trainset,
             data_slices=data_indices,
@@ -79,7 +79,7 @@ class TrainerTestCase(unittest.TestCase):
             trainset, num_clients=self.total_client, num_shards=200)
         gpu = get_best_gpu()
         model = mlp().cuda(gpu)
-        trainer = SerialTrainer(
+        trainer = SubsetSerialTrainer(
             model=model,
             dataset=trainset,
             data_slices=data_indices,

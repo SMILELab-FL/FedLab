@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 
 sys.path.append("../../../../../")
 
-from fedlab.core.client.trainer import SerialTrainer
+from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.core.client.scale import ScaleClientManager
 from fedlab.core.network import DistNetwork
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                           rank=args.rank,
                           ethernet=args.ethernet)
 
-    trainer = SerialTrainer(model=model,
+    trainer = SubsetSerialTrainer(model=model,
                             dataset=trainset,
                             data_slices=sub_data_indices,
                             aggregator=aggregator,

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from torch.utils.data import IterableDataset, dataloader
+from torch.utils.data import dataloader
 from torch.utils.data.dataset import Dataset
 from fedlab.core.client.trainer import ClientTrainer
 

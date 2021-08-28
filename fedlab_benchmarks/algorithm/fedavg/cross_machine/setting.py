@@ -7,8 +7,8 @@ sys.path.append('../../../')
 
 from fedlab.utils.dataset.sampler import FedDistributedSampler
 
-from fedlab_benchmarks.models.cnn import LeNet
-from fedlab_benchmarks.models.rnn import RNN_Shakespeare, LSTMModel
+from fedlab_benchmarks.models.cnn import CNN_Cifar10, CNN_Femnist, CNN_Mnist
+from fedlab_benchmarks.models.rnn import RNN_Shakespeare
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
 
@@ -22,7 +22,6 @@ def get_dataset(args):
         test_transform = transforms.Compose([
             transforms.ToTensor(),
         ])
-
         trainset = torchvision.datasets.MNIST(root=root,
                                               train=True,
                                               download=True,
@@ -65,22 +64,11 @@ def get_dataset(args):
 
 def get_model(args):
     if args.dataset == "mnist":
-        model = LeNet()
+        model = CNN_Mnist()
     elif args.dataset == 'femnist':
-        model = LeNet(out_dim=62)
+        model = CNN_Femnist()
     elif args.dataset == 'shakespeare':
         model = RNN_Shakespeare()
-    elif args.dataset == 'sent140':
-        vocab = get_built_vocab(dataset=args.dataset)
-        model = LSTMModel(vocab_size=vocab.num,
-                          embedding_dim=vocab.word_dim,
-                          hidden_size=256,
-                          num_layers=2,
-                          output_dim=3,
-                          using_pretrained=True,
-                          embedding_weights=torch.tensor(vocab.vectors),
-                          bid=True)
-        pass
     else:
         raise ValueError("Invalid dataset:", args.dataset)
     return model

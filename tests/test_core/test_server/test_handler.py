@@ -17,7 +17,7 @@ import unittest
 
 import torch
 
-from fedlab_benchmarks.models.cnn import LeNet
+from fedlab_benchmarks.models.cnn import CNN_Mnist
 from fedlab.utils.serialization import SerializationTool
 from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
 
@@ -25,7 +25,7 @@ from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParamete
 class HandlerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.model = LeNet()
+        cls.model = CNN_Mnist()
         cls.sample_ratio = 0.1
         cls.total_num = 100
 
@@ -43,7 +43,7 @@ class HandlerTestCase(unittest.TestCase):
         return super().tearDown()
 
     def test_update_model(self):
-        coming_model = LeNet()
+        coming_model = CNN_Mnist()
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
         self.AsyncHandler._update_model(coming_parameters,

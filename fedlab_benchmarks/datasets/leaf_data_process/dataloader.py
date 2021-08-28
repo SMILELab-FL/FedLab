@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
     get dataloader for dataset in LEAF processed
 """
@@ -23,6 +22,38 @@ from .dataset.femnist_dataset import FemnistDataset
 from .dataset.shakespeare_dataset import ShakespeareDataset
 from .dataset.sent140_dataset import Sent140Dataset
 from .nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
+
+
+def get_LEAF_dataset(dataset, client_id):
+    if dataset == 'femnist':
+        trainset = FemnistDataset(client_id=client_id,
+                                  data_root='../data/femnist/data',
+                                  is_train=True)
+        testset = FemnistDataset(client_id=client_id,
+                                 data_root='../data/femnist/data',
+                                 is_train=False)
+    elif dataset == 'shakespeare':
+        trainset = ShakespeareDataset(client_id=client_id,
+                                      data_root='../data/shakespeare/data',
+                                      is_train=True)
+        testset = ShakespeareDataset(client_id=client_id,
+                                     data_root='../data/shakespeare/data',
+                                     is_train=False)
+    elif dataset == 'sent140':
+        trainset = Sent140Dataset(client_id=client_id,
+                                  data_root='../data/sent140/data',
+                                  is_train=True)
+        testset = Sent140Dataset(client_id=client_id,
+                                 data_root='../data/sent140/data',
+                                 is_train=False)
+        vocab = get_built_vocab(dataset)
+        # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
+        trainset.token2seq(vocab, maxlen=300)
+        testset.token2seq(vocab, maxlen=300)
+    else:
+        raise ValueError("Invalid dataset ", dataset)
+
+    return trainset, testset
 
 
 def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
@@ -41,27 +72,40 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     """
 
     if dataset == 'femnist':
-        trainset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=True)
-        testset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=False)
+        trainset = FemnistDataset(client_id=client_id,
+                                  data_root='../data/femnist/data',
+                                  is_train=True)
+        testset = FemnistDataset(client_id=client_id,
+                                 data_root='../data/femnist/data',
+                                 is_train=False)
     elif dataset == 'shakespeare':
-        trainset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=True)
-        testset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=False)
+        trainset = ShakespeareDataset(client_id=client_id,
+                                      data_root='../data/shakespeare/data',
+                                      is_train=True)
+        testset = ShakespeareDataset(client_id=client_id,
+                                     data_root='../data/shakespeare/data',
+                                     is_train=False)
     elif dataset == 'sent140':
-        trainset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=True)
-        testset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=False)
+        trainset = Sent140Dataset(client_id=client_id,
+                                  data_root='../data/sent140/data',
+                                  is_train=True)
+        testset = Sent140Dataset(client_id=client_id,
+                                 data_root='../data/sent140/data',
+                                 is_train=False)
         vocab = get_built_vocab(dataset)
         # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
         trainset.token2seq(vocab, maxlen=300)
         testset.token2seq(vocab, maxlen=300)
+    else:
+        raise ValueError("Invalid dataset ", dataset)
 
     trainloader = torch.utils.data.DataLoader(
-        trainset,
-        batch_size=batch_size,
+        trainset, batch_size=batch_size,
         drop_last=False)  # avoid train dataloader size 0
-    testloader = torch.utils.data.DataLoader(
-        testset,
-        batch_size=len(testset),
-        drop_last=False,
-        shuffle=False)
-    
+        
+    testloader = torch.utils.data.DataLoader(testset,
+                                             batch_size=len(testset),
+                                             drop_last=False,
+                                             shuffle=False)
+
     return trainloader, testloader

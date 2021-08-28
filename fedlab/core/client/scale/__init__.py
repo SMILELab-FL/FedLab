@@ -21,7 +21,6 @@ from ...communicator.processor import PackageProcessor
 
 from fedlab.utils.message_code import MessageCode
 
-
 class ScaleClientManager(ClientPassiveManager):
     def __init__(self, handler, network):
         super().__init__(network=network, handler=handler)
