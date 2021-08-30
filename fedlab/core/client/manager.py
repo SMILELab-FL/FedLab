@@ -181,3 +181,7 @@ class ClientActiveManager(NetworkManager):
         self._LOGGER.info("request parameter procedure")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)
+
+
+
+

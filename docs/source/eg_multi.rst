@@ -4,9 +4,36 @@ Cross Machine/Process
 In this page, we introduce how to build a FL simulation system with FedLab in cross machine or cross process scenario. We implement FedAvg algorithm wit CNN and partitioned MNIST dataset across clients.
 Source code of this page can be seen in fedlab_benchamrks/algorithm/fedavg/cross_machine.
 
+Cross Machine/Process is suit for computer cluster deployment, simulating data-center FL system. In our experiment, the number of world_size can't be more than 50, otherwise the socket connecting will fail.
 
+Usage
+^^^^^^^^
 
-Client related part
+1. Download dataset
+
+.. code-block:: shell-session
+
+    $ cd fedlab_benchamrks/dataset/data/mnist/
+    $ python download_mnist.py
+
+2. Run quick start
+
+start a FL simulation with 1 server and 2 clients.
+
+.. code-block:: shell-session
+
+   $ cd fedlab_benchamrks/algorithm/fedavg/cross_machine/
+   $ bash quick_start.sh
+
+How to Customize
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Manager
+^^^^^^^^^^
+ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible.
+FedLab provides standard implementation for typical synchronous and asynchronous.
+
+1.Client related part
 ^^^^^^^^^^^^^^^^^^^^^
 Network Configuration
 ----------------------
@@ -144,20 +171,12 @@ Standard implementation is shown below:
     2. ``run()`` is the main process of client. User need to define the communication strategy with user. 
     3. ``on_receive(sender_rank, message_code, payload)`` indicate the control flow and information parsing.
 
-
-
-
-Server related part
+2.Server related part
 ^^^^^^^^^^^^^^^^^^^^^
-
 
 Network Configuration
 ----------------------
 Network Configuration in Server is the same as client. But please be aware of that we assume that the rank of server is 0 as default.
-
-Control Flow
--------------
-Unlike client part, the control flow of Server can be more complicated. Typically, Sever needs to define all related communication package details and control flow strategy including functions like ``activate_clients``, ``shutdown_clients``.
 
 Backend Handler Strategy
 -------------------------
