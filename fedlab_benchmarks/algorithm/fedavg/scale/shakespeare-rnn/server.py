@@ -15,7 +15,7 @@ from fedlab.core.server.scale import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.functional import AverageMeter
 
-from fedlab_benchmarks.models.cnn import CNN_Femnist
+from fedlab_benchmarks.models.rnn import RNN_Shakespeare
 
 
 def evaluate(model, criterion, test_loader):
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    model = CNN_Femnist()
+    model = RNN_Shakespeare()
 
     transform_test = transforms.Compose([
         transforms.ToTensor(),
@@ -104,16 +104,7 @@ if __name__ == "__main__":
                              (0.2023, 0.1994, 0.2010))
     ])
 
-    testset = torchvision.datasets.CIFAR10(
-        root='../../../../datasets/data/cifar10/',
-        train=False,
-        download=True,
-        transform=transform_test)
-
-    testloader = torch.utils.data.DataLoader(testset,
-                                             batch_size=int(len(testset) / 10),
-                                             drop_last=False,
-                                             shuffle=False)
+    testloader = None
 
     handler = RecodeHandler(model,
                             client_num_in_total=1,

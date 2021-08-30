@@ -38,6 +38,7 @@ class FemnistDataset(Dataset):
         Returns: data and target for client id
         """
         client_id_name_dict, client_groups, client_name_data_dict = read_dir(data_dir=self.data_path)
+        print(len(client_id_name_dict))
         client_name = client_id_name_dict[self.client_id]
         data = torch.tensor(client_name_data_dict[client_name]['x'], dtype=torch.float32)
         data = torch.reshape(data, (-1, 1, 28, 28))

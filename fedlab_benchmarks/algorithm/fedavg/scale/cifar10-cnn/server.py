@@ -15,7 +15,7 @@ from fedlab.core.server.scale import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.functional import AverageMeter
 
-from fedlab_benchmarks.models.cnn import CNN_Cifar10
+from fedlab_benchmarks.models.cnn import CNN_Cifar10, AlexNet_CIFAR10
 
 
 def evaluate(model, criterion, test_loader):
@@ -41,7 +41,7 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="cifar10_vgg_iid"):
+def write_file(acces, losses, name="cifar10_alex_niid"):
     print("wtring")
     record = open(name + ".txt", "w")
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FL server example')
 
     parser.add_argument('--ip', type=str, default="127.0.0.1")
-    parser.add_argument('--port', type=str, default="3002")
+    parser.add_argument('--port', type=str, default="3003")
     parser.add_argument('--world_size', type=int)
 
     parser.add_argument('--round', type=int, default=1000)
@@ -96,7 +96,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    model = CNN_Cifar10()
+    #model = CNN_Cifar10()
+    model = AlexNet_CIFAR10()
 
     transform_test = transforms.Compose([
         transforms.ToTensor(),

@@ -20,7 +20,7 @@ from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
-from fedlab_benchmarks.models.cnn import CNN_Cifar10
+from fedlab_benchmarks.models.cnn import CNN_Cifar10, AlexNet_CIFAR10
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distbelief training example")
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
 
-    parser.add_argument("--partition", type=str, default="iid")
+    parser.add_argument("--partition", type=str, default="noniid")
     parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str, default=None)
 
@@ -74,8 +74,9 @@ if __name__ == "__main__":
         for idx, cid in enumerate(client_id_list)
     }
 
-    model = CNN_Cifar10()
-
+    #model = CNN_Cifar10()
+    model = AlexNet_CIFAR10()
+    
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
@@ -89,7 +90,7 @@ if __name__ == "__main__":
                             aggregator=aggregator,
                             args={
                                 "batch_size": 100,
-                                "lr": 0.001,
+                                "lr": 0.1,
                                 "epochs": 5
                             })
 
