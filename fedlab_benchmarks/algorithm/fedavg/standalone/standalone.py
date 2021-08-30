@@ -20,35 +20,8 @@ from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.functional import get_best_gpu
 
 from fedlab_benchmarks.models.cnn import CNN_Mnist
-# python standalone.py --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --name test1 --model mlp --lr 0.02
 
-
-class MLP_Mnist(nn.Module):
-    def __init__(self):
-        super(MLP_Mnist, self).__init__()
-        self.fc1 = nn.Linear(784, 200)
-        self.fc2 = nn.Linear(200, 200)
-        self.fc3 = nn.Linear(200, 10)
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        x = x.view(x.shape[0], -1)
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
-
-def write_file(acces, losses, args, round):
-    record = open("exp_" + args.name + ".txt", "w")
-    record.write(
-        "current {}, sample ratio {}, lr {}, epoch {}, bs {}, partition {}, model {}\n\n"
-        .format(round + 1, args.sample_ratio, args.lr, args.epochs,
-                args.batch_size, args.partition, args.model))
-    record.write(str(losses) + "\n\n")
-    record.write(str(acces) + "\n\n")
-    record.close()
-
+# python standalone.py --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --lr 0.02
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
@@ -61,15 +34,7 @@ parser.add_argument("--lr", type=float, default=0.1)
 parser.add_argument("--epochs", type=int, default=3)
 parser.add_argument("--partition", type=str, default='iid')
 
-parser.add_argument("--name", type=str, default='test')
-parser.add_argument("--model", type=str, default='mlp')
-# cuda config
-parser.add_argument("--gpu", type=str, default="0,1,2,3")
-
 args = parser.parse_args()
-
-print(args)
-exit
 
 # get raw dataset
 root = "../../../../../datasets/mnist/"
@@ -87,16 +52,10 @@ test_loader = torch.utils.data.DataLoader(testset,
                                           shuffle=False)
 
 # setup
-os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
-if args.model == "mlp":
-    gpu = get_best_gpu()
-    model = MLP_Mnist().cuda(gpu)
-elif args.model == "cnn":
-    gpu = get_best_gpu()
-    model = CNN_Mnist().cuda(gpu)
-else:
-    raise ValueError("invalid model name ", args.model)
+gpu = get_best_gpu()
+model = CNN_Mnist().cuda(gpu)
 
 # FL settings
 num_per_round = int(args.total_client * args.sample_ratio)
@@ -116,20 +75,20 @@ else:
 local_model = deepcopy(model)
 
 trainer = SubsetSerialTrainer(model=local_model,
-                        dataset=trainset,
-                        data_slices=data_indices,
-                        aggregator=aggregator,
-                        args=args)
+                              dataset=trainset,
+                              data_slices=data_indices,
+                              aggregator=aggregator,
+                              args=args)
 
-losses = []
-acces = []
+loss_ = []
+acc_ = []
 
 # train procedure
 to_select = [i for i in range(total_client_num)]
 for round in range(args.com_round):
     model_parameters = SerializationTool.serialize_model(model)
     selection = random.sample(to_select, num_per_round)
-    #print(selection)
+    print(selection)
     aggregated_parameters = trainer.train(model_parameters=model_parameters,
                                           id_list=selection,
                                           aggregate=True)
@@ -138,10 +97,7 @@ for round in range(args.com_round):
 
     criterion = nn.CrossEntropyLoss()
     loss, acc = evaluate(model, criterion, test_loader)
-    #print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
+    print("loss: {:.4f}, acc: {:.2f}".format(loss, acc))
 
-    losses.append(loss)
-    acces.append(acc)
-
-    if (round + 1) % 10 == 0:
-        write_file(acces, losses, args, round)
+    loss_.append(loss)
+    acc_.append(acc)

@@ -50,7 +50,7 @@ class ClientPassiveManager(NetworkManager):
         self._LOGGER.info("connecting with server")
         self.setup()
 
-        while True:
+        while True: 
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
             sender_rank, message_code, payload = PackageProcessor.recv_package(

@@ -194,7 +194,7 @@ class ServerAsynchronousManager(NetworkManager):
             payload (list[torch.Tensor]): List of tensors.
 
         Raises:
-            ValueError: [description]
+            ValueError: invalid message code.
         """
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)

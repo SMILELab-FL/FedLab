@@ -21,20 +21,42 @@ from ...communicator.processor import PackageProcessor
 
 from fedlab.utils.message_code import MessageCode
 
-class ScaleClientManager(ClientPassiveManager):
+
+class ScaleClientPassiveManager(ClientPassiveManager):
+    """Special Client Manager for SerialTrainer.
+        
+        We modified the communication agreements create new map relation between rank and client id.
+        In this way, allow Manager represents multiple clients.
+
+    Args:
+        handler (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
+        network (DistNetwork): Distributed network to use.
+    """
     def __init__(self, handler, network):
         super().__init__(network=network, handler=handler)
 
     def setup(self):
+        """Modified initialization agreements.
+            Every client manager need to report local client num to server.
+        """
         super().setup()
         content = torch.Tensor([self._handler.client_num]).int()
         setup_pack = Package(content=content, data_type=1)
         PackageProcessor.send_package(setup_pack, dst=0)
 
     def on_receive(self, sender_rank, message_code, payload):
+        """Actions to perform when receiving new message, including local training
+
+        Note:
+            Customize the control flow of client corresponding with :class:`MessageCode`.
+
+        Args:
+            sender_rank (int): Rank of sender
+            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
+            payload (list[torch.Tensor]): A list of tensors received from sender.
+        """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
-            print("model size:", model_parameters.shape)
             _, message_code, payload = PackageProcessor.recv_package(src=0)
             id_list = payload[0].tolist()
             self.model_parameters_list = self._handler.train(
@@ -43,6 +65,12 @@ class ScaleClientManager(ClientPassiveManager):
                 aggregate=False)
 
     def synchronize(self):
+        """Synchronize local model with server actively
+
+        Note:
+            communication agreements related:
+            Overwrite this function to customize package for synchronizing.
+        """
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=self.model_parameters_list)
         PackageProcessor.send_package(package=pack, dst=0)

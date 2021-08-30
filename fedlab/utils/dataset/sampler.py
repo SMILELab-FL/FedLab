@@ -16,6 +16,7 @@ from copy import deepcopy
 import random
 import torch
 import torch.distributed as dist
+from ..functional import load_dict
 
 
 class SubsetSampler(torch.utils.data.Sampler):
@@ -38,13 +39,12 @@ class SubsetSampler(torch.utils.data.Sampler):
         return len(self.indices)
 
 
-class FedDistributedSampler(torch.utils.data.Sampler):
-    """Partition dataset according to num_replicas"""
-    def __init__(self,
-                 dataset,
-                 num_replicas=None,
-                 client_id=None,
-                 shuffle=True):
+class RawPartitionSampler(torch.utils.data.Sampler):
+    """Partition dataset according to num_replicas.
+    
+        Every client get a equal shard of dataset.
+    """
+    def __init__(self, dataset, num_replicas=None, client_id=None):
 
         self.dataset = dataset
         self.indices = [index for index in range(len(self.dataset))]
@@ -57,8 +57,6 @@ class FedDistributedSampler(torch.utils.data.Sampler):
 
         self.num_samples = int(len(self.dataset) / self.num_replicas)
 
-        self.shuffle = shuffle
-
     def __iter__(self):
 
         local_indices = self.indices[(self.id - 1) * self.num_samples:self.id *
@@ -68,3 +66,17 @@ class FedDistributedSampler(torch.utils.data.Sampler):
 
     def __len__(self):
         return self.num_samples
+
+
+class DictFileSampler(torch.utils.data.Sampler):
+    """Partition dataset according to data_indices and client id"""
+    def __init__(self, dict_file, client_id):
+
+        data_indices = load_dict(dict_file)
+        self.indices = data_indices[client_id]
+
+    def __iter__(self):
+        return iter(self.indices)
+
+    def __len__(self):
+        return len(self.indices)

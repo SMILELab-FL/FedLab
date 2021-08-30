@@ -36,15 +36,13 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-
-"""
 def evaluate(model, criterion, test_loader):
+    """Evaluate classify task model accuracy."""
     model.eval()
     gpu = next(model.parameters()).device
 
     loss_ = AverageMeter()
     acc_ = AverageMeter()
-
     with torch.no_grad():
         for inputs, labels in test_loader:
 
@@ -59,7 +57,7 @@ def evaluate(model, criterion, test_loader):
             acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
 
     return loss_.sum, acc_.avg
-"""
+
 
 def read_config_from_json(json_file: str, user_name: str):
     """Read config from `json_file` to get config for `user_name`

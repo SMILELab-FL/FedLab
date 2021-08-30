@@ -23,7 +23,8 @@ from ....utils.dataset.sampler import SubsetSampler
 
 
 class SerialTrainer(ClientTrainer):
-    """Train multiple clients in a single process.
+    """Base class. 
+        Train multiple clients in a single process.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
@@ -66,7 +67,8 @@ class SerialTrainer(ClientTrainer):
             Serialized model parameters / list of model parameters.
         """
         param_list = []
-        self._LOGGER.info("Local training with client id list: {}".format(id_list))
+        self._LOGGER.info(
+            "Local training with client id list: {}".format(id_list))
         for idx in id_list:
             self._LOGGER.info(
                 "Starting training procedure of client [{}]".format(idx))
@@ -108,7 +110,11 @@ class SubsetSerialTrainer(SerialTrainer):
                  cuda=True,
                  args=None) -> None:
 
-        super(SubsetSerialTrainer, self).__init__(model=model, client_num=len(data_slices), cuda=cuda, aggregator=aggregator, logger=logger)
+        super(SubsetSerialTrainer, self).__init__(model=model,
+                                                  client_num=len(data_slices),
+                                                  cuda=cuda,
+                                                  aggregator=aggregator,
+                                                  logger=logger)
 
         self.dataset = dataset
         self.data_slices = data_slices  # [0, client_num)
@@ -130,7 +136,8 @@ class SubsetSerialTrainer(SerialTrainer):
 
         train_loader = torch.utils.data.DataLoader(
             self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[client_id], shuffle=True),
+            sampler=SubsetSampler(indices=self.data_slices[client_id],
+                                  shuffle=True),
             batch_size=batch_size)
         return train_loader
 
@@ -166,6 +173,7 @@ class SubsetSerialTrainer(SerialTrainer):
                 optimizer.step()
 
         return self.model_parameters
+
 
 class AsyncSerialTrainer(SerialTrainer):
     """Train multiple clients in a single process.

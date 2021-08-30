@@ -49,7 +49,7 @@ if __name__ == "__main__":
         rank=args.rank,
         ethernet=args.ethernet,
     )
-    
+
     LOGGER = Logger(log_name="client " + str(args.rank))
 
     trainer = ClientSGDTrainer(

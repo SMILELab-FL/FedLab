@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 sys.path.append("../../../../../")
 
 from fedlab.core.client.scale.trainer import SubsetSerialTrainer
-from fedlab.core.client.scale import ScaleClientManager
+from fedlab.core.client.scale import ScaleClientPassiveManager
 from fedlab.core.network import DistNetwork
 
 from fedlab.utils.logger import Logger
@@ -84,6 +84,6 @@ if __name__ == "__main__":
                                 "epochs": 5
                             })
 
-    manager_ = ScaleClientManager(handler=trainer, network=network)
+    manager_ = ScaleClientPassiveManager(handler=trainer, network=network)
 
     manager_.run()

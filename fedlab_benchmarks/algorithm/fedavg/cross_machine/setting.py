@@ -5,7 +5,7 @@ import sys
 
 sys.path.append('../../../')
 
-from fedlab.utils.dataset.sampler import FedDistributedSampler
+from fedlab.utils.dataset.sampler import RawPartitionSampler
 
 from fedlab_benchmarks.models.cnn import CNN_Cifar10, CNN_Femnist, CNN_Mnist
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare
@@ -15,7 +15,7 @@ from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.dataset_vocab.sample
 
 def get_dataset(args):
     if args.dataset == 'mnist':
-        root = '../../../../../datasets/mnist/'
+        root = '../../../datasets/data/mnist/'
         train_transform = transforms.Compose([
             transforms.ToTensor(),
         ])
@@ -34,9 +34,9 @@ def get_dataset(args):
 
         trainloader = torch.utils.data.DataLoader(
             trainset,
-            sampler=FedDistributedSampler(trainset,
-                                          client_id=args.rank,
-                                          num_replicas=args.world_size - 1),
+            sampler=RawPartitionSampler(trainset,
+                                        client_id=args.rank,
+                                        num_replicas=args.world_size - 1),
             batch_size=args.batch_size,
             drop_last=True,
             num_workers=args.world_size)
@@ -51,9 +51,6 @@ def get_dataset(args):
         trainloader, testloader = get_LEAF_dataloader(dataset=args.dataset,
                                                       client_id=args.rank)
     elif args.dataset == 'shakespeare':
-        trainloader, testloader = get_LEAF_dataloader(dataset=args.dataset,
-                                                      client_id=args.rank)
-    elif args.dataset == 'sent140':
         trainloader, testloader = get_LEAF_dataloader(dataset=args.dataset,
                                                       client_id=args.rank)
     else:
@@ -71,4 +68,5 @@ def get_model(args):
         model = RNN_Shakespeare()
     else:
         raise ValueError("Invalid dataset:", args.dataset)
+        
     return model
