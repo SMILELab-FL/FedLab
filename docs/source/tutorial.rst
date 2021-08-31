@@ -17,15 +17,6 @@ algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`l
    tutorial_3
 
 
-```{toctree}
-:hidden:
-
-quick_start
-tutorial_1
-tutorial_2
-tutorial_3
-```
-
 .. card:: Quick Start
     :link: quickstart
     :link-type: ref
