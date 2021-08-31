@@ -50,6 +50,14 @@ class TopkCompressor(Compressor):
         self.compress_ratio = compress_ratio if compress_ratio <= 1.0 else 1.0 / compress_ratio
 
     def compress_tensor(self, tensor):
+        """compress tensor into (values, indices)
+
+        Args:
+            tensor (torch.Tensor): tensor
+
+        Returns:
+            tuple: values, indices
+        """
         numel = tensor.numel()
         top_k_samples = int(math.ceil(numel * self.compress_ratio))
 
@@ -66,12 +74,21 @@ class TopkCompressor(Compressor):
         return values, indices
 
     def decompress_tensor(self, values, indices, shape):
+        """decompress tensor"""
         de_tensor = torch.zeros(size=shape).view(-1)
         de_tensor = de_tensor.index_put_([indices], values,
                                          accumulate=True).view(shape)
         return de_tensor
 
     def compress_model(self, model):
+        """compress model
+
+        Args:
+            model (nn.module): PyTorch module.
+
+        Returns:
+            tuple: list(values) and list(indices).
+        """
         model_values = []
         model_indices = []
         for parameter in model.parameters():
@@ -82,8 +99,16 @@ class TopkCompressor(Compressor):
         return model_values, model_indices
 
     def decompress_model(self, model, model_values, model_indices):
+        """decompress model
+
+        Args:
+            model (nn.module): PyTorch module.
+            model_values (list[torch.Tensor]): values.
+            model_indices (list[torch.Tensor]): indices.
+        """
+        model_parameters_layer_list = []
         for parameter, values, indices in zip(model.parameters(), model_values,
                                               model_indices):
             de_tensor = self.decompress_tensor(values, indices,
                                                parameter.shape)
-            parameter.data.copy_(de_tensor)
+            model_parameters_layer_list.append(de_tensor)

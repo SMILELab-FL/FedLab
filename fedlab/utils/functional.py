@@ -36,6 +36,7 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
+
 def evaluate(model, criterion, test_loader):
     """Evaluate classify task model accuracy."""
     model.eval()
@@ -100,6 +101,7 @@ def read_config_from_json(json_file: str, user_name: str):
     config_info = config[user_name]
     return (config_info["ip"], config_info["port"], config_info["world_size"],
             config_info["rank"])
+
 
 def get_best_gpu():
     """Return gpu (:class:`torch.device`) with largest free memory."""

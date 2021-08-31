@@ -25,4 +25,3 @@ class MessageCode(Enum):
     Exit = 4
     SetUp = 5
     Activation = 6
-    

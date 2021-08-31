@@ -8,7 +8,7 @@ from torchvision import transforms
 sys.path.append('../../../../../')
 
 from fedlab.core.server.handler import SyncParameterServerHandler
-from fedlab.core.server.scale import ScaleSynchronousManager
+from fedlab.core.server.scale.manager import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.utils.functional import AverageMeter

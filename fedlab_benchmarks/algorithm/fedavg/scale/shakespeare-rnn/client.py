@@ -7,7 +7,7 @@ import torch.distributed as dist
 torch.manual_seed(0)
 sys.path.append("../../../../../")
 
-from fedlab.core.client.scale import ScaleClientPassiveManager
+from fedlab.core.client.scale.manager import ScaleClientPassiveManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.logger import Logger
