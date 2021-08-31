@@ -1,6 +1,8 @@
-***************************
+.. _tutorial3:
+
+**********************
 Federated Optimization
-***************************
+**********************
 
 Standard FL Optimization contains two parts: 1. local train in client; 2. global aggregation in
 server.  Local train and aggregation procedure are customizable in FedLab. You need to define

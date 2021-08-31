@@ -1,9 +1,11 @@
+.. _tutorial1:
+
 ***************************
 Distributed Communication
 ***************************
 
 
-How to initialize distributed netowrk?
+How to initialize distributed network?
 ======================================
 
 FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as
@@ -47,7 +49,7 @@ can create one as follows:
 
 
 How to create package?
-====================================
+======================
 
 The communication module of FedLab is in core/communicator. core.communicator.Package defines the basic data structure of network package. In our implementation, Package contains Header and Content. 
 

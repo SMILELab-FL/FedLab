@@ -1,13 +1,36 @@
-.. _examples:
+.. _tutorial:
 
 ********
-Examples
+Tutorial
 ********
 
 **FedLab** standardizes FL simulation procedure, including synchronous algorithm, asynchronous
 algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`. **FedLa** provides modular tools and standard implementations
 to simplify FL research. Users can quickly learn about FedLab from our standard implementation.
 Please follow `Quick Start`_ and `Customization`_ to learn more.
+
+
+.. card:: Basic Communication
+    :link: tutorial1
+    :link-type: ref
+    :class-card: sd-rounded-3
+
+    Step-by-step guide on distributed network setup and package transmission.
+
+.. card:: Tutorial 2
+    :link: tutorial2
+    :link-type: ref
+    :class-card: sd-rounded-3
+
+    Tutorial 2
+
+.. card:: Tutorial 3
+    :link: tutorial3
+    :link-type: ref
+    :class-card: sd-rounded-3
+
+    Tutorial 3
+
 
 Quick Start
 ===========
