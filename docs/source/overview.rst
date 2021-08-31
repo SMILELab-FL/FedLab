@@ -182,6 +182,6 @@ How to use FedLab?
 ==================
 
 - :ref:`installation`.
-- :ref:`examples`.
+- :ref:`tutorial`.
 
 
