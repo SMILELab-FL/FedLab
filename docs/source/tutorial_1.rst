@@ -38,12 +38,12 @@ can create one as follows:
     network.close_network_connection() # call this method to shutdown connection.
 
 .. note::
-   - The ``(server_ip, server_port)`` is the address of server (its rank is ``0`` by default).
+   - The ``(server_ip, server_port)`` is the address of server. please be aware of that the rank of server is 0 as default.
    - Make sure ``world_size`` is the same across process.
    - Rank should be different (from ``0`` to ``world_size-1``).
-   - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would
-     fail.
-
+   - world_size = 1 (server) + client number.
+   - The ethernet can be None, torch.distributed will try to find the right ethernet. If it doesn't work, user need to assign right ethernet name.  
+   - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would fail.
 
 
 How to create package?
@@ -54,8 +54,8 @@ The communication module of FedLab is in core/communicator. core.communicator.Pa
 .. code-block:: python
 
     p = Package()
-    p.header   # A tensor which size = (5,)
-    p.content  # A tensor which size = (x,)
+    p.header   # A tensor which size = (5,).
+    p.content  # A tensor which size = (x,).
 
 Currently, you can create a network package from following methods:
 

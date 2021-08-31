@@ -46,10 +46,44 @@ Base class definition shows below:
             """
             self._network.init_network_connection()
 
-FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous.
-You can customize process flow by: 1. create a new class inherited from corresponding class in
-our standard implementations; 2. overwrite the functions in target communication stage.
+FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You can customize process flow by: 1. create a new class inherited from corresponding class in our standard implementations; 2. overwrite the functions in target communication stage.
 
+To sum up, communication strategy can be customized by overwriting as the note below mentioned.
+
+.. note::
+
+    1. ``setup()`` defines the network initialization stage. Can be used in complex system information synchronize.
+    2. ``run()`` is the main process of client. User need to define the communication strategy with user. 
+    3. ``on_receive(sender_rank, message_code, payload)`` indicate the control flow and information parsing.
+
+Importantly, ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible. FedLab provides standard implementation for typical synchronous and asynchronous, as depicted below.
+
+Synchronous
+============
+
+Synchronous communication involves ``ServerSynchronousManager`` and ``ClientPassiveManager``. Communication procedure is shown as follows.
+
+.. image:: ../imgs/fedlab-synchronous.svg
+      :align: center
+      :class: only-light
+
+.. image:: ../imgs/fedlab-synchronous-dark.svg
+  :align: center
+  :class: only-dark
+
+Asynchronous
+=============
+
+Asynchronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager``. Communication
+procedure is shown as follows.
+
+.. image:: ../imgs/fedlab-asynchronous.svg
+      :align: center
+      :class: only-light
+
+.. image:: ../imgs/fedlab-asynchronous-dark.svg
+  :align: center
+  :class: only-dark
 
 Initialization stage
 =======================
@@ -129,9 +163,6 @@ Then, put the branch in ``on_receive(sender_rank, message_code, payload)`` funct
         model_parameters = payload[0]
         self._handler.train(model_parameters=model_parameters)
 
-
-
-
 Shutdown stage
 =================
 
@@ -154,33 +185,8 @@ Shutdown stage is started by ServerManager. It will send a package with ``Messag
             pack = Package(message_code=MessageCode.Exit)
             PackageProcessor.send_package(pack, dst=rank)
 
-Synchronous
-^^^^^^^^^^^
+Example
+===========
 
-Synchronous communication involves ``ServerSynchronousManager`` and ``ClientPassiveManager``. Communication procedure is shown as follows.
-
-.. image:: ../imgs/fedlab-synchronous.svg
-      :align: center
-      :class: only-light
-
-.. image:: ../imgs/fedlab-synchronous-dark.svg
-  :align: center
-  :class: only-dark
-
-Asynchronous
-^^^^^^^^^^^^
-
-Asynchronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager``. Communication
-procedure is shown as follows.
-
-.. image:: ../imgs/fedlab-asynchronous.svg
-      :align: center
-      :class: only-light
-
-.. image:: ../imgs/fedlab-asynchronous-dark.svg
-  :align: center
-  :class: only-dark
-
-
-
+In fact, the scale module of FedLab is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/__init__.py (It it really simple. We did nothing but add a map function from rank to client id).
 
