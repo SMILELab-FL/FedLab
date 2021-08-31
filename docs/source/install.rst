@@ -1,12 +1,12 @@
 .. _installation:
 
 Installation & Set up
-======================
+=====================
 
 FedLab can be installed by source code or pip.
 
 Source Code
-^^^^^^^^^^^^^^
+^^^^^^^^^^^
 
 Download source code from GitHub:
 
@@ -22,7 +22,7 @@ Install dependencies:
    $ pip install -r requirements.txt
 
 Pip
-^^^^
+^^^
 
 Pip install is coming soon.
 

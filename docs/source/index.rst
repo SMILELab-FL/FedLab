@@ -19,7 +19,7 @@ FedLab provides the necessary modules for FL simulation, including communication
 
    overview
    install
-   examples
+   tutorial
    contributing
    reference
 
@@ -35,7 +35,7 @@ Gallery
             :shadow: md
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-acc-dark.png
             :class-card: sd-rounded-3
-            :link: examples
+            :link: tutorial
             :link-type: ref
 
     .. grid-item::
@@ -45,7 +45,7 @@ Gallery
             :shadow: md
             :img-bottom: ../imgs/ex-results/fedavg-CNN-MLP-loss-dark.png
             :class-card: sd-rounded-3
-            :link: examples
+            :link: tutorial
             :link-type: ref
 
 
