@@ -1,13 +1,17 @@
 .. _tutorial2:
 
-**************************
+**********************
 Communication Strategy
-**************************
+**********************
+
 Communication strategy is implemented by ClientManager and ServerManager together.
 
-The prototype of ``NetworkManager`` is defined in ``fedlab.core.network_manager``, which is also a subclass of ``torch.multiprocessing.process``.    
+The prototype of :class:`NetworkManager` is defined in ``fedlab.core.network_manager``, which is
+also a subclass of ``torch.multiprocessing.process``.
 
-Typically, standard implementations is shown in ``fedlab.core.client.manager`` and ``fedlab.core.server.manager``.``NetworkManager`` manages network operation and control flow procedure.
+Typically, standard implementations is shown in ``fedlab.core.client.manager`` and
+``fedlab.core.server.manager``. :class:`NetworkManager` manages network operation and control flow
+procedure.
 
 Base class definition shows below:
 
@@ -48,49 +52,51 @@ Base class definition shows below:
             """
             self._network.init_network_connection()
 
-FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You can customize process flow by: 1. create a new class inherited from corresponding class in our standard implementations; 2. overwrite the functions in target communication stage.
+FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You
+can customize process flow by: 1. create a new class inherited from corresponding class in our
+standard implementations; 2. overwrite the functions in target communication stage.
 
 To sum up, communication strategy can be customized by overwriting as the note below mentioned.
 
 .. note::
 
-    1. ``setup()`` defines the network initialization stage. Can be used in complex system information synchronize.
-    2. ``run()`` is the main process of client. User need to define the communication strategy with user. 
-    3. ``on_receive(sender_rank, message_code, payload)`` indicate the control flow and information parsing.
+    1. :meth:`setup()` defines the network initialization stage. Can be used in complex system information synchronize.
+    2. :meth:`run()` is the main process of client. User need to define the communication strategy with user.
+    3. :meth:`on_receive(sender_rank, message_code, payload)` indicate the control flow and information parsing.
 
 Importantly, ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible. FedLab provides standard implementation for typical synchronous and asynchronous, as depicted below.
 
 Synchronous
 ============
 
-Synchronous communication involves ``ServerSynchronousManager`` and ``ClientPassiveManager``. Communication procedure is shown as follows.
+Synchronous communication involves :meth:`ServerSynchronousManager` and ``ClientPassiveManager``. Communication procedure is shown as follows.
 
 .. image:: ../imgs/fedlab-synchronous.svg
-      :align: center
-      :class: only-light
+    :align: center
+    :class: only-light
 
 .. image:: ../imgs/fedlab-synchronous-dark.svg
-  :align: center
-  :class: only-dark
+    :align: center
+    :class: only-dark
 
 Asynchronous
 =============
 
-Asynchronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager``. Communication
+Asynchronous is given by :class:`ServerAsynchronousManager` and :meth:`ClientActiveManager`. Communication
 procedure is shown as follows.
 
 .. image:: ../imgs/fedlab-asynchronous.svg
-      :align: center
-      :class: only-light
+    :align: center
+    :class: only-light
 
 .. image:: ../imgs/fedlab-asynchronous-dark.svg
-  :align: center
-  :class: only-dark
+    :align: center
+    :class: only-dark
 
 Initialization stage
 =======================
 
-Initialization stage is represented by ``manager.setup()`` function.
+Initialization stage is represented by :meth:`manager.setup()` function.
 
 User can customize initialization procedure as follows(use ClientManager as example):
 
@@ -114,7 +120,8 @@ User can customize initialization procedure as follows(use ClientManager as exam
 Communication stage
 ===================
 
-After Initialization Stage, user can define ``run()`` to define main process. To standardilize FedLab's implementation, we encourage users to customize this stage following our code pattern:
+After Initialization Stage, user can define :meth:`run()` to define main process. To standardize
+**FedLab**'s implementation, we encourage users to customize this stage following our code pattern:
 
 .. code-block:: python
 
@@ -145,7 +152,7 @@ After Initialization Stage, user can define ``run()`` to define main process. To
             # synchronize with server
             self.synchronize()
 
-Then, put the branch in ``on_receive(sender_rank, message_code, payload)`` function, like this:
+Then, put the branch in :meth:`on_receive(sender_rank, message_code, payload)` method, like this:
 
 .. code-block:: python
 
@@ -168,7 +175,8 @@ Then, put the branch in ``on_receive(sender_rank, message_code, payload)`` funct
 Shutdown stage
 =================
 
-Shutdown stage is started by ServerManager. It will send a package with ``MessageCode.Exit`` to inform ClientManager to stop its process.
+Shutdown stage is started by Server Manager. It will send a package with ``MessageCode.Exit`` to
+inform Client Manager to stop its process.
 
 .. code-block:: python
 
@@ -190,5 +198,5 @@ Shutdown stage is started by ServerManager. It will send a package with ``Messag
 Example
 ===========
 
-In fact, the scale module of FedLab is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/__init__.py (It it really simple. We did nothing but add a map function from rank to client id).
+In fact, the scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/__init__.py (It it really simple. We did nothing but add a map function from rank to client id).
 

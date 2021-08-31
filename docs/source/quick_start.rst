@@ -1,19 +1,27 @@
-*************
+.. _quickstart:
+
+***********
 Quick Start
-*************
+***********
 
-In this page, we introduce how to build a FL simulation system with FedLab in cross machine or cross process scenario. We implement FedAvg algorithm wit CNN and partitioned MNIST dataset across clients.
-Source code of this page can be seen in fedlab_benchamrks/algorithm/fedavg/cross_machine.
+In this page, we introduce how to build a FL simulation system with FedLab in cross machine or
+cross process scenario. We implement FedAvg algorithm wit CNN and partitioned MNIST dataset across
+clients.
 
-Cross Machine/Process is suit for computer cluster deployment, simulating data-center FL system. In our experiment, the number of world_size can't be more than 50, otherwise the socket connecting will fail.
+Source code of this page can be seen in `fedlab_benchamrks/algorithm/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/cross_machine>`_.
+
+Cross Machine/Process is suit for computer cluster deployment, simulating data-center FL system.
+In our experiment, the number of world_size can't be more than 50, otherwise the socket connecting
+will fail.
 
 
 Download dataset
 ================
 
-FedLab provides common dataset download and partition process program. Besides, FL dataset baseline LEAF is also implemented and compatible with PyTorch interfaces.
+FedLab provides common dataset download and partition process program. Besides, FL dataset baseline
+LEAF :cite:p:`caldas2018leaf` is also implemented and compatible with PyTorch interfaces.
 
-Codes related to dataset download process are availiable at fedlab_benchamrks/datasets/data/{dataset name}.
+Codes related to dataset download process are available at ``fedlab_benchamrks/datasets/data/{dataset name}``.
 
 1. Download MNIST/CIFAR10
 
@@ -47,35 +55,40 @@ Source codes of partition scripts:
     data_indices = random_slicing(trainset, num_clients=100)
     save_dict(data_indices, "cifar10_iid.pkl")
 
-``data_indices`` is a dict map from client id to data indices(list) of raw dataset. FedLab provides random partition and noniid partition methods, in which the noniid partition method is totally reimplementation in paper fedavg.
+``data_indices`` is a ``dict`` mapping from client id to data indices(list) of raw dataset.
+**FedLab** provides random partition and non-I.I.D. partition methods, in which the noniid partition method is totally reimplementation in paper fedavg.
 
 3. LEAF dataset process
 
-Please follow the https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks to learn how to generate LEAF related dataset partition.
+Please follow the `FedLab benchmark <https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ to learn how to
+generate LEAF related dataset partition.
 
 
 Run FedLab demos
-^^^^^^^^^^^^^^^^^^^^
-FedLab provides both asynchronous and synchronous standard implementation demos for uses to learn. Since the structure of out implementations are similar, therefore, I  only introduce the usage of synchronous FL system simulation demo(FedAvg) with different scenario in this page.
+^^^^^^^^^^^^^^^^
+
+**FedLab** provides both asynchronous and synchronous standard implementation demos for uses to learn. Since the structure of out implementations are similar, therefore, I  only introduce the usage of synchronous FL system simulation demo(FedAvg) with different scenario in this page.
 
 **We are very confident in the readability of FedLab code, so we recommend that users read the source code according to the following demos for better understanding.**
 
-1. Standard Alone
--------------------
+1. Standalone
+-------------
 
-Main process is under fedlab_benchamrks/algorithm/fedavg/standalone/. This is a standard usage of our ``SerialTrainer`` which allows users simulate a group of client with a single process.
+Main process is under
+`fedlab_benchamrks/algorithm/fedavg/standalone <https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/standalone>`_.
+This is a standard usage of :class:`SerialTrainer` which allows users to simulate a group of
+clients with a single process.
 
 .. code-block:: shell-session
 
     $ python standalone.py --total_client 100 --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --lr 0.02 --partition iid
 
-run command above to start a single process simulating FedAvg algoithm with 100 clients with totally 10 communication round and randomly 10 clients join each round. 
-
-With slightly modified with network configuration, user can deploy any process into multiple computers. Let them work together to perform federated learning tasks.
-
+Run command above to start a single process simulating FedAvg algorithm with 100 clients with
+ 10 communication round in total, with 10 clients joining each round randomly.
 
 
-2. Cross Machine
+
+2. Cross-Machine
 -----------------
 
 Start a FL simulation with 1 server and 2 clients.
@@ -84,7 +97,7 @@ Start a FL simulation with 1 server and 2 clients.
 
     $ bash quick_start.sh
 
-The content of quick_start.sh is:
+The content of ``quick_start.sh`` is:
 
 .. code-block:: shell-session
 
@@ -92,19 +105,25 @@ The content of quick_start.sh is:
     python client.py --ip 127.0.0.1 --port 3002 --world_size 3 --rank 1 --dataset mnist &
     python client.py --ip 127.0.0.1 --port 3002 --world_size 3 --rank 2 --dataset mnist &
 
-Cross Machine scenario allows users deploy their FL system in computer cluster. In this case, we set the address of server as localhost. Then three process will communicate with each other flolowing our default agreements and start FL procedure. 
+Cross Machine scenario allows users deploy their FL system in computer cluster. In this case, we
+set the address of server as localhost. Then three process will communicate with each other
+following our default agreements and start FL procedure.
 
-.. Note::
+.. note::
 
     Due to the rank of torch.distributed is unique for every process. Therefore, we use rank represent client id for this scenario.
 
+
 3. Scale
 ----------
-``SerialTrainer`` uses less computer resources(single process) to simulate multiple clients. Cross Machine simulates one client with one process. In our experiment, the world size of ``torch.distributed`` can't more than 50, otherwise, the socket will crash, which limited the client number of FL simulation.
 
-To overcome this shortage, FedLab provides another scale standard implementation to combine ``SerialTrainer`` and ``Manager``, which allows a single process simulate multiple clients as will.
+:class:`SerialTrainer` uses less computer resources (single process) to simulate multiple clients. Cross-Machine simulates one client with one process. In our experiment, the world size of ``torch.distributed`` can't more than 50, otherwise, the socket will crash, which limited the client number of FL simulation.
 
-Our experimental results are also based on this scenario. Source codes are availiable in fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
+To overcome this shortage, FedLab provides another scale standard implementation to combine
+:class:`SerialTrainer` and :class:`Manager`, which allows a single process simulate multiple clients as will.
+
+Our experimental results are also based on this scenario. Source codes are available in
+fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
 
 Here, I take mnist-cnn as example to introduce this demo. In this demo, we set world_size=11 (1 ServerManager, 10 ClientManagers), and each ClientManager represents 10 local client dataset partition. Our data partition strategy follows the experimental setting of fedavg as well. In this way, **we only use 11 processes to simulate a FL system with 100 clients.**
 
@@ -120,9 +139,9 @@ To start this system, you need to open at least 2 terminal (we still use localho
 
 .. code-block:: shell-session
 
-    $ bash start_clt.sh 11 1 10 
+    $ bash start_clt.sh 11 1 10
 
-The content of start_clt.sh:
+The content of ``start_clt.sh``:
 
 .. code-block:: shell-session
 
@@ -137,6 +156,8 @@ The content of start_clt.sh:
     wait
 
 Summary
-========
+=======
 
-This page introduces how to quick start FedLab demo on localhost. For further usage of building customize FL similation, we highly encourage you to read our tutorials and source code.
+This page introduces how to quick start FedLab demo on localhost. For further usage of
+building customize FL similation, we highly encourage you to read our tutorials and source
+code.

@@ -5,182 +5,32 @@ Tutorial
 ********
 
 **FedLab** standardizes FL simulation procedure, including synchronous algorithm, asynchronous
-algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`. **FedLa** provides modular tools and standard implementations
-to simplify FL research. Users can quickly learn about FedLab from our standard implementation.
-Please follow `Quick Start`_ and `Customization`_ to learn more.
+algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`.
+**FedLab** provides modular tools and standard implementations to simplify FL research.
 
+.. card:: Quick Start
+    :link: quickstart
+    :link-type: ref
+    :class-card: sd-rounded-2 sd-border-1
 
-.. card:: Basic Communication
+.. card:: Learn Distributed Network Basics
     :link: tutorial1
     :link-type: ref
-    :class-card: sd-rounded-3
+    :class-card: sd-rounded-2 sd-border-1
 
     Step-by-step guide on distributed network setup and package transmission.
 
-.. card:: Tutorial 2
+.. card:: How to Customize Communication Strategy?
     :link: tutorial2
     :link-type: ref
-    :class-card: sd-rounded-3
+    :class-card: sd-rounded-2 sd-border-1
 
-    Tutorial 2
+    Use :class:`NetworkManager` to customize communication
+    strategies, including synchronous and asynchronous communication.
 
-.. card:: Tutorial 3
+.. card:: How to Customize Federated Optimization?
     :link: tutorial3
     :link-type: ref
-    :class-card: sd-rounded-3
+    :class-card: sd-rounded-2 sd-border-1
 
-    Tutorial 3
-
-
-Quick Start
-===========
-
-Run quick start demo following commands:
-
-.. code-block:: shell-session
-
-    $ cd fedlab_benchamrks/algorithm/fedavg/cross_machine/
-    $ bash quick_start.sh
-
-to start a FL simulation with 1 server and 2 clients, communicating through localhost with each
-other and following FedAvg optimization algorithm.
-
-Follow commands below, run a asynchronous FL simulation with 1 server and 2 clients.
-
-.. code-block:: shell-session
-
-   $ cd fedlab_benchamrks/algorithm/fedasync/
-   $ bash quick_start.sh
-
-
-Finally, the demo of ``SerialTrainer`` is in `fedlab_benchamrks/algorithm/fedavg/standalone/ <https://github.com/SMILELab-FL/FedLab/tree/main/fedlab_benchmarks/algorithm/fedavg/standalone>`_.
-
-Customization
-=============
-
-We encourage you to read the FedLab source code to better understand the structure of FedLab.
-
-Network Configuration
----------------------
-
-FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as
-point-to-point communication package. The communication backend is Gloo as default. FedLab processes
-send/receive data through TCP network connection. If the automatically detected interface is not
-correct, you need to choose the network interface to use for Gloo, by setting the environment
-variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or
-``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
-
-.. note::
-   Check the available ethernet:
-
-   .. code-block:: shell-session
-
-       $ ifconfig
-
-You need to assign right ethernet to ``DistNetwork``, making sure ``torch.distributed``
-network initialization works. ``DistNetwork`` is for quickly network configuration, which you
-can create one as follows:
-
-.. code-block:: python
-
-   from fedlab.core.network import DistNetwork
-   world_size = 10
-   rank = 0  # 0 for server, other rank for clients
-   ethernet = 'eth0'
-   server_ip = '127.0.0.1'
-   server_port = 1234
-   network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
-
-.. note::
-   - The ``(server_ip, server_port)`` is the address of server (its rank is ``0`` by default).
-   - Make sure ``world_size`` is the same across process.
-   - Rank should be different (from ``0`` to ``world_size-1``).
-   - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would
-     fail.
-
-
-Optimization Customization
---------------------------
-
-Standard FL Optimization contains two parts: 1. local train in client; 2. global aggregation in
-server.  Local train and aggregation procedure are customizable in FedLab. You need to define
-``ClientTrainer`` and ``ParameterServerBackendHandler``.
-
-.. note::
-   - Overwrite ``ClientTrainer.train()`` to define local train procedure. Typically, you need to
-     implement standard training pipeline of PyTorch.
-   - ``ParameterServerBackendHandler`` defines hyperparameter of FL system such as
-     ``stop_condition()``, ``sample_clients()`` and so on.
-   - You can overwrite ``ParameterServerBackendHandler._update_model(serialized_params_list)`` to
-     customize aggregation procedure. Typically, you can define aggregation functions as FedLab
-     implemented in ``fedlab.utils.aggregator`` which used in FedLab standard implementations.
-
-.. code-block:: python
-
-    # ClientTrainer
-    trainer = ClientSGDTrainer(model, trainloader, epochs, optimizer, criterion, cuda, logger)
-
-    # ParameterServerBackendHandler
-    handler = SyncParameterServerHandler(model, client_num_in_total, global_round, logger, sample_ratio)
-
-Communication Customization
----------------------------
-
-Communication control flow and data flow are managed by ``NetworkManager``. Typically, standard
-implementations is shown in ``fedlab.core.client.manager`` and ``fedlab.core.server.manager``.
-
-The prototype of ``NetworkManager`` is defined in ``fedlab.core.network_manager``, which is
-also a subclass of ``torch.multiprocessing.process``.  ``NetworkManager`` manages network connection
-and data sending/receiving process. For instance, ``NetworkManager.setup()`` is for network
-initialization procedure and ``NetworkManager.on_receive(self, sender, message_code, payload)`` is
-for control flow definition.
-
-FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous.
-You can customize process flow by: 1. create a new class inherited from corresponding class in
-our standard implementations; 2. overwrite the functions in target communication stage.
-
-Synchronous
-^^^^^^^^^^^
-
-Synchronous communication involves ``ServerSynchronousManager`` and ``ClientPassiveManager``. Communication
-procedure is shown as follows.
-
-.. image:: ../imgs/fedlab-synchronous.svg
-      :align: center
-      :class: only-light
-
-.. image:: ../imgs/fedlab-synchronous-dark.svg
-  :align: center
-  :class: only-dark
-
-.. note::
-   1. Overwrite ``setup()`` in both ``ServerSynchronousManager`` and ``ClientPassiveManager`` to define
-      initialization procedure.
-   2. Overwrite ``activate_clients()`` in ``ServerSynchronousManager`` to customize broadcast stage.
-   3. Overwrite ``on_receive(self, sender, message_code, payload)`` in ``ServerSynchronousManager``
-      and ``ClientPassiveManager`` to customize control flow.
-   4. Overwrite ``synchronize()`` in ``ClientPassiveManager`` to customize synchronize procedure.
-
-Asynchronous
-^^^^^^^^^^^^
-
-Asynchronous is given by ``ServerAsynchronousManager`` and ``ClientActiveManager``. Communication
-procedure is shown as follows.
-
-.. image:: ../imgs/fedlab-asynchronous.svg
-      :align: center
-      :class: only-light
-
-.. image:: ../imgs/fedlab-asynchronous-dark.svg
-  :align: center
-  :class: only-dark
-
-
-.. note::
-   1. overwrite ``setup()`` in both client and server to define initialization procedure.
-   2. overwrite ``request_model`` in ``ClientActiveManager`` to customize request procedure.
-   3. overwrite ``on_receive(self, sender, message_code, payload)`` in
-      ``ServerAsynchronousManager`` and ``ClientActiveManager`` to customize control flow.
-   4. overwrite ``synchronize()`` in ``ClientActiveManager`` to customize synchronize procedure.
-
-
+    Define your own model optimization process for both server and client.

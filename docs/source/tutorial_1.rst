@@ -16,14 +16,15 @@ variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0``
 ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
 
 .. note::
-   Check the available ethernet:
 
-   .. code-block:: shell-session
+    Check the available ethernet:
 
-       $ ifconfig
+    .. code-block:: shell-session
 
-You need to assign right ethernet to ``DistNetwork``, making sure ``torch.distributed``
-network initialization works. ``DistNetwork`` is for quickly network configuration, which you
+        $ ifconfig
+
+You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed``
+network initialization works. :class:`DistNetwork` is for quickly network configuration, which you
 can create one as follows:
 
 .. code-block:: python
@@ -39,13 +40,12 @@ can create one as follows:
     network.init_network_connection() # call this method to start connection.
     network.close_network_connection() # call this method to shutdown connection.
 
-.. note::
-   - The ``(server_ip, server_port)`` is the address of server. please be aware of that the rank of server is 0 as default.
-   - Make sure ``world_size`` is the same across process.
-   - Rank should be different (from ``0`` to ``world_size-1``).
-   - world_size = 1 (server) + client number.
-   - The ethernet can be None, torch.distributed will try to find the right ethernet. If it doesn't work, user need to assign right ethernet name.  
-   - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would fail.
+- The ``(server_ip, server_port)`` is the address of server. please be aware of that the rank of server is 0 as default.
+- Make sure ``world_size`` is the same across process.
+- Rank should be different (from ``0`` to ``world_size-1``).
+- world_size = 1 (server) + client number.
+- The ethernet can be None, torch.distributed will try to find the right ethernet. If it doesn't work, user need to assign right ethernet name.
+- The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would fail.
 
 
 How to create package?
@@ -62,7 +62,7 @@ The communication module of FedLab is in core/communicator. core.communicator.Pa
 Currently, you can create a network package from following methods:
 
 .. note::
-    Currently, FedLab only support vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
+    Currently, **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
 
 1. initialize with tensor
 
