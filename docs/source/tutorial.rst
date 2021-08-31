@@ -8,14 +8,6 @@ Tutorial
 algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`.
 **FedLab** provides modular tools and standard implementations to simplify FL research.
 
-.. toctree::
-   :hidden:
-
-   quick_start
-   tutorial_1
-   tutorial_2
-   tutorial_3
-
 
 ```{toctree}
 :hidden:
