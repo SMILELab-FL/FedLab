@@ -28,13 +28,12 @@ class ScaleSynchronousManager(ServerSynchronousManager):
     def setup(self):
         super().setup()
 
-        # TODO: rename map as rank_client_id_map
-        map = {}
+        rank_client_id_map = {}
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)
-            map[rank] = content[0].item()
+            rank_client_id_map[rank] = content[0].item()
 
-        self.coordinator = Coordinator(map)
+        self.coordinator = Coordinator(rank_client_id_map)
         self._handler.client_num_in_total = int(
             sum(self.coordinator.map.values()))
 
@@ -59,7 +58,6 @@ class ScaleSynchronousManager(ServerSynchronousManager):
     def on_receive(self, sender, message_code, payload):
         if message_code == MessageCode.ParameterUpdate:
             for model_parameters in payload:
-                print("model size:", model_parameters.shape)
                 update_flag = self._handler.add_model(sender, model_parameters)
                 if update_flag is True:
                     return update_flag

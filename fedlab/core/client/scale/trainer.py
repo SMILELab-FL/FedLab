@@ -177,7 +177,7 @@ class SubsetSerialTrainer(SerialTrainer):
         return self.model_parameters
 
 
-class AsyncSerialTrainer(SerialTrainer):
+class AsyncSerialTrainer(SubsetSerialTrainer):
     """Train multiple clients in a single process.
 
         Args:
@@ -192,7 +192,6 @@ class AsyncSerialTrainer(SerialTrainer):
             ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
         """
-
     def __init__(self,
                  model,
                  dataset,

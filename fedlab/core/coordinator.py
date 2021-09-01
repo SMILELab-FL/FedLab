@@ -43,7 +43,5 @@ class Coordinator(object):
                     break
         return map_dict
 
-    # TODO: no need to add function to map rank back to client id?
-
     def __str__(self) -> str:
         return str(self.map)
