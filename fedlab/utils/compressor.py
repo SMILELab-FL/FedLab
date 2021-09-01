@@ -15,7 +15,7 @@
 from abc import ABC, abstractmethod
 import math
 import torch
-
+from .serialization import SerializationTool
 
 class Compressor(ABC):
     def __init__(self) -> None:
@@ -111,4 +111,7 @@ class TopkCompressor(Compressor):
                                               model_indices):
             de_tensor = self.decompress_tensor(values, indices,
                                                parameter.shape)
-            model_parameters_layer_list.append(de_tensor)
+            model_parameters_layer_list.append(de_tensor.view(-1))
+        
+        model_parameters = torch.cat(model_parameters_layer_list)
+        SerializationTool.deserialize_model(model,model_parameters)

@@ -41,7 +41,9 @@ class ScaleClientPassiveManager(ClientPassiveManager):
         """
         super().setup()
         content = torch.Tensor([self._handler.client_num]).int()
-        setup_pack = Package(content=content, data_type=1)
+        setup_pack = Package(message_code=MessageCode.SetUp,
+                             content=content,
+                             data_type=1)
         PackageProcessor.send_package(setup_pack, dst=0)
 
     def on_receive(self, sender_rank, message_code, payload):

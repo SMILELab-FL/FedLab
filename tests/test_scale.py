@@ -11,28 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import unittest
+import sys
 
-from fedlab.utils.dataset.sampler import SubsetSampler, RawPartitionSampler
+sys.path.append("../")
+from copy import deepcopy
 
-class SamplerTestCase(unittest.TestCase):
 
-    def test_sampler(self):
-        indices = [i for i in range(1000)]
-        samer = SubsetSampler(indices=indices, shuffle=True)
+class ScaleTestCase(unittest.TestCase):
 
-        for idx in samer:
-            break
+    def setUp(self) -> None:
+        return super().setUp()
 
-        assert len(indices) == len(samer)
-
-    def test_fed_sampler(self):
-        indices = [i for i in range(1000)]
-        fed_samer = RawPartitionSampler(indices, num_replicas=10, client_id=1)
-
-        for idx in fed_samer:
-            break
-
-        assert len(fed_samer) == len(indices)/10
+    def tearDown(self) -> None:
+        return super().tearDown()
 

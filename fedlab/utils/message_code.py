@@ -24,4 +24,3 @@ class MessageCode(Enum):
     EvaluateParams = 3
     Exit = 4
     SetUp = 5
-    Activation = 6

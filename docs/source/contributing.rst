@@ -23,10 +23,12 @@ We encourage you to contribute to the improvement of FedLab or the FedLab reprod
 
     fedlab
     │   ├── core 
+    │   │   ├── communicator            # communication module of FedLab 
     │   │   ├── client                  # client related implementations
-    │   │   ├── communicator            # communication module of FedLab
-    │   │   ├── hierarchical            # hierarchical communication pattern modules
+    │   │   │   └── scale               # scale manager and serial trainer
     │   │   └── server                  # server related implementations
+    │   │       └── scale               # scale manager
+    │   │           └── hierarchical    # hierarchical communication pattern modules
     │   └── utils                       # functional modules
     │       └── dataset                 # functional modules associated with dataset
     │
