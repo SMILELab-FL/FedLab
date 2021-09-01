@@ -21,11 +21,11 @@ def get_readme():
 setup(
     name="FedLab",
     version="1.0",
-    author="Dun Zeng, Siqi Liang, Congjian Luo",
+    author="Dun Zeng, Siqi Liang, Xiangjing Hu, Congjian Luo",
     author_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
-    maintainer="Dun Zeng, Siqi Liang",
+    maintainer="Dun Zeng, Siqi Liang, Xiangjing Hu",
     maintainer_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
-    description="A framework for simulation in federated setting implemented in PyTorch",
+    description="A flexible Federated Learning Framework based on PyTorch, simplifying your Federated Learning research.",
     long_description=get_readme(),
     url="https://github.com/SMILELab-FL/FedLab",
     packages=find_packages(exclude=['docs', 'tests']),  # TODO: add things in 'exclude'
@@ -33,7 +33,8 @@ setup(
                       'torchvision>=0.8.2',
                       'numpy',
                       'spacy',
-                      'pynvml'],
+                      'pynvml',
+                      'pickle'],
     python_requires='>=3.6',
     classifiers=[
         'Intended Audience :: Research',

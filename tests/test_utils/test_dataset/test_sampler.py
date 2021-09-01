@@ -13,26 +13,35 @@
 # limitations under the License.
 
 import unittest
+import os
+from fedlab.utils.dataset.sampler import SubsetSampler, RawPartitionSampler, DictFileSampler
 
-from fedlab.utils.dataset.sampler import SubsetSampler, RawPartitionSampler
 
 class SamplerTestCase(unittest.TestCase):
-
     def test_sampler(self):
         indices = [i for i in range(1000)]
-        samer = SubsetSampler(indices=indices, shuffle=True)
+        sampler = SubsetSampler(indices=indices)
 
-        for idx in samer:
-            break
+        for x, y in zip(sampler, indices):
+            assert x == y
 
-        assert len(indices) == len(samer)
+        assert len(indices) == len(sampler)
 
-    def test_fed_sampler(self):
+    def test_raw_partition_sampler(self):
+
         indices = [i for i in range(1000)]
-        fed_samer = RawPartitionSampler(indices, num_replicas=10, client_id=1)
+        sampler = RawPartitionSampler(indices, num_replicas=10, client_id=1)
 
-        for idx in fed_samer:
+        for _ in sampler:
             break
 
-        assert len(fed_samer) == len(indices)/10
+        assert len(sampler) == len(indices) / 10
 
+    def test_dict_partition_sampler(self):
+        dict_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                 "../../data/mnist_iid.pkl")
+        sampler = DictFileSampler(dict_file=dict_file, client_id=10)
+        for _ in sampler:
+            break
+
+        len(sampler)

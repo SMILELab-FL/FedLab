@@ -25,12 +25,14 @@ class MessageCodeTestCase(unittest.TestCase):
                              MessageCode.GradientUpdate,
                              MessageCode.ParameterUpdate,
                              MessageCode.EvaluateParams,
-                             MessageCode.Exit]
+                             MessageCode.Exit,
+                             MessageCode.SetUp]
         cls.code_names = ['ParameterRequest',
                           'GradientUpdate',
                           'ParameterUpdate',
                           'EvaluateParams',
-                          'Exit']
+                          'Exit',
+                          'SetUp']
 
     def test_message_code_eq(self):
         num = len(self.message_codes)
