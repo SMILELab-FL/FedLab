@@ -28,6 +28,7 @@ class ScaleSynchronousManager(ServerSynchronousManager):
     def setup(self):
         super().setup()
 
+        # TODO: rename map as rank_client_id_map
         map = {}
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)

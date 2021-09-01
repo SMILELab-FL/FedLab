@@ -23,21 +23,23 @@ from fedlab.utils.message_code import MessageCode
 
 
 class ScaleClientPassiveManager(ClientPassiveManager):
-    """Special Client Manager for SerialTrainer.
+    """Special client manager for :class:`SerialTrainer`.
         
-        We modified the communication agreements create new map relation between rank and client id.
-        In this way, allow Manager represents multiple clients.
+    We modify the communication agreements creating mapping between process rank and client id.
+    In this way, :class:`Manager` is able to represent multiple clients.
 
     Args:
-        handler (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
+        handler (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
     """
+
     def __init__(self, handler, network):
         super().__init__(network=network, handler=handler)
 
     def setup(self):
         """Modified initialization agreements.
-            Every client manager need to report local client num to server.
+
+        Every client manager needs to report local client number to server in setup stage.
         """
         super().setup()
         content = torch.Tensor([self._handler.client_num]).int()
@@ -49,7 +51,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform when receiving new message, including local training
 
-        Note:
+        .. note::
             Customize the control flow of client corresponding with :class:`MessageCode`.
 
         Args:
@@ -69,9 +71,8 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def synchronize(self):
         """Synchronize local model with server actively
 
-        Note:
-            communication agreements related:
-            Overwrite this function to customize package for synchronizing.
+        .. note::
+            Communication agreements related. Overwrite this function to customize package for synchronizing.
         """
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=self.model_parameters_list)
