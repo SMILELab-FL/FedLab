@@ -29,9 +29,10 @@ class SerialTrainer(ClientTrainer):
     Args:
         model (torch.nn.Module): Model used in this federation.
         cuda (bool): Use GPUs or not. Default: ``True``.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
-        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
+        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to console.
     """
+
     def __init__(self, model, client_num, aggregator, cuda=True, logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
@@ -55,7 +56,6 @@ class SerialTrainer(ClientTrainer):
         Args:
             model_parameters (torch.Tensor): Serialized model parameters.
             id_list (list[int]): Client id in this training serial.
-            cuda (bool): Use GPUs or not. Default: ``True``.
             aggregate (bool): Whether to perform partial aggregation on this group of clients' local model in the end of local training round.
 
         Note:
@@ -97,10 +97,12 @@ class SubsetSerialTrainer(SerialTrainer):
         logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
         cuda (bool): Use GPUs or not. Default: ``True``.
         args (dict, optional): Uncertain variables.
-    Notes:
+
+    .. note::
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
+
     def __init__(self,
                  model,
                  dataset,
@@ -190,6 +192,7 @@ class AsyncSerialTrainer(SerialTrainer):
             ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
         """
+
     def __init__(self,
                  model,
                  dataset,
@@ -260,7 +263,7 @@ class AsyncSerialTrainer(SerialTrainer):
             numel = parameter.data.numel()
             size = parameter.data.size()
             global_parameter = global_model_parameters[
-                current_index:current_index + numel].view(size)
+                               current_index:current_index + numel].view(size)
             current_index += numel
             if l2_reg is None:
                 l2_reg = (parameter - global_parameter).norm(2)

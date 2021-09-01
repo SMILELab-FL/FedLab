@@ -14,17 +14,18 @@
 
 
 class Coordinator(object):
-    """Deal with the map relation between client id in FL system and rank in communication.
+    """Deal with the mapping relation between client id in FL system and process rank in communication.
 
     Note
         Server Manager creates a Coordinator following:
-        1. init newwork connection.
+        1. init network connection.
         2. client actively send local group info to server.
         4. server receive all info and init Coordinator.
 
     Args:
-        setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between rank and client id.
+        setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
     """
+
     def __init__(self, setup_dict) -> None:
         self.map = setup_dict
 
@@ -41,6 +42,8 @@ class Coordinator(object):
                         map_dict[rank] = [id]
                     break
         return map_dict
+
+    # TODO: no need to add function to map rank back to client id?
 
     def __str__(self) -> str:
         return str(self.map)

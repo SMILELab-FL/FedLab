@@ -154,7 +154,7 @@ class ServerAsynchronousManager(NetworkManager):
     Args:
         handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
         network (DistNetwork): Manage ``torch.distributed`` network communication.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only in console. Default: ``None``.
     """
     def __init__(self, handler, network, logger=None):
 
