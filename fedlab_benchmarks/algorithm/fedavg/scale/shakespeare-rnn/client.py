@@ -1,11 +1,11 @@
-import torch
 import argparse
-import sys
 import os
+import pickle
 
+import torch
 import torch.distributed as dist
+
 torch.manual_seed(0)
-sys.path.append("../../../../../")
 
 from fedlab.core.client.scale.manager import ScaleClientPassiveManager
 from fedlab.core.network import DistNetwork
@@ -15,6 +15,9 @@ from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 from fedlab.core.client.scale.trainer import SerialTrainer
 
+import sys
+
+sys.path.append('../../../../../')
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare
 from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dataloader
 
@@ -28,10 +31,17 @@ class RNNSTrainer(SerialTrainer):
                          logger=logger)
 
     def _get_dataloader(self, client_id):
-        
+
         rank = dist.get_rank()
-        client_id = (rank-1)*self.client_num+client_id
-        get_LEAF_dataloader(dataset="shakespeare", client_id=client_id)
+        client_id = (rank - 1) * self.client_num + client_id
+
+        dataset_pkl_path = "client" + str(client_id) + ".pkl"
+        with open("./pkl_dataset/train/"+dataset_pkl_path, "rb") as f:
+            dataset = pickle.load(f)
+
+        trainloader = torch.utils.data.Dataloader(
+            dataset, batch_size=self.args["batch_size"])
+        return trainloader
 
     def _train_alone(self, model_parameters, train_loader):
 

@@ -1,6 +1,5 @@
 import torch
 import argparse
-import sys
 import os
 
 from torch import nn
@@ -9,7 +8,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 torch.manual_seed(0)
-sys.path.append("../../../../../")
+
 
 from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.core.client.scale.manager import ScaleClientPassiveManager
@@ -20,7 +19,9 @@ from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
-from fedlab_benchmarks.models.cnn import CNN_Cifar10, AlexNet_CIFAR10
+import sys
+sys.path.append("../../../../../")
+from fedlab_benchmarks.models.cnn import AlexNet_CIFAR10, CNN_Cifar10
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distbelief training example")
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 
     #model = CNN_Cifar10()
     model = AlexNet_CIFAR10()
-    
+
     aggregator = Aggregators.fedavg_aggregate
 
     network = DistNetwork(address=(args.ip, args.port),
@@ -89,7 +90,7 @@ if __name__ == "__main__":
                             data_slices=sub_data_indices,
                             aggregator=aggregator,
                             args={
-                                "batch_size": 100,
+                                "batch_size": 50,
                                 "lr": 0.1,
                                 "epochs": 5
                             })

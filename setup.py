@@ -10,7 +10,7 @@ this_directory = os_path.abspath(os_path.dirname(__file__))
 setup(
     name="fedlab",
     version=fedlab.__version__,
-    keywords=["federated learning", "depp learning", "pytorch"],
+    keywords=["federated learning", "deep learning", "pytorch"],
     author="Dun Zeng, Siqi Liang, Xiangjing Hu",
     author_email=
     "zengdun.cs@gmail.com, zszxlsq@gmail.com, starryhu@foxmail.com",

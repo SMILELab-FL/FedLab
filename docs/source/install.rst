@@ -24,7 +24,11 @@ Install dependencies:
 Pip
 ^^^
 
-Pip install is coming soon.
+We support install FedLab with pip:
+
+.. code-block:: shell-session
+
+   $ pip install fedlab
 
 Dataset Download
 ^^^^^^^^^^^^^^^^

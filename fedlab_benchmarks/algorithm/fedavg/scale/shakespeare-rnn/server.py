@@ -1,20 +1,20 @@
-import sys
 import argparse
-
+import pickle
 import torch
 from torch import nn
 import torch.nn.functional as F
-import torchvision
 from torchvision import transforms
 
 torch.manual_seed(0)
-sys.path.append('../../../../../')
 
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.scale.manager import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.functional import AverageMeter
+from torch.utils.data import ConcatDataset
 
+import sys
+sys.path.append('../../../../../')
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare
 
 
@@ -41,8 +41,7 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="cifar10_vgg_iid"):
-    print("wtring")
+def write_file(acces, losses, name="shakespeare_noniid"):
     record = open(name + ".txt", "w")
 
     record.write(str(losses) + "\n\n")
@@ -104,7 +103,17 @@ if __name__ == "__main__":
                              (0.2023, 0.1994, 0.2010))
     ])
 
-    testloader = None
+    print("creating global test set")
+    dataset_list = []
+    for i in range(660):
+        file_name = "client"+str(i)+".pkl"
+        with open("./pkl_dataset/test/"+file_name, 'rb') as f:
+            test = pickle.load(f)
+        dataset_list.append(test)
+    
+    testset = ConcatDataset(dataset_list)
+    testloader = torch.utils.data.Dataloader(testset, batch_size=500)
+    print("done")
 
     handler = RecodeHandler(model,
                             client_num_in_total=1,

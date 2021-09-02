@@ -1,4 +1,3 @@
-import sys
 import argparse
 
 import torch
@@ -8,14 +7,17 @@ import torchvision
 from torchvision import transforms
 
 torch.manual_seed(0)
-sys.path.append('../../../../../')
 
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.scale.manager import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.functional import AverageMeter
 
-from fedlab_benchmarks.models.cnn import CNN_Cifar10, AlexNet_CIFAR10
+import sys
+
+sys.path.append('../../../../../')
+
+from fedlab_benchmarks.models.cnn import AlexNet_CIFAR10, CNN_Cifar10
 
 def evaluate(model, criterion, test_loader):
     model.eval()
@@ -40,7 +42,7 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="cifar10_alex_niid"):
+def write_file(acces, losses, name="cf10_baseline_noniid"):
     print("wtring")
     record = open(name + ".txt", "w")
 
@@ -89,14 +91,14 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=str, default="3003")
     parser.add_argument('--world_size', type=int)
 
-    parser.add_argument('--round', type=int, default=1000)
+    parser.add_argument('--round', type=int, default=2000)
     parser.add_argument('--ethernet', type=str, default=None)
     parser.add_argument('--sample', type=float, default=0.1)
 
     args = parser.parse_args()
 
-    #model = CNN_Cifar10()
     model = AlexNet_CIFAR10()
+    #model = CNN_Cifar10()
 
     transform_test = transforms.Compose([
         transforms.ToTensor(),
