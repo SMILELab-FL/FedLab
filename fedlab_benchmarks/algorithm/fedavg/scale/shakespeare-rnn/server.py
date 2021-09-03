@@ -10,35 +10,13 @@ torch.manual_seed(0)
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.scale.manager import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
-from fedlab.utils.functional import AverageMeter
+from fedlab.utils.functional import evaluate
 from torch.utils.data import ConcatDataset
 
 import sys
+
 sys.path.append('../../../../../')
 from fedlab_benchmarks.models.rnn import RNN_Shakespeare
-
-
-def evaluate(model, criterion, test_loader):
-    model.eval()
-    gpu = next(model.parameters()).device
-
-    loss_ = AverageMeter()
-    acc_ = AverageMeter()
-
-    with torch.no_grad():
-        for inputs, labels in test_loader:
-
-            inputs = inputs.to(gpu)
-            labels = labels.to(gpu)
-
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-
-            _, predicted = torch.max(outputs, 1)
-            loss_.update(loss.item())
-            acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
-
-    return loss_.sum, acc_.avg
 
 
 def write_file(acces, losses, name="shakespeare_noniid"):
@@ -106,13 +84,13 @@ if __name__ == "__main__":
     print("creating global test set")
     dataset_list = []
     for i in range(660):
-        file_name = "client"+str(i)+".pkl"
-        with open("./pkl_dataset/test/"+file_name, 'rb') as f:
+        file_name = "client" + str(i) + ".pkl"
+        with open("./pkl_dataset/test/" + file_name, 'rb') as f:
             test = pickle.load(f)
         dataset_list.append(test)
-    
+
     testset = ConcatDataset(dataset_list)
-    testloader = torch.utils.data.Dataloader(testset, batch_size=500)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=500)
     print("done")
 
     handler = RecodeHandler(model,

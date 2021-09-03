@@ -23,12 +23,13 @@ from fedlab_benchmarks.datasets.leaf_data_process.dataloader import get_LEAF_dat
 
 
 class RNNSTrainer(SerialTrainer):
-    def __init__(self, model, client_num, aggregator, cuda=True, logger=None):
+    def __init__(self, model, client_num, aggregator, cuda=True, logger=None, args=None):
         super().__init__(model,
                          client_num,
                          aggregator,
                          cuda=cuda,
                          logger=logger)
+        self.args = args
 
     def _get_dataloader(self, client_id):
 
@@ -39,7 +40,7 @@ class RNNSTrainer(SerialTrainer):
         with open("./pkl_dataset/train/"+dataset_pkl_path, "rb") as f:
             dataset = pickle.load(f)
 
-        trainloader = torch.utils.data.Dataloader(
+        trainloader = torch.utils.data.DataLoader(
             dataset, batch_size=self.args["batch_size"])
         return trainloader
 
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distbelief training example")
 
     parser.add_argument("--ip", type=str, default="127.0.0.1")
-    parser.add_argument("--port", type=str, default="3003")
+    parser.add_argument("--port", type=str, default="3002")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
 
@@ -103,7 +104,7 @@ if __name__ == "__main__":
                           args={
                               "batch_size": 100,
                               "lr": 0.01,
-                              "epochs": 5
+                              "epochs": 1
                           })
 
     manager_ = ScaleClientPassiveManager(handler=trainer, network=network)

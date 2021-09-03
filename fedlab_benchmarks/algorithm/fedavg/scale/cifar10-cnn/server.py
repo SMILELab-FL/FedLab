@@ -17,7 +17,9 @@ import sys
 
 sys.path.append('../../../../../')
 
-from fedlab_benchmarks.models.cnn import AlexNet_CIFAR10, CNN_Cifar10
+from fedlab_benchmarks.models.cnn import AlexNet_CIFAR10
+from config import cifar10_noniid_baseline_config, cifar10_iid_baseline_config
+
 
 def evaluate(model, criterion, test_loader):
     model.eval()
@@ -42,12 +44,14 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="cf10_baseline_noniid"):
-    print("wtring")
-    record = open(name + ".txt", "w")
+def write_file(acces, losses, config):
+    record = open(
+        "{}_{}_{}.txt".format(config['partition'], config['network'],
+                              config['dataset']), "w")
 
-    record.write(str(losses) + "\n\n")
-    record.write(str(acces) + "\n\n")
+    record.write(str(config) + "\n")
+    record.write(str(losses) + "\n")
+    record.write(str(acces) + "\n")
     record.close()
 
 
@@ -59,7 +63,8 @@ class RecodeHandler(SyncParameterServerHandler):
                  global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
-                 logger=None):
+                 logger=None,
+                 config=None):
         super().__init__(model,
                          client_num_in_total,
                          global_round=global_round,
@@ -70,6 +75,7 @@ class RecodeHandler(SyncParameterServerHandler):
         self.test_loader = test_loader
         self.loss_ = []
         self.acc_ = []
+        self.config = config
 
     def _update_model(self, model_parameters_list):
         super()._update_model(model_parameters_list)
@@ -80,7 +86,7 @@ class RecodeHandler(SyncParameterServerHandler):
         self.loss_.append(loss)
         self.acc_.append(acc)
 
-        write_file(self.acc_, self.loss_)
+        write_file(self.acc_, self.loss_, self.config)
 
 
 # python server.py --world_size 11
@@ -90,15 +96,17 @@ if __name__ == "__main__":
     parser.add_argument('--ip', type=str, default="127.0.0.1")
     parser.add_argument('--port', type=str, default="3003")
     parser.add_argument('--world_size', type=int)
-
-    parser.add_argument('--round', type=int, default=2000)
     parser.add_argument('--ethernet', type=str, default=None)
-    parser.add_argument('--sample', type=float, default=0.1)
 
+    parser.add_argument('--setting', type=str)
     args = parser.parse_args()
 
     model = AlexNet_CIFAR10()
-    #model = CNN_Cifar10()
+
+    if args.setting == "iid":
+        config = cifar10_iid_baseline_config
+    else:
+        config = cifar10_noniid_baseline_config
 
     transform_test = transforms.Compose([
         transforms.ToTensor(),
@@ -119,10 +127,11 @@ if __name__ == "__main__":
 
     handler = RecodeHandler(model,
                             client_num_in_total=1,
-                            global_round=args.round,
-                            sample_ratio=args.sample,
+                            global_round=config["round"],
+                            sample_ratio=config["sample_ratio"],
                             test_loader=testloader,
-                            cuda=True)
+                            cuda=True,
+                            config=config)
 
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,

@@ -1,3 +1,4 @@
+from json import load
 import os
 import argparse
 import random
@@ -16,22 +17,32 @@ from fedlab.core.client.scale.trainer import SubsetSerialTrainer
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
-from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
-from fedlab.utils.functional import get_best_gpu
+from fedlab.utils.functional import get_best_gpu, load_dict
 
 from fedlab_benchmarks.models.cnn import CNN_Mnist
 
-# python standalone.py --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid --lr 0.02
+
+def write_file(acc, loss, config, round):
+    record = open(
+        "{}_{}_{}_{}.txt".format(config.partition, config.sample_ratio, config.batch_size, config.epochs), "w")
+    record.write(str(round) + "\n")
+    record.write(str(config) + "\n")
+    record.write(str(loss) + "\n")
+    record.write(str(acc) + "\n")
+    record.close()
+
+
+# python standalone.py --sample_ratio 0.1 --batch_size 10 --epochs 5 --partition iid
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
 parser.add_argument("--com_round", type=int, default=5000)
 
-parser.add_argument("--sample_ratio", type=float, default=0.1)
-parser.add_argument("--batch_size", type=int, default=10)
-parser.add_argument("--lr", type=float, default=0.1)
-parser.add_argument("--epochs", type=int, default=3)
+parser.add_argument("--sample_ratio", type=float)
+parser.add_argument("--batch_size", type=int)
+parser.add_argument("--lr", type=float, default=0.02)
+parser.add_argument("--epochs", type=int)
 parser.add_argument("--partition", type=str, default='iid')
 
 args = parser.parse_args()
@@ -46,6 +57,7 @@ testset = torchvision.datasets.MNIST(root=root,
                                      train=False,
                                      download=True,
                                      transform=transforms.ToTensor())
+
 test_loader = torch.utils.data.DataLoader(testset,
                                           batch_size=len(testset),
                                           drop_last=False,
@@ -63,13 +75,9 @@ aggregator = Aggregators.fedavg_aggregate
 total_client_num = args.total_client  # client总数
 
 if args.partition == "noniid":
-    data_indices = noniid_slicing(trainset,
-                                  num_clients=args.total_client,
-                                  num_shards=200)
-elif args.partition == "iid":
-    data_indices = random_slicing(trainset, num_clients=args.total_client)
+    data_indices = load_dict("mnist_noniid.pkl")
 else:
-    raise ValueError("invalid partition type ", args.partition)
+    data_indices = load_dict("mnist_iid.pkl")
 
 # fedlab setup
 local_model = deepcopy(model)
@@ -78,7 +86,11 @@ trainer = SubsetSerialTrainer(model=local_model,
                               dataset=trainset,
                               data_slices=data_indices,
                               aggregator=aggregator,
-                              args=args)
+                              args={
+                                  "batch_size": args.batch_size,
+                                  "epochs": args.epochs,
+                                  "lr": args.lr
+                              })
 
 loss_ = []
 acc_ = []
@@ -88,7 +100,6 @@ to_select = [i for i in range(total_client_num)]
 for round in range(args.com_round):
     model_parameters = SerializationTool.serialize_model(model)
     selection = random.sample(to_select, num_per_round)
-    print(selection)
     aggregated_parameters = trainer.train(model_parameters=model_parameters,
                                           id_list=selection,
                                           aggregate=True)
@@ -101,3 +112,8 @@ for round in range(args.com_round):
 
     loss_.append(loss)
     acc_.append(acc)
+
+    write_file(acc_,loss_,args,round+1)
+
+    if loss >= 0.99:
+        break

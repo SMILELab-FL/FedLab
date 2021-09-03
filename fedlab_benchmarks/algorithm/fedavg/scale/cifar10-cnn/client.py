@@ -23,6 +23,8 @@ import sys
 sys.path.append("../../../../../")
 from fedlab_benchmarks.models.cnn import AlexNet_CIFAR10, CNN_Cifar10
 
+from config import cifar10_noniid_baseline_config, cifar10_iid_baseline_config
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Distbelief training example")
 
@@ -30,18 +32,18 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=str, default="3003")
     parser.add_argument("--world_size", type=int)
     parser.add_argument("--rank", type=int)
-
-    parser.add_argument("--partition", type=str, default="noniid")
-    parser.add_argument("--gpu", type=str, default="0,1,2,3")
     parser.add_argument("--ethernet", type=str, default=None)
 
+    parser.add_argument("--setting", type=str)
     args = parser.parse_args()
 
-    if args.gpu != "-1":
-        args.cuda = True
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+
+    if args.setting == 'iid':
+        config = cifar10_iid_baseline_config
     else:
-        args.cuda = False
+        config = cifar10_noniid_baseline_config
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
@@ -56,12 +58,11 @@ if __name__ == "__main__":
         download=True,
         transform=transform_train)
 
-    if args.partition == "noniid":
+    if config['partition'] == "noniid":
         data_indices = load_dict("cifar10_noniid.pkl")
-    elif args.partition == "iid":
+    if config['partition'] == "iid":
         data_indices = load_dict("cifar10_iid.pkl")
-    else:
-        raise ValueError("invalid partition type ", args.partition)
+
 
     # Process rank x represent client id from (x-1)*10 - (x-1)*10 +10
     # e.g. rank 5 <--> client 40-50
@@ -89,11 +90,7 @@ if __name__ == "__main__":
                             dataset=trainset,
                             data_slices=sub_data_indices,
                             aggregator=aggregator,
-                            args={
-                                "batch_size": 50,
-                                "lr": 0.1,
-                                "epochs": 5
-                            })
+                            args=config)
 
     manager_ = ScaleClientPassiveManager(handler=trainer, network=network)
 

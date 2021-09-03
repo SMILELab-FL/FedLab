@@ -39,13 +39,13 @@ def evaluate(model, criterion, test_loader):
     return loss_.sum, acc_.avg
 
 
-def write_file(acces, losses, name="mnist"):
-    print("wtring")
-    record = open(name + ".txt", "w")
-
-    record.write(str(losses) + "\n\n")
-    record.write(str(acces) + "\n\n")
+def write_file(acces, losses, args):
+    record = open(args.name + ".txt", "w")
+    record.write(str(args) + "\n")
+    record.write(str(losses) + "\n")
+    record.write(str(acces) + "\n")
     record.close()
+
 
 
 class RecodeHandler(SyncParameterServerHandler):
@@ -56,7 +56,8 @@ class RecodeHandler(SyncParameterServerHandler):
                  global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
-                 logger=None):
+                 logger=None,
+                 args):
         super().__init__(model,
                          client_num_in_total,
                          global_round=global_round,
@@ -67,6 +68,7 @@ class RecodeHandler(SyncParameterServerHandler):
         self.test_loader = test_loader
         self.loss_ = []
         self.acc_ = []
+        self.args = args
 
     def _update_model(self, model_parameters_list):
         super()._update_model(model_parameters_list)
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     parser.add_argument('--round', type=int, default=100)
     parser.add_argument('--ethernet', type=str, default=None)
     parser.add_argument('--sample', type=float, default=0.1)
-
+    parser.add_argument('--name', type=str)
     args = parser.parse_args()
 
     model = CNN_Mnist()
@@ -105,7 +107,6 @@ if __name__ == "__main__":
     testloader = torch.utils.data.DataLoader(testset,
                                              batch_size=int(len(testset) / 10),
                                              drop_last=False,
-                                             num_workers=2,
                                              shuffle=False)
 
     handler = RecodeHandler(model,
@@ -113,7 +114,8 @@ if __name__ == "__main__":
                             global_round=args.round,
                             sample_ratio=args.sample,
                             test_loader=testloader,
-                            cuda=True)
+                            cuda=True,
+                            args=args)
 
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,
