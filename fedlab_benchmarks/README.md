@@ -74,14 +74,20 @@ Common structure of leaf dataset folders:
 /FedLab/fedlab_benchmarks/dataset/data/{leaf_dataset}
 
    ├── {other_useful_preprocess_util}
+   ├── create_datasets_and_save.sh
    ├── prerpocess.sh
    ├── stats.sh
    └── README.md
 ```
+- `preprocess.sh`: downloads and preprocesses the dataset
+- `create_datasets_and_save.sh`: encapsulates the use of `preprocess.sh`, and processes each client' data into the corresponding Dataset, which is stored in the form of a pickle file
+- `stats.sh`: performs information statistics on all data (stored in `./data/all_data/all_data.json`) processed by `preprocess.sh`
+- `README.md`: gives a detailed description of the process of downloading and preprocessing the dataset, including parameter descriptions and precautions.
 
-The executable script `preprocess.sh` downloads and preprocesses the dataset,  `stats.sh` performs information statistics on all data (stored in `./data/all_data/all_data.json`) processed by `preprocess.sh` , and `README.md` gives a detailed description of the process of downloading and preprocessing the dataset, including parameter descriptions and precautions.
+> **Developers can directly run the executable script `create_datasets_and_save.sh` to obtain the dataset, process and store the corresponding dataset data in the form of a pickle file.**
+> This script provides an example of using the preprocess.sh script, and developers can modify the parameters according to application requirements.
 
-**Leaf Script usage example: **
+**preprocess.sh Script usage example:**
 
 ```shell
 cd data/femnist
