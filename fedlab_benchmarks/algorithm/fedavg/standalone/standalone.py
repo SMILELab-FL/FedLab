@@ -24,7 +24,8 @@ from fedlab_benchmarks.models.cnn import CNN_Mnist
 
 def write_file(acc, loss, config, round):
     record = open(
-        "{}_{}_{}_{}.txt".format(config.partition, config.sample_ratio, config.batch_size, config.epochs), "w")
+        "{}_{}_{}_{}.txt".format(config.partition, config.sample_ratio,
+                                 config.batch_size, config.epochs), "w")
     record.write(str(round) + "\n")
     record.write(str(config) + "\n")
     record.write(str(loss) + "\n")
@@ -37,7 +38,7 @@ def write_file(acc, loss, config, round):
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
-parser.add_argument("--com_round", type=int, default=5000)
+parser.add_argument("--com_round", type=int, default=4000)
 
 parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
@@ -53,6 +54,7 @@ trainset = torchvision.datasets.MNIST(root=root,
                                       train=True,
                                       download=True,
                                       transform=transforms.ToTensor())
+
 testset = torchvision.datasets.MNIST(root=root,
                                      train=False,
                                      download=True,
@@ -113,7 +115,7 @@ for round in range(args.com_round):
     loss_.append(loss)
     acc_.append(acc)
 
-    write_file(acc_,loss_,args,round+1)
+    write_file(acc_, loss_, args, round + 1)
 
-    if loss >= 0.99:
+    if acc >= 0.985:
         break

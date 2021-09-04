@@ -11,32 +11,9 @@ from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.scale.manager import ScaleSynchronousManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
-from fedlab.utils.functional import AverageMeter
+from fedlab.utils.functional import AverageMeter, evaluate
 
 from fedlab_benchmarks.models.cnn import CNN_Mnist
-
-
-def evaluate(model, criterion, test_loader):
-    model.eval()
-    gpu = next(model.parameters()).device
-
-    loss_ = AverageMeter()
-    acc_ = AverageMeter()
-
-    with torch.no_grad():
-        for inputs, labels in test_loader:
-
-            inputs = inputs.to(gpu)
-            labels = labels.to(gpu)
-
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-
-            _, predicted = torch.max(outputs, 1)
-            loss_.update(loss.item())
-            acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
-
-    return loss_.sum, acc_.avg
 
 
 def write_file(acces, losses, args):
@@ -45,8 +22,6 @@ def write_file(acces, losses, args):
     record.write(str(losses) + "\n")
     record.write(str(acces) + "\n")
     record.close()
-
-
 
 class RecodeHandler(SyncParameterServerHandler):
     def __init__(self,
