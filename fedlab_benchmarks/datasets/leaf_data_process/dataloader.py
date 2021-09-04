@@ -16,16 +16,47 @@
     get dataloader for dataset in LEAF processed
 """
 
+import os
 import torch
 import pickle
-from .nlp_utils.vocab import Vocab
-from .dataset.femnist_dataset import FemnistDataset
-from .dataset.shakespeare_dataset import ShakespeareDataset
-from .dataset.sent140_dataset import Sent140Dataset
+from torch.utils.data import ConcatDataset
 from .nlp_utils.dataset_vocab.sample_build_vocab import get_built_vocab
 
 
-def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
+def get_dataset_pickle(dataset_name, client_id, dataset_type, path=None):
+    """load dataset file for `dataset` based on client with client_id
+        Args:
+            dataset_name (str): string of dataset name to get vocab
+            client_id (int): client id
+            dataset_type (str): Dataset type {train, test}
+            path (str, optional): one specific pickle file path, if given, use it to get dataset firstly
+        Returns:
+            if there is no built pickle file for `dataset`, return None, else return responding dataset
+        """
+    if path is not None:
+        file_path = path
+    else:
+        file_path = "../data/{}/data/pickle_dataset/{}/{}_{}.pickle".format(dataset_name, dataset_type,
+                                                                            dataset_type, client_id)
+    file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), file_path)
+    if not os.path.exists(file_path):
+        print('There is no built dataset file for {}, please run `create_datasets_and_save.sh` in leaf firstly.'
+              .format(dataset_name))
+        return None
+    dataset = pickle.load(open(file_path, 'rb'))
+    return dataset
+
+
+def get_dataset_pickle_by_path(file_path: str):
+    file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), file_path)
+    if not os.path.exists(file_path):
+        print('There is no built dataset file for {}.'.format(file_path))
+        return None
+    dataset = pickle.load(open(file_path, 'rb'))
+    return dataset
+
+
+def get_LEAF_dataloader(dataset: str, client_id=0, batch_size=128):
     """Get dataloader with ``batch_size`` param for client with ``client_id``
 
     Args:
@@ -39,18 +70,11 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
     Examples:
         trainloader, testloader = get_LEAF_dataloader(dataset='femnist', client_id=args.local_rank - 1)
     """
+    trainset = get_dataset_pickle(dataset_name=dataset, client_id=client_id, dataset_type='train')
+    testset = get_dataset_pickle(dataset_name=dataset, client_id=client_id, dataset_type='test')
 
-    if dataset == 'femnist':
-        trainset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=True)
-        testset = FemnistDataset(client_id=client_id, data_root='../data/femnist/data', is_train=False)
-    elif dataset == 'shakespeare':
-        trainset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=True)
-        testset = ShakespeareDataset(client_id=client_id, data_root='../data/shakespeare/data', is_train=False)
-    elif dataset == 'sent140':
-        trainset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=True)
-        testset = Sent140Dataset(client_id=client_id, data_root='../data/sent140/data', is_train=False)
+    if dataset == 'sent140':
         vocab = get_built_vocab(dataset)
-        # vocab = Vocab(trainset.data_token, vocab_limit_size=80000)
         trainset.token2seq(vocab, maxlen=300)
         testset.token2seq(vocab, maxlen=300)
 
@@ -65,3 +89,21 @@ def get_LEAF_dataloader(dataset, client_id=0, batch_size=128):
         shuffle=False)
     
     return trainloader, testloader
+
+
+def get_LEAF_all_test_dataloader(dataset: str):
+    """Get dataloader for all clients' test pickle file
+
+    Args:
+        dataset (str): dataset name
+
+    Returns:
+        ConcatDataset for all clients' test dataset
+    """
+    test_pickle_files_dir = "../data/{}/data/pickle_dataset/test".format(dataset)
+    testset_list = []
+    for file in os.listdir(test_pickle_files_dir):
+        testset = get_dataset_pickle(dataset, client_id=None, dataset_type='test', path=file)
+        testset_list.append(testset)
+    all_testset = ConcatDataset(testset_list)
+    return all_testset

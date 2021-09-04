@@ -6,23 +6,24 @@
 import os
 import torch
 from torch.utils.data import Dataset
-from ..data_read_util import read_dir
 from ..nlp_utils.tokenizer import Tokenizer
 
 
 class Sent140Dataset(Dataset):
 
-    def __init__(self, client_id: int, data_root: str, is_train=True, is_to_tokens=True, tokenizer=None):
-        """get `Dataset` for shakespeare dataset
+    def __init__(self, client_id: int, client_str: str, input: list, output: list,
+                 is_to_tokens=True, tokenizer=None):
+        """get `Dataset` for sent140 dataset
 
         Args:
             client_id (int): client id
-            data_root (str): path contains train data and test data
-            is_train (bool, optional): if get train data, `is_train` set True, else set False. Defaults to True
+            client_str (str): client name string
+            is_to_tokens (bool, optional), if tokenize data by using tokenizer
+            tokenizer (Tokenizer, optional), tokenizer
         """
-        self.data_path = os.path.join(data_root, 'train') if is_train else os.path.join(data_root, 'test')
         self.client_id = client_id
-        self.data, self.targets = self.get_client_data_target()
+        self.client_str = client_str
+        self.data, self.targets = self.get_client_data_target(input, output)
         self.data_token = []
         self.data_seq = []
         self.targets_tensor = []
@@ -33,16 +34,13 @@ class Sent140Dataset(Dataset):
         if is_to_tokens:
             self.data2token()
 
-    def get_client_data_target(self):
-        """get client data for param `client_id` from `data_path`
+    def get_client_data_target(self, input, output):
+        """process client data and target for input and output
 
         Returns: data and target for client id
         """
-        client_id_name_dict, client_groups, client_name_data_dict = read_dir(data_dir=self.data_path)
-        client_name = client_id_name_dict[self.client_id]
-        data = [e[4] for e in client_name_data_dict[client_name]['x']]
-        targets = client_name_data_dict[client_name]['y']
-
+        data = [e[4] for e in input]
+        targets = torch.tensor(output, dtype=torch.long)
         return data, targets
 
     def data2token(self):

@@ -15,33 +15,30 @@
 import os
 import torch
 from torch.utils.data import Dataset
-from ..data_read_util import read_dir
 
 
 class FemnistDataset(Dataset):
 
-    def __init__(self, client_id: int, data_root: str, is_train: bool):
+    def __init__(self, client_id: int, client_str: str, input: list, output: list):
         """get `Dataset` for femnist dataset
 
-        Args:
+         Args:
             client_id (int): client id
-            data_root (str): path contains train data and test data
-            is_train (bool): if get train data, `is_train` set True, else set False
+            client_str (str): client name string
+            input (list): input image list data
+            output (list):  output label list
         """
-        self.data_path = os.path.join(data_root, 'train') if is_train else os.path.join(data_root, 'test')
         self.client_id = client_id
-        self.data, self.targets = self.get_client_data_target()
+        self.client_str = client_str
+        self.data, self.targets = self.get_client_data_target(input, output)
 
-    def get_client_data_target(self):
-        """get client data for param `client_id` from `data_path`
+    def get_client_data_target(self, input, output):
+        """process client data and target for input and output
 
         Returns: data and target for client id
         """
-        client_id_name_dict, client_groups, client_name_data_dict = read_dir(data_dir=self.data_path)
-        client_name = client_id_name_dict[self.client_id]
-        data = torch.tensor(client_name_data_dict[client_name]['x'], dtype=torch.float32)
-        data = torch.reshape(data, (-1, 1, 28, 28))
-        targets = torch.tensor(client_name_data_dict[client_name]['y'], dtype=torch.long)
+        data = torch.tensor(input, dtype=torch.float32).reshape(-1, 1, 28, 28)
+        targets = torch.tensor(output, dtype=torch.long)
         return data, targets
 
     def __len__(self):
