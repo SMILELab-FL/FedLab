@@ -73,14 +73,20 @@ leaf数据集文件夹常用结构：
 /FedLab/fedlab_benchmarks/dataset/data/{leaf_dataset}
 
    ├── {other_useful_preprocess_util}
+   ├── create_datasets_and_save.sh
    ├── prerpocess.sh
    ├── stats.sh
    └── README.md
 ```
+- `preprocess.sh`：对数据集进行下载和处理
+- `create_datasets_and_save.sh`：封装了`preprocess.sh`的使用，并将各用户数据处理为对应的Dataset，以pickle文件的形式存储
+- `stats.sh`：对`preprocess.sh`处理后所有数据（存储于`./data/all_data/all_data.json`）进行信息统计
+- `README.md`：对该数据集的下载和处理过程进行了详细说明，包含了参数说明和注意事项。
 
-其中可执行脚本`preprocess.sh`对数据集进行下载和处理，`stats.sh`对`preprocess.sh`处理后所有数据（存储于`./data/all_data/all_data.json`）进行信息统计，`README.md`对该数据集的下载和处理过程进行了详细说明，包含了参数说明和注意事项。
+> **开发者可直接运行可执行脚本`create_datasets_and_save.sh`来获取数据集，处理并以pickle文件形式存储对应的Dataset数据。**
+> 该脚本提供了preprocess.sh脚本的使用样例，开发者可根据应用需求对参数进行修改。
 
-**leaf脚本使用样例：**
+**preprocess.sh脚本使用样例：**
 
 ```shell
 cd data/femnist

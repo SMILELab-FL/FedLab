@@ -15,23 +15,23 @@
 import os
 import torch
 from torch.utils.data import Dataset
-from ..data_read_util import read_dir
 
 
 class ShakespeareDataset(Dataset):
 
-    def __init__(self, client_id: int, data_root: str, is_train=True):
+    def __init__(self, client_id: int, client_str: str, input: list, output: list):
         """get `Dataset` for shakespeare dataset
 
         Args:
             client_id (int): client id
-            data_root (str): path contains train data and test data
-            is_train (bool, optional): if get train data, `is_train` set True, else set False. Defaults to True
+            client_str (str): client name string
+            input (list): input sentence list data
+            output (list): output next-character list
         """
-        self.data_path = os.path.join(data_root, 'train') if is_train else os.path.join(data_root, 'test')
         self.client_id = client_id
+        self.client_str = client_str
         self.ALL_LETTERS, self.VOCAB_SIZE = self.build_vocab()
-        self.data, self.targets = self.get_client_data_target()
+        self.data, self.targets = self.get_client_data_target(input, output)
 
     def build_vocab(self):
         """ according all letters to build vocab
@@ -49,18 +49,15 @@ class ShakespeareDataset(Dataset):
         VOCAB_SIZE = len(ALL_LETTERS) + 4  # Vocabulary with OOV ID, zero for the padding, and BOS, EOS IDs.
         return ALL_LETTERS, VOCAB_SIZE
 
-    def get_client_data_target(self):
-        """get client data for param `client_id` from `data_path`
+    def get_client_data_target(self, input: str, output: str):
+        """process client data and target for input and output
 
         Returns: data and target for client id
-
         """
-        client_id_name_dict, client_groups, client_name_data_dict = read_dir(data_dir=self.data_path)
-        client_name = client_id_name_dict[self.client_id]
         data = torch.tensor(
-            [self.__sentence_to_indices(sentence) for sentence in client_name_data_dict[client_name]['x']])
+            [self.__sentence_to_indices(sentence) for sentence in input])
         targets = torch.tensor(
-            [self.__letter_to_index(letter) for letter in client_name_data_dict[client_name]['y']])
+            [self.__letter_to_index(letter) for letter in output])
 
         return data, targets
 

@@ -19,7 +19,7 @@ import random
 import pickle
 import argparse
 sys.path.append("../../../../../")
-from fedlab_benchmarks.datasets.leaf_data_process.data_read_util import read_dir
+from fedlab_benchmarks.datasets.leaf_data_process.json_data_read_util import read_dir
 from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.tokenizer import Tokenizer
 from fedlab_benchmarks.datasets.leaf_data_process.nlp_utils.vocab import Vocab
 

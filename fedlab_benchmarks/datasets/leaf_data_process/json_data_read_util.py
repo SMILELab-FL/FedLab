@@ -17,6 +17,9 @@ def read_dir(data_dir):
 
     Returns:
         clients name dict mapping keys to id, groups list for each clients, a dict data mapping keys to client
+
+    Examples:
+        read_dir(data_dir="../data/femnist/data/train"):
     """
     # Splicing absolute path
     data_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), data_dir)
