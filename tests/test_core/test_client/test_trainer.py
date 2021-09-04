@@ -36,8 +36,6 @@ class TrainerTestCase(unittest.TestCase):
         self.num_per_round = 5
         self.aggregator = Aggregators.fedavg_aggregate
 
-        self.args = {"batch_size": 100, "epochs": 1, "lr": 0.1}
-
         self.root = "./tests/data/mnist/"
 
     def tearDown(self) -> None:
@@ -58,7 +56,7 @@ class TrainerTestCase(unittest.TestCase):
             dataset=trainset,
             data_slices=data_indices,
             aggregator=self.aggregator,
-            args=self.args,
+            args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
 
         to_select = [i + 1 for i in range(self.total_client)]
@@ -86,7 +84,7 @@ class TrainerTestCase(unittest.TestCase):
             dataset=trainset,
             data_slices=data_indices,
             aggregator=self.aggregator,
-            args=self.args,
+            args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
         to_select = [i + 1 for i in range(self.total_client)]
         model_parameters = SerializationTool.serialize_model(model)
