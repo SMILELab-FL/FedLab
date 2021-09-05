@@ -123,4 +123,4 @@ or, receive a package from rank=0 (set the parameter src=None to receive package
 
 .. code-block:: python
 
-    sender_rank, message_code, content = PackageProcessor.send_package(src=0)
+    sender_rank, message_code, content = PackageProcessor.recv_package(src=0)
