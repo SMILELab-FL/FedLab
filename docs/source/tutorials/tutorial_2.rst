@@ -71,11 +71,11 @@ Synchronous
 
 Synchronous communication involves :meth:`ServerSynchronousManager` and ``ClientPassiveManager``. Communication procedure is shown as follows.
 
-.. image:: ../imgs/fedlab-synchronous.svg
+.. image:: ../../imgs/fedlab-synchronous.svg
     :align: center
     :class: only-light
 
-.. image:: ../imgs/fedlab-synchronous-dark.svg
+.. image:: ../../imgs/fedlab-synchronous-dark.svg
     :align: center
     :class: only-dark
 
@@ -85,11 +85,11 @@ Asynchronous
 Asynchronous is given by :class:`ServerAsynchronousManager` and :meth:`ClientActiveManager`. Communication
 procedure is shown as follows.
 
-.. image:: ../imgs/fedlab-asynchronous.svg
+.. image:: ../../imgs/fedlab-asynchronous.svg
     :align: center
     :class: only-light
 
-.. image:: ../imgs/fedlab-asynchronous-dark.svg
+.. image:: ../../imgs/fedlab-asynchronous-dark.svg
     :align: center
     :class: only-dark
 
