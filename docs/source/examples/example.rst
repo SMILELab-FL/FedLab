@@ -1,8 +1,8 @@
 .. _example:
 
-*******
-Example
-*******
+********
+Examples
+********
 
 .. toctree::
    :hidden:

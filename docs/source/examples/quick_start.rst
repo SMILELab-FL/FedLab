@@ -8,7 +8,7 @@ In this page, we introduce how to build a FL simulation system with FedLab in cr
 cross process scenario. We implement FedAvg algorithm wit CNN and partitioned MNIST dataset across
 clients.
 
-Source code of this page can be seen in `fedlab_benchamrks/algorithm/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/cross_machine>`_.
+Source code of this page can be seen in `FedLab-benchmarks/algorithm/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/main/fedlab_benchmarks/algorithm/fedavg/cross_machine>`_.
 
 Cross Machine/Process is suit for computer cluster deployment, simulating data-center FL system.
 In our experiment, the number of world_size can't be more than 50, otherwise the socket connecting
