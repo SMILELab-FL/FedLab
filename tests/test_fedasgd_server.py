@@ -19,7 +19,6 @@ import sys
 sys.path.append("../")
 from copy import deepcopy
 
-from fedlab.core.client.trainer import ClientSGDTrainer
 from fedlab.core.client.manager import ClientActiveManager
 from fedlab.core.server.handler import AsyncParameterServerHandler
 from fedlab.core.server.manager import ServerAsynchronousManager

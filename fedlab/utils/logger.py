@@ -27,8 +27,8 @@ class Logger(object):
     """record cmd info to file and print it to cmd at the same time
     
     Args:
-        log_name (str): log name for output
-        log_file (str): a file path of log file
+        log_name (str): log name for output.
+        log_file (str): a file path of log file.
     """
     def __init__(self, log_name, log_file=None):
         self.logger = logging.getLogger(log_name)

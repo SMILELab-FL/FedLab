@@ -26,6 +26,7 @@ class NetworkManager(Process):
         handler (ClientTrainer or ParameterServerBackendHandler, optional): Backend computation handler for client or server.
         newtork (DistNetwork): object to manage torch.distributed network communication.
     """
+
     def __init__(self, network, handler=None):
         super(NetworkManager, self).__init__()
 

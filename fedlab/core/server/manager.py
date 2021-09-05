@@ -69,9 +69,9 @@ class ServerSynchronousManager(NetworkManager):
         self.setup()
         while self._handler.stop_condition() is not True:
 
-            #activate = threading.Thread(target=self.activate_clients)
-            #activate.start()
-            self.activate_clients()
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+
             # waiting for packages
             while True:
                 sender, message_code, payload = PackageProcessor.recv_package()
@@ -91,7 +91,6 @@ class ServerSynchronousManager(NetworkManager):
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
             :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
-
 
         Args:
             sender (int): Rank of sender client process.
@@ -122,11 +121,13 @@ class ServerSynchronousManager(NetworkManager):
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
-        for client_idx in clients_this_round:
-            model_params = self._handler.model_parameters  # serialized model params
+        for client_id in clients_this_round:
+            rank = client_id+1
+
+            model_parameters = self._handler.model_parameters  # serialized model params
             pack = Package(message_code=MessageCode.ParameterUpdate,
-                           content=model_params)
-            PackageProcessor.send_package(pack, dst=client_idx)
+                           content=model_parameters)
+            PackageProcessor.send_package(pack, dst=rank)
 
     def shutdown_clients(self):
         """Shut down all clients.
@@ -138,9 +139,10 @@ class ServerSynchronousManager(NetworkManager):
             for exiting information.
 
         """
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
+        for rank in range(1, self._network.world_size):
+            print("stopping clients rank:", rank)
             pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
+            PackageProcessor.send_package(pack, dst=rank)
 
 
 class ServerAsynchronousManager(NetworkManager):
@@ -152,7 +154,7 @@ class ServerAsynchronousManager(NetworkManager):
     Args:
         handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
         network (DistNetwork): Manage ``torch.distributed`` network communication.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only in console. Default: ``None``.
     """
     def __init__(self, handler, network, logger=None):
 
@@ -192,13 +194,13 @@ class ServerAsynchronousManager(NetworkManager):
             payload (list[torch.Tensor]): List of tensors.
 
         Raises:
-            ValueError: [description]
+            ValueError: invalid message code.
         """
         if message_code == MessageCode.ParameterRequest:
             pack = Package(message_code=MessageCode.ParameterUpdate)
-            model_params = self._handler.model_parameters
+            model_parameters = self._handler.model_parameters
             pack.append_tensor_list(
-                [model_params,
+                [model_parameters,
                  torch.Tensor(self._handler.server_time)])
             self._LOGGER.info(
                 "Send model to rank {}, current server model time is {}".
@@ -219,9 +221,9 @@ class ServerAsynchronousManager(NetworkManager):
         """
         while self._handler.stop_condition() is not True:
             _, _, payload = self.message_queue.get()
-            parameters = payload[0]
+            model_parameters = payload[0]
             model_time = payload[1]
-            self._handler._update_model(parameters, model_time)
+            self._handler._update_model(model_parameters, model_time)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -233,10 +235,10 @@ class ServerAsynchronousManager(NetworkManager):
             package.
 
         """
-        for client_idx in range(1, self._handler.client_num_in_total + 1):
-            _, message_code, _ = PackageProcessor.recv_package(src=client_idx)
+        for rank in range(1, self._network.world_size):
+            _, message_code, _ = PackageProcessor.recv_package(src=rank)
             if message_code == MessageCode.ParameterUpdate:
                 PackageProcessor.recv_package(
-                    src=client_idx)  # the next package is model request
+                    src=rank)  # the next package is model request
             pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=client_idx)
+            PackageProcessor.send_package(pack, dst=rank)

@@ -16,6 +16,7 @@ import torch
 import json
 import pynvml
 import numpy as np
+import pickle
 
 
 class AverageMeter(object):
@@ -36,23 +37,13 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def evaluate(
-    model,
-    criterion,
-    test_loader,
-):
-    """
-    Evaluate local model based on given test :class:`torch.DataLoader`
-    Args:
-        test_loader (torch.DataLoader): :class:`DataLoader` for evaluation
-        cuda (bool): Use GPUs or not
-    """
+def evaluate(model, criterion, test_loader):
+    """Evaluate classify task model accuracy."""
     model.eval()
     gpu = next(model.parameters()).device
 
     loss_ = AverageMeter()
     acc_ = AverageMeter()
-
     with torch.no_grad():
         for inputs, labels in test_loader:
 
@@ -108,12 +99,8 @@ def read_config_from_json(json_file: str, user_name: str):
     with open(json_file) as f:
         config = json.load(f)
     config_info = config[user_name]
-    return (
-        config_info["ip"],
-        config_info["port"],
-        config_info["world_size"],
-        config_info["rank"],
-    )
+    return (config_info["ip"], config_info["port"], config_info["world_size"],
+            config_info["rank"])
 
 
 def get_best_gpu():
@@ -128,3 +115,13 @@ def get_best_gpu():
     deviceMemory = np.array(deviceMemory, dtype=np.int64)
     best_device_index = np.argmax(deviceMemory)
     return torch.device("cuda:%d" % (best_device_index))
+
+
+def save_dict(dict, path):
+    with open(path, 'wb') as f:
+        pickle.dump(dict, f)
+
+
+def load_dict(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)

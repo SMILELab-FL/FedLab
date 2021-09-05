@@ -22,7 +22,7 @@ class SerializationTool(object):
         
             
         Unfold every layer of model, concate all of tensors into one.
-        Return a `torch.Tensor` with shape (size, )
+        Return a `torch.Tensor` with shape (size, ).
 
         Args:
             model (torch.nn.Module): model to serialize.

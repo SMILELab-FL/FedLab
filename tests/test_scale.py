@@ -11,5 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import unittest
+import sys
 
-__version__ = "1.0.1.1"
+sys.path.append("../")
+from copy import deepcopy
+
+
+class ScaleTestCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+

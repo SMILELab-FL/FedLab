@@ -14,12 +14,13 @@
 
 import unittest
 
-from fedlab_benchmarks.models.lenet import LeNet
+from ..test_core.task_setting_for_test import CNN_Mnist
 from fedlab.utils.compressor import TopkCompressor
+
 
 class CompressorTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.model = LeNet()
+        self.model = CNN_Mnist()
         self.compressor = TopkCompressor(compress_ratio=0.5)
 
         return super().setUp()
@@ -31,11 +32,12 @@ class CompressorTestCase(unittest.TestCase):
         for parameter in self.model.parameters():
             values, indices = self.compressor.compress_tensor(parameter)
             decompressed = self.compressor.decompress_tensor(
-                values, indices, parameter.shape
-            )
+                values, indices, parameter.shape)
 
             assert decompressed.shape == parameter.shape
-    
+
     def test_compress_model(self):
-        model_values, model_indices = self.compressor.compress_model(self.model)
-        self.compressor.decompress_model(self.model, model_values, model_indices)
+        model_values, model_indices = self.compressor.compress_model(
+            self.model)
+        self.compressor.decompress_model(self.model, model_values,
+                                         model_indices)

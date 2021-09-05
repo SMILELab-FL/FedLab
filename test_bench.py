@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# @Time    : 4/12/21 9:05 PM
-# @Author  : Siqi Liang
-# @Contact : zszxlsq@gmail.com
-# @File    : test_bench.py
-# @Software: PyCharm
 import os
 import unittest
 import tests

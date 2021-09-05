@@ -50,7 +50,7 @@ class ClientPassiveManager(NetworkManager):
         self._LOGGER.info("connecting with server")
         self.setup()
 
-        while True:
+        while True: 
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
             sender_rank, message_code, payload = PackageProcessor.recv_package(
@@ -62,7 +62,7 @@ class ClientPassiveManager(NetworkManager):
                 self._network.close_network_connection()
                 break
             else:
-                # perform local training
+                # perform activation strategy
                 self.on_receive(sender_rank, message_code, payload)
 
             # synchronize with server
@@ -81,8 +81,8 @@ class ClientPassiveManager(NetworkManager):
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
-        s_parameters = payload[0]
-        self._handler.train(model_parameters=s_parameters)
+        model_parameters = payload[0]
+        self._handler.train(model_parameters=model_parameters)
 
     def setup(self):
         """Initialize network."""
@@ -96,9 +96,9 @@ class ClientPassiveManager(NetworkManager):
             Overwrite this function to customize package for synchronizing.
         """
         self._LOGGER.info("synchronize model parameters with server")
-        model_params = self._handler.model_parameters
+        model_parameters = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate,
-                       content=model_params)
+                       content=model_parameters)
         PackageProcessor.send_package(pack, dst=0)
 
 
@@ -159,10 +159,10 @@ class ClientActiveManager(NetworkManager):
         """
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
-        s_parameters = payload[0]
+        model_parameters = payload[0]
         self.model_time = payload[1]
         # move loading model params to the start of training
-        self._handler.train(model_parameters=s_parameters)
+        self._handler.train(model_parameters=model_parameters)
 
     def setup(self):
         """Initialize network."""
@@ -171,9 +171,9 @@ class ClientActiveManager(NetworkManager):
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize procedure")
-        model_params = self._handler.model_parameters
+        model_parameters = self._handler.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
-        pack.append_tensor_list([model_params, self.model_time + 1])
+        pack.append_tensor_list([model_parameters, self.model_time + 1])
         PackageProcessor.send_package(pack, dst=0)
 
     def _request_parameter(self):
@@ -181,3 +181,7 @@ class ClientActiveManager(NetworkManager):
         self._LOGGER.info("request parameter procedure")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)
+
+
+
+

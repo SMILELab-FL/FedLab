@@ -38,11 +38,11 @@ class ParameterServerBackendHandler(ABC):
             self._model = model.cpu()
 
     @abstractmethod
-    def _update_model(self, serialized_params_list) -> torch.Tensor:
+    def _update_model(self, model_parameters_list) -> torch.Tensor:
         """Override this function to update global model
 
         Args:
-            serialized_params_list (list[torch.Tensor]): A list of serialized model parameters collected from different clients.
+            model_parameters_list (list[torch.Tensor]): A list of serialized model parameters collected from different clients.
         """
         raise NotImplementedError()
 
@@ -106,13 +106,13 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                 "Invalid total client number: {}".format(client_num_in_total))
 
         # basic setting
-        self.client_num_in_total = client_num_in_total
+        self._client_num_in_total = client_num_in_total
         self.sample_ratio = sample_ratio
         self.client_num_per_round = max(
             1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
-        self.client_buffer_cache = {}
+        self.client_buffer_cache = []
         self.cache_cnt = 0
 
         # stop condition
@@ -126,11 +126,11 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
         ``self.client_num_in_total + 1``."""
-        selection = random.sample(range(1, self.client_num_in_total + 1),
+        selection = random.sample(range(self.client_num_in_total),
                                   self.client_num_per_round)
         return selection
 
-    def add_model(self, sender_rank, serialized_params):
+    def add_model(self, sender_rank, model_parameters):
         """Deal with incoming model parameters from one client.
 
         Note:
@@ -138,45 +138,54 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         Args:
             sender_rank (int): Rank of sender client in ``torch.distributed`` group.
-            serialized_params (torch.Tensor): Serialized model parameters from one client.
+            model_parameters (torch.Tensor): Serialized model parameters from one client.
         """
-        if self.client_buffer_cache.get(sender_rank) is not None:
-            self._LOGGER.info(
-                "parameters from {} have already existed".format(sender_rank))
-            return False
 
+        self.client_buffer_cache.append(model_parameters.clone())
         self.cache_cnt += 1
-        self.client_buffer_cache[sender_rank] = serialized_params.clone()
 
-        # cache is full.
+        # cache is full
         if self.cache_cnt == self.client_num_per_round:
-            self._update_model(list(self.client_buffer_cache.values()))
+            self._update_model(self.client_buffer_cache)
             self.round += 1
             return True
         else:
             return False
 
-    def _update_model(self, serialized_params_list):
+    def _update_model(self, model_parameters_list):
         """Update global model with collected parameters from clients.
 
         Note:
             Server handler will call this method when its ``client_buffer_cache`` is full. User can
-            overwrite the strategy of aggregation to apply on :attr:`serialized_params_list`, and
+            overwrite the strategy of aggregation to apply on :attr:`model_parameters_list`, and
             use :meth:`SerializationTool.deserialize_model` to load serialized parameters after
             aggregation into :attr:`self._model`.
 
         Args:
-            serialized_params_list (list[torch.Tensor]): A list of parameters.
+            model_parameters_list (list[torch.Tensor]): A list of parameters.aq
         """
+        self._LOGGER.info("Model parameters aggregation, number of aggregation elements {}".format(len(model_parameters_list)))
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
-            serialized_params_list)
+            model_parameters_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
         # reset cache cnt
         self.cache_cnt = 0
-        self.client_buffer_cache = {}
+        self.client_buffer_cache = []
         self.train_flag = False
+
+    @property
+    def client_num_in_total(self):
+        return self._client_num_in_total
+
+    @client_num_in_total.setter
+    def client_num_in_total(self, value):
+        if int(value) < 1:
+            raise ValueError("Invalid total client number: {}".format(value))
+        self._client_num_in_total = int(value)
+        self.client_num_per_round = max(
+            1, int(self.sample_ratio * self._client_num_in_total))
 
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
@@ -226,13 +235,14 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         return self.current_time
 
     def stop_condition(self) -> bool:
-        """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
+        """:class:`NetworkManager` keeps monitoring the return of this method,
+        and it will stop all related processes and threads when ``True`` returned."""
         return self.current_time >= self.total_time
 
     def _update_model(self, client_model_parameters, model_time):
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
-        aggregated_params = Aggregators.fedasgd_aggregate(
+        aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)

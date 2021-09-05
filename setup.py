@@ -1,34 +1,27 @@
-# -*- coding: utf-8 -*-
-# @Time    : 3/19/21 4:13 PM
-# @Author  : Siqi Liang
-# @Contact : zszxlsq@gmail.com
-# @File    : setup.py
-# @Software: PyCharm
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+from os import path as os_path
+import fedlab
 
-
-def get_readme():
-    here = path.abspath(path.dirname(__file__))
-
-    # Get the long description from the README file
-    with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = f.read()
-    return long_description
+this_directory = os_path.abspath(os_path.dirname(__file__))
 
 
 setup(
-    name="FedLab",
-    version="1.0",
-    author="Dun Zeng, Siqi Liang, Congjian Luo",
-    author_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
-    maintainer="Dun Zeng, Siqi Liang",
-    maintainer_email="zengdun.cs@gmail.com, zszxlsq@gmail.com",
-    description="A framework for simulation in federated setting implemented in PyTorch",
-    long_description=get_readme(),
+    name="fedlab",
+    version=fedlab.__version__,
+    keywords=["federated learning", "deep learning", "pytorch"],
+    author="Dun Zeng, Siqi Liang, Xiangjing Hu",
+    author_email=
+    "zengdun.cs@gmail.com, zszxlsq@gmail.com, starryhu@foxmail.com",
+    maintainer="Dun Zeng, Siqi Liang, Xiangjing Hu",
+    maintainer_email=
+    "zengdun.cs@gmail.com, zszxlsq@gmail.com, starryhu@foxmail.com",
+    description=
+    "A flexible Federated Learning Framework based on PyTorch, simplifying your Federated Learning research.",
+    license="Apache-2.0 License",
     url="https://github.com/SMILELab-FL/FedLab",
-    packages=find_packages(exclude=['docs', 'tests']),  # TODO: add things in 'exclude'
+    packages=find_packages(include=['fedlab','fedlab.*','LICENSE']),
     install_requires=['torch>=1.7.1',
                       'torchvision>=0.8.2',
                       'numpy',
@@ -36,19 +29,14 @@ setup(
                       'pynvml'],
     python_requires='>=3.6',
     classifiers=[
-        'Intended Audience :: Research',
-
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
-
         'License :: OSI Approved :: Apache Software License',
-
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    test_suite="tests.get_tests"
-)
+    test_suite="tests.get_tests")
