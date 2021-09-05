@@ -11,16 +11,10 @@ algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`l
 .. toctree::
    :hidden:
 
-   quick_start
    tutorial_1
    tutorial_2
    tutorial_3
 
-
-.. card:: Quick Start
-    :link: quickstart
-    :link-type: ref
-    :class-card: sd-rounded-2 sd-border-1
 
 .. card:: Learn Distributed Network Basics
     :link: tutorial1
