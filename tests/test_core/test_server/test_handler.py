@@ -17,7 +17,7 @@ import unittest
 
 import torch
 
-from fedlab_benchmarks.models.cnn import CNN_Mnist
+from ..task_setting_for_test import CNN_Mnist
 from fedlab.utils.serialization import SerializationTool
 from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
 

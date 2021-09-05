@@ -14,7 +14,7 @@
 
 import unittest
 
-from fedlab_benchmarks.models.cnn import CNN_Mnist
+from ..test_core.task_setting_for_test import CNN_Mnist
 from fedlab.utils.compressor import TopkCompressor
 
 
