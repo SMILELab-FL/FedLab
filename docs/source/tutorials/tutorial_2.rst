@@ -198,5 +198,5 @@ inform Client Manager to stop its process.
 Example
 ===========
 
-In fact, the scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/__init__.py (It it really simple. We did nothing but add a map function from rank to client id).
+In fact, the scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/manager.py (It it really simple. We did nothing but add a map function from rank to client id).
 
