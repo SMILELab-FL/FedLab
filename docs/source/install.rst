@@ -35,5 +35,5 @@ Dataset Download
 
 FedLab provides common dataset used in FL researches.
 
-Download procedure scripts are available in `fedlab_benchmarks/datasets <https://github.com/SMILELab-FL/FedLab/tree/main/fedlab_benchmarks>`_.
-For details of dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab/blob/main/fedlab_benchmarks/README.md>`_.
+Download procedure scripts are available in `fedlab_benchmarks/datasets <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/main/fedlab_benchmarks/datasets>`_.
+For details of dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/main/fedlab_benchmarks/datasets>`_.

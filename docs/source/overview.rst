@@ -176,7 +176,7 @@ Benchmarks
 ==========
 
 **FedLab** also contains data partition scripts from LEAF :cite:p:`caldas2018leaf`, and implementations
-of some FL algorithms, like FedAvg :cite:p:`mcmahan2017communication`.
+of some FL algorithms, like FedAvg :cite:p:`mcmahan2017communication`. More benchmarks and FL algorithms demos are coming.
 
 How to use FedLab?
 ==================
