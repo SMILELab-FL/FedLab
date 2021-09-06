@@ -21,7 +21,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [API Reference](https://fedlab.readthedocs.io/en/latest/autoapi/index.html)
 
 
-The demo of FL algorithm implementations using **FedLab** can be found in `FedLab Benchmark repository <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.
+The demo of FL algorithm implementations using **FedLab** can be found in [FedLab Benchmark repository](https://github.com/SMILELab-FL/FedLab-benchmarks).
 
 ## Contribution
 
