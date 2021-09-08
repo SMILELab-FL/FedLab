@@ -50,4 +50,26 @@ Gallery
             :link-type: ref
 
 
+Citation
+........
 
+Please cite **FedLab** in your publications if it helps your research:
+
+.. code:: latex
+    
+    @article{smile2021fedlab,  
+    title={FedLab: A Flexible Federated Learning Framework},  
+    author={Dun Zeng, Siqi Liang, Xiangjing Hu and Zenglin Xu},  
+    journal={arXiv preprint arXiv:2107.11621},  
+    year={2021}
+    }
+
+Contacts
+........
+
+Contact the **FedLab** development team through Github issues or email:
+
+- Dun Zeng: zengdun@foxmail.com
+
+- Siqi Liang: zszxlsq@gmail.com
+    
