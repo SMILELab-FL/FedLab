@@ -15,7 +15,6 @@ import unittest
 
 import sys
 
-
 sys.path.append("../")
 from copy import deepcopy
 
@@ -36,13 +35,13 @@ class FedAsgdServerTestCase(unittest.TestCase):
         port = "3456"
         world_size = 2
 
-        hanlder = AsyncParameterServerHandler(
-            deepcopy(model), client_num_in_total=world_size - 1
-        )
+        hanlder = AsyncParameterServerHandler(deepcopy(model))
 
         self.server = ServerAsynchronousManager(
             handler=hanlder,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=0),
         )
 
         handler = TestTrainer(
@@ -51,7 +50,9 @@ class FedAsgdServerTestCase(unittest.TestCase):
         )
         self.client = ClientActiveManager(
             handler=handler,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=1),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=1),
         )
 
         self.client.start()

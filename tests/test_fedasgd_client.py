@@ -17,7 +17,6 @@ import sys
 
 from torch.utils.data import dataloader
 
-
 sys.path.append("../")
 from copy import deepcopy
 
@@ -42,14 +41,14 @@ class FedAsgdClientTestCase(unittest.TestCase):
         port = "3001"
         world_size = 2
 
-        handler = AsyncParameterServerHandler(
-            deepcopy(model), client_num_in_total=world_size - 1
-        )
+        handler = AsyncParameterServerHandler(deepcopy(model))
         self.server = ServerAsynchronousManager(
             handler=handler,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=0),
         )
-        
+
         self.server.start()
 
         dataloader = unittest_dataloader()
@@ -64,9 +63,10 @@ class FedAsgdClientTestCase(unittest.TestCase):
 
         self.client = ClientActiveManager(
             handler=handler,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=1),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=1),
         )
 
     def test_fedavg(self):
         self.client.run()
-        

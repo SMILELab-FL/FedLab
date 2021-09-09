@@ -21,6 +21,7 @@ from ..network_manager import NetworkManager
 from ..communicator.processor import Package, PackageProcessor
 from ..network import DistNetwork
 from ..server.handler import ParameterServerBackendHandler
+from ..coordinator import Coordinator
 
 from ...utils.logger import Logger
 from ...utils.message_code import MessageCode
@@ -28,7 +29,23 @@ from ...utils.message_code import MessageCode
 DEFAULT_SERVER_RANK = 0
 
 
-class ServerSynchronousManager(NetworkManager):
+class ServerManager(NetworkManager):
+    def __init__(self, network, handler):
+        super().__init__(network, handler=handler)
+
+    def setup(self):
+        """Setup agreements. Server accept local client num report from client manager, and generate coordinator."""
+        super().setup()
+        rank_client_id_map = {}
+        for rank in range(1, self._network.world_size):
+            _, _, content = PackageProcessor.recv_package(src=rank)
+            rank_client_id_map[rank] = content[0].item()
+        self.coordinator = Coordinator(rank_client_id_map)
+        if self._handler is not None:
+            self._handler.client_num_in_total = self.coordinator.total
+
+
+class ServerSynchronousManager(ServerManager):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -122,7 +139,7 @@ class ServerSynchronousManager(NetworkManager):
             "client id list for this FL round: {}".format(clients_this_round))
 
         for client_id in clients_this_round:
-            rank = client_id+1
+            rank = client_id + 1
 
             model_parameters = self._handler.model_parameters  # serialized model params
             pack = Package(message_code=MessageCode.ParameterUpdate,
@@ -145,7 +162,7 @@ class ServerSynchronousManager(NetworkManager):
             PackageProcessor.send_package(pack, dst=rank)
 
 
-class ServerAsynchronousManager(NetworkManager):
+class ServerAsynchronousManager(ServerManager):
     """Asynchronous communication network manager for server
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.

@@ -43,7 +43,7 @@ class ClientTrainer(ABC):
     """
     def __init__(self, model, cuda):
         self.cuda = cuda
-
+        self.client_num = 1  # default is 1. 
         if self.cuda:
             # dynamic gpu acquire.
             self.gpu = get_best_gpu()
@@ -90,7 +90,6 @@ class ClientSGDTrainer(ClientTrainer):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
-
         self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion

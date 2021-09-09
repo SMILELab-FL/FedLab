@@ -25,23 +25,53 @@ class Coordinator(object):
     Args:
         setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
     """
-
     def __init__(self, setup_dict) -> None:
         self.map = setup_dict
 
+    def map_id(self, id):
+        """a map function from client id to (rank,local id)
+        
+        Args:
+            id (int): client id
+
+        Returns:
+            rank, id : rank in distributed group and local id.
+        """
+        for rank, num in self.map.items():
+            if id >= num:
+                id -= num
+            else:
+                return rank, id
+
     def map_id_list(self, id_list):
+        """a map function from id_list to dict{rank:local id}
+
+            This can be very useful in Scale modules.
+
+        Args:
+            id_list (list(int)): a list of client id.
+
+        Returns:
+            map_dict (dict): contains process rank and its relative local client ids.
+        """
         map_dict = {}
         for id in id_list:
-            for rank, num in self.map.items():
-                if id >= num:
-                    id -= num
-                else:
-                    if rank in map_dict.keys():
-                        map_dict[rank].append(id)
-                    else:
-                        map_dict[rank] = [id]
-                    break
+            rank, id = self.map_id(id)
+            if rank in map_dict.keys():
+                map_dict[rank].append(id)
+            else:
+                map_dict[rank] = [id]
         return map_dict
+
+    @property
+    def total(self):
+        return int(sum(self.map.values()))
 
     def __str__(self) -> str:
         return str(self.map)
+
+    def __call__(self, info, *args, **kwds):
+        if isinstance(info, int):
+            return self.map_id(info)
+        if isinstance(info, list):
+            return self.map_id_list(info)

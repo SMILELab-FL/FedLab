@@ -35,10 +35,10 @@ from tests.test_core.task_setting_for_test import (
 class FedAvgClientTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "12345"
+        port = "3002"
         world_size = 2
 
-        ps = SyncParameterServerHandler(deepcopy(model), client_num_in_total=1)
+        ps = SyncParameterServerHandler(deepcopy(model))
         self.server = ServerSynchronousManager(
             handler=ps,
             network=DistNetwork(address=(ip, port),

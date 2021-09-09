@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+import torch
 
 from ...utils.message_code import MessageCode
 from ...utils.serialization import SerializationTool
@@ -24,7 +25,20 @@ from ..client.trainer import ClientTrainer
 from ..network_manager import NetworkManager
 
 
-class ClientPassiveManager(NetworkManager):
+class ClientManager(NetworkManager):
+    def __init__(self, network, handler):
+        super().__init__(network, handler=handler)
+
+    def setup(self):
+        super().setup()
+        content = torch.Tensor([self._handler.client_num]).int() if self._handler is not None else 0
+        setup_pack = Package(message_code=MessageCode.SetUp,
+                             content=content,
+                             data_type=1)
+        PackageProcessor.send_package(setup_pack, dst=0)
+
+
+class ClientPassiveManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL
 
     Args:
@@ -50,7 +64,7 @@ class ClientPassiveManager(NetworkManager):
         self._LOGGER.info("connecting with server")
         self.setup()
 
-        while True: 
+        while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
             sender_rank, message_code, payload = PackageProcessor.recv_package(
@@ -84,10 +98,6 @@ class ClientPassiveManager(NetworkManager):
         model_parameters = payload[0]
         self._handler.train(model_parameters=model_parameters)
 
-    def setup(self):
-        """Initialize network."""
-        self._network.init_network_connection()
-
     def synchronize(self):
         """Synchronize local model with server actively
 
@@ -102,7 +112,7 @@ class ClientPassiveManager(NetworkManager):
         PackageProcessor.send_package(pack, dst=0)
 
 
-class ClientActiveManager(NetworkManager):
+class ClientActiveManager(ClientManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL
 
     Args:
@@ -164,10 +174,6 @@ class ClientActiveManager(NetworkManager):
         # move loading model params to the start of training
         self._handler.train(model_parameters=model_parameters)
 
-    def setup(self):
-        """Initialize network."""
-        self._network.init_network_connection()
-
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize procedure")
@@ -181,7 +187,3 @@ class ClientActiveManager(NetworkManager):
         self._LOGGER.info("request parameter procedure")
         pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)
-
-
-
-
