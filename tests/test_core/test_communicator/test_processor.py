@@ -16,7 +16,9 @@ import unittest
 import os
 from random import randint
 
-from torch.distributed.distributed_c10d import send
+import sys
+
+sys.path.append("../../")
 
 from fedlab.core.communicator.package import Package
 from fedlab.utils.message_code import MessageCode
@@ -30,13 +32,16 @@ from torch.multiprocessing import Process
 
 class test_sender(Process):
     def __init__(self, content) -> None:
-        super(test_sender,self).__init__()
-        self.net = DistNetwork(address=("localhost","3456"), world_size=2, rank=1)
+        super(test_sender, self).__init__()
+        self.net = DistNetwork(address=("localhost", "3001"),
+                               world_size=2,
+                               rank=1)
         self.tensor_list = content
 
     def run(self):
         self.net.init_network_connection()
-        p = Package(message_code=MessageCode.ParameterUpdate, content=self.tensor_list)
+        p = Package(message_code=MessageCode.ParameterUpdate,
+                    content=self.tensor_list)
         PackageProcessor.send_package(p, dst=0)
         self.net.close_network_connection()
 
@@ -44,7 +49,9 @@ class test_sender(Process):
 class test_receiver(Process):
     def __init__(self, check_content) -> None:
         super(test_receiver, self).__init__()
-        self.net = DistNetwork(address=("localhost","3456"), world_size=2, rank=0)
+        self.net = DistNetwork(address=("localhost", "3001"),
+                               world_size=2,
+                               rank=0)
         self.check_list = check_content
 
     def run(self):
@@ -55,6 +62,7 @@ class test_receiver(Process):
             assert torch.equal(t, p_t)
 
         self.net.close_network_connection()
+
 
 class ProcessorTestCase(unittest.TestCase):
     def setUp(self):
