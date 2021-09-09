@@ -20,7 +20,6 @@ class SerializationTool(object):
     def serialize_model(model: torch.nn.Module) -> torch.Tensor:
         """Unfold model parameters
         
-            
         Unfold every layer of model, concate all of tensors into one.
         Return a `torch.Tensor` with shape (size, ).
 
