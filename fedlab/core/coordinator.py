@@ -37,11 +37,13 @@ class Coordinator(object):
         Returns:
             rank, id : rank in distributed group and local id.
         """
+        m_id = id
         for rank, num in self.map.items():
-            if id >= num:
-                id -= num
+            if m_id >= num:
+                m_id -= num
             else:
-                return rank, id
+                #return rank, m_id  # local client id
+                return rank, id  # global client id
 
     def map_id_list(self, id_list):
         """a map function from id_list to dict{rank:local id}
@@ -75,3 +77,39 @@ class Coordinator(object):
             return self.map_id(info)
         if isinstance(info, list):
             return self.map_id_list(info)
+
+
+class LocalCoordinator(Coordinator):
+    def map_id(self, id):
+        """a map function from client id to (rank,local id)
+        
+        Args:
+            id (int): client id
+
+        Returns:
+            rank, id : rank in distributed group and local id.
+        """
+        m_id = id
+        for rank, num in self.map.items():
+            if m_id >= num:
+                m_id -= num
+            else:
+                return rank, m_id  # local client id
+
+
+class GlobalCoordinator(Coordinator):
+    def map_id(self, id):
+        """a map function from client id to (rank,global id)
+        
+        Args:
+            id (int): client id
+
+        Returns:
+            rank, id : rank in distributed group and global id.
+        """
+        m_id = id
+        for rank, num in self.map.items():
+            if m_id >= num:
+                m_id -= num
+            else:
+                return rank, id  # global client id
