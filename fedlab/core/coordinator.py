@@ -25,8 +25,9 @@ class Coordinator(object):
     Args:
         setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
     """
-    def __init__(self, setup_dict) -> None:
+    def __init__(self, setup_dict, type='local') -> None:
         self.map = setup_dict
+        self.type = type
 
     def map_id(self, id):
         """a map function from client id to (rank,local id)
@@ -42,8 +43,10 @@ class Coordinator(object):
             if m_id >= num:
                 m_id -= num
             else:
-                #return rank, m_id  # local client id
-                return rank, id  # global client id
+                local_id = m_id
+                global_id = id
+                ret_id = local_id if self.type == 'local' else global_id
+                return rank, ret_id
 
     def map_id_list(self, id_list):
         """a map function from id_list to dict{rank:local id}
@@ -77,39 +80,3 @@ class Coordinator(object):
             return self.map_id(info)
         if isinstance(info, list):
             return self.map_id_list(info)
-
-
-class LocalCoordinator(Coordinator):
-    def map_id(self, id):
-        """a map function from client id to (rank,local id)
-        
-        Args:
-            id (int): client id
-
-        Returns:
-            rank, id : rank in distributed group and local id.
-        """
-        m_id = id
-        for rank, num in self.map.items():
-            if m_id >= num:
-                m_id -= num
-            else:
-                return rank, m_id  # local client id
-
-
-class GlobalCoordinator(Coordinator):
-    def map_id(self, id):
-        """a map function from client id to (rank,global id)
-        
-        Args:
-            id (int): client id
-
-        Returns:
-            rank, id : rank in distributed group and global id.
-        """
-        m_id = id
-        for rank, num in self.map.items():
-            if m_id >= num:
-                m_id -= num
-            else:
-                return rank, id  # global client id

@@ -9,5 +9,5 @@ new feature:
 new tool: Accumulator
     Perform operations such as gradient accumulation, model parameter difference and so on.
 
-new feture:
-    GlobalCoordinator and LocalCoordinator: blocked client id details from server.
+new feature:
+    GlobalCoordinator and LocalCoordinator: blocked client id details from server，used in different dataset partition.
