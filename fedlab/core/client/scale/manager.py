@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import torch
 
 from ...client.manager import ClientPassiveManager
 
@@ -33,8 +32,8 @@ class ScaleClientPassiveManager(ClientPassiveManager):
         network (DistNetwork): Distributed network to use.
     """
 
-    def __init__(self, handler, network):
-        super().__init__(network=network, handler=handler)
+    def __init__(self, network, trainer):
+        super().__init__(network, trainer)
 
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform when receiving new message, including local training
@@ -51,7 +50,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
             model_parameters = payload[0]
             _, message_code, payload = PackageProcessor.recv_package(src=0)
             id_list = payload[0].tolist()
-            self.model_parameters_list = self._handler.train(
+            self.model_parameters_list = self._trainer.train(
                 model_parameters=model_parameters,
                 id_list=id_list,
                 aggregate=False)

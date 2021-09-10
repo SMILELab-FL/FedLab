@@ -32,7 +32,6 @@ class SerialTrainer(ClientTrainer):
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
         logger (Logger, optional): Logger for the current trainer. If ``None``, only log to console.
     """
-
     def __init__(self, model, client_num, aggregator, cuda=True, logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
@@ -102,7 +101,6 @@ class SubsetSerialTrainer(SerialTrainer):
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
 
     """
-
     def __init__(self,
                  model,
                  dataset,
@@ -262,7 +260,7 @@ class AsyncSerialTrainer(SubsetSerialTrainer):
             numel = parameter.data.numel()
             size = parameter.data.size()
             global_parameter = global_model_parameters[
-                               current_index:current_index + numel].view(size)
+                current_index:current_index + numel].view(size)
             current_index += numel
             if l2_reg is None:
                 l2_reg = (parameter - global_parameter).norm(2)

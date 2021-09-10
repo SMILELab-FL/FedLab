@@ -52,7 +52,7 @@ class FedAsgdClientTestCase(unittest.TestCase):
         self.server.start()
 
         dataloader = unittest_dataloader()
-        handler = ClientSGDTrainer(
+        trainer = ClientSGDTrainer(
             deepcopy(model),
             dataloader,
             epochs=1,
@@ -62,7 +62,7 @@ class FedAsgdClientTestCase(unittest.TestCase):
         )
 
         self.client = ClientActiveManager(
-            handler=handler,
+            trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
                                 rank=1),

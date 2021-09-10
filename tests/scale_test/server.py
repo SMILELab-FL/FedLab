@@ -19,9 +19,10 @@ from test_setting import MLP
 class TestManager(ScaleSynchronousManager):
 
     def setup(self):
+        print("setup")
         super().setup()
         self.coordinator.switch()
-
+        print(self.coordinator)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FL server example')

@@ -24,7 +24,7 @@ from ....utils.message_code import MessageCode
 class ScaleSynchronousManager(ServerSynchronousManager):
     """ServerManager used in scale scenario."""
     def __init__(self, network, handler):
-        super().__init__(network=network, handler=handler)
+        super().__init__(network, handler)
 
     def activate_clients(self):
         """Add client id map"""

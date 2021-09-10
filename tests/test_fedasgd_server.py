@@ -32,7 +32,7 @@ from tests.test_core.task_setting_for_test import (
 class FedAsgdServerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "3456"
+        port = "3002"
         world_size = 2
 
         hanlder = AsyncParameterServerHandler(deepcopy(model))
@@ -44,12 +44,12 @@ class FedAsgdServerTestCase(unittest.TestCase):
                                 rank=0),
         )
 
-        handler = TestTrainer(
+        trainer = TestTrainer(
             model,
             cuda=False,
         )
         self.client = ClientActiveManager(
-            handler=handler,
+            trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
                                 rank=1),
