@@ -31,6 +31,7 @@ class ClientManager(NetworkManager):
         self._trainer = trainer
 
     def setup(self):
+        """Setup agreements. Client report local client num."""
         super().setup()
         content = torch.Tensor([self._trainer.client_num]).int()
         print("debug", content)
@@ -48,7 +49,7 @@ class ClientPassiveManager(ClientManager):
         network (DistNetwork): Distributed network to use.
         logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, trainer, network, logger=None):
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
 
         if logger is None:

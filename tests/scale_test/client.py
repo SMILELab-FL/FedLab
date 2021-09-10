@@ -112,6 +112,6 @@ if __name__ == "__main__":
                            data_indices=data_indices,
                            dataset=trainset)
 
-    manager_ = ScaleClientPassiveManager(handler=trainer, network=network)
+    manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
 
     manager_.run()
