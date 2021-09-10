@@ -43,6 +43,7 @@ class ServerManager(NetworkManager):
         self.coordinator = Coordinator(rank_client_id_map)
         if self._handler is not None:
             self._handler.client_num_in_total = self.coordinator.total
+        print(self.coordinator)
 
 class ServerSynchronousManager(ServerManager):
     """Synchronous communication

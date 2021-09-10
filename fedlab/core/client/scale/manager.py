@@ -36,18 +36,6 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def __init__(self, handler, network):
         super().__init__(network=network, handler=handler)
 
-    def setup(self):
-        """Modified initialization agreements.
-
-        Every client manager needs to report local client number to server in setup stage.
-        """
-        super().setup()
-        content = torch.Tensor([self._handler.client_num]).int()
-        setup_pack = Package(message_code=MessageCode.SetUp,
-                             content=content,
-                             data_type=1)
-        PackageProcessor.send_package(setup_pack, dst=0)
-
     def on_receive(self, sender_rank, message_code, payload):
         """Actions to perform when receiving new message, including local training
 
