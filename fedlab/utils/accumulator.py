@@ -2,30 +2,51 @@ import torch
 
 from copy import deepcopy
 
-from torch.autograd import grad
-
 
 class GradientAccumulator(object):
     def __init__(self, model) -> None:
         super().__init__()
         self.model = deepcopy(model)
 
-        self.gradients = [torch.zeros_like(parameter.data) for parameter in self.model.parameters()]
+        self._gradients = [torch.zeros_like(parameter.data) for parameter in self.model.parameters()]
 
-    def reset(self):
+    def reset(self, model=None):
         # reset all variables
-        self.gradients = [torch.zeros_like(parameter) for parameter in self.gradients]
+        if model is None:
+            self._gradients = [torch.zeros_like(parameter) for parameter in self._gradients]
+        else:
+            self.model = deepcopy(model)
+            self._gradients = [torch.zeros_like(parameter.data) for parameter in self.model.parameters()]
 
     def delta(self, model):
+        """Get the difference between incoming model and origin model.
+
+        Returns:
+            a flattern tensor.
+        """
         delta = []
         for param_t, param_t0 in zip(model.parameters(), self.model.parameters()):
             delta_ = param_t.data.detach() - param_t0.data.detach()
             delta.append(delta_)
+        flat_delta = [delta_.view(-1) for delta_ in delta]
+        return torch.cat(flat_delta)
 
     def accumulate(self, model):
+        """Accumulate gradients of incoming model
+        
+            Please ensure that `prameters.grad` is callable. 
+            Therefore, this function should be called before optimizer.zero_grad().
+        """
         for index, parameters in enumerate(model.parameters()):
-            self.gradients[index].add(parameters.grad.detach())
+            self._gradients[index].add_(parameters.grad.detach())
 
     @property
     def gradients(self):
-        return torch.cat(self.gradients)
+        """Obtain the cumulative gradient"""
+        flat_gradients = [grad.view(-1) for grad in self._gradients]
+        return torch.cat(flat_gradients)
+
+    @gradients.setter
+    def gradients(self, flat_grad):
+        """Asssign gradients"""
+        pass
