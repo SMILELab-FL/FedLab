@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+from fedlab.core.client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...client.manager import ClientPassiveManager
 
 from ...communicator.package import Package
@@ -31,7 +31,6 @@ class ScaleClientPassiveManager(ClientPassiveManager):
         handler (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
     """
-
     def __init__(self, network, trainer):
         super().__init__(network, trainer)
 
@@ -48,12 +47,19 @@ class ScaleClientPassiveManager(ClientPassiveManager):
         """
         if message_code == MessageCode.ParameterUpdate:
             model_parameters = payload[0]
+
             _, message_code, payload = PackageProcessor.recv_package(src=0)
             id_list = payload[0].tolist()
-            self.model_parameters_list = self._trainer.train(
-                model_parameters=model_parameters,
-                id_list=id_list,
-                aggregate=False)
+
+            # check the trainer type
+            if self._trainer.type == SERIAL_TRAINER:
+                self.model_parameters_list = self._trainer.train(
+                    model_parameters=model_parameters,
+                    id_list=id_list,
+                    aggregate=False)
+            elif self._trainer.type == ORDINARY_TRAINER:
+                self.model_parameters_list = self._trainer.train(
+                    model_parameters=model_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively

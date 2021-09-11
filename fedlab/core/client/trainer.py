@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from fedlab.core.client import ORDINARY_TRAINER
 import time
 from abc import ABC, abstractmethod
 import logging
@@ -43,7 +44,9 @@ class ClientTrainer(ABC):
     """
     def __init__(self, model, cuda):
         self.cuda = cuda
-        self.client_num = 1  # default is 1. 
+        self.client_num = 1   # default is 1.
+        self.type = ORDINARY_TRAINER  # 0 for single trainer, 1 for serial trainer
+
         if self.cuda:
             # dynamic gpu acquire.
             self.gpu = get_best_gpu()
@@ -128,3 +131,4 @@ class ClientSGDTrainer(ClientTrainer):
                 loss.backward()
                 self.optimizer.step()
         self._LOGGER.info("Local train procedure is finished")
+        return self.model_parameters

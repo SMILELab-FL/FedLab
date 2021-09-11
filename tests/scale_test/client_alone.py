@@ -10,6 +10,7 @@ import torchvision.transforms as transforms
 sys.path.append("../../")
 from torch import nn
 from fedlab.core.client.manager import ClientPassiveManager
+from fedlab.core.client.scale.manager import ScaleClientPassiveManager
 from fedlab.core.client.trainer import ClientSGDTrainer
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
@@ -78,7 +79,5 @@ if __name__ == "__main__":
         logger=LOGGER,
     )
 
-    manager_ = ClientPassiveManager(trainer=trainer,
-                                    network=network,
-                                    logger=LOGGER)
+    manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
     manager_.run()
