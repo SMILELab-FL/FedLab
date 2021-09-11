@@ -28,8 +28,8 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     In this way, :class:`Manager` is able to represent multiple clients.
 
     Args:
-        handler (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
+        handler (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`.
     """
     def __init__(self, network, trainer):
         super().__init__(network, trainer)

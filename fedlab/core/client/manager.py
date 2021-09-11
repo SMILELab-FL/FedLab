@@ -26,6 +26,12 @@ from ..network_manager import NetworkManager
 
 
 class ClientManager(NetworkManager):
+    """Client Manager accept a object of DistNetwork and a ClientTrainer
+
+    Args:
+        network (DistNetwork): network configuration.
+        trainer (ClientTrainer): performe local client training process.
+    """
     def __init__(self, network, trainer):
         super().__init__(network)
         self._trainer = trainer
@@ -34,7 +40,6 @@ class ClientManager(NetworkManager):
         """Setup agreements. Client report local client num."""
         super().setup()
         content = torch.Tensor([self._trainer.client_num]).int()
-        print("debug", content)
         setup_pack = Package(message_code=MessageCode.SetUp,
                              content=content,
                              data_type=1)
@@ -45,8 +50,8 @@ class ClientPassiveManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL
 
     Args:
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
         logger (Logger, optional): object of :class:`Logger`.
     """
     def __init__(self, network, trainer, logger=None):
@@ -119,8 +124,8 @@ class ClientActiveManager(ClientManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL
 
     Args:
-        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
+        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attr:`model`.
         logger (Logger, optional): object of :class:`Logger`.
     """
     def __init__(self, network, trainer, logger=None):

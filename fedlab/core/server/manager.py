@@ -30,6 +30,12 @@ DEFAULT_SERVER_RANK = 0
 
 
 class ServerManager(NetworkManager):
+    """Server Manager accept a object of DistNetwork and a ParameterServerBackendHandler
+
+    Args:
+        network (DistNetwork): network configuration.
+        trainer (ParameterServerBackendHandler): performe global server aggregation procedure.
+    """
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
@@ -53,8 +59,8 @@ class ServerSynchronousManager(ServerManager):
     Synchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (ParameterServerBackendHandler, optional): Backend calculation handler for parameter server.
         network (DistNetwork): Manage ``torch.distributed`` network communication.
+        handler (ParameterServerBackendHandler, optional): Backend calculation handler for parameter server.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
     def __init__(self, network, handler, logger=None):
@@ -170,8 +176,8 @@ class ServerAsynchronousManager(ServerManager):
     Asynchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
         network (DistNetwork): Manage ``torch.distributed`` network communication.
+        handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only in console. Default: ``None``.
     """
     def __init__(self, network, handler, logger=None):

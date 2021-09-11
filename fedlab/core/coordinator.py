@@ -19,15 +19,16 @@ class Coordinator(object):
     Note
         Server Manager creates a Coordinator following:
         1. init network connection.
-        2. client actively send local group info to server.
-        4. server receive all info and init Coordinator.
+        2. client send local group info (the number of client simulating in local) to server.
+        4. server receive all info and init a server Coordinator.
 
     Args:
         setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
+        mode (str, optional): “GLOBAL” and "LOCAL". Coordinator will map client id to (rank, global id) or (rank, local id) according to mode. For example, client id 51 is in a machine which has 1 manager and serial trainer simulating 10 clients. LOCAL id means the index of its 10 clients. Therefore, global id 51 will be mapped into local id 1 (depending on setting).
     """
-    def __init__(self, setup_dict, type='LOCAL') -> None:
+    def __init__(self, setup_dict, mode='LOCAL') -> None:
         self.map = setup_dict
-        self.type = type
+        self.mode = mode
 
     def map_id(self, id):
         """a map function from client id to (rank,local id)
@@ -45,7 +46,7 @@ class Coordinator(object):
             else:
                 local_id = m_id
                 global_id = id
-                ret_id = local_id if self.type == 'local' else global_id
+                ret_id = local_id if self.mode == 'LOCAL' else global_id
                 return rank, ret_id
 
     def map_id_list(self, id_list):
@@ -69,19 +70,20 @@ class Coordinator(object):
         return map_dict
 
     def switch(self):
-        if self.type == 'GLOBAL':
-            self.type = 'LOCAL'
-        elif self.type == 'LOCAL':
-            self.type = 'GLOBAL'
+        if self.mode == 'GLOBAL':
+            self.mode = 'LOCAL'
+        elif self.mode == 'LOCAL':
+            self.mode = 'GLOBAL'
         else:
-            raise ValueError("Invalid Map Type")
+            raise ValueError("Invalid Map Mode {}".format(self.mode))
 
     @property
     def total(self):
         return int(sum(self.map.values()))
 
     def __str__(self) -> str:
-        return "Coordinator map information: {} \nMap type: {} \nTotal: {}".format(self.map, self.type, self.total)
+        return "Coordinator map information: {} \nMap mode: {} \nTotal: {}".format(
+            self.map, self.mode, self.total)
 
     def __call__(self, info, *args, **kwds):
         if isinstance(info, int):

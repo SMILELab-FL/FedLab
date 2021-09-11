@@ -27,7 +27,6 @@ class NetworkManager(Process):
 
     def __init__(self, network):
         super(NetworkManager, self).__init__()
-
         self._network = network
 
     def run(self):

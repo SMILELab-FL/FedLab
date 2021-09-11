@@ -45,7 +45,7 @@ class ClientTrainer(ABC):
     def __init__(self, model, cuda):
         self.cuda = cuda
         self.client_num = 1   # default is 1.
-        self.type = ORDINARY_TRAINER  # 0 for single trainer, 1 for serial trainer
+        self.type = ORDINARY_TRAINER  
 
         if self.cuda:
             # dynamic gpu acquire.
