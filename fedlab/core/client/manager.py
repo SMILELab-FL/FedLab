@@ -26,12 +26,15 @@ from ..network_manager import NetworkManager
 
 
 class ClientManager(NetworkManager):
-    def __init__(self, network, handler):
-        super().__init__(network, handler=handler)
+    def __init__(self, network, trainer):
+        super().__init__(network)
+        self._trainer = trainer
 
     def setup(self):
+        """Setup agreements. Client report local client num."""
         super().setup()
-        content = torch.Tensor([self._handler.client_num]).int() if self._handler is not None else 0
+        content = torch.Tensor([self._trainer.client_num]).int()
+        print("debug", content)
         setup_pack = Package(message_code=MessageCode.SetUp,
                              content=content,
                              data_type=1)
@@ -42,12 +45,12 @@ class ClientPassiveManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL
 
     Args:
-        handler (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
         network (DistNetwork): Distributed network to use.
         logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, handler, network, logger=None):
-        super(ClientPassiveManager, self).__init__(network, handler)
+    def __init__(self, network, trainer, logger=None):
+        super().__init__(network, trainer)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -62,8 +65,8 @@ class ClientPassiveManager(ClientManager):
         3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-        self.setup()
 
+        self.setup()
         while True:
             self._LOGGER.info("Waiting for server...")
             # waits for data from server (default server rank is 0)
@@ -96,7 +99,7 @@ class ClientPassiveManager(ClientManager):
         self._LOGGER.info("Package received from {}, message code {}".format(
             sender_rank, message_code))
         model_parameters = payload[0]
-        self._handler.train(model_parameters=model_parameters)
+        self._trainer.train(model_parameters=model_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively
@@ -106,7 +109,7 @@ class ClientPassiveManager(ClientManager):
             Overwrite this function to customize package for synchronizing.
         """
         self._LOGGER.info("synchronize model parameters with server")
-        model_parameters = self._handler.model_parameters
+        model_parameters = self._trainer.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=model_parameters)
         PackageProcessor.send_package(pack, dst=0)
@@ -120,8 +123,8 @@ class ClientActiveManager(ClientManager):
         network (DistNetwork): Distributed network to use.
         logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, handler, network, logger=None):
-        super(ClientActiveManager, self).__init__(network, handler)
+    def __init__(self, network, trainer, logger=None):
+        super().__init__(network, trainer)
 
         if logger is None:
             logging.getLogger().setLevel(logging.INFO)
@@ -172,12 +175,12 @@ class ClientActiveManager(ClientManager):
         model_parameters = payload[0]
         self.model_time = payload[1]
         # move loading model params to the start of training
-        self._handler.train(model_parameters=model_parameters)
+        self._trainer.train(model_parameters=model_parameters)
 
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize procedure")
-        model_parameters = self._handler.model_parameters
+        model_parameters = self._trainer.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
         pack.append_tensor_list([model_parameters, self.model_time + 1])
         PackageProcessor.send_package(pack, dst=0)

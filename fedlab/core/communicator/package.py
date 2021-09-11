@@ -18,6 +18,7 @@ import torch
 import torch.distributed as dist
 from ...utils.message_code import MessageCode
 
+
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
 HEADER_SLICE_SIZE_IDX = 2
@@ -32,6 +33,7 @@ HEADER_SIZE = 5
 
 DATA_TYPE_FLOAT = 0
 DATA_TYPE_INT = 1
+
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.

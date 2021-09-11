@@ -24,8 +24,6 @@ class CNN_Mnist(nn.Module):
         return x
 
 
-
-
 model = nn.Sequential(nn.Linear(20,10), nn.Linear(10,5))
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.L1Loss()

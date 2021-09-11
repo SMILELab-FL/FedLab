@@ -25,8 +25,9 @@ class Coordinator(object):
     Args:
         setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
     """
-    def __init__(self, setup_dict) -> None:
+    def __init__(self, setup_dict, type='LOCAL') -> None:
         self.map = setup_dict
+        self.type = type
 
     def map_id(self, id):
         """a map function from client id to (rank,local id)
@@ -37,11 +38,15 @@ class Coordinator(object):
         Returns:
             rank, id : rank in distributed group and local id.
         """
+        m_id = id
         for rank, num in self.map.items():
-            if id >= num:
-                id -= num
+            if m_id >= num:
+                m_id -= num
             else:
-                return rank, id
+                local_id = m_id
+                global_id = id
+                ret_id = local_id if self.type == 'local' else global_id
+                return rank, ret_id
 
     def map_id_list(self, id_list):
         """a map function from id_list to dict{rank:local id}
@@ -63,12 +68,20 @@ class Coordinator(object):
                 map_dict[rank] = [id]
         return map_dict
 
+    def switch(self):
+        if self.type == 'GLOBAL':
+            self.type = 'LOCAL'
+        elif self.type == 'LOCAL':
+            self.type = 'GLOBAL'
+        else:
+            raise ValueError("Invalid Map Type")
+
     @property
     def total(self):
         return int(sum(self.map.values()))
 
     def __str__(self) -> str:
-        return str(self.map)
+        return "Coordinator map information: {} \nMap type: {} \nTotal: {}".format(self.map, self.type, self.total)
 
     def __call__(self, info, *args, **kwds):
         if isinstance(info, int):

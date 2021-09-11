@@ -31,19 +31,20 @@ DEFAULT_SERVER_RANK = 0
 
 class ServerManager(NetworkManager):
     def __init__(self, network, handler):
-        super().__init__(network, handler=handler)
-
+        super().__init__(network)
+        self._handler = handler
+        
     def setup(self):
         """Setup agreements. Server accept local client num report from client manager, and generate coordinator."""
         super().setup()
         rank_client_id_map = {}
+        
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map)
         if self._handler is not None:
             self._handler.client_num_in_total = self.coordinator.total
-
 
 class ServerSynchronousManager(ServerManager):
     """Synchronous communication
@@ -56,7 +57,7 @@ class ServerSynchronousManager(ServerManager):
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
-    def __init__(self, handler, network, logger=None):
+    def __init__(self, network, handler, logger=None):
 
         super(ServerSynchronousManager, self).__init__(network, handler)
 
@@ -173,7 +174,7 @@ class ServerAsynchronousManager(ServerManager):
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only in console. Default: ``None``.
     """
-    def __init__(self, handler, network, logger=None):
+    def __init__(self, network, handler, logger=None):
 
         super(ServerAsynchronousManager, self).__init__(network, handler)
 
