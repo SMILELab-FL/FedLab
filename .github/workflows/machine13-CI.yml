@@ -31,22 +31,6 @@
 
 #       - uses: actions/checkout@v2
 
-<<<<<<< HEAD:.github/workflows/machine13-CI.yml
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        id: cache-pip
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip_cache_py_${{ matrix.python-version }}_${{ matrix.torch-version }}
-          restore-key: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
-=======
 # #      - name: Set openssl
 # #        run: |
 # #          ./configure --with-openssl=/home/liangsiqi/openssl
@@ -65,7 +49,7 @@
 #         with:
 #           path: ~/.cache/pip
 #           key: pip_cache_py_${{ matrix.python-version }}_${{ matrix.torch-version }}
->>>>>>> zengdun:.github/workflows/machine09-CI.yml
+
 
 #       - name: Install PyTorch & Torchvision
 #         run: |
