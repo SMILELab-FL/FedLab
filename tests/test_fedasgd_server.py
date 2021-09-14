@@ -15,7 +15,6 @@ import unittest
 
 import sys
 
-
 sys.path.append("../")
 from copy import deepcopy
 
@@ -33,25 +32,27 @@ from tests.test_core.task_setting_for_test import (
 class FedAsgdServerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "3456"
+        port = "3002"
         world_size = 2
 
-        hanlder = AsyncParameterServerHandler(
-            deepcopy(model), client_num_in_total=world_size - 1
-        )
+        hanlder = AsyncParameterServerHandler(deepcopy(model))
 
         self.server = ServerAsynchronousManager(
             handler=hanlder,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=0),
         )
 
-        handler = TestTrainer(
+        trainer = TestTrainer(
             model,
             cuda=False,
         )
         self.client = ClientActiveManager(
-            handler=handler,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=1),
+            trainer=trainer,
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=1),
         )
 
         self.client.start()

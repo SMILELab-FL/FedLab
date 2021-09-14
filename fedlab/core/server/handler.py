@@ -77,7 +77,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        client_num_in_total (int): Total number of clients in this federation.
         global_round (int): stop condition. Shut down FL system when global round is reached.
         cuda (bool): Use GPUs or not. Default: ``False``
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
@@ -85,7 +84,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     """
     def __init__(self,
                  model,
-                 client_num_in_total,
                  global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
@@ -101,15 +99,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         if sample_ratio < 0.0 or sample_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(sample_ratio))
 
-        if client_num_in_total < 1:
-            raise ValueError(
-                "Invalid total client number: {}".format(client_num_in_total))
-
         # basic setting
-        self._client_num_in_total = client_num_in_total
+        self.client_num_in_total = 0
         self.sample_ratio = sample_ratio
-        self.client_num_per_round = max(
-            1, int(self.sample_ratio * self.client_num_in_total))
 
         # client buffer
         self.client_buffer_cache = []
@@ -126,8 +118,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
         ``self.client_num_in_total + 1``."""
-        selection = random.sample(range(self.client_num_in_total),
-                                  self.client_num_per_round)
+        selection = random.sample(
+            range(self.client_num_in_total),
+            self.client_num_per_round)
         return selection
 
     def add_model(self, sender_rank, model_parameters):
@@ -164,7 +157,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         Args:
             model_parameters_list (list[torch.Tensor]): A list of parameters.aq
         """
-        self._LOGGER.info("Model parameters aggregation, number of aggregation elements {}".format(len(model_parameters_list)))
+        self._LOGGER.info(
+            "Model parameters aggregation, number of aggregation elements {}".
+            format(len(model_parameters_list)))
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             model_parameters_list)
@@ -176,17 +171,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         self.train_flag = False
 
     @property
-    def client_num_in_total(self):
-        return self._client_num_in_total
-
-    @client_num_in_total.setter
-    def client_num_in_total(self, value):
-        if int(value) < 1:
-            raise ValueError("Invalid total client number: {}".format(value))
-        self._client_num_in_total = int(value)
-        self.client_num_per_round = max(
-            1, int(self.sample_ratio * self._client_num_in_total))
-
+    def client_num_per_round(self):
+        return max(1, int(self.sample_ratio * self.client_num_in_total))
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous Parameter Server Handler
@@ -196,7 +182,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     Args:
         model (torch.nn.Module): Global model in server
-        client_num_in_total (int): Total number of clients in federation.
         alpha (float): weight used in async aggregation.
         total_time (int): stop condition. Shut down FL system when total_time is reached.
         strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
@@ -205,7 +190,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """
     def __init__(self,
                  model,
-                 client_num_in_total,
                  alpha=0.5,
                  total_time=5,
                  strategy="constant",
@@ -219,7 +203,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         else:
             self._LOGGER = logger
 
-        self.client_num_in_total = client_num_in_total
+        self.client_num_in_total = 0
 
         self.current_time = 1
         self.total_time = total_time
@@ -263,3 +247,4 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
             return (staleness + 1)**(-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
+    

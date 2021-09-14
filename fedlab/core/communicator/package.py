@@ -18,6 +18,7 @@ import torch
 import torch.distributed as dist
 from ...utils.message_code import MessageCode
 
+
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
 HEADER_SLICE_SIZE_IDX = 2
@@ -27,9 +28,11 @@ HEADER_DATA_TYPE_IDX = 4
 DEFAULT_RECEIVER_RANK = -1
 DEFAULT_SLICE_SIZE = 0
 DEFAULT_MESSAGE_CODE_VALUE = 0
-DEFAULT_DATA_TYPE_VALUE = 0
 
 HEADER_SIZE = 5
+
+DATA_TYPE_FLOAT = 0
+DATA_TYPE_INT = 1
 
 
 class Package(object):
@@ -54,7 +57,7 @@ class Package(object):
                  receiver_rank=None,
                  message_code=None,
                  content=None,
-                 data_type=0):
+                 data_type=DATA_TYPE_FLOAT):
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
 
@@ -84,10 +87,10 @@ class Package(object):
         self.header[HEADER_MESSAGE_CODE_IDX] = message_code
         self.header[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
 
-        if data_type == 1:
-            self.header[HEADER_DATA_TYPE_IDX] = 1
+        if data_type == DATA_TYPE_INT:
+            self.header[HEADER_DATA_TYPE_IDX] = DATA_TYPE_INT
         else:
-            self.header[HEADER_DATA_TYPE_IDX] = DEFAULT_DATA_TYPE_VALUE
+            self.header[HEADER_DATA_TYPE_IDX] = DATA_TYPE_FLOAT
 
         # initialize content and slices
         self.slices = []

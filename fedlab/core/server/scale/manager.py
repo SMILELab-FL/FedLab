@@ -20,24 +20,13 @@ from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
 from ....utils.message_code import MessageCode
 
-
 class ScaleSynchronousManager(ServerSynchronousManager):
+    """ServerManager used in scale scenario."""
     def __init__(self, network, handler):
-        super().__init__(network=network, handler=handler)
-
-    def setup(self):
-        super().setup()
-
-        rank_client_id_map = {}
-        for rank in range(1, self._network.world_size):
-            _, _, content = PackageProcessor.recv_package(src=rank)
-            rank_client_id_map[rank] = content[0].item()
-
-        self.coordinator = Coordinator(rank_client_id_map)
-        self._handler.client_num_in_total = int(
-            sum(self.coordinator.map.values()))
+        super().__init__(network, handler)
 
     def activate_clients(self):
+        """Add client id map"""
         clients_this_round = self._handler.sample_clients()
         rank_dict = self.coordinator.map_id_list(clients_this_round)
 
@@ -45,13 +34,15 @@ class ScaleSynchronousManager(ServerSynchronousManager):
         for rank, values in rank_dict.items():
             self._LOGGER.info("rank {}, client ids {}".format(rank, values))
 
+            # Send parameters
             param_pack = Package(message_code=MessageCode.ParameterUpdate,
                                  content=self._handler.model_parameters)
             PackageProcessor.send_package(package=param_pack, dst=rank)
 
-            id_lis = torch.Tensor(values).int()
+            # Send activate id list
+            id_list = torch.Tensor(values).int()
             act_pack = Package(message_code=MessageCode.ParameterUpdate,
-                               content=id_lis,
+                               content=id_list,
                                data_type=1)
             PackageProcessor.send_package(package=act_pack, dst=rank)
 

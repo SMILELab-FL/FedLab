@@ -18,19 +18,15 @@ from fedlab.core.client.trainer import ClientTrainer
 from fedlab.core.server.handler import ParameterServerBackendHandler
 from fedlab.utils.message_code import MessageCode
 
-
 class NetworkManager(Process):
     """Abstract class
 
     Args:
-        handler (ClientTrainer or ParameterServerBackendHandler, optional): Backend computation handler for client or server.
         newtork (DistNetwork): object to manage torch.distributed network communication.
     """
 
-    def __init__(self, network, handler=None):
+    def __init__(self, network):
         super(NetworkManager, self).__init__()
-
-        self._handler = handler
         self._network = network
 
     def run(self):

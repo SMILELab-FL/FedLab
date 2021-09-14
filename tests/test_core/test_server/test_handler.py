@@ -31,14 +31,11 @@ class HandlerTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
 
-        self.AsyncHandler = AsyncParameterServerHandler(
-            model=self.model, client_num_in_total=self.total_num)
-
-        self.SyncHandler = SyncParameterServerHandler(
-            model=self.model,
-            client_num_in_total=self.total_num,
-            sample_ratio=self.sample_ratio)
-
+        self.AsyncHandler = AsyncParameterServerHandler(model=self.model)
+        self.AsyncHandler.client_num_in_total = self.total_num
+        self.SyncHandler = SyncParameterServerHandler(model=self.model, sample_ratio=self.sample_ratio)
+        self.SyncHandler.client_num_in_total = self.total_num
+        
     def tearDown(self) -> None:
         return super().tearDown()
 

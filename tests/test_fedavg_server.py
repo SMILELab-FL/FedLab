@@ -18,7 +18,6 @@ import sys
 sys.path.append("../")
 from copy import deepcopy
 
-
 from fedlab.core.client.manager import ClientPassiveManager
 from fedlab.core.server.handler import SyncParameterServerHandler
 from fedlab.core.server.manager import ServerSynchronousManager
@@ -30,24 +29,26 @@ from tests.test_core.task_setting_for_test import model, TestTrainer
 class FedAvgServerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "12345"
+        port = "3004"
         world_size = 2
 
-        ps = SyncParameterServerHandler(
-            deepcopy(model), client_num_in_total=world_size - 1
-        )
+        ps = SyncParameterServerHandler(deepcopy(model))
         self.server = ServerSynchronousManager(
             handler=ps,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=0),
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=0),
         )
 
-        handler = TestTrainer(
+        trainer = TestTrainer(
             model,
             cuda=False,
         )
         self.client = ClientPassiveManager(
-            handler=handler,
-            network=DistNetwork(address=(ip, port), world_size=world_size, rank=1),
+            trainer=trainer,
+            network=DistNetwork(address=(ip, port),
+                                world_size=world_size,
+                                rank=1),
         )
         self.client.start()
 

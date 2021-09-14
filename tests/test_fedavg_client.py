@@ -35,10 +35,10 @@ from tests.test_core.task_setting_for_test import (
 class FedAvgClientTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "12345"
+        port = "3003"
         world_size = 2
 
-        ps = SyncParameterServerHandler(deepcopy(model), client_num_in_total=1)
+        ps = SyncParameterServerHandler(deepcopy(model))
         self.server = ServerSynchronousManager(
             handler=ps,
             network=DistNetwork(address=(ip, port),
@@ -49,7 +49,7 @@ class FedAvgClientTestCase(unittest.TestCase):
         self.server.start()
 
         dataloader = unittest_dataloader()
-        handler = ClientSGDTrainer(
+        trainer = ClientSGDTrainer(
             model,
             dataloader,
             epochs=1,
@@ -57,7 +57,7 @@ class FedAvgClientTestCase(unittest.TestCase):
             criterion=criterion,
             cuda=False,
         )
-        self.client = ClientPassiveManager(handler=handler,
+        self.client = ClientPassiveManager(trainer=trainer,
                                            network=DistNetwork(
                                                address=(ip, port),
                                                world_size=world_size,
