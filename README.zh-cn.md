@@ -2,7 +2,7 @@
 
 # FedLab: A Flexible Federated Learning Framework
 
-[![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions) [![Documentation Status](https://readthedocs.org/projects/fedlab/badge/?version=stable)](https://fedlab.readthedocs.io/en/latest/?badge=latest) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/v1.0/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![Pyversions](https://img.shields.io/pypi/pyversions/fedlab.svg?style=flat-square)](https://pypi.python.org/pypi/fedlab)
+[![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions) [![Documentation Status](https://readthedocs.org/projects/fedlab/badge/?version=stable)](https://fedlab.readthedocs.io/en/stable/?badge=stable) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/v1.0/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![Pyversions](https://img.shields.io/pypi/pyversions/fedlab.svg?style=flat-square)](https://pypi.python.org/pypi/fedlab)
 
 
 _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
@@ -14,11 +14,11 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 
 
 - [文档](https://fedlab.readthedocs.io/en/stable/)
-- [FedLab简介](https://fedlab.readthedocs.io/en/latest/overview.html)
-- [安装与设置](https://fedlab.readthedocs.io/en/latest/install.html)
-- [使用例子](https://fedlab.readthedocs.io/en/latest/example.html)
-- [如何贡献代码](https://fedlab.readthedocs.io/en/latest/contributing.html)
-- [API介绍](https://fedlab.readthedocs.io/en/latest/autoapi/index.html)
+- [FedLab简介](https://fedlab.readthedocs.io/en/stable/overview.html)
+- [安装与设置](https://fedlab.readthedocs.io/en/stable/install.html)
+- [使用例子](https://fedlab.readthedocs.io/en/stable/example.html)
+- [如何贡献代码](https://fedlab.readthedocs.io/en/stable/contributing.html)
+- [API介绍](https://fedlab.readthedocs.io/en/stable/autoapi/index.html)
 
 - [联系方式](#联系方式)
 
