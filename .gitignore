@@ -170,3 +170,4 @@ fedlab_benchmarks/algorithm/fedavg/standalone/*.sh
 tests/data/mnist
 codecov
 codecov_upload.sh
+pypi_release.sh
