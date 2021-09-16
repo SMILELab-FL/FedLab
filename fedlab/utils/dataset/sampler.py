@@ -20,14 +20,16 @@ from ..functional import load_dict
 
 
 class SubsetSampler(torch.utils.data.Sampler):
-    """Subset of a dataset at specified indices. 
-        Similar to torch.utils.data.dataset.Subset, but this is a Sampler used in Dataloader
+    """Samples elements from a given list of indices, always in the same order once initialized.
+
+    It is a :class:`Sampler` used in :class:`Dataloader`, that each partition will be fixed once initialized.
 
     Args:
-        indices (list): Indices in the whole set selected for subset
+        indices (list[int]): Indices in the whole set selected for subset
         shuffle (bool): shuffle the indices or not.
     """
-    def __init__(self, indices: list, shuffle=False) -> None:
+
+    def __init__(self, indices, shuffle=False) -> None:
         self.indices = indices
         if shuffle is True:
             random.shuffle(self.indices)
@@ -40,19 +42,29 @@ class SubsetSampler(torch.utils.data.Sampler):
 
 
 class RawPartitionSampler(torch.utils.data.Sampler):
-    """Partition dataset according to num_replicas.
+    """Partition dataset according to ``num_replicas``.
     
-        Every client get a equal shard of dataset.
-    """
-    def __init__(self, dataset, num_replicas=None, client_id=None):
+    Every client get a equal shard of dataset.
 
-        self.dataset = dataset
+    Args:
+        dataset (torch.utils.data.Dataset):
+        client_id (int):
+        num_replicas (int, optional): Number of data replications. Default ``None`` means total number of client processes.
+    """
+
+    def __init__(self, dataset, client_id, num_replicas=None):
+
+        self.dataset = dataset  # TODO: no need for dataset storage here
         self.indices = [index for index in range(len(self.dataset))]
 
         if num_replicas is None:
-            self.num_replicas = dist.get_world_size()
+            self.num_replicas = dist.get_world_size() - 1  # world size includes 1 server process
         else:
             self.num_replicas = num_replicas
+
+        assert isinstance(client_id, int), "client_id should be int, not {}".format(type(client_id))
+        assert client_id <= self.num_replicas, "client_id should not be greater than num_replicas={}".format(
+            self.num_replicas)
         self.id = client_id
 
         self.num_samples = int(len(self.dataset) / self.num_replicas)
@@ -60,7 +72,7 @@ class RawPartitionSampler(torch.utils.data.Sampler):
     def __iter__(self):
 
         local_indices = self.indices[(self.id - 1) * self.num_samples:self.id *
-                                     self.num_samples]
+                                                                      self.num_samples]
         assert len(local_indices) == self.num_samples
         return iter(local_indices)
 
@@ -69,14 +81,14 @@ class RawPartitionSampler(torch.utils.data.Sampler):
 
 
 class DictFileSampler(torch.utils.data.Sampler):
-    """Partition dataset according to data_indices and client id"""
-    def __init__(self, dict_file, client_id):
+    """Get data sample indices given client id from data file with dict."""
 
+    def __init__(self, dict_file, client_id):
         data_indices = load_dict(dict_file)
         self.indices = data_indices[client_id]
 
     def __iter__(self):
-        return iter(self.indices)
+        return iter(self.indices)  # TODO: why no shuffle here?
 
     def __len__(self):
         return len(self.indices)

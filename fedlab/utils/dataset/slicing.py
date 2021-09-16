@@ -18,25 +18,23 @@ import numpy as np
 
 
 def noniid_slicing(dataset, num_clients, num_shards):
-    """Slice a dataset 
+    """Slice a dataset for non-IID.
     
     Args:
-        dataset (torch.utils.data.Dataset): a dataset for slicing
-        num_clients (int):  the number of client.
-        num_shards (int): the number of shards. 
+        dataset (torch.utils.data.Dataset): Dataset to slice.
+        num_clients (int):  Number of client.
+        num_shards (int): Number of shards.
     
     Notes:
-        The size of a shard = int(len(dataset)/num_shards).
-        Each client will get int(num_shards/num_clients) shards.
+        The size of a shard equals to ``int(len(dataset)/num_shards)``.
+        Each client will get ``int(num_shards/num_clients)`` shards.
 
     Returns：
-        dict: { '0': indices of dataset,
-                '1': indices of dataset,
-                ...
-                'k': indices of dataset }
+        dict: ``{ '0': indices of dataset, '1': indices of dataset, ..., 'k': indices of dataset }``
     """
-    size_of_shards = int(len(dataset) / num_shards)
-    if len(dataset) % num_shards != 0:
+    total_sample_nums = len(dataset)
+    size_of_shards = int(total_sample_nums / num_shards)
+    if total_sample_nums % num_shards != 0:
         warnings.warn(
             "warning: the length of dataset isn't divided exactly by num_shard.some samples will be wasted."
         )
@@ -50,12 +48,12 @@ def noniid_slicing(dataset, num_clients, num_shards):
     dict_users = {i: np.array([], dtype='int64') for i in range(num_clients)}
 
     labels = np.array(dataset.targets)
-    idxs = np.arange(len(labels))
+    idxs = np.arange(total_sample_nums)
 
-    # sort labels
+    # sort sample indices according to labels
     idxs_labels = np.vstack((idxs, labels))
-    idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]  # 将标签按索引排序，调换顺序
-    idxs = idxs_labels[0, :]
+    idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]
+    idxs = idxs_labels[0, :]  # corresponding labels after sorting are [0, .., 0, 1, ..., 1, ...]
 
     # assign
     idx_shard = [i for i in range(num_shards)]
@@ -72,17 +70,14 @@ def noniid_slicing(dataset, num_clients, num_shards):
 
 
 def random_slicing(dataset, num_clients):
-    """Slice a dataset randomly and equally
+    """Slice a dataset randomly and equally for IID.
 
     Args：
         dataset (torch.utils.data.Dataset): a dataset for slicing.
         num_clients (int):  the number of client.
 
     Returns：
-        dict: { '0': indices of dataset,
-                '1': indices of dataset,
-                ...
-                'k': indices of dataset }
+        dict: ``{ '0': indices of dataset, '1': indices of dataset, ..., 'k': indices of dataset }``
     """
     num_items = int(len(dataset) / num_clients)
     dict_users, all_idxs = {}, [i for i in range(len(dataset))]
@@ -92,16 +87,18 @@ def random_slicing(dataset, num_clients):
         all_idxs = list(set(all_idxs) - set(dict_users[i]))
     return dict_users
 
+
 def divide_dataset(dataset, slicing_dict, to_file=None):
-    """cut a dataset
-    
+    """Cut a dataset
+
     Args:
         dataset (torch.utils.data.Dataset): a dataset for slicing.
-        slicing_dict (dict): {id:indices}
-    
+        slicing_dict (dict): ``{ client_id: indices }``, each element is client ID and corresponding list of sample indices.
+
     Returns:
-        [(data_0, label_0), (data_1, label_1), ... , (data_k, label_k)]
+        ``[(data_0, label_0), (data_1, label_1), ... , (data_k, label_k)]``, each tuple contains sample data and sample labels for corresponding client.
     """
+    # TODO: to_file for what?
     datasets = []
     data = dataset.data
     label = np.array(dataset.targets)
