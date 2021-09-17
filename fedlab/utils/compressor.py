@@ -114,4 +114,4 @@ class TopkCompressor(Compressor):
             model_parameters_layer_list.append(de_tensor.view(-1))
         
         model_parameters = torch.cat(model_parameters_layer_list)
-        SerializationTool.deserialize_model(model,model_parameters)
+        SerializationTool.deserialize_model(model, model_parameters)
