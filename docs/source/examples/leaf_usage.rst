@@ -1,5 +1,8 @@
-The usage of the benchmark datasets LEAF
-=====================================================================
+.. _leaf:
+
+***********************
+PyTorch version of LEAF
+***********************
 
 **FedLab migrates the TensorFlow version of LEAF dataset to the PyTorch
 framework, and provides the implementation of dataloader for the
