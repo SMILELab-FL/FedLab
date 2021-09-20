@@ -181,7 +181,7 @@ class CIFAR10Partitioner(DataPartitioner):
                     sorted_indices[shard_id * size_shard: (shard_id + 1) * size_shard]
                     for shard_id in shards_set]
                 client_dict[cid] = np.concatenate(current_indices, axis=0)
-    
+
         else:  # Dirichlet for non-iid
             pass
 
