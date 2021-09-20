@@ -1,8 +1,8 @@
 .. _tutorial1:
 
-***************************
+*************************
 Distributed Communication
-***************************
+*************************
 
 
 How to initialize distributed network?
