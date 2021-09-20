@@ -1,9 +1,16 @@
-# -*- coding: utf-8 -*-
-# @Time    : 9/20/21 3:06 PM
-# @Author  : Siqi Liang
-# @Contact : zszxlsq@gmail.com
-# @File    : partition.py
-# @Software: PyCharm
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import warnings
 import numpy as np
@@ -29,7 +36,7 @@ class CIFAR10Partitioner(DataPartitioner):
     Partition CIFAR10 for specific client number. Current supported partition schemes: balanced iid,
     unbalanced iid, balanced non-iid, unbalanced non-iid.
 
-    _Balance_ refers to that sample numbers for different clients are the same. For unbalance
+    "Balance" refers to FL scenario that sample numbers for different clients are the same. For unbalance
     method, sample number for each client is drown from Log-Normal distribution with variance
     ``unbalanced_sgm``. When ``unbalanced_sgm=0``, partition is balanced. For more information,
     please refer to paper `Federated Learning Based on Dynamic Regularization <https://openreview.net/forum?id=B7v4QMR6Z9w>`_.
@@ -39,9 +46,6 @@ class CIFAR10Partitioner(DataPartitioner):
     `paper <https://arxiv.org/abs/1602.05629>`_. ``"dirichlet"`` is non-iid method used in
     `Federated Learning with Matched Averaging <https://arxiv.org/abs/2002.06440>`_ and
     `Bayesian nonparametric federated learning of neural networks <https://arxiv.org/abs/1905.12022>`_.
-
-
-
 
     Args:
         targets (list or numpy.ndarray): Targets of dataset for partition. Each element is in range of [0, 1, ..., 9].
