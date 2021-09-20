@@ -5,6 +5,7 @@
 # @File    : partition.py
 # @Software: PyCharm
 
+import warnings
 import numpy as np
 
 import torch
@@ -23,6 +24,35 @@ class DataPartitioner(object):
 
 
 class CIFAR10Partitioner(DataPartitioner):
+    """CIFAR10 data partitioner.
+
+    Partition CIFAR10 for specific client number. Current supported partition schemes: balanced iid,
+    unbalanced iid, balanced non-iid, unbalanced non-iid.
+
+    _Balance_ refers to that sample numbers for different clients are the same. For unbalance
+    method, sample number for each client is drown from Log-Normal distribution with variance
+    ``unbalanced_sgm``. When ``unbalanced_sgm=0``, partition is balanced. For more information,
+    please refer to paper `Federated Learning Based on Dynamic Regularization <https://openreview.net/forum?id=B7v4QMR6Z9w>`_.
+
+    For iid and non-iid, we use random sampling for iid, and use ``"shards"`` method or
+    ``"dirichlet"`` method for non-iid partition. ``"shards"`` is non-iid method used in FedAvg
+    `paper <https://arxiv.org/abs/1602.05629>`_. ``"dirichlet"`` is non-iid method used in
+    `Federated Learning with Matched Averaging <https://arxiv.org/abs/2002.06440>`_ and
+    `Bayesian nonparametric federated learning of neural networks <https://arxiv.org/abs/1905.12022>`_.
+
+
+
+
+    Args:
+        targets (list or numpy.ndarray): Targets of dataset for partition. Each element is in range of [0, 1, ..., 9].
+        num_clients (int): Number of clients for data partition.
+        partition (str, optional): Partition type, only ``"iid"`` or ``niid`` supported. Default as ``"iid"``.
+        num_shards (int optional): Number of shards in non-iid partition. Only works if ``partition="niid"`` and ``dirichlet=None``. Default as ``None``.
+        dirichlet (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="niid"`` and ``num_shards=None``. Default as ``None``.
+        balance (bool, optional): Balanced partition over all clients or not. Default as ``True``.
+        unbalance_sgm (float, optional): Log-normal distribution variance for unbalanced data partition over clients. Default as ``0`` for balanced partition.
+    """
+
     def __init__(self, targets, num_clients,
                  partition="iid",
                  niid_method=None,
@@ -31,17 +61,6 @@ class CIFAR10Partitioner(DataPartitioner):
                  balance=True,
                  unbalance_sgm=0,
                  seed=None):
-        """
-
-        Args:
-            targets (list or numpy.ndarray): Targets of dataset for partition. Each element is in range of [0, 1, ..., 9].
-            num_clients (int): Number of clients for data partition.
-            partition (str, optional): Partition type, only ``"iid"`` or ``niid`` supported. Default as ``"iid"``.
-            num_shards (int optional): Number of shards in non-iid partition. Only works if ``partition="niid"`` and ``dirichlet=None``. Default as ``None``.
-            dirichlet (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="niid"`` and ``num_shards=None``. Default as ``None``.
-            balance (bool, optional): Balanced partition over all clients or not. Default as ``True``.
-            unbalance_sgm (float, optional): Log-normal distribution variance for unbalanced data partition over clients. Default as ``0`` for balanced partition.
-        """
         self.targets = np.array(targets)  # with shape (num_samples,)
         self.num_samples = self.targets.shape[0]
         self.num_classes = 10
@@ -103,7 +122,7 @@ class CIFAR10Partitioner(DataPartitioner):
         rand_perm = self.rng.permutation(self.num_samples)
         num_samples_per_client = int(self.num_samples / self.num_clients)
         self.client_sample_nums = np.ones(self.num_clients) * num_samples_per_client
-        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums)))
+        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums))).astype(int)
         self.client_dict = self._slice_indices(num_cumsum, rand_perm)
 
     def _iid_unbalance(self):
@@ -124,11 +143,49 @@ class CIFAR10Partitioner(DataPartitioner):
                     break
 
         self.client_sample_nums = client_sample_nums
-        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums)))
+        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums))).astype(int)
         self.client_dict = self._slice_indices(num_cumsum, rand_perm)
 
     def _niid_balance(self):
-        pass
+        if self.niid_method == "shards":
+            size_shard = int(self.num_samples / self.num_shards)
+            if self.num_samples % self.num_shards != 0:
+                warnings.warn("warning: length of dataset isn't divided exactly by num_shards. "
+                              "Some samples will be dropped.")
+
+            shards_per_client = int(self.num_shards / self.num_clients)
+            if self.num_shards % self.num_clients != 0:
+                warnings.warn("warning: num_shards isn't divided exactly by num_clients. "
+                              "Some shards will be dropped.")
+
+            indices = np.arange(self.num_samples)
+            # sort sample indices according to labels
+            indices_targets = np.vstack((indices, self.targets))
+            indices_targets = indices_targets[:, indices_targets[1, :].argsort()]
+            # corresponding labels after sorting are [0, .., 0, 1, ..., 1, ...]
+            sorted_indices = indices_targets[0, :]
+
+            # permute shards idx, and slice shards_per_client shards for each client
+            rand_perm = self.rng.permutation(self.num_shards)
+            num_client_shards = np.ones(self.num_clients) * shards_per_client
+            # sample index must be int
+            num_cumsum = np.concatenate(([0], np.cumsum(num_client_shards))).astype(int)
+            # shard indices for each client
+            client_shards_dict = self._slice_indices(num_cumsum, rand_perm)
+
+            # map shard idx to sample idx for each client
+            client_dict = dict()
+            for cid in range(self.num_clients):
+                shards_set = client_shards_dict[cid]
+                current_indices = [
+                    sorted_indices[shard_id * size_shard: (shard_id + 1) * size_shard]
+                    for shard_id in shards_set]
+                client_dict[cid] = np.concatenate(current_indices, axis=0)
+    
+        else:  # Dirichlet for non-iid
+            pass
+
+        self.client_dict = client_dict
 
     def _niid_unbalance(self):
         pass
