@@ -134,7 +134,8 @@ def partition_report(targets, data_indices, class_num=None, verbose=True, file=N
 
     Generate data partition report for each client according to ``data_indices``, including
     ratio of each class and dataset size in current client. Report can be printed in screen or into
-    csv file.
+    file. The output format is comma-separated values which can be read by :func:`pandas.read_csv`
+    or :func:`csv.reader`.
 
     Args:
         targets (list or numpy.ndarray): Targets for all data samples, with each element is in range of ``0`` to ``class_num-1``.
