@@ -14,6 +14,7 @@ algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`l
    tutorial_1
    tutorial_2
    tutorial_3
+   data_partition
 
 
 .. card:: Learn Distributed Network Basics
@@ -37,3 +38,10 @@ algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`l
     :class-card: sd-rounded-2 sd-border-1
 
     Define your own model optimization process for both server and client.
+
+.. card:: How to Use Data Partition?
+    :link: data-partition
+    :link-type: ref
+    :class-card: sd-rounded-2 sd-border-1
+
+    Get partitioned dataset and ``DataLoader`` for train/test.

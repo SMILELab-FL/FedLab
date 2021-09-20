@@ -12,7 +12,7 @@ server.  Local train and aggregation procedure are customizable in FedLab. You n
 Client local training
 =======================
 
-The basic class of ClientTrainer is shown below, we encourage users define local training process flolowing our code pattern:
+The basic class of ClientTrainer is shown below, we encourage users define local training process following our code pattern:
 
 .. code-block:: python
 
