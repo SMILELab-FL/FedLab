@@ -105,7 +105,7 @@ Two static methods are provided by Package to parse header and content:
 
     p = Package()
     Package.parse_header(p.header)  # necessary information to describe the package
-    Package.parse_content(p.content) # tensor list associated with the tensor sequence appended into.
+    Package.parse_content(p.slices, p.content) # tensor list associated with the tensor sequence appended into.
 
 How to send package?
 ====================================

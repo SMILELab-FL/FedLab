@@ -1,5 +1,6 @@
+**********************
 Data Partition Scheme
-=====================
+**********************
 
 This chapter introduces the dataset partition strategy and how the client process uses the corresponding dataset. FedLab provides various methods to deal with different partition strategy corresponding with different dataset situations.
 
