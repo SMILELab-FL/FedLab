@@ -86,26 +86,3 @@ def random_slicing(dataset, num_clients):
             np.random.choice(all_idxs, num_items, replace=False))
         all_idxs = list(set(all_idxs) - set(dict_users[i]))
     return dict_users
-
-
-def divide_dataset(dataset, slicing_dict, to_file=None):
-    """Cut a dataset
-
-    Args:
-        dataset (torch.utils.data.Dataset): a dataset for slicing.
-        slicing_dict (dict): ``{ client_id: indices }``, each element is client ID and corresponding list of sample indices.
-
-    Returns:
-        ``[(data_0, label_0), (data_1, label_1), ... , (data_k, label_k)]``, each tuple contains sample data and sample labels for corresponding client.
-    """
-    # TODO: to_file for what?
-    datasets = []
-    data = dataset.data
-    label = np.array(dataset.targets)
-    for _, dic in slicing_dict.items():
-        dic = np.array(list(dic))
-        client_data = data[dic]
-        client_label = list(label[dic])
-        client_dataset = (client_data, client_label)
-        datasets.append(client_dataset)
-    return datasets

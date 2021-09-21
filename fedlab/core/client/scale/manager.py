@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fedlab.core.client import ORDINARY_TRAINER, SERIAL_TRAINER
+from ...client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...client.manager import ClientPassiveManager
 
 from ...communicator.package import Package

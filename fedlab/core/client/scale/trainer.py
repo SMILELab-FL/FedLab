@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fedlab.core.client import SERIAL_TRAINER
 import torch
 import logging
 
+from ...client import SERIAL_TRAINER
 from ..trainer import ClientTrainer
 from ....utils.functional import AverageMeter, get_best_gpu
 from ....utils.logger import Logger
@@ -33,10 +33,15 @@ class SerialTrainer(ClientTrainer):
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
         logger (Logger, optional): Logger for the current trainer. If ``None``, only log to console.
     """
-    def __init__(self, model, client_num, aggregator=None, cuda=True, logger=None):
+    def __init__(self,
+                 model,
+                 client_num,
+                 aggregator=None,
+                 cuda=True,
+                 logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
-        self.type = SERIAL_TRAINER # represent serial trainer
+        self.type = SERIAL_TRAINER  # represent serial trainer
         self.aggregator = aggregator
 
         if logger is None:
@@ -175,4 +180,3 @@ class SubsetSerialTrainer(SerialTrainer):
                 optimizer.step()
 
         return self.model_parameters
-
