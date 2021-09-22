@@ -121,7 +121,7 @@ class CIFAR10Partitioner(DataPartitioner):
 
     def _perform_partition(self):
         if self.balance is None:
-            if self.partition is "dirichlet":
+            if self.partition == "dirichlet":
                 client_dict = F.hetero_dir_partition(self.targets,
                                                      self.num_clients,
                                                      self.num_classes,
