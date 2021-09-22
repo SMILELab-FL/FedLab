@@ -16,12 +16,9 @@ import numpy as np
 
 import torch
 import torch.distributed as dist
-from .package import (
-    Package,
-    HEADER_SIZE,
-    HEADER_RECEIVER_RANK_IDX,
-    HEADER_SLICE_SIZE_IDX,
-)
+
+from .package import Package
+from . import HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
 
 
 class PackageProcessor(object):

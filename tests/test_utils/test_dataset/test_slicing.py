@@ -17,7 +17,7 @@ import torch
 from torch import nn
 import torchvision
 import torchvision.transforms as transforms
-from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing, divide_dataset
+from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 
 
 class SliceTestCase(unittest.TestCase):
@@ -40,8 +40,3 @@ class SliceTestCase(unittest.TestCase):
         noniid_slicing(self.trainset,
                        num_clients=self.total_client,
                        num_shards=200)
-
-    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
-    def test_divide_dataset(self):
-        slice = random_slicing(self.trainset, num_clients=self.total_client)
-        divide_dataset(self.trainset, slice)
