@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fedlab.core.client import ORDINARY_TRAINER
 import time
 from abc import ABC, abstractmethod
 import logging
@@ -23,6 +22,7 @@ import threading
 import heapq as hp
 import random
 
+from ..client import ORDINARY_TRAINER
 from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
@@ -44,8 +44,8 @@ class ClientTrainer(ABC):
     """
     def __init__(self, model, cuda):
         self.cuda = cuda
-        self.client_num = 1   # default is 1.
-        self.type = ORDINARY_TRAINER  
+        self.client_num = 1  # default is 1.
+        self.type = ORDINARY_TRAINER
 
         if self.cuda:
             # dynamic gpu acquire.
