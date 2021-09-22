@@ -149,7 +149,7 @@ class CIFAR10Partitioner(DataPartitioner):
                 targets = self.targets[rand_perm]
                 client_dict = F.client_inner_dirichlet_partition(targets, self.num_clients,
                                                                  self.num_classes, self.dir_alpha,
-                                                                 client_sample_nums)
+                                                                 client_sample_nums, self.verbose)
 
         return client_dict
 
