@@ -18,7 +18,7 @@ import warnings
 
 def split_indices(num_cumsum, rand_perm):
     client_indices_pairs = [(cid, idxs) for cid, idxs in
-                            enumerate(np.split(rand_perm, num_cumsum))]
+                            enumerate(np.split(rand_perm, num_cumsum)[:-1])]
     client_dict = dict(client_indices_pairs)
     return client_dict
 
@@ -185,7 +185,7 @@ def shards_partition(targets, num_clients, num_shards):
 
 
 def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alpha,
-                                     client_sample_nums):
+                                     client_sample_nums, verbose=True):
     """Non-iid Dirichlet partition.
 
     The method is from The method is from paper `Federated Learning Based on Dynamic Regularization <https://openreview.net/forum?id=B7v4QMR6Z9w>`_.
@@ -198,6 +198,7 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
         num_classes (int): Number of classes in samples.
         dir_alpha (float): Parameter alpha for Dirichlet distribution.
         client_sample_nums (numpy.ndarray): A numpy array consisting ``num_clients`` integer elements, each represents sample number of corresponding clients.
+        verbose (bool, optional): Whether to print partition process. Default as ``True``.
 
     Returns:
         dict: ``{ client_id: indices}``.
@@ -216,7 +217,8 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
     while np.sum(client_sample_nums) != 0:
         curr_cid = np.random.randint(num_clients)
         # If current node is full resample a client
-        print('Remaining Data: %d' % np.sum(client_sample_nums))
+        if verbose:
+            print('Remaining Data: %d' % np.sum(client_sample_nums))
         if client_sample_nums[curr_cid] <= 0:
             continue
         client_sample_nums[curr_cid] -= 1

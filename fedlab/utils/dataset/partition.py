@@ -80,6 +80,7 @@ class CIFAR10Partitioner(DataPartitioner):
         unbalance_sgm (float, optional): Log-normal distribution variance for unbalanced data partition over clients. Default as ``0`` for balanced partition.
         num_shards (int, optional): Number of shards in non-iid ``"shards"`` partition. Only works if ``partition="shards"``. Default as ``None``.
         dir_alpha (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="dirichlet"``. Default as ``None``.
+        verbose (bool, optional): Whether to print partition process. Default as ``True``.
         seed (int, optional): Random seed. Default as ``None``.
     """
 
@@ -88,6 +89,7 @@ class CIFAR10Partitioner(DataPartitioner):
                  unbalance_sgm=0,
                  num_shards=None,
                  dir_alpha=None,
+                 verbose=True,
                  seed=None):
 
         self.targets = np.array(targets)  # with shape (num_samples,)
@@ -100,6 +102,7 @@ class CIFAR10Partitioner(DataPartitioner):
         self.dir_alpha = dir_alpha
         self.num_shards = num_shards
         self.unbalance_sgm = unbalance_sgm
+        self.verbose = verbose
         # self.rng = np.random.default_rng(seed)  # rng currently not supports randint
         np.random.seed(seed)
 
