@@ -23,7 +23,7 @@ from . import functional
 
 
 class DataPartitioner(object):
-    def partition(self):
+    def _perform_partition(self):
         raise NotImplementedError
 
     def __getitem__(self, index):
