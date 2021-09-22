@@ -18,6 +18,8 @@ import numpy as np
 import torch
 import torchvision
 
+from . import functional as F
+
 
 class DataPartitioner(object):
     def partition(self):
@@ -61,7 +63,7 @@ class CIFAR10Partitioner(DataPartitioner):
                  partition="iid",
                  niid_method=None,
                  num_shards=None,
-                 dirichlet=None,
+                 dirichlet_alpha=None,
                  balance=True,
                  unbalance_sgm=0,
                  seed=None):
@@ -72,7 +74,8 @@ class CIFAR10Partitioner(DataPartitioner):
         self.client_dict = dict()
         self.partition = partition
         self.client_sample_nums = None  # number of samples for each client, a list or numpy vector
-        self.rng = np.random.default_rng(seed)
+        # self.rng = np.random.default_rng(seed)  # rng currently not supports randint
+        np.random.seed(seed)
 
         # set balance/unbalance variables
         self.balance = balance
@@ -95,14 +98,14 @@ class CIFAR10Partitioner(DataPartitioner):
         elif self.partition == "niid":
             self.niid_method = niid_method
             if self.niid_method == "shards":
-                self.dirichlet = None
+                self.dirichlet_alpha = None
                 assert isinstance(num_shards, int), \
                     f"num_shards should be int for non-iid partition, not {type(num_shards)}."
                 self.num_shards = num_shards
             elif self.niid_method == "dirichlet":
-                assert isinstance(dirichlet, float), \
-                    f"'dirichlet' for non-iid partition using Dirichlet distribution should be " \
-                    f"float, not {type(dirichlet)}"
+                assert isinstance(dirichlet_alpha, float), \
+                    f"'dirichlet_alpha' for non-iid partition using Dirichlet distribution should " \
+                    f"be float, not {type(dirichlet_alpha)}"
                 self.num_shards = None
             else:
                 raise ValueError(
@@ -110,7 +113,6 @@ class CIFAR10Partitioner(DataPartitioner):
                     f"valid.")
 
         self._partition()  # perform data partition according to setting
-        pass
 
     def _partition(self):
         if self.balance is True and self.partition == "iid":
@@ -123,18 +125,18 @@ class CIFAR10Partitioner(DataPartitioner):
             self._niid_unbalance()
 
     def _iid_balance(self):
-        rand_perm = self.rng.permutation(self.num_samples)
+        rand_perm = np.random.permutation(self.num_samples)
         num_samples_per_client = int(self.num_samples / self.num_clients)
         self.client_sample_nums = np.ones(self.num_clients) * num_samples_per_client
-        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums))).astype(int)
-        self.client_dict = self._slice_indices(num_cumsum, rand_perm)
+        num_cumsum = np.cumsum(self.client_sample_nums).astype(int)
+        self.client_dict = F.split_indices(num_cumsum, rand_perm)
 
     def _iid_unbalance(self):
-        rand_perm = self.rng.permutation(self.num_samples)
+        rand_perm = np.random.permutation(self.num_samples)
         num_samples_per_client = int(self.num_samples / self.num_clients)
-        client_sample_nums = self.rng.lognormal(mean=np.log(num_samples_per_client),
-                                                sigma=self.unbalance_sgm,
-                                                size=self.num_clients)
+        client_sample_nums = np.random.lognormal(mean=np.log(num_samples_per_client),
+                                                 sigma=self.unbalance_sgm,
+                                                 size=self.num_clients)
         client_sample_nums = (
                 client_sample_nums / np.sum(client_sample_nums) * self.num_samples).astype(int)
         diff = np.sum(client_sample_nums) - self.num_samples  # diff <= 0
@@ -147,8 +149,8 @@ class CIFAR10Partitioner(DataPartitioner):
                     break
 
         self.client_sample_nums = client_sample_nums
-        num_cumsum = np.concatenate(([0], np.cumsum(self.client_sample_nums))).astype(int)
-        self.client_dict = self._slice_indices(num_cumsum, rand_perm)
+        num_cumsum = np.cumsum(self.client_sample_nums).astype(int)
+        self.client_dict = F.split_indices(num_cumsum, rand_perm)
 
     def _niid_balance(self):
         if self.niid_method == "shards":
@@ -170,12 +172,12 @@ class CIFAR10Partitioner(DataPartitioner):
             sorted_indices = indices_targets[0, :]
 
             # permute shards idx, and slice shards_per_client shards for each client
-            rand_perm = self.rng.permutation(self.num_shards)
+            rand_perm = np.random.permutation(self.num_shards)
             num_client_shards = np.ones(self.num_clients) * shards_per_client
             # sample index must be int
-            num_cumsum = np.concatenate(([0], np.cumsum(num_client_shards))).astype(int)
+            num_cumsum = np.cumsum(num_client_shards).astype(int)
             # shard indices for each client
-            client_shards_dict = self._slice_indices(num_cumsum, rand_perm)
+            client_shards_dict = F.split_indices(num_cumsum, rand_perm)
 
             # map shard idx to sample idx for each client
             client_dict = dict()
@@ -187,18 +189,139 @@ class CIFAR10Partitioner(DataPartitioner):
                 client_dict[cid] = np.concatenate(current_indices, axis=0)
 
         else:  # Dirichlet for non-iid
-            pass
+            # code below is modified from FedDyn Dirichlet partition
+            rand_perm = np.random.permutation(self.num_samples)
+            targets = self.targets[rand_perm]
+            num_samples_per_client = int(self.num_samples / self.num_clients)
+            self.client_sample_nums = (np.ones(self.num_clients) * num_samples_per_client).astype(
+                int)
+            rest_client_sample_nums = (np.ones(self.num_clients) * num_samples_per_client).astype(
+                int)
+
+            class_priors = np.random.dirichlet(alpha=[self.dirichlet_alpha] * self.num_classes,
+                                               size=self.num_clients)
+            prior_cumsum = np.cumsum(class_priors, axis=1)
+            idx_list = [np.where(targets == i)[0] for i in range(self.num_classes)]
+            class_amount = [len(idx_list[i]) for i in range(self.num_classes)]
+
+            client_indices = [np.zeros(rest_client_sample_nums[cid]).astype(np.int64) for cid in
+                              range(self.num_clients)]
+
+            while np.sum(rest_client_sample_nums) != 0:
+                curr_cid = np.random.randint(self.num_clients)
+                # If current node is full resample a client
+                print('Remaining Data: %d' % np.sum(rest_client_sample_nums))
+                if rest_client_sample_nums[curr_cid] <= 0:
+                    continue
+                rest_client_sample_nums[curr_cid] -= 1
+                curr_prior = prior_cumsum[curr_cid]
+                while True:
+                    curr_class = np.argmax(np.random.uniform() <= curr_prior)
+                    # Redraw class label if no rest in current class samples
+                    if class_amount[curr_class] <= 0:
+                        continue
+                    class_amount[curr_class] -= 1
+                    client_indices[curr_cid][rest_client_sample_nums[curr_cid]] = \
+                        idx_list[curr_class][class_amount[curr_class]]
+
+                    break
+
+            client_dict = dict([(cid, client_indices[cid]) for cid in range(self.num_clients)])
 
         self.client_dict = client_dict
 
     def _niid_unbalance(self):
-        pass
+        if self.niid_method == "shards":
+            size_shard = int(self.num_samples / self.num_shards)
+            num_shards_per_client = int(self.num_shards / self.num_clients)
+            client_shards_nums = np.random.lognormal(mean=np.log(num_shards_per_client),
+                                                     sigma=self.unbalance_sgm,
+                                                     size=self.num_clients)
+            client_shards_nums = (
+                    client_shards_nums / np.sum(client_shards_nums) * self.num_shards).astype(int)
+            diff = np.sum(client_shards_nums) - self.num_shards  # diff <= 0
 
-    def _slice_indices(self, num_cumsum, rand_perm):
-        client_dict = dict()
-        for cid in range(self.num_clients):
-            client_dict[cid] = rand_perm[num_cumsum[cid]: num_cumsum[cid + 1]]
-        return client_dict
+            # Add/Subtract the excess number starting from first client
+            if diff != 0:
+                for cid in range(self.num_clients):
+                    if client_shards_nums[cid] > diff:
+                        client_shards_nums[cid] -= diff
+                        break
+
+            self.client_shards_nums = client_shards_nums
+            # permute shards idx, and slice shards_per_client shards for each client
+            rand_perm = np.random.permutation(self.num_shards)
+            num_cumsum = np.cumsum(self.client_shards_nums).astype(int)
+            # shard indices for each client
+            client_shards_dict = F.split_indices(num_cumsum, rand_perm)
+
+            # sort sample indices according to labels
+            indices = np.arange(self.num_samples)
+            indices_targets = np.vstack((indices, self.targets))
+            indices_targets = indices_targets[:, indices_targets[1, :].argsort()]
+            # corresponding labels after sorting are [0, .., 0, 1, ..., 1, ...]
+            sorted_indices = indices_targets[0, :]
+
+            # map shard idx to sample idx for each client
+            client_dict = dict()
+            for cid in range(self.num_clients):
+                shards_set = client_shards_dict[cid]
+                current_indices = [
+                    sorted_indices[shard_id * size_shard: (shard_id + 1) * size_shard]
+                    for shard_id in shards_set]
+                client_dict[cid] = np.concatenate(current_indices, axis=0)
+
+        else:  # Dirichlet for non-iid
+            num_samples_per_client = int(self.num_samples / self.num_clients)
+            client_sample_nums = np.random.lognormal(mean=np.log(num_samples_per_client),
+                                                     sigma=self.unbalance_sgm,
+                                                     size=self.num_clients)
+            client_sample_nums = (
+                    client_sample_nums / np.sum(client_sample_nums) * self.num_samples).astype(int)
+            diff = np.sum(client_sample_nums) - self.num_samples  # diff <= 0
+
+            # Add/Subtract the excess number starting from first client
+            if diff != 0:
+                for cid in range(self.num_clients):
+                    if client_sample_nums[cid] > diff:
+                        client_sample_nums[cid] -= diff
+                        break
+
+            rest_client_sample_nums = client_sample_nums
+
+            rand_perm = np.random.permutation(self.num_samples)
+            targets = self.targets[rand_perm]
+            class_priors = np.random.dirichlet(alpha=[self.dirichlet_alpha] * self.num_classes,
+                                               size=self.num_clients)
+            prior_cumsum = np.cumsum(class_priors, axis=1)
+            idx_list = [np.where(targets == i)[0] for i in range(self.num_classes)]
+            class_amount = [len(idx_list[i]) for i in range(self.num_classes)]
+
+            client_indices = [np.zeros(rest_client_sample_nums[cid]).astype(np.int64) for cid in
+                              range(self.num_clients)]
+
+            while np.sum(rest_client_sample_nums) != 0:
+                curr_cid = np.random.randint(self.num_clients)
+                # If current node is full resample a client
+                print('Remaining Data: %d' % np.sum(rest_client_sample_nums))
+                if rest_client_sample_nums[curr_cid] <= 0:
+                    continue
+                rest_client_sample_nums[curr_cid] -= 1
+                curr_prior = prior_cumsum[curr_cid]
+                while True:
+                    curr_class = np.argmax(np.random.uniform() <= curr_prior)
+                    # Redraw class label if no rest in current class samples
+                    if class_amount[curr_class] <= 0:
+                        continue
+                    class_amount[curr_class] -= 1
+                    client_indices[curr_cid][rest_client_sample_nums[curr_cid]] = \
+                        idx_list[curr_class][class_amount[curr_class]]
+
+                    break
+
+            client_dict = dict([(cid, client_indices[cid]) for cid in range(self.num_clients)])
+
+        self.client_dict = client_dict
 
     def __getitem__(self, index):
         """
