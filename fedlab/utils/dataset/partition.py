@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import warnings
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 import torch
@@ -22,13 +24,17 @@ from . import functional as F
 from . import functional
 
 
-class DataPartitioner(object):
+class DataPartitioner(ABC):
+
+    @abstractmethod
     def _perform_partition(self):
         raise NotImplementedError
 
+    @abstractmethod
     def __getitem__(self, index):
         raise NotImplementedError
 
+    @abstractmethod
     def __len__(self):
         raise NotImplementedError
 
