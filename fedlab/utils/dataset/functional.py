@@ -55,20 +55,22 @@ def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
 
     """
     num_samples_per_client = int(num_samples / num_clients)
-    client_sample_nums = np.random.lognormal(mean=np.log(num_samples_per_client),
-                                             sigma=unbalance_sgm,
-                                             size=num_clients)
-    client_sample_nums = (
-            client_sample_nums / np.sum(client_sample_nums) * num_samples).astype(
-        int)
-    diff = np.sum(client_sample_nums) - num_samples  # diff <= 0
+    if unbalance_sgm != 0:
+        client_sample_nums = np.random.lognormal(mean=np.log(num_samples_per_client),
+                                                 sigma=unbalance_sgm,
+                                                 size=num_clients)
+        client_sample_nums = (
+                client_sample_nums / np.sum(client_sample_nums) * num_samples).astype(int)
+        diff = np.sum(client_sample_nums) - num_samples  # diff <= 0
 
-    # Add/Subtract the excess number starting from first client
-    if diff != 0:
-        for cid in range(num_clients):
-            if client_sample_nums[cid] > diff:
-                client_sample_nums[cid] -= diff
-                break
+        # Add/Subtract the excess number starting from first client
+        if diff != 0:
+            for cid in range(num_clients):
+                if client_sample_nums[cid] > diff:
+                    client_sample_nums[cid] -= diff
+                    break
+    else:
+        client_sample_nums = (np.ones(num_clients) * num_samples_per_client).astype(int)
 
     return client_sample_nums
 
@@ -204,7 +206,9 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
         dict: ``{ client_id: indices}``.
 
     """
-    # perm_targets = self.targets[rand_perm]
+    if not isinstance(targets, np.ndarray):
+        targets = np.array(targets)
+
     class_priors = np.random.dirichlet(alpha=[dir_alpha] * num_classes,
                                        size=num_clients)
     prior_cumsum = np.cumsum(class_priors, axis=1)

@@ -27,5 +27,5 @@ class NetworkTestCase(unittest.TestCase):
     def tearDown(self) -> None:
         self.cnet.close_network_connection()
 
-    def test_(self):
+    def test_network_connection(self):
         print(self.cnet)

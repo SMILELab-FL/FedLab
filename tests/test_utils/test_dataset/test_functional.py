@@ -22,9 +22,9 @@ from fedlab.utils.dataset import functional as F
 class DatasetFunctionalTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.num_samples = 10000
-        cls.num_classes = 10
-        cls.num_clients = 100
+        cls.num_samples = 1000
+        cls.num_classes = 5
+        cls.num_clients = 20
 
     def setUp(self) -> None:
         np.random.seed(2021)
@@ -69,7 +69,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
 
     def test_hetero_dir_partition(self):
         # use np.ndarray targets
-        targets = np.random.randint(10, size=self.num_samples)
+        targets = np.random.randint(self.num_classes, size=self.num_samples)
         client_dict = F.hetero_dir_partition(targets,
                                              self.num_clients,
                                              self.num_classes, 0.3)
@@ -95,7 +95,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
 
     def test_shards_partition(self):
         num_shards = 200
-        targets = np.random.randint(10, size=self.num_samples)
+        targets = np.random.randint(self.num_classes, size=self.num_samples)
 
         # use np.ndarray targets
         client_dict = F.shards_partition(targets, self.num_clients, num_shards)
@@ -120,7 +120,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                              range(self.num_clients)]))
 
     def test_client_inner_dirichlet_partition(self):
-        targets = np.random.randint(10, size=self.num_samples)
+        targets = np.random.randint(self.num_classes, size=self.num_samples)
         client_sample_nums = F.balance_partition(self.num_clients, self.num_samples)
 
         # use np.ndarray targets
@@ -128,7 +128,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                                                          self.num_clients,
                                                          self.num_classes,
                                                          dir_alpha=0.3,
-                                                         client_sample_nums=client_sample_nums,
+                                                         client_sample_nums=client_sample_nums.copy(),
                                                          verbose=False)
         self._client_inner_dirichlet_content_check(client_dict, client_sample_nums)
 
@@ -137,9 +137,17 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                                                          self.num_clients,
                                                          self.num_classes,
                                                          dir_alpha=0.3,
-                                                         client_sample_nums=client_sample_nums,
+                                                         client_sample_nums=client_sample_nums.copy(),
                                                          verbose=False)
         self._client_inner_dirichlet_content_check(client_dict, client_sample_nums)
+
+        # check verbose
+        F.client_inner_dirichlet_partition([0, 0, 1, 1, 2, 1, 3, 3, 4, 4],
+                                           num_clients=2,
+                                           num_classes=5,
+                                           dir_alpha=0.3,
+                                           client_sample_nums=np.array([5, 5]).astype(int),
+                                           verbose=True)
 
     def _client_inner_dirichlet_content_check(self, client_dict, client_sample_nums):
         # check number of partition parts
