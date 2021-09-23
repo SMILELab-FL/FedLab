@@ -129,7 +129,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                                                          self.num_classes,
                                                          dir_alpha=0.3,
                                                          client_sample_nums=client_sample_nums,
-                                                         verbose=True)
+                                                         verbose=False)
         self._client_inner_dirichlet_content_check(client_dict, client_sample_nums)
 
         # use list targets
@@ -138,7 +138,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                                                          self.num_classes,
                                                          dir_alpha=0.3,
                                                          client_sample_nums=client_sample_nums,
-                                                         verbose=True)
+                                                         verbose=False)
         self._client_inner_dirichlet_content_check(client_dict, client_sample_nums)
 
     def _client_inner_dirichlet_content_check(self, client_dict, client_sample_nums):
