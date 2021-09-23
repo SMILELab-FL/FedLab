@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from random import sample
+
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
