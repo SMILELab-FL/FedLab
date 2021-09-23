@@ -18,24 +18,6 @@ import numpy as np
 from fedlab.utils.dataset.partition import CIFAR10Partitioner
 
 
-#
-# class DataPartitionerTestCase(unittest.TestCase):
-#     @classmethod
-#     def setUpClass(cls) -> None:
-#         cls.num_samples = 10000
-#         cls.num_classes = 10
-#         cls.num_clients = 100
-#
-#     def setUp(self) -> None:
-#         np.random.seed(2021)
-#
-#     def test_len(self):
-#         pass
-#
-#     def test_item(self):
-#         pass
-
-
 class CIFAR10PartitionerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -96,8 +78,9 @@ class CIFAR10PartitionerTestCase(unittest.TestCase):
                                        verbose=False,
                                        seed=self.seed)
         self.assertEqual(len(partition), self.num_clients)
-        self.assertTrue(all([len(partition) == (
-                int(num_shards / self.num_clients) * int(self.num_samples / num_shards))]))
+        self.assertTrue(all([partition[cid].shape[0] == (
+                int(num_shards / self.num_clients) * int(self.num_samples / num_shards)) for cid in
+                             range(self.num_clients)]))
 
     def test_balance_iid(self):
         partition = CIFAR10Partitioner(self.targets,
@@ -157,4 +140,3 @@ class CIFAR10PartitionerTestCase(unittest.TestCase):
                                            partition="iid",
                                            verbose=False,
                                            seed=self.seed)
-

@@ -145,5 +145,5 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         # check number of partition parts
         self.assertTrue(len(client_dict) == self.num_clients)
         # check sample number for each client
-        self.assertTrue(all([len(client_dict[cid]) == client_sample_nums[cid] for cid in
+        self.assertTrue(all([client_dict[cid].shape[0] == client_sample_nums[cid] for cid in
                              range(self.num_clients)]))
