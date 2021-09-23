@@ -15,7 +15,7 @@
 import unittest
 import os
 import numpy as np
-from fedlab.utils.dataset.partition import DataPartitioner, CIFAR10Partitioner
+from fedlab.utils.dataset.partition import CIFAR10Partitioner
 
 
 #
@@ -47,34 +47,8 @@ class CIFAR10PartitionerTestCase(unittest.TestCase):
             targets.append([k for _ in range(5000)])
         cls.num_samples = len(targets)
         targets = np.array(targets)
+        np.random.seed(cls.seed)
         cls.targets = targets[np.random.permutation(cls.num_samples)]  # shuffle
-
-    # def setUp(self) -> None:
-    #     np.random.seed(self.seed)
-
-    # def test_hetero_dir(self):
-    #     # perform partition
-    #     hetero_dir_part = CIFAR10Partitioner(self.targets,
-    #                                          self.num_clients,
-    #                                          balance=None,
-    #                                          partition="dirichlet",
-    #                                          dir_alpha=0.3,
-    #                                          seed=self.seed)
-
-    def test_shards(self):
-        pass
-
-    def test_balance_iid(self):
-        pass
-
-    def test_unbalance_iid(self):
-        pass
-
-    def test_balance_dir(self):
-        pass
-
-    def test_unbalance_dir(self):
-        pass
 
     def test_len(self):
         partitioner = CIFAR10Partitioner(self.targets,
@@ -93,3 +67,59 @@ class CIFAR10PartitionerTestCase(unittest.TestCase):
         res = [all(partitioner[cid] == partitioner.client_dict[cid]) for cid in
                range(self.num_clients)]
         self.assertTrue(all(res))
+
+    # def test_hetero_dir(self):
+    #     # perform partition
+    #     partition = CIFAR10Partitioner(self.targets,
+    #                                    self.num_clients,
+    #                                    balance=None,
+    #                                    partition="dirichlet",
+    #                                    dir_alpha=0.3,
+    #                                    seed=self.seed)
+    #     self.assertEqual(len(partition), self.num_clients)
+    #     client_sample_nums = np.array([len(partition[cid]) for cid in range(self.num_clients)])
+    #     # sample number of each client should no less than number of classes
+    #     self.assertTrue(all(client_sample_nums >= self.num_classes))
+    #     # sample number of each client should not be the same
+    #     self.assertTrue(len(set(client_sample_nums)) >= 2)
+
+    def test_shards(self):
+        num_shards = 200
+        partition = CIFAR10Partitioner(self.targets,
+                                       self.num_clients,
+                                       balance=None,
+                                       partition="shards",
+                                       num_shards=num_shards,
+                                       seed=self.seed)
+        self.assertEqual(len(partition), self.num_clients)
+        self.assertTrue(all([len(partition) == (
+                int(num_shards / self.num_clients) * int(self.num_samples / num_shards))]))
+
+    def test_balance_iid(self):
+        partition = CIFAR10Partitioner(self.targets,
+                                       self.num_clients,
+                                       balance=True,
+                                       partition="iid",
+                                       seed=self.seed)
+        self.assertEqual(len(partition), self.num_clients)
+        # check balance
+        client_sample_nums = np.array([len(partition[cid]) for cid in range(self.num_clients)])
+        self.assertTrue(all(client_sample_nums == int(self.num_samples / self.num_clients)))
+
+    def test_unbalance_iid(self):
+        partition = CIFAR10Partitioner(self.targets,
+                                       self.num_clients,
+                                       balance=False,
+                                       partition="iid",
+                                       unbalance_sgm=0.3,
+                                       seed=self.seed)
+        self.assertEqual(len(partition), self.num_clients)
+        # check unbalance
+        client_sample_nums = [len(partition[cid]) for cid in range(self.num_clients)]
+        self.assertTrue(len(set(client_sample_nums)) >= 2)
+
+    def test_balance_dir(self):
+        pass
+
+    def test_unbalance_dir(self):
+        pass
