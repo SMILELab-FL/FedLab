@@ -21,7 +21,6 @@ import torch
 import torchvision
 
 from . import functional as F
-from . import functional
 
 
 class DataPartitioner(ABC):

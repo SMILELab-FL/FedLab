@@ -18,32 +18,51 @@ import numpy as np
 from fedlab.utils.dataset.partition import DataPartitioner, CIFAR10Partitioner
 
 
-class DataPartitionerTestCase(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.num_samples = 10000
-        cls.num_classes = 10
-        cls.num_clients = 100
-
-    def setUp(self) -> None:
-        np.random.seed(2021)
-
-    def test_len(self):
-        pass
-
-    def test_item(self):
-        pass
+#
+# class DataPartitionerTestCase(unittest.TestCase):
+#     @classmethod
+#     def setUpClass(cls) -> None:
+#         cls.num_samples = 10000
+#         cls.num_classes = 10
+#         cls.num_clients = 100
+#
+#     def setUp(self) -> None:
+#         np.random.seed(2021)
+#
+#     def test_len(self):
+#         pass
+#
+#     def test_item(self):
+#         pass
 
 
 class CIFAR10PartitionerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.num_samples = 10000
         cls.num_classes = 10
-        cls.num_clients = 100
+        cls.num_clients = 50
+        cls.seed = 2021
+        targets = []
+        for k in range(cls.num_classes):
+            targets.append([k for _ in range(5000)])
+        cls.num_samples = len(targets)
+        targets = np.array(targets)
+        cls.targets = targets[np.random.permutation(cls.num_samples)]  # shuffle
 
-    def setUp(self) -> None:
-        np.random.seed(2021)
+    # def setUp(self) -> None:
+    #     np.random.seed(self.seed)
+
+    # def test_hetero_dir(self):
+    #     # perform partition
+    #     hetero_dir_part = CIFAR10Partitioner(self.targets,
+    #                                          self.num_clients,
+    #                                          balance=None,
+    #                                          partition="dirichlet",
+    #                                          dir_alpha=0.3,
+    #                                          seed=self.seed)
+
+    def test_shards(self):
+        pass
 
     def test_balance_iid(self):
         pass
@@ -57,14 +76,20 @@ class CIFAR10PartitionerTestCase(unittest.TestCase):
     def test_unbalance_dir(self):
         pass
 
-    def test_hetero_dir(self):
-        pass
-
-    def test_shards(self):
-        pass
-
     def test_len(self):
-        pass
+        partitioner = CIFAR10Partitioner(self.targets,
+                                         self.num_clients,
+                                         balance=True,
+                                         partition="iid",
+                                         seed=self.seed)
+        self.assertEqual(len(partitioner), self.num_clients)
 
     def test_item(self):
-        pass
+        partitioner = CIFAR10Partitioner(self.targets,
+                                         self.num_clients,
+                                         balance=True,
+                                         partition="iid",
+                                         seed=self.seed)
+        res = [all(partitioner[cid] == partitioner.client_dict[cid]) for cid in
+               range(self.num_clients)]
+        self.assertTrue(all(res))

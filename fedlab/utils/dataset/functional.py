@@ -126,7 +126,7 @@ def hetero_dir_partition(targets, num_clients, num_classes, dir_alpha, min_requi
     client_dict = dict()
     for cid in range(num_clients):
         np.random.shuffle(idx_batch[cid])
-        client_dict[cid] = idx_batch[cid]
+        client_dict[cid] = np.array(idx_batch[cid])
 
     return client_dict
 
