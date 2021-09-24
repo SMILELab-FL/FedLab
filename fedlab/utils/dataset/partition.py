@@ -37,10 +37,6 @@ class DataPartitioner(ABC):
     def __len__(self):
         raise NotImplementedError
 
-    @abstractmethod
-    def _samples_num_count(self):
-        raise NotImplementedError
-
 
 class CIFAR10Partitioner(DataPartitioner):
     """CIFAR10 data partitioner.
@@ -127,6 +123,8 @@ class CIFAR10Partitioner(DataPartitioner):
 
         # perform partition according to setting
         self.client_dict = self._perform_partition()
+        # get sample number count for each client
+        self.client_sample_count = F.samples_num_count(self.client_dict, self.num_clients)
 
     def _perform_partition(self):
         if self.balance is None:

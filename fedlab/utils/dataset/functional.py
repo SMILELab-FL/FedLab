@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import numpy as np
+import pandas as pd
 import warnings
 
 
@@ -240,3 +241,11 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
 
     client_dict = dict([(cid, client_indices[cid]) for cid in range(num_clients)])
     return client_dict
+
+
+def samples_num_count(client_dict, num_clients):
+    client_samples_nums = [[cid, client_dict[cid].shape[0]] for cid in
+                           range(num_clients)]
+    client_sample_count = pd.DataFrame(data=client_samples_nums,
+                                       columns=['client', 'num_samples']).set_index('client')
+    return client_sample_count
