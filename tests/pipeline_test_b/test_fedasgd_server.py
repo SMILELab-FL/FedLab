@@ -15,58 +15,46 @@ import unittest
 
 import sys
 
-from torch.utils.data import dataloader
-
 sys.path.append("../")
 from copy import deepcopy
 
-from fedlab.core.client.trainer import ClientSGDTrainer
 from fedlab.core.client.manager import ClientActiveManager
 from fedlab.core.server.handler import AsyncParameterServerHandler
 from fedlab.core.server.manager import ServerAsynchronousManager
 from fedlab.core.network import DistNetwork
 
 from tests.test_core.task_setting_for_test import (
-    unittest_dataloader,
-    model,
-    criterion,
-    optimizer,
     TestTrainer,
+    model,
 )
 
 
-class FedAsgdClientTestCase(unittest.TestCase):
+class FedAsgdServerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"
-        port = "3001"
+        port = "3002"
         world_size = 2
 
-        handler = AsyncParameterServerHandler(deepcopy(model))
+        hanlder = AsyncParameterServerHandler(deepcopy(model))
+
         self.server = ServerAsynchronousManager(
-            handler=handler,
+            handler=hanlder,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
                                 rank=0),
         )
 
-        self.server.start()
-
-        dataloader = unittest_dataloader()
-        trainer = ClientSGDTrainer(
-            deepcopy(model),
-            dataloader,
-            epochs=1,
-            optimizer=optimizer,
-            criterion=criterion,
+        trainer = TestTrainer(
+            model,
             cuda=False,
         )
-
         self.client = ClientActiveManager(
             trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
                                 rank=1),
         )
+        self.client.start()
 
-    def test_fedavg(self):
-        self.client.run()
+    def test_fedasgd_server(self):
+        self.server.run()
