@@ -4,7 +4,7 @@
 DataPartitioner
 ***************
 
-Complicated in real world, FL need to handle various kind of data distribution scenarios, including
+Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including
 iid and non-iid scenarios. Though there already exists some partition schemes for published data benchmark,
 it still can be very messy and hard for researchers to partition datasets according to their specific
 research problems, and maintain partition results during simulation. FedLab provides :class:`fedlab.utils.dataset.partition.DataPartitioner` that allows you to use pre-partitioned datasets as well as your own data. :class:`DataPartitioner` stores sample indices for each client given a data partition scheme.
