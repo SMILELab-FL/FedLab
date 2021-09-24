@@ -12,11 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 from copy import deepcopy
 from ..utils.serialization import SerializationTool
 
 
 class ModelMaintainer(object):
+    """Maintain PyTorch model.
+
+        Provide necessary attributes and operation methods.
+
+    Args:
+        model (torch.Module): PyTorch model.
+        cuda (bool): use GPUs or not.
+    """
     def __init__(self, model, cuda) -> None:
         
         self.cuda = cuda
