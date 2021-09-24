@@ -12,20 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC, abstractmethod
 
-import unittest
+class Compressor(ABC):
+    def __init__(self) -> None:
+        super().__init__()
 
-from fedlab.core.network import DistNetwork
+    @abstractmethod
+    def compress(self, *args, **kwargs):
+        pass
 
+    @abstractmethod
+    def decompress(self, *args, **kwargs):
+        pass
 
-class NetworkTestCase(unittest.TestCase):
+class Memory(ABC):
+    @staticmethod
+    def initialize(*args, **kwargs):
+        pass
 
-    def setUp(self) -> None:
-        self.cnet = DistNetwork(address=("localhost", "3456"), world_size=1, rank=0)
-        self.cnet.init_network_connection()
+    @staticmethod
+    def compensate(tensor, *args, **kwargs):
+        return tensor
 
-    def tearDown(self) -> None:
-        self.cnet.close_network_connection()
+    @staticmethod
+    def update(*args, **kwargs):
+        pass
 
-    def test_network_connection(self):
-        print(self.cnet)
+    @staticmethod
+    def state_dict():
+        return None
+
+    @staticmethod
+    def load_state_dict(state_dict):
+        pass

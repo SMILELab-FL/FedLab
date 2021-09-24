@@ -25,7 +25,7 @@ setup(
     install_requires=['torch>=1.7.1',
                       'torchvision>=0.8.2',
                       'numpy',
-                      'spacy',
+                      'pandas',
                       'pynvml'],
     python_requires='>=3.6',
     classifiers=[
@@ -35,8 +35,6 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3'
     ],
     test_suite="tests.get_tests")

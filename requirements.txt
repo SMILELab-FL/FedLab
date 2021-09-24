@@ -1,5 +1,5 @@
 numpy
-spacy
+pandas
 pynvml
 
 torch>=1.7.1

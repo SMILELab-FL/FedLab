@@ -1,31 +1,19 @@
 .. _data-partition:
 
-***********************
-Data Partition Strategy
-***********************
+****************
+Data Partitioner
+****************
 
-This chapter introduces the dataset partition strategy and how the client process uses the corresponding dataset. FedLab provides various methods to deal with different partition strategy corresponding with different dataset situations.
+This chapter introduces the dataset partitioner ``DataPartitioner`` and how the client process uses the corresponding dataset. **FedLab** provides various methods to deal with different partition strategy corresponding with different dataset situations.
 
-torchvision module provides commonly used datasets. We found that the index of a sample in the CIFAR10 and MNIST datasets remains unchange when the dataset is initialized, so the dataset partition can be created according to the initial indices.
+For classification datasets, FedLab provides noniid and random partition method.
 
-For classification datasets, FedLab provides noniid and random partition method. Take the MNIST dataset as an example:
+CIFAR10Partitioner
+==================
 
-.. code:: python
 
-    import torchvision
-    from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 
-    root = "datasets/mnist/"
-    trainset = torchvision.datasets.MNIST(root=root,
-                                          train=True,
-                                          download=True)
-    # Sort the data set by label, cut into num_shards blocks, and divide them into num_clients evenly.
-    data_indices = noniid_slicing(trainset, num_clients=100, num_shards=200)
-    save_dict(data_indices, "mnist_noniid.pkl")
 
-    # Randomly evenly divided into num_clients blocks.
-    data_indices = random_slicing(trainset, num_clients=100)
-    save_dict(data_indices, "mnist_iid.pkl")
 
 In codes above, data\_indices is a dictionary (in order to ensure that the partition result is consistent in the case of cross-machine, the user can save the division dictionary in a file) like this：
 
