@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fedlab.core.client import ORDINARY_TRAINER
 import time
 from abc import ABC, abstractmethod
 import logging
@@ -23,13 +22,14 @@ import threading
 import heapq as hp
 import random
 
+from ..client import ORDINARY_TRAINER
 from ...utils.functional import AverageMeter, get_best_gpu
 from ...utils.logger import Logger
 from ...utils.serialization import SerializationTool
 from ...utils.dataset.sampler import SubsetSampler
+from ..model_maintainer import ModelMaintainer
 
-
-class ClientTrainer(ABC):
+class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend handler.
 
     In our framework, we define the backend of client handler show manage its local model.
@@ -43,9 +43,10 @@ class ClientTrainer(ABC):
         cuda (bool): Use GPUs or not
     """
     def __init__(self, model, cuda):
-        self.cuda = cuda
-        self.client_num = 1   # default is 1.
-        self.type = ORDINARY_TRAINER  
+        super().__init__(model, cuda)
+        
+        self.client_num = 1  # default is 1.
+        self.type = ORDINARY_TRAINER
 
         if self.cuda:
             # dynamic gpu acquire.
@@ -68,7 +69,14 @@ class ClientTrainer(ABC):
     def model_parameters(self):
         """attribute"""
         return SerializationTool.serialize_model(self._model)
-
+    
+    @property
+    def shape_list(self):
+        """attribute"""
+        shape_list = []
+        for parameters in self._model.parameters():
+            shape_list.append(parameters.shape)
+        return shape_list
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.

@@ -12,18 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC, abstractmethod
 
-HEADER_SENDER_RANK_IDX = 0
-HEADER_RECEIVER_RANK_IDX = 1
-HEADER_SLICE_SIZE_IDX = 2
-HEADER_MESSAGE_CODE_IDX = 3
-HEADER_DATA_TYPE_IDX = 4
+class Compressor(ABC):
+    def __init__(self) -> None:
+        super().__init__()
 
-DEFAULT_RECEIVER_RANK = -1
-DEFAULT_SLICE_SIZE = 0
-DEFAULT_MESSAGE_CODE_VALUE = 0
+    @abstractmethod
+    def compress(self, *args, **kwargs):
+        pass
 
-HEADER_SIZE = 5
+    @abstractmethod
+    def decompress(self, *args, **kwargs):
+        pass
 
-DATA_TYPE_FLOAT = 0
-DATA_TYPE_INT = 1
+class Memory(ABC):
+    @staticmethod
+    def initialize(*args, **kwargs):
+        pass
+
+    @staticmethod
+    def compensate(tensor, *args, **kwargs):
+        return tensor
+
+    @staticmethod
+    def update(*args, **kwargs):
+        pass
+
+    @staticmethod
+    def state_dict():
+        return None
+
+    @staticmethod
+    def load_state_dict(state_dict):
+        pass

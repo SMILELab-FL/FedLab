@@ -54,8 +54,7 @@ class RawPartitionSampler(torch.utils.data.Sampler):
 
     def __init__(self, dataset, client_id, num_replicas=None):
 
-        self.dataset = dataset  # TODO: no need for dataset storage here
-        self.indices = [index for index in range(len(self.dataset))]
+        self.indices = [index for index in range(len(dataset))]
 
         if num_replicas is None:
             self.num_replicas = dist.get_world_size() - 1  # world size includes 1 server process
@@ -67,7 +66,7 @@ class RawPartitionSampler(torch.utils.data.Sampler):
             self.num_replicas)
         self.id = client_id
 
-        self.num_samples = int(len(self.dataset) / self.num_replicas)
+        self.num_samples = int(len(dataset) / self.num_replicas)
 
     def __iter__(self):
 

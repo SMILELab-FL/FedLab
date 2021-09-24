@@ -12,28 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
 from typing import List
 from copy import deepcopy
 import torch
 import torch.distributed as dist
 from ...utils.message_code import MessageCode
 
-
-HEADER_SENDER_RANK_IDX = 0
-HEADER_RECEIVER_RANK_IDX = 1
-HEADER_SLICE_SIZE_IDX = 2
-HEADER_MESSAGE_CODE_IDX = 3
-HEADER_DATA_TYPE_IDX = 4
-
-DEFAULT_RECEIVER_RANK = -1
-DEFAULT_SLICE_SIZE = 0
-DEFAULT_MESSAGE_CODE_VALUE = 0
-
-HEADER_SIZE = 5
-
-DATA_TYPE_FLOAT = 0
-DATA_TYPE_INT = 1
-
+from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX, HEADER_MESSAGE_CODE_IDX, HEADER_DATA_TYPE_IDX
+from . import DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
+from . import HEADER_SIZE
+from . import DATA_TYPE_FLOAT, DATA_TYPE_INT
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.

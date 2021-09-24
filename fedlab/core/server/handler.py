@@ -20,9 +20,10 @@ from abc import ABC, abstractmethod
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils.logger import Logger
+from ..model_maintainer import ModelMaintainer
 
 
-class ParameterServerBackendHandler(ABC):
+class ParameterServerBackendHandler(ModelMaintainer):
     """An abstract class representing handler of parameter server.
 
     Please make sure that your self-defined server handler class subclasses this class
@@ -31,11 +32,7 @@ class ParameterServerBackendHandler(ABC):
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
     def __init__(self, model, cuda=False) -> None:
-        self.cuda = cuda
-        if cuda:
-            self._model = model.cuda()
-        else:
-            self._model = model.cpu()
+        super().__init__(model, cuda)
 
     @abstractmethod
     def _update_model(self, model_parameters_list) -> torch.Tensor:
@@ -63,6 +60,14 @@ class ParameterServerBackendHandler(ABC):
     def model_parameters(self):
         """Return serialized model parameters."""
         return SerializationTool.serialize_model(self._model)
+
+    @property
+    def shape_list(self):
+        """attribute"""
+        shape_list = []
+        for parameters in self._model.parameters():
+            shape_list.append(parameters.shape)
+        return shape_list
 
 
 class SyncParameterServerHandler(ParameterServerBackendHandler):
@@ -118,9 +123,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
         ``self.client_num_in_total + 1``."""
-        selection = random.sample(
-            range(self.client_num_in_total),
-            self.client_num_per_round)
+        selection = random.sample(range(self.client_num_in_total),
+                                  self.client_num_per_round)
         return selection
 
     def add_model(self, sender_rank, model_parameters):
@@ -173,6 +177,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     @property
     def client_num_per_round(self):
         return max(1, int(self.sample_ratio * self.client_num_in_total))
+
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
     """Asynchronous Parameter Server Handler
@@ -247,4 +252,3 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
             return (staleness + 1)**(-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
-    

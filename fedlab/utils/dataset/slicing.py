@@ -30,19 +30,19 @@ def noniid_slicing(dataset, num_clients, num_shards):
         Each client will get ``int(num_shards/num_clients)`` shards.
 
     Returns：
-        dict: ``{ '0': indices of dataset, '1': indices of dataset, ..., 'k': indices of dataset }``
+        dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices of dataset }``
     """
     total_sample_nums = len(dataset)
     size_of_shards = int(total_sample_nums / num_shards)
     if total_sample_nums % num_shards != 0:
         warnings.warn(
-            "warning: the length of dataset isn't divided exactly by num_shard.some samples will be wasted."
+            "warning: the length of dataset isn't divided exactly by num_shard.some samples will be dropped."
         )
     # the number of shards that each one of clients can get
     shard_pc = int(num_shards / num_clients)
     if num_shards % num_clients != 0:
         warnings.warn(
-            "warning: num_shard isn't divided exacly by num_clients. some samples will be wasted."
+            "warning: num_shard isn't divided exactly by num_clients. some samples will be dropped."
         )
 
     dict_users = {i: np.array([], dtype='int64') for i in range(num_clients)}
@@ -77,7 +77,7 @@ def random_slicing(dataset, num_clients):
         num_clients (int):  the number of client.
 
     Returns：
-        dict: ``{ '0': indices of dataset, '1': indices of dataset, ..., 'k': indices of dataset }``
+        dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices of dataset }``
     """
     num_items = int(len(dataset) / num_clients)
     dict_users, all_idxs = {}, [i for i in range(len(dataset))]
@@ -86,26 +86,3 @@ def random_slicing(dataset, num_clients):
             np.random.choice(all_idxs, num_items, replace=False))
         all_idxs = list(set(all_idxs) - set(dict_users[i]))
     return dict_users
-
-
-def divide_dataset(dataset, slicing_dict, to_file=None):
-    """Cut a dataset
-
-    Args:
-        dataset (torch.utils.data.Dataset): a dataset for slicing.
-        slicing_dict (dict): ``{ client_id: indices }``, each element is client ID and corresponding list of sample indices.
-
-    Returns:
-        ``[(data_0, label_0), (data_1, label_1), ... , (data_k, label_k)]``, each tuple contains sample data and sample labels for corresponding client.
-    """
-    # TODO: to_file for what?
-    datasets = []
-    data = dataset.data
-    label = np.array(dataset.targets)
-    for _, dic in slicing_dict.items():
-        dic = np.array(list(dic))
-        client_data = data[dic]
-        client_label = list(label[dic])
-        client_dataset = (client_data, client_label)
-        datasets.append(client_dataset)
-    return datasets

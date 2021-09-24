@@ -35,7 +35,8 @@ class SerializationTool(object):
 
     @staticmethod
     def deserialize_model(model: torch.nn.Module,
-                          serialized_parameters: torch.Tensor):
+                          serialized_parameters: torch.Tensor,
+                          mode="copy"):
         """Assigns serialized parameters to model.parameters.
         This is done by iterating through ``model.parameters()`` and assigning the relevant params in ``grad_update``.
         NOTE: this function manipulates ``model.parameters``.
@@ -43,13 +44,23 @@ class SerializationTool(object):
         Args:
             model (torch.nn.Module): model to deserialize.
             serialized_parameters (torch.Tensor): serialized model parameters.
+            mode (str): deserialize mode. "copy" or "add".
         """
 
         current_index = 0  # keep track of where to read from grad_update
         for parameter in model.parameters():
             numel = parameter.data.numel()
             size = parameter.data.size()
-            parameter.data.copy_(
-                serialized_parameters[current_index:current_index +
-                                      numel].view(size))
+            if mode == "copy":
+                parameter.data.copy_(
+                    serialized_parameters[current_index:current_index +
+                                          numel].view(size))
+            elif mode == "add":
+                parameter.data.add_(
+                    serialized_parameters[current_index:current_index +
+                                          numel].view(size))
+            else:
+                raise ValueError(
+                    "Invalid deserialize mode {}, require \"copy\" or \"add\" "
+                    .format(mode))
             current_index += numel

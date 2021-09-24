@@ -26,6 +26,7 @@ author = 'SMILE Lab'
 
 # The full version, including alpha/beta/rc tags
 import fedlab
+
 release = fedlab.__version__
 
 # -- General configuration ---------------------------------------------------
@@ -50,7 +51,7 @@ extensions = [
 bibtex_bibfiles = ['refs.bib']
 bibtex_default_style = 'unsrt'
 
-autodoc_mock_imports = ["numpy", "torch", "torchvision"]
+autodoc_mock_imports = ["numpy", "torch", "torchvision", "pandas"]
 autoclass_content = 'both'
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,7 +66,8 @@ add_module_names = False  # makes Sphinx render package.module.Class as Class
 # Add more mapping for 'sphinx.ext.intersphinx'
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'PyTorch': ('http://pytorch.org/docs/master/', None),
-                       'numpy': ('https://numpy.org/doc/stable/', None)}
+                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       'pandas': ('https://pandas.pydata.org/pandas-docs/dev/', None)}
 
 # autosectionlabel throws warnings if section names are duplicated.
 # The following tells autosectionlabel to not throw a warning for

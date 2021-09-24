@@ -15,14 +15,15 @@
 import unittest
 import random
 import os
-from numpy import save
+import numpy as np
+
 import torch
 from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
 from fedlab.utils.functional import AverageMeter, get_best_gpu, evaluate, save_dict, load_dict
-from fedlab.utils.functional import read_config_from_json
+from fedlab.utils.functional import read_config_from_json, partition_report
 
 
 class FunctionalTestCase(unittest.TestCase):
@@ -110,3 +111,17 @@ class FunctionalTestCase(unittest.TestCase):
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_get_gpu(self):
         gpu = get_best_gpu()
+
+    def test_partition_report(self):
+        np.random.seed(0)
+        data_indices = {0: np.array([0, 1, 2]),
+                        1: np.array([3, 4, 5]),
+                        2: np.array([6, 7, 8])}
+        labels = np.array([0] * 3 + [1] * 3 + [2] * 3)
+        labels = labels[np.random.permutation(9)]
+        file = os.path.join(os.path.dirname(__file__), "tmp.csv")
+        partition_report(labels, data_indices, class_num=3, verbose=True, file=None)
+        partition_report(labels, data_indices, class_num=3, verbose=False, file=file)
+        self.assertTrue(os.path.exists(file))
+        if os.path.exists(file):
+            os.remove(file)
