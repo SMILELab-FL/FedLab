@@ -37,6 +37,10 @@ class DataPartitioner(ABC):
     def __len__(self):
         raise NotImplementedError
 
+    @abstractmethod
+    def _samples_num_count(self):
+        raise NotImplementedError
+
 
 class CIFAR10Partitioner(DataPartitioner):
     """CIFAR10 data partitioner.
