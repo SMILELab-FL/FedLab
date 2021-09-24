@@ -15,7 +15,7 @@
 import math
 import torch
 
-from .import Compressor
+from . import Compressor
 from ..utils.serialization import SerializationTool
 
 class TopkCompressor(Compressor):
@@ -36,8 +36,15 @@ class TopkCompressor(Compressor):
             tensor (torch.Tensor): tensor
 
         Returns:
-            tuple: values, indices
+            tuple: (values, indices)
         """
+        if torch.is_tensor(tensor):
+            tensor = tensor.detach()
+        else:
+            raise TypeError(
+                "Invalid type error, expecting {}, but get {}".format(
+                    torch.Tensor, type(tensor)))
+
         numel = tensor.numel()
         top_k_samples = int(math.ceil(numel * self.compress_ratio))
 
@@ -60,7 +67,7 @@ class TopkCompressor(Compressor):
                                          accumulate=True).view(shape)
         return de_tensor
 
-    def compress_model(self, model):
+    def compress(self, parameters):
         """compress model
 
         Args:
@@ -69,29 +76,28 @@ class TopkCompressor(Compressor):
         Returns:
             tuple: list(values) and list(indices).
         """
-        model_values = []
-        model_indices = []
-        for parameter in model.parameters():
-            values, indices = self.compress_tensor(parameter)
-            model_values.append(values)
-            model_indices.append(indices)
+        values_list = []
+        indices_list = []
+        for param in parameters:
+            values, indices = self.compress_tensor(param)
+            values_list.append(values)
+            indices_list.append(indices)
 
-        return model_values, model_indices
+        return values_list, indices_list
 
-    def decompress_model(self, model, model_values, model_indices):
+    def decompress(self, shape_list, values_list, indices_list):
         """decompress model
 
         Args:
-            model (nn.module): PyTorch module.
-            model_values (list[torch.Tensor]): values.
-            model_indices (list[torch.Tensor]): indices.
+            shape_list (list[tuple]): The shape of every corresponding tensor.
+            values_list (list[torch.Tensor]): list(values).
+            indices_list (list[torch.Tensor]): list(indices).
         """
-        model_parameters_layer_list = []
-        for parameter, values, indices in zip(model.parameters(), model_values,
-                                              model_indices):
-            de_tensor = self.decompress_tensor(values, indices,
-                                               parameter.shape)
-            model_parameters_layer_list.append(de_tensor.view(-1))
-        
-        model_parameters = torch.cat(model_parameters_layer_list)
-        SerializationTool.deserialize_model(model, model_parameters)
+        parameters_layer_list = []
+        for shape, values, indices in zip(shape_list, values_list, indices_list):
+            de_tensor = self.decompress_tensor(values, indices, shape)
+            parameters_layer_list.append(de_tensor.view(-1))
+
+        parameters = torch.cat(parameters_layer_list)
+
+        return parameters

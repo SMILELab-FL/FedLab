@@ -19,19 +19,11 @@ class Compressor(ABC):
         super().__init__()
 
     @abstractmethod
-    def compress_tensor(self, *args, **kwargs):
+    def compress(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def decompress_tensor(self, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def compress_model(self, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def decompress_model(self, *args, **kwargs):
+    def decompress(self, *args, **kwargs):
         pass
 
 class Memory(ABC):
