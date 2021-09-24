@@ -15,7 +15,7 @@
 import unittest
 
 from ..test_core.task_setting_for_test import CNN_Mnist
-from fedlab.utils.compressor import TopkCompressor
+from fedlab.compressor.topk import TopkCompressor
 
 
 class CompressorTestCase(unittest.TestCase):
@@ -37,7 +37,8 @@ class CompressorTestCase(unittest.TestCase):
             assert decompressed.shape == parameter.shape
 
     def test_compress_model(self):
-        model_values, model_indices = self.compressor.compress_model(
-            self.model)
-        self.compressor.decompress_model(self.model, model_values,
+        model_values, model_indices = self.compressor.compress(
+            self.model.parameters())
+        shape_list = [param.shape for param in self.model.parameters()]
+        self.compressor.decompress(shape_list, model_values,
                                          model_indices)

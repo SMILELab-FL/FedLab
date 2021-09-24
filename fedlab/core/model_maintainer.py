@@ -39,7 +39,5 @@ class ModelMaintainer(object):
     @property
     def shape_list(self):
         """attribute"""
-        shape_list = []
-        for parameters in self._model.parameters():
-            shape_list.append(parameters.shape)
+        shape_list = [param.shape for param in self._model.parameters()]
         return shape_list
