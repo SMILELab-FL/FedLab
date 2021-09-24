@@ -4,12 +4,20 @@
 Data Partitioner
 ****************
 
-This chapter introduces the dataset partitioner ``DataPartitioner`` and how the client process uses the corresponding dataset. **FedLab** provides various methods to deal with different partition strategy corresponding with different dataset situations.
+This chapter introduces the dataset partitioner ``DataPartitioner`` and how the client process uses corresponding dataset. **FedLab** provides various methods to deal with different partition strategy corresponding with different dataset situations.
 
-For classification datasets, FedLab provides noniid and random partition method.
+DataPartitioner
+===============
+
+Complicated in real world, FL need to handle various kind of data distribution scenarios, including
+iid and non-iid scenarios. Though there already exists some partition schemes for published data benchmark,
+it still can be very messy and hard for researchers to partition datasets according to their specific
+research problems, and maintain partition results during simulation. FedLab provides :class:`fedlab.utils.dataset.DataPartition` for data partition for clients in a FL setting.
 
 CIFAR10Partitioner
 ==================
+
+For CIFAR10, ****
 
 
 
