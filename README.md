@@ -2,7 +2,7 @@
 
 # FedLab: A Flexible Federated Learning Framework
 
-[![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions) [![Documentation Status](https://readthedocs.org/projects/fedlab/badge/?version=docs)](https://fedlab.readthedocs.io/en/docs/?badge=docs) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/v1.0/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![Pyversions](https://img.shields.io/pypi/pyversions/fedlab.svg?style=flat-square)](https://pypi.python.org/pypi/fedlab)
+[![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions) [![Documentation Status](https://readthedocs.org/projects/fedlab/badge/?version=master)](https://fedlab.readthedocs.io/en/master/?badge=master) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/v1.0/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![Pyversions](https://img.shields.io/pypi/pyversions/fedlab.svg?style=flat-square)](https://pypi.python.org/pypi/fedlab)
 
 
 _Read this in other languages: [English](README.md), [简体中文](README.zh-cn.md)._
@@ -13,12 +13,12 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 
 
-- [Documentation](https://fedlab.readthedocs.io/en/docs/)
-- [Overview of FedLab](https://fedlab.readthedocs.io/en/docs/overview.html)
-- [Installation & Setup](https://fedlab.readthedocs.io/en/docs/install.html)
-- [Examples](https://fedlab.readthedocs.io/en/docs/example.html)
-- [Contribute Guideline](https://fedlab.readthedocs.io/en/docs/contributing.html)
-- [API Reference](https://fedlab.readthedocs.io/en/docs/autoapi/index.html)
+- [Documentation](https://fedlab.readthedocs.io/en/master/)
+- [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
+- [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
+- [Examples](https://fedlab.readthedocs.io/en/master/example.html)
+- [Contribute Guideline](https://fedlab.readthedocs.io/en/master/contributing.html)
+- [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
 
 **The implementations of FL algorithm using FedLab can be found in** [FedLab Benchmark repository](https://github.com/SMILELab-FL/FedLab-benchmarks).
