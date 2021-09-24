@@ -31,7 +31,6 @@ from tests.test_core.task_setting_for_test import (
     optimizer,
 )
 
-
 class FedAvgClientTestCase(unittest.TestCase):
     def setUp(self) -> None:
         ip = "127.0.0.1"

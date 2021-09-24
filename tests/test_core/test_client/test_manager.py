@@ -43,6 +43,6 @@ class ClientManagerTestCase(unittest.TestCase):
             address=("127.0.0.1", "3002"), world_size=1, rank=0, ethernet=None
         )
 
-        cam = ClientActiveManager(handler=trainer, network=network)
+        cam = ClientActiveManager(trainer=trainer, network=network)
 
-        cpm = ClientPassiveManager(handler=trainer, network=network)
+        cpm = ClientPassiveManager(trainer=trainer, network=network)
