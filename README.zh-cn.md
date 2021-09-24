@@ -22,7 +22,7 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 
 - [联系方式](#联系方式)
 
-利用**FedLab**实现的联邦学习demo可在`FedLab Benchmark仓库中<https://github.com/SMILELab-FL/FedLab-benchmarks>`_找到.
+利用**FedLab**实现的联邦学习demo可在[FedLab Benchmark](https://github.com/SMILELab-FL/FedLab-benchmarks)仓库中找到.
 
 ## 如何贡献代码
 
