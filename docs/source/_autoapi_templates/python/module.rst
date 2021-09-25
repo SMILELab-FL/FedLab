@@ -17,8 +17,8 @@
 {% block subpackages %}
 {% set visible_subpackages = obj.subpackages|selectattr("display")|list %}
 {% if visible_subpackages %}
-Subpackages
------------
+
+
 .. toctree::
    :titlesonly:
    :maxdepth: 3
@@ -33,8 +33,8 @@ Subpackages
 {% block submodules %}
 {% set visible_submodules = obj.submodules|selectattr("display")|list %}
 {% if visible_submodules %}
-Submodules
-----------
+
+
 .. toctree::
    :titlesonly:
    :maxdepth: 1
@@ -64,8 +64,7 @@ Submodules
 {% if "show-module-summary" in autoapi_options and (visible_classes or visible_functions) %}
 {% block classes scoped %}
 {% if visible_classes %}
-Classes
-~~~~~~~
+
 
 .. autoapisummary::
 
@@ -79,8 +78,7 @@ Classes
 
 {% block functions scoped %}
 {% if visible_functions %}
-Functions
-~~~~~~~~~
+
 
 .. autoapisummary::
 
@@ -94,8 +92,7 @@ Functions
 
 {% block attributes scoped %}
 {% if visible_attributes %}
-Attributes
-~~~~~~~~~~
+
 
 .. autoapisummary::
 
