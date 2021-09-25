@@ -94,7 +94,7 @@ procedure is shown as follows.
     :class: only-dark
 
 Initialization stage
-=======================
+====================
 
 Initialization stage is represented by :meth:`manager.setup()` function.
 
