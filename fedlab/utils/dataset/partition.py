@@ -24,6 +24,8 @@ from . import functional as F
 
 
 class DataPartitioner(ABC):
+    """Base class for data partition in federated learning.
+    """
 
     @abstractmethod
     def _perform_partition(self):
