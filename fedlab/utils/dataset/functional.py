@@ -77,7 +77,7 @@ def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
 
 
 def hetero_dir_partition(targets, num_clients, num_classes, dir_alpha, min_require_size=None):
-    r"""
+    """
 
     Non-iid partition based on Dirichlet distribution. The method is from "hetero-dir" partition of
     `Bayesian Nonparametric Federated Learning of Neural Networks <https://arxiv.org/abs/1905.12022>`_

@@ -56,6 +56,7 @@ Pull Request Checklist
             │   └── server                  # server related implementations
             │       └── scale               # scale manager
             │           └── hierarchical    # hierarchical communication pattern modules
+            ├── compressor                  # compressor modules
             └── utils                       # functional modules
                 └── dataset                 # functional modules associated with dataset
 
