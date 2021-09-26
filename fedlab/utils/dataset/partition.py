@@ -89,6 +89,8 @@ class CIFAR10Partitioner(DataPartitioner):
         seed (int, optional): Random seed. Default as ``None``.
     """
 
+    num_classes = 10
+
     def __init__(self, targets, num_clients,
                  balance=True, partition="iid",
                  unbalance_sgm=0,
@@ -99,7 +101,6 @@ class CIFAR10Partitioner(DataPartitioner):
 
         self.targets = np.array(targets)  # with shape (num_samples,)
         self.num_samples = self.targets.shape[0]
-        self.num_classes = 10
         self.num_clients = num_clients
         self.client_dict = dict()
         self.partition = partition
@@ -175,3 +176,11 @@ class CIFAR10Partitioner(DataPartitioner):
     def __len__(self):
         """Usually equals to number of clients."""
         return len(self.client_dict)
+
+
+class CIFAR100Partitioner(CIFAR10Partitioner):
+    """CIFAR100 for data partitioner.
+
+    This is a subclass of the :class:`CIFAR10Partitioner`.
+    """
+    num_classes = 100
