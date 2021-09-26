@@ -70,7 +70,7 @@ class TopkCompressor(Compressor):
         """compress model
 
         Args:
-            model (nn.module): PyTorch module.
+            parameters (torch.nn.module): PyTorch module.
 
         Returns:
             tuple: list(values) and list(indices).
