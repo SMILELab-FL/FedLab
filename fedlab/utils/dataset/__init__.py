@@ -15,7 +15,7 @@
 
 from .sampler import SubsetSampler, RawPartitionSampler, DictFileSampler
 from .slicing import noniid_slicing, random_slicing
-from .partition import DataPartitioner, CIFAR10Partitioner
+from .partition import DataPartitioner, CIFAR10Partitioner, CIFAR100Partitioner
 
 
 # __all__ = [
