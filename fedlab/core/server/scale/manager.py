@@ -15,7 +15,6 @@
 import torch
 
 from ...server.manager import ServerSynchronousManager
-from ...coordinator import Coordinator
 from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
 from ....utils.message_code import MessageCode

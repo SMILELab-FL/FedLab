@@ -16,10 +16,9 @@ import logging
 import random
 import torch
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
-from ...utils.logger import Logger
 from ..model_maintainer import ModelMaintainer
 
 

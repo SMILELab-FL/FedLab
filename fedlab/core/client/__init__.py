@@ -14,3 +14,20 @@
 
 ORDINARY_TRAINER = 0
 SERIAL_TRAINER = 1
+
+from .manager import ClientManager, ClientActiveManager, ClientPassiveManager
+from .trainer import ClientTrainer, ClientSGDTrainer
+
+from .scale.manager import ScaleClientPassiveManager
+from .scale.trainer import SerialTrainer, SubsetSerialTrainer
+
+__all__ = [
+    "ClientManager",
+    "ClientActiveManager",
+    "ClientPassiveManager",
+    "ClientTrainer",
+    "ClientSGDTrainer",
+    "ScaleClientPassiveManager",
+    "SerialTrainer",
+    "SubsetSerialTrainer"
+]
