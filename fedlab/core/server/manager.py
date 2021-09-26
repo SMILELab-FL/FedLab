@@ -19,11 +19,8 @@ import logging
 
 from ..network_manager import NetworkManager
 from ..communicator.processor import Package, PackageProcessor
-from ..network import DistNetwork
-from ..server.handler import ParameterServerBackendHandler
 from ..coordinator import Coordinator
 
-from ...utils.logger import Logger
 from ...utils.message_code import MessageCode
 
 DEFAULT_SERVER_RANK = 0

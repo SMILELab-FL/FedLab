@@ -12,37 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-
-class Compressor(ABC):
-    def __init__(self) -> None:
-        super().__init__()
-
-    @abstractmethod
-    def compress(self, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def decompress(self, *args, **kwargs):
-        pass
-
-class Memory(ABC):
-    @staticmethod
-    def initialize(*args, **kwargs):
-        pass
-
-    @staticmethod
-    def compensate(tensor, *args, **kwargs):
-        return tensor
-
-    @staticmethod
-    def update(*args, **kwargs):
-        pass
-
-    @staticmethod
-    def state_dict():
-        return None
-
-    @staticmethod
-    def load_state_dict(state_dict):
-        pass
+from .topk import TopkCompressor

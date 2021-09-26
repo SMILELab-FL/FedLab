@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""FedLab communication API"""
 
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
@@ -27,3 +28,6 @@ HEADER_SIZE = 5
 
 DATA_TYPE_FLOAT = 0
 DATA_TYPE_INT = 1
+
+from .package import Package
+from .processor import PackageProcessor

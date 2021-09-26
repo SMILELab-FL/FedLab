@@ -12,21 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import logging
 
-import torch
-from torch import nn
-import threading
-import heapq as hp
-import random
-
 from ..client import ORDINARY_TRAINER
-from ...utils.functional import AverageMeter, get_best_gpu
-from ...utils.logger import Logger
+from ...utils.functional import get_best_gpu
 from ...utils.serialization import SerializationTool
-from ...utils.dataset.sampler import SubsetSampler
 from ..model_maintainer import ModelMaintainer
 
 class ClientTrainer(ModelMaintainer):

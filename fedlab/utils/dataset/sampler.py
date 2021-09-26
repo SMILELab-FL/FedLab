@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from copy import deepcopy
 import random
 import torch
 import torch.distributed as dist
@@ -87,7 +86,7 @@ class DictFileSampler(torch.utils.data.Sampler):
         self.indices = data_indices[client_id]
 
     def __iter__(self):
-        return iter(self.indices)  # TODO: why no shuffle here?
+        return iter(self.indices)
 
     def __len__(self):
         return len(self.indices)

@@ -12,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch.multiprocessing import Queue
-import torch
 import threading
-import sys
 
+import torch
+torch.multiprocessing.set_sharing_strategy("file_system")
 
 from ....network_manager import NetworkManager
 from ....communicator.processor import PackageProcessor
 from ....communicator.package import Package
-from ....network import DistNetwork
 
-torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 class Connector(NetworkManager):

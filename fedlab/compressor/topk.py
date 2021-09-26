@@ -15,8 +15,7 @@
 import math
 import torch
 
-from . import Compressor
-from ..utils.serialization import SerializationTool
+from .compressor import Compressor
 
 class TopkCompressor(Compressor):
     """ Compressor for federated communication
@@ -71,7 +70,7 @@ class TopkCompressor(Compressor):
         """compress model
 
         Args:
-            model (nn.module): PyTorch module.
+            parameters (torch.nn.module): PyTorch module.
 
         Returns:
             tuple: list(values) and list(indices).

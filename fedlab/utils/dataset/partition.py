@@ -12,18 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import warnings
 from abc import ABC, abstractmethod
 
 import numpy as np
-
-import torch
-import torchvision
 
 from . import functional as F
 
 
 class DataPartitioner(ABC):
+    """Base class for data partition in federated learning.
+    """
 
     @abstractmethod
     def _perform_partition(self):
