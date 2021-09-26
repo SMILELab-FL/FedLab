@@ -13,8 +13,3 @@
 # limitations under the License.
 
 from .topk import TopkCompressor
-
-
-# __all__ = [
-#     "TopkCompressor"
-# ]

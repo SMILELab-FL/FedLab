@@ -14,10 +14,3 @@
 
 __version__ = "1.1.1"
 
-# from . import compressor, core, utils
-#
-# __all__ = [
-#     "compressor",
-#     "core",
-#     "utils"
-# ]
