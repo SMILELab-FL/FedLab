@@ -14,6 +14,7 @@
 
 from torch.multiprocessing import Process
 
+
 class NetworkManager(Process):
     """Abstract class
 
