@@ -15,8 +15,7 @@
 import math
 import torch
 
-from . import Compressor
-from ..utils.serialization import SerializationTool
+from .compressor import Compressor
 
 class TopkCompressor(Compressor):
     """ Compressor for federated communication

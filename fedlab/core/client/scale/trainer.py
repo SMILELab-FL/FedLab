@@ -17,8 +17,6 @@ import logging
 
 from ...client import SERIAL_TRAINER
 from ..trainer import ClientTrainer
-from ....utils.functional import AverageMeter, get_best_gpu
-from ....utils.logger import Logger
 from ....utils.serialization import SerializationTool
 from ....utils.dataset.sampler import SubsetSampler
 

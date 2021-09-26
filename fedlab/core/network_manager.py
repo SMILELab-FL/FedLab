@@ -13,10 +13,6 @@
 # limitations under the License.
 
 from torch.multiprocessing import Process
-from .network import DistNetwork
-from fedlab.core.client.trainer import ClientTrainer
-from fedlab.core.server.handler import ParameterServerBackendHandler
-from fedlab.utils.message_code import MessageCode
 
 class NetworkManager(Process):
     """Abstract class
