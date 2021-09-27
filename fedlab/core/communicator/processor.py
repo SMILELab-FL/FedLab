@@ -18,7 +18,7 @@ import torch
 import torch.distributed as dist
 
 from .package import Package
-from . import HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
+from . import DATA_TYPE_FLOAT, DATA_TYPE_INT, HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
 
 
 class PackageProcessor(object):
@@ -46,7 +46,7 @@ class PackageProcessor(object):
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
         def recv_header(src=src, parse=True):
-            buffer = torch.zeros(size=(HEADER_SIZE, ))
+            buffer = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int64)
             dist.recv(buffer, src=src)
             if parse is True:
                 return Package.parse_header(buffer)
@@ -55,18 +55,21 @@ class PackageProcessor(object):
 
         def recv_slices(slices_size, src):
             buffer_slices = torch.zeros(size=(slices_size, ),
-                                        dtype=torch.int32)
+                                        dtype=torch.int64)
             dist.recv(buffer_slices, src=src)
-            slices = [x.item() for x in buffer_slices]
+            slices = [slc.item() for slc in buffer_slices]
             return slices
 
         def recv_content(slices, data_type, src):
             content_size = sum(slices)
-            if data_type == 0:
+            if data_type == DATA_TYPE_FLOAT:
                 buffer = torch.zeros(size=(content_size, ),
                                      dtype=torch.float32)
+            elif data_type == DATA_TYPE_INT:
+                buffer = torch.zeros(size=(content_size, ), dtype=torch.int64)
             else:
-                buffer = torch.zeros(size=(content_size, ), dtype=torch.int32)
+                raise ValueError("Invalid data_type, expecting {} or {}, but get {}".format(DATA_TYPE_INT, DATA_TYPE_FLOAT, data_type))
+            
             dist.recv(buffer, src=src)
             return Package.parse_content(slices, buffer)
 
@@ -103,7 +106,7 @@ class PackageProcessor(object):
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
-            np_slices = np.array(slices, dtype=np.int32)
+            np_slices = np.array(slices, dtype=np.int64)
             tensor_slices = torch.from_numpy(np_slices)
             dist.send(tensor_slices, dst=dst)
 
@@ -114,5 +117,4 @@ class PackageProcessor(object):
 
         if package.header[HEADER_SLICE_SIZE_IDX] > 0:
             send_slices(slices=package.slices, dst=dst)
-
             send_content(content=package.content, dst=dst)

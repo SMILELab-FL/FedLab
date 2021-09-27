@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
 from typing import List
 from copy import deepcopy
 import torch
@@ -24,6 +22,7 @@ from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZ
 from . import DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
 from . import HEADER_SIZE
 from . import DATA_TYPE_FLOAT, DATA_TYPE_INT
+
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
@@ -67,7 +66,7 @@ class Package(object):
             type(message_code))
 
         # initialize header
-        self.header = torch.Tensor(size=(HEADER_SIZE, ))
+        self.header = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int64)
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         else:
