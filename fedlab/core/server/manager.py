@@ -90,6 +90,7 @@ class ServerSynchronousManager(ServerManager):
 
         self.setup()
         self.on_receive()
+        self.shutdown_clients()
         self._network.close_network_connection()
 
     def on_receive(self):
@@ -124,7 +125,6 @@ class ServerSynchronousManager(ServerManager):
                 else:
                     raise Exception(
                         "Unexpected message code {}".format(message_code))
-        self.shutdown_clients()
 
     def activate_clients(self):
         """Activate subset of clients to join in one FL round

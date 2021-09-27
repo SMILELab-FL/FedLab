@@ -34,7 +34,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def __init__(self, network, trainer):
         super().__init__(network, trainer)
 
-    def on_receive(self, sender_rank, message_code, payload):
+    def on_receive(self):
         """Actions to perform when receiving new message, including local training
 
         .. note::
