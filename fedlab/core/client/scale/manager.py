@@ -45,21 +45,28 @@ class ScaleClientPassiveManager(ClientPassiveManager):
             message_code (MessageCode): Agreements code defined in :class:`MessageCode`
             payload (list[torch.Tensor]): A list of tensors received from sender.
         """
-        if message_code == MessageCode.ParameterUpdate:
-            model_parameters = payload[0]
+        while True:
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            if message_code == MessageCode.Exit:
+                break
+            elif message_code == MessageCode.ParameterUpdate:
+                model_parameters = payload[0]
 
-            _, message_code, payload = PackageProcessor.recv_package(src=0)
-            id_list = payload[0].tolist()
+                _, message_code, payload = PackageProcessor.recv_package(src=0)
+                id_list = payload[0].tolist()
 
-            # check the trainer type
-            if self._trainer.type == SERIAL_TRAINER:
-                self.model_parameters_list = self._trainer.train(
-                    model_parameters=model_parameters,
-                    id_list=id_list,
-                    aggregate=False)
-            elif self._trainer.type == ORDINARY_TRAINER:
-                self.model_parameters_list = self._trainer.train(
-                    model_parameters=model_parameters)
+                # check the trainer type
+                if self._trainer.type == SERIAL_TRAINER:
+                    self.model_parameters_list = self._trainer.train(
+                        model_parameters=model_parameters,
+                        id_list=id_list,
+                        aggregate=False)
+                elif self._trainer.type == ORDINARY_TRAINER:
+                    self.model_parameters_list = self._trainer.train(
+                        model_parameters=model_parameters)
+                self.synchronize()
+            else:
+                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
 
     def synchronize(self):
         """Synchronize local model with server actively

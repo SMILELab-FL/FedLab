@@ -66,42 +66,27 @@ class ClientPassiveManager(ClientManager):
         3. client will synchronize with server actively
         """
         self._LOGGER.info("connecting with server")
-
         self.setup()
-        while True:
-            self._LOGGER.info("Waiting for server...")
-            # waits for data from server (default server rank is 0)
-            sender_rank, message_code, payload = PackageProcessor.recv_package(
-                src=0)
-            # exit
-            if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Receive {}, Process exiting".format(message_code))
-                self._network.close_network_connection()
-                break
-            else:
-                # perform activation strategy
-                self.on_receive(sender_rank, message_code, payload)
+        self.on_receive()
+        self._network.close_network_connection()
 
-            # synchronize with server
-            self.synchronize()
-
-    def on_receive(self, sender_rank, message_code, payload):
+    def on_receive(self):
         """Actions to perform when receiving new message, including local training
 
         Note:
             Customize the control flow of client corresponding with :class:`MessageCode`.
-
-        Args:
-            sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): A list of tensors received from sender.
         """
-        self._LOGGER.info("Package received from {}, message code {}".format(
-            sender_rank, message_code))
-        model_parameters = payload[0]
-        self._trainer.train(model_parameters=model_parameters)
-
+        while True:
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            if message_code == MessageCode.Exit:
+                break
+            elif message_code == MessageCode.ParameterUpdate:
+                model_parameters = payload[0]
+                self._trainer.train(model_parameters=model_parameters)
+                self.synchronize()
+            else:
+                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+        
     def synchronize(self):
         """Synchronize local model with server actively
 
@@ -136,48 +121,41 @@ class ClientActiveManager(ClientManager):
         self.model_time = None
 
     def run(self):
-        """Main procedure of each client is defined here:
-        1. client requests data from server (ACTIVE)
-        2. after receiving data, client will train local model
-        3. client will synchronize with server actively
-        """
-
         self.setup()
+        self.on_receive()
+        self._network.close_network_connection()
+
+    def on_receive(self):
+        """Actions to perform on receiving new message, including local training
+
+            1. client requests data from server (ACTIVE)
+            2. after receiving data, client will train local model
+            3. client will synchronize with server actively
+        """
         while True:
-            self._LOGGER.info("Waiting for server...")
             # request model actively
-            self._request_parameter()
+            self._LOGGER.info("request parameter procedure")
+            pack = Package(message_code=MessageCode.ParameterRequest)
+            PackageProcessor.send_package(pack, dst=0)
+            
             # waits for data from
             sender_rank, message_code, payload = PackageProcessor.recv_package(
                 src=0)
-
-            # exit
+            
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
                     "Recv {}, Process exiting".format(message_code))
                 break
-
-            # perform local training
-            self.on_receive(sender_rank, message_code, payload)
-
-            # synchronize with server
-            self.synchronize()
-
-    def on_receive(self, sender_rank, message_code, payload):
-        """Actions to perform on receiving new message, including local training
-
-        Args:
-            sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in: class:`MessageCode`.
-            payload (list[torch.Tensor]): Received package, a list of tensors.
-        """
-        self._LOGGER.info("Package received from {}, message code {}".format(
-            sender_rank, message_code))
-        model_parameters = payload[0]
-        self.model_time = payload[1]
-        # move loading model params to the start of training
-        self._trainer.train(model_parameters=model_parameters)
-
+            elif message_code == MessageCode.ParameterUpdate:
+                self._LOGGER.info("Package received from {}, message code {}".format(
+                    sender_rank, message_code))
+                model_parameters, self.model_time = payload[0], payload[1]
+                # move loading model params to the start of training
+                self._trainer.train(model_parameters=model_parameters)
+                self.synchronize()
+            else:
+                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+            
     def synchronize(self):
         """Synchronize local model with server actively"""
         self._LOGGER.info("synchronize procedure")

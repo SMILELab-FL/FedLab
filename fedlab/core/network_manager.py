@@ -28,7 +28,7 @@ class NetworkManager(Process):
     def run(self):
         raise NotImplementedError()
 
-    def on_receive(self, sender, message_code, payload):
+    def on_receive(self, *args, **kwargs):
         """Define the action to take when receiving a package.
 
         Args:
@@ -38,7 +38,7 @@ class NetworkManager(Process):
         """
         raise NotImplementedError()
 
-    def setup(self):
+    def setup(self, *args, **kwargs):
         """Initialize network connection and necessary setups.
 
         Note:
