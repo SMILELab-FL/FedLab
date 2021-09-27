@@ -190,6 +190,7 @@ class ServerAsynchronousManager(ServerManager):
         """Main process"""
         self.setup()
         self.on_receive()
+        self.shutdown_clients()
         self._network.close_network_connection()
 
     def on_receive(self):
@@ -230,8 +231,6 @@ class ServerAsynchronousManager(ServerManager):
             else:
                 raise ValueError(
                     "Unexpected message code {}".format(message_code))
-                    
-        self.shutdown_clients()
 
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
