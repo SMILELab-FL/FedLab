@@ -13,9 +13,11 @@
 # limitations under the License.
 
 import math
+from numpy import dtype
 import torch
 
 from .compressor import Compressor
+
 
 class TopkCompressor(Compressor):
     """ Compressor for federated communication
@@ -27,6 +29,8 @@ class TopkCompressor(Compressor):
     """
     def __init__(self, compress_ratio):
         self.compress_ratio = compress_ratio if compress_ratio <= 1.0 else 1.0 / compress_ratio
+        self.index_dtype = torch.int64
+        self.value_dtype = torch.float32
 
     def compress_tensor(self, tensor):
         """compress tensor into (values, indices)
@@ -57,11 +61,14 @@ class TopkCompressor(Compressor):
                                 sorted=False)
         values = tensor[indices]
 
+        values = values.to(dtype=self.value_dtype)
+        indices = indices.to(dtype=self.index_dtype)
+
         return values, indices
 
     def decompress_tensor(self, values, indices, shape):
         """decompress tensor"""
-        de_tensor = torch.zeros(size=shape).view(-1)
+        de_tensor = torch.zeros(size=shape, dtype=self.value_dtype).view(-1)
         de_tensor = de_tensor.index_put_([indices], values,
                                          accumulate=True).view(shape)
         return de_tensor
@@ -93,7 +100,8 @@ class TopkCompressor(Compressor):
             indices_list (list[torch.Tensor]): list(indices).
         """
         parameters_layer_list = []
-        for shape, values, indices in zip(shape_list, values_list, indices_list):
+        for shape, values, indices in zip(shape_list, values_list,
+                                          indices_list):
             de_tensor = self.decompress_tensor(values, indices, shape)
             parameters_layer_list.append(de_tensor.view(-1))
 
