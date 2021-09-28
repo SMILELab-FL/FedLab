@@ -15,7 +15,7 @@
 import unittest
 
 from ..test_core.task_setting_for_test import CNN_Mnist
-from fedlab.compressor.topk import TopkCompressor
+from fedlab.utils.compressor import TopkCompressor
 
 
 class CompressorTestCase(unittest.TestCase):
