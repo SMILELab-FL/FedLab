@@ -72,21 +72,9 @@ class ServerSynchronousManager(ServerManager):
         else:
             self._LOGGER = logger
 
-    def run(self):
-        """Main Process:
-            1. Network initialization.
-
-            2. FL communication stage.
-
-            3. Shut down clients, then close network connection.
-
-        Note:
-            user can overwrite this function to customize main process of Server.
-        """
-        self.setup()
-        self.main_loop()
+    def shutdown(self):
         self.shutdown_clients()
-        self._network.close_network_connection()
+        super().shutdown()
 
     def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
@@ -107,7 +95,6 @@ class ServerSynchronousManager(ServerManager):
         Raises:
             Exception: Unexpected :class:`MessageCode`.
         """
-
         while self._handler.stop_condition() is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
@@ -185,8 +172,11 @@ class ServerAsynchronousManager(ServerManager):
         """Main process"""
         self.setup()
         self.main_loop()
+        self.shutdown()
+
+    def shutdown(self):
         self.shutdown_clients()
-        self._network.close_network_connection()
+        super().shutdown()
 
     def main_loop(self):
         """Communication agreements of asynchronous FL.
