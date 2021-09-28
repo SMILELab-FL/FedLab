@@ -13,11 +13,13 @@
 # limitations under the License.
 
 import torch
+import threading
 
 from ...server.manager import ServerSynchronousManager
 from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
 from ....utils.message_code import MessageCode
+
 
 class ScaleSynchronousManager(ServerSynchronousManager):
     """ServerManager used in scale scenario."""
@@ -45,11 +47,17 @@ class ScaleSynchronousManager(ServerSynchronousManager):
                                data_type=1)
             PackageProcessor.send_package(package=act_pack, dst=rank)
 
-    def on_receive(self, sender, message_code, payload):
-        if message_code == MessageCode.ParameterUpdate:
-            for model_parameters in payload:
-                update_flag = self._handler.add_model(sender, model_parameters)
-                if update_flag is True:
-                    return update_flag
-        else:
-            raise Exception("Unexpected message code {}".format(message_code))
+    def main_loop(self):
+        while self._handler.stop_condition() is not True:
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+
+            while True:
+                sender, message_code, payload = PackageProcessor.recv_package()
+                if message_code == MessageCode.ParameterUpdate:
+                    for model_parameters in payload:
+                        if self._handler.add_model(sender, model_parameters):
+                            break
+                else:
+                    raise Exception(
+                        "Unexpected message code {}".format(message_code))

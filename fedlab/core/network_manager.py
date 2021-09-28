@@ -29,17 +29,11 @@ class NetworkManager(Process):
     def run(self):
         raise NotImplementedError()
 
-    def on_receive(self, sender, message_code, payload):
-        """Define the action to take when receiving a package.
-
-        Args:
-            sender (int): rank of current process.
-            message_code (MessageCode): message code
-            payload (torch.Tensor): list[torch.Tensor]
-        """
+    def main_loop(self, *args, **kwargs):
+        """Define the actions of communication stage."""
         raise NotImplementedError()
 
-    def setup(self):
+    def setup(self, *args, **kwargs):
         """Initialize network connection and necessary setups.
 
         Note:

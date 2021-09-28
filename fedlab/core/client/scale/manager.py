@@ -7,7 +7,7 @@
 #     http://www.apache.org/licenses/LICENSE-2.0
 
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,``
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -34,32 +34,35 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def __init__(self, network, trainer):
         super().__init__(network, trainer)
 
-    def on_receive(self, sender_rank, message_code, payload):
+    def main_loop(self):
         """Actions to perform when receiving new message, including local training
 
         .. note::
             Customize the control flow of client corresponding with :class:`MessageCode`.
 
-        Args:
-            sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): A list of tensors received from sender.
         """
-        if message_code == MessageCode.ParameterUpdate:
-            model_parameters = payload[0]
+        while True:
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            if message_code == MessageCode.Exit:
+                break
+            elif message_code == MessageCode.ParameterUpdate:
+                model_parameters = payload[0]
 
-            _, message_code, payload = PackageProcessor.recv_package(src=0)
-            id_list = payload[0].tolist()
+                _, message_code, payload = PackageProcessor.recv_package(src=0)
+                id_list = payload[0].tolist()
 
-            # check the trainer type
-            if self._trainer.type == SERIAL_TRAINER:
-                self.model_parameters_list = self._trainer.train(
-                    model_parameters=model_parameters,
-                    id_list=id_list,
-                    aggregate=False)
-            elif self._trainer.type == ORDINARY_TRAINER:
-                self.model_parameters_list = self._trainer.train(
-                    model_parameters=model_parameters)
+                # check the trainer type
+                if self._trainer.type == SERIAL_TRAINER:
+                    self.model_parameters_list = self._trainer.train(
+                        model_parameters=model_parameters,
+                        id_list=id_list,
+                        aggregate=False)
+                elif self._trainer.type == ORDINARY_TRAINER:
+                    self.model_parameters_list = self._trainer.train(
+                        model_parameters=model_parameters)
+                self.synchronize()
+            else:
+                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
 
     def synchronize(self):
         """Synchronize local model with server actively

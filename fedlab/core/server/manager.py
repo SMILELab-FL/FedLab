@@ -36,18 +36,19 @@ class ServerManager(NetworkManager):
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
-        
+
     def setup(self):
         """Setup agreements. Server accept local client num report from client manager, and generate coordinator."""
         super().setup()
         rank_client_id_map = {}
-        
+
         for rank in range(1, self._network.world_size):
             _, _, content = PackageProcessor.recv_package(src=rank)
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map)
         if self._handler is not None:
             self._handler.client_num_in_total = self.coordinator.total
+
 
 class ServerSynchronousManager(ServerManager):
     """Synchronous communication
@@ -74,59 +75,50 @@ class ServerSynchronousManager(ServerManager):
         """Main Process:
             1. Network initialization.
 
-            2. Loop:
-                2.1 activate clients.
+            2. FL communication stage.
 
-                2.2 listen for message from clients -> transmit received parameters to server backend.
-
-            3. Stop loop when stop condition is satisfied.
-
-            4. Shut down clients, then close network connection.
+            3. Shut down clients, then close network connection.
 
         Note:
             user can overwrite this function to customize main process of Server.
         """
-
         self.setup()
-        while self._handler.stop_condition() is not True:
-
-            activate = threading.Thread(target=self.activate_clients)
-            activate.start()
-
-            # waiting for packages
-            while True:
-                sender, message_code, payload = PackageProcessor.recv_package()
-                if self.on_receive(sender, message_code, payload):
-                    break
-
+        self.main_loop()
         self.shutdown_clients()
         self._network.close_network_connection()
 
-    def on_receive(self, sender, message_code, payload):
+    def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
 
         Server transmits received package to backend computation handler for aggregation or others
         manipulations.
+
+        Loop:
+            1 activate clients.
+
+            2 listen for message from clients -> transmit received parameters to server backend.
 
         Note:
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
             :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
 
-        Args:
-            sender (int): Rank of sender client process.
-            message_code (MessageCode): Predefined communication message code.
-            payload (list[torch.Tensor]): A list of tensor, unpacked package received from clients.
-
         Raises:
             Exception: Unexpected :class:`MessageCode`.
         """
-        if message_code == MessageCode.ParameterUpdate:
-            model_parameters = payload[0]
-            update_flag = self._handler.add_model(sender, model_parameters)
-            return update_flag
-        else:
-            raise Exception("Unexpected message code {}".format(message_code))
+
+        while self._handler.stop_condition() is not True:
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+            while True:
+                sender, message_code, payload = PackageProcessor.recv_package()
+                if message_code == MessageCode.ParameterUpdate:
+                    model_parameters = payload[0]
+                    if self._handler.add_model(sender, model_parameters):
+                        break
+                else:
+                    raise Exception(
+                        "Unexpected message code {}".format(message_code))
 
     def activate_clients(self):
         """Activate subset of clients to join in one FL round
@@ -191,47 +183,43 @@ class ServerAsynchronousManager(ServerManager):
     def run(self):
         """Main process"""
         self.setup()
-
-        watching = threading.Thread(target=self.watching_queue)
-        watching.start()
-
-        while self._handler.stop_condition() is not True:
-            sender, message_code, payload = PackageProcessor.recv_package()
-            self.on_receive(sender, message_code, payload)
-
+        self.main_loop()
         self.shutdown_clients()
         self._network.close_network_connection()
 
-    def on_receive(self, sender, message_code, payload):
+    def main_loop(self):
         """Communication agreements of asynchronous FL.
 
         - Server receive ParameterRequest from client. Send model parameter to client.
         - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
 
-        Args:
-            sender (int): Rank of sender client process.
-            message_code (MessageCode): message code
-            payload (list[torch.Tensor]): List of tensors.
-
         Raises:
             ValueError: invalid message code.
         """
-        if message_code == MessageCode.ParameterRequest:
-            pack = Package(message_code=MessageCode.ParameterUpdate)
-            model_parameters = self._handler.model_parameters
-            pack.append_tensor_list(
-                [model_parameters,
-                 torch.Tensor(self._handler.server_time)])
-            self._LOGGER.info(
-                "Send model to rank {}, current server model time is {}".
-                format(sender, self._handler.server_time))
-            PackageProcessor.send_package(pack, dst=sender)
+        watching = threading.Thread(target=self.watching_queue)
+        watching.start()
 
-        elif message_code == MessageCode.ParameterUpdate:
-            self.message_queue.put((sender, message_code, payload))
+        while self._handler.stop_condition() is not True:
+            sender, message_code, payload = PackageProcessor.recv_package()
 
-        else:
-            raise ValueError("Unexpected message code {}".format(message_code))
+            if message_code == MessageCode.ParameterRequest:
+                pack = Package(message_code=MessageCode.ParameterUpdate)
+                model_parameters = self._handler.model_parameters
+                pack.append_tensor_list([
+                    model_parameters,
+                    torch.Tensor(self._handler.server_time)
+                ])
+                self._LOGGER.info(
+                    "Send model to rank {}, current server model time is {}".
+                    format(sender, self._handler.server_time))
+                PackageProcessor.send_package(pack, dst=sender)
+
+            elif message_code == MessageCode.ParameterUpdate:
+                self.message_queue.put((sender, message_code, payload))
+
+            else:
+                raise ValueError(
+                    "Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
