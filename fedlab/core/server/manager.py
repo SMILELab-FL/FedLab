@@ -75,19 +75,13 @@ class ServerSynchronousManager(ServerManager):
         """Main Process:
             1. Network initialization.
 
-            2. Loop:
-                2.1 activate clients.
+            2. FL communication stage.
 
-                2.2 listen for message from clients -> transmit received parameters to server backend.
-
-            3. Stop loop when stop condition is satisfied.
-
-            4. Shut down clients, then close network connection.
+            3. Shut down clients, then close network connection.
 
         Note:
             user can overwrite this function to customize main process of Server.
         """
-
         self.setup()
         self.on_receive()
         self.shutdown_clients()
@@ -99,15 +93,15 @@ class ServerSynchronousManager(ServerManager):
         Server transmits received package to backend computation handler for aggregation or others
         manipulations.
 
+        Loop:
+            1 activate clients.
+
+            2 listen for message from clients -> transmit received parameters to server backend.
+
         Note:
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
             :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
-
-        Args:
-            sender (int): Rank of sender client process.
-            message_code (MessageCode): Predefined communication message code.
-            payload (list[torch.Tensor]): A list of tensor, unpacked package received from clients.
 
         Raises:
             Exception: Unexpected :class:`MessageCode`.
@@ -198,11 +192,6 @@ class ServerAsynchronousManager(ServerManager):
 
         - Server receive ParameterRequest from client. Send model parameter to client.
         - Server receive ParameterUpdate from client. Transmit parameters to queue waiting for aggregation.
-
-        Args:
-            sender (int): Rank of sender client process.
-            message_code (MessageCode): message code
-            payload (list[torch.Tensor]): List of tensors.
 
         Raises:
             ValueError: invalid message code.

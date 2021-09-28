@@ -40,10 +40,6 @@ class ScaleClientPassiveManager(ClientPassiveManager):
         .. note::
             Customize the control flow of client corresponding with :class:`MessageCode`.
 
-        Args:
-            sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): A list of tensors received from sender.
         """
         while True:
             sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
