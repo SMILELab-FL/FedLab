@@ -67,10 +67,10 @@ class ClientPassiveManager(ClientManager):
         """
         self._LOGGER.info("connecting with server")
         self.setup()
-        self.on_receive()
+        self.main_loop()
         self._network.close_network_connection()
 
-    def on_receive(self):
+    def main_loop(self):
         """Actions to perform when receiving new message, including local training
 
         Note:
@@ -122,10 +122,10 @@ class ClientActiveManager(ClientManager):
 
     def run(self):
         self.setup()
-        self.on_receive()
+        self.main_loop()
         self._network.close_network_connection()
 
-    def on_receive(self):
+    def main_loop(self):
         """Actions to perform on receiving new message, including local training
 
             1. client requests data from server (ACTIVE)

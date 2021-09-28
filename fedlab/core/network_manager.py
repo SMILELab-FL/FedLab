@@ -28,7 +28,7 @@ class NetworkManager(Process):
     def run(self):
         raise NotImplementedError()
 
-    def on_receive(self, *args, **kwargs):
+    def main_loop(self, *args, **kwargs):
         """Define the actions of communication stage."""
         raise NotImplementedError()
 

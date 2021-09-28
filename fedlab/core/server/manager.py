@@ -83,11 +83,11 @@ class ServerSynchronousManager(ServerManager):
             user can overwrite this function to customize main process of Server.
         """
         self.setup()
-        self.on_receive()
+        self.main_loop()
         self.shutdown_clients()
         self._network.close_network_connection()
 
-    def on_receive(self):
+    def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
 
         Server transmits received package to backend computation handler for aggregation or others
@@ -183,11 +183,11 @@ class ServerAsynchronousManager(ServerManager):
     def run(self):
         """Main process"""
         self.setup()
-        self.on_receive()
+        self.main_loop()
         self.shutdown_clients()
         self._network.close_network_connection()
 
-    def on_receive(self):
+    def main_loop(self):
         """Communication agreements of asynchronous FL.
 
         - Server receive ParameterRequest from client. Send model parameter to client.
