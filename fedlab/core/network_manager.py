@@ -27,7 +27,17 @@ class NetworkManager(Process):
         self._network = network
 
     def run(self):
-        raise NotImplementedError()
+        """
+        Main Process:
+            1. Initialization stage.
+
+            2. FL communication stage.
+
+            3. Shutdown stage, then close network connection.
+        """
+        self.setup()
+        self.main_loop()
+        self.shutdown()
 
     def main_loop(self, *args, **kwargs):
         """Define the actions of communication stage."""
@@ -41,3 +51,7 @@ class NetworkManager(Process):
             Overwrite this method to implement system setup message communication procedure.
         """
         self._network.init_network_connection()
+
+    def shutdown(self, *args, **kwargs):
+        """Shut down stage"""
+        self._network.close_network_connection()

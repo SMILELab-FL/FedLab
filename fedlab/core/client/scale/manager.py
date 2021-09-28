@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from torch import int32
+
 from ...client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...client.manager import ClientPassiveManager
 
 from ...communicator.package import Package
 from ...communicator.processor import PackageProcessor
 
-from fedlab.utils.message_code import MessageCode
+from ....utils.message_code import MessageCode
 
 
 class ScaleClientPassiveManager(ClientPassiveManager):
@@ -49,7 +51,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
                 model_parameters = payload[0]
 
                 _, message_code, payload = PackageProcessor.recv_package(src=0)
-                id_list = payload[0].tolist()
+                id_list = payload[0].to(int32).tolist()
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:

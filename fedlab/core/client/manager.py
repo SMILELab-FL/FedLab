@@ -60,11 +60,7 @@ class ClientPassiveManager(ClientManager):
             self._LOGGER = logger
 
     def run(self):
-        """Main procedure of each client is defined here:
-        1. client waits for data from server （PASSIVE）
-        2. after receiving data, client will train local model
-        3. client will synchronize with server actively
-        """
+        
         self._LOGGER.info("connecting with server")
         self.setup()
         self.main_loop()
@@ -72,6 +68,11 @@ class ClientPassiveManager(ClientManager):
 
     def main_loop(self):
         """Actions to perform when receiving new message, including local training
+
+        Main procedure of each client:
+            1. client waits for data from server （PASSIVELY）
+            2. after receiving data, client trains local model.
+            3. client synchronizes with server actively.
 
         Note:
             Customize the control flow of client corresponding with :class:`MessageCode`.
@@ -119,11 +120,6 @@ class ClientActiveManager(ClientManager):
             self._LOGGER = logger
 
         self.model_time = None
-
-    def run(self):
-        self.setup()
-        self.main_loop()
-        self._network.close_network_connection()
 
     def main_loop(self):
         """Actions to perform on receiving new message, including local training

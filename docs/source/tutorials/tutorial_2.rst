@@ -21,29 +21,21 @@ Base class definition shows below:
         """Abstract class
 
         Args:
-            handler (ClientTrainer or ParameterServerBackendHandler, optional): Backend computation handler for client or server.
             newtork (DistNetwork): object to manage torch.distributed network communication.
         """
-        def __init__(self, network, handler=None):
-            super(NetworkManager, self).__init__()
 
-            self._handler = handler
+        def __init__(self, network):
+            super(NetworkManager, self).__init__()
             self._network = network
 
         def run(self):
             raise NotImplementedError()
 
-        def on_receive(self, sender, message_code, payload):
-            """Define the action to take when receiving a package.
-
-            Args:
-                sender (int): rank of current process.
-                message_code (MessageCode): message code
-                payload (torch.Tensor): list[torch.Tensor]
-            """
+        def main_loop(self, *args, **kwargs):
+            """Define the actions of communication stage."""
             raise NotImplementedError()
 
-        def setup(self):
+        def setup(self, *args, **kwargs):
             """Initialize network connection and necessary setups.
 
             Note:
@@ -54,22 +46,21 @@ Base class definition shows below:
 
 FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You
 can customize process flow by: 1. create a new class inherited from corresponding class in our
-standard implementations; 2. overwrite the functions in target communication stage.
+standard implementations; 2. overwrite the functions in target stage.
 
 To sum up, communication strategy can be customized by overwriting as the note below mentioned.
 
 .. note::
 
-    1. :meth:`setup()` defines the network initialization stage. Can be used in complex system information synchronize.
-    2. :meth:`run()` is the main process of client. User need to define the communication strategy with user.
-    3. :meth:`on_receive(sender_rank, message_code, payload)` indicate the control flow and information parsing.
+    1. :meth:`setup()` defines the network initialization stage. Can be used for FL algorithm initialization.
+    2. :meth:`main_loop()` is the main process of client and server. User need to define the communication strategy for both client and server manager.
 
 Importantly, ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible. FedLab provides standard implementation for typical synchronous and asynchronous, as depicted below.
 
 Synchronous
 ============
 
-Synchronous communication involves :meth:`ServerSynchronousManager` and ``ClientPassiveManager``. Communication procedure is shown as follows.
+Synchronous communication involves :class:`ServerSynchronousManager` and :class:`ClientPassiveManager`. Communication procedure is shown as follows.
 
 .. image:: ../../imgs/fedlab-synchronous.svg
     :align: center
@@ -82,7 +73,7 @@ Synchronous communication involves :meth:`ServerSynchronousManager` and ``Client
 Asynchronous
 =============
 
-Asynchronous is given by :class:`ServerAsynchronousManager` and :meth:`ClientActiveManager`. Communication
+Asynchronous is given by :class:`ServerAsynchronousManager` and :class:`ClientActiveManager`. Communication
 procedure is shown as follows.
 
 .. image:: ../../imgs/fedlab-asynchronous.svg

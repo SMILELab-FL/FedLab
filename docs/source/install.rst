@@ -8,7 +8,7 @@ FedLab can be installed by source code or pip.
 Source Code
 ^^^^^^^^^^^
 
-Download source code from GitHub:
+Install **lastest version** from GitHub:
 
 .. code-block:: shell-session
 
@@ -24,7 +24,7 @@ Install dependencies:
 Pip
 ^^^
 
-We support install FedLab with pip:
+Install **stable version** with pip:
 
 .. code-block:: shell-session
 
