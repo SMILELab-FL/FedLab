@@ -36,7 +36,8 @@ class ServerManager(NetworkManager):
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
-
+        self.coordinator = None
+        
     def setup(self):
         """Setup agreements. Server accept local client num report from client manager, and generate coordinator."""
         super().setup()
