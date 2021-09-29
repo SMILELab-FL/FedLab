@@ -112,14 +112,14 @@ User can customize initialization procedure as follows(use ClientManager as exam
 
     class CustomizeClientManager(ClientPassiveManager):
 
-        def __init__(self, handler, network, logger):
-            super().__init__(handler, network, logger=logger)
+        def __init__(self, trainer, network):
+            super().__init__(trainer, network)
 
         def setup(self):
             super().setup()
             *****************************
             *                           *
-            * Write Customize Code Here *
+            *      Write Code Here      *
             *                           *
             *****************************
     
@@ -158,6 +158,7 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
 
 .. code-block:: python
 
+    def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
 
         Server transmits received package to backend computation handler for aggregation or others
