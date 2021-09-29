@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import abstractmethod
 import logging
 
 from ..client import ORDINARY_TRAINER
-from ...utils.functional import get_best_gpu
 from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
 
@@ -38,7 +36,6 @@ class ClientTrainer(ModelMaintainer):
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
 
-    @abstractmethod
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()

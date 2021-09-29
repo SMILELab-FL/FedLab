@@ -16,7 +16,6 @@ import logging
 import random
 import torch
 
-from abc import abstractmethod
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ..model_maintainer import ModelMaintainer
@@ -30,11 +29,10 @@ class ParameterServerBackendHandler(ModelMaintainer):
     Example:
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
-    def __init__(self, model, cuda=False) -> None:
+    def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
-    @abstractmethod
-    def _update_model(self, model_parameters_list) -> torch.Tensor:
+    def _update_model(self, model_parameters_list):
         """Override this function to update global model
 
         Args:
