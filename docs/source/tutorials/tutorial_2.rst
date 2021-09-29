@@ -29,11 +29,17 @@ Base class definition shows below:
             self._network = network
 
         def run(self):
-            raise NotImplementedError()
+            """
+            Main Process:
+                1. Initialization stage.
 
-        def main_loop(self, *args, **kwargs):
-            """Define the actions of communication stage."""
-            raise NotImplementedError()
+                2. FL communication stage.
+
+                3. Shutdown stage, then close network connection.
+            """
+            self.setup()
+            self.main_loop()
+            self.shutdown()
 
         def setup(self, *args, **kwargs):
             """Initialize network connection and necessary setups.
@@ -43,6 +49,14 @@ Base class definition shows below:
                 Overwrite this method to implement system setup message communication procedure.
             """
             self._network.init_network_connection()
+
+        def main_loop(self, *args, **kwargs):
+            """Define the actions of communication stage."""
+            raise NotImplementedError()
+
+        def shutdown(self, *args, **kwargs):
+            """Shut down stage"""
+            self._network.close_network_connection()
 
 FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You
 can customize process flow by: 1. create a new class inherited from corresponding class in our
@@ -54,6 +68,7 @@ To sum up, communication strategy can be customized by overwriting as the note b
 
     1. :meth:`setup()` defines the network initialization stage. Can be used for FL algorithm initialization.
     2. :meth:`main_loop()` is the main process of client and server. User need to define the communication strategy for both client and server manager.
+    3. :meth:`shutdown()` defines the shutdown stage.
 
 Importantly, ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible. FedLab provides standard implementation for typical synchronous and asynchronous, as depicted below.
 
@@ -111,75 +126,90 @@ User can customize initialization procedure as follows(use ClientManager as exam
 Communication stage
 ===================
 
-After Initialization Stage, user can define :meth:`run()` to define main process. To standardize
-**FedLab**'s implementation, we encourage users to customize this stage following our code pattern:
+After Initialization Stage, user can define :meth:`main_loop()` to define main process for server and client. To standardize
+**FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for example.
+
+
+**Client :meth:`main_loop()` part**:
 
 .. code-block:: python
 
-    def run(self):
-        """Main procedure of each client is defined here:
-        1. client waits for data from server （PASSIVE）
-        2. after receiving data, client will train local model
-        3. client will synchronize with server actively
-        """
-        self._LOGGER.info("connecting with server")
-        self.setup()
-
-        while True: 
-            self._LOGGER.info("Waiting for server...")
-            # waits for data from server (default server rank is 0)
-            sender_rank, message_code, payload = PackageProcessor.recv_package(
-                src=0)
-            # exit
-            if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Receive {}, Process exiting".format(message_code))
-                self._network.close_network_connection()
-                break
-            else:
-                # perform activation strategy
-                self.on_receive(sender_rank, message_code, payload)
-
-            # synchronize with server
-            self.synchronize()
-
-Then, put the branch in :meth:`on_receive(sender_rank, message_code, payload)` method, like this:
-
-.. code-block:: python
-
-    def on_receive(self, sender_rank, message_code, payload):
+    def main_loop(self):
         """Actions to perform when receiving new message, including local training
 
-        Note:
-            Customize the control flow of client corresponding with :class:`MessageCode`.
-
-        Args:
-            sender_rank (int): Rank of sender
-            message_code (MessageCode): Agreements code defined in :class:`MessageCode`
-            payload (list[torch.Tensor]): A list of tensors received from sender.
+        Main procedure of each client:
+            1. client waits for data from server （PASSIVELY）
+            2. after receiving data, client trains local model.
+            3. client synchronizes with server actively.
         """
-        self._LOGGER.info("Package received from {}, message code {}".format(
-            sender_rank, message_code))
-        model_parameters = payload[0]
-        self._handler.train(model_parameters=model_parameters)
+        while True:
+            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            if message_code == MessageCode.Exit:
+                break
+            elif message_code == MessageCode.ParameterUpdate:
+                model_parameters = payload[0]
+                self._trainer.train(model_parameters=model_parameters)
+                self.synchronize()
+            else:
+                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+
+
+**Server :meth:`main_loop()` Part**:
+
+.. code-block:: python
+
+        """Actions to perform in server when receiving a package from one client.
+
+        Server transmits received package to backend computation handler for aggregation or others
+        manipulations.
+
+        Loop:
+            1 activate clients.
+
+            2 listen for message from clients -> transmit received parameters to server backend.
+
+        Note:
+            Communication agreements related: user can overwrite this function to customize
+            communication agreements. This method is key component connecting behaviors of
+            :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
+
+        Raises:
+            Exception: Unexpected :class:`MessageCode`.
+        """
+        while self._handler.stop_condition() is not True:
+            activate = threading.Thread(target=self.activate_clients)
+            activate.start()
+            while True:
+                sender, message_code, payload = PackageProcessor.recv_package()
+                if message_code == MessageCode.ParameterUpdate:
+                    model_parameters = payload[0]
+                    if self._handler.add_model(sender, model_parameters):
+                        break
+                else:
+                    raise Exception(
+                        raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
 
 Shutdown stage
 =================
 
-Shutdown stage is started by Server Manager. It will send a package with ``MessageCode.Exit`` to
-inform Client Manager to stop its process.
+:meth:`shutdown()` will be called when :meth:`main_loop()` finished. You can define the actions for client and server seperately.
+
+Typically in our implementation, shutdown stage is started by server. It will send a package with ``MessageCode.Exit`` to
+inform client to stop its main loop.
+
+
+Codes below is the actions of :class:`ServerSynchronousManager` in shutdown stage.
 
 .. code-block:: python
+
+    def shutdown(self):
+        self.shutdown_clients()
+        super().shutdown()
 
     def shutdown_clients(self):
         """Shut down all clients.
 
-        Send package to every client with :attr:`MessageCode.Exit` to ask client to exit.
-
-        Note:
-            Communication agreements related: User can overwrite this function to define package
-            for exiting information.
-
+        Send package to every client with :attr:`MessageCode.Exit` to client.
         """
         for rank in range(1, self._network.world_size):
             print("stopping clients rank:", rank)

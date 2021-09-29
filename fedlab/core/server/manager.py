@@ -228,11 +228,6 @@ class ServerAsynchronousManager(ServerManager):
         """Shutdown all clients.
 
         Send package to clients with ``MessageCode.Exit``.
-
-        Note:
-            Communication agreements related: user can overwrite this function to define close
-            package.
-
         """
         for rank in range(1, self._network.world_size):
             _, message_code, _ = PackageProcessor.recv_package(src=rank)

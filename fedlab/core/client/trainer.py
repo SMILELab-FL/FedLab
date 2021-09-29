@@ -35,39 +35,13 @@ class ClientTrainer(ModelMaintainer):
     """
     def __init__(self, model, cuda):
         super().__init__(model, cuda)
-        
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
-
-        if self.cuda:
-            # dynamic gpu acquire.
-            self.gpu = get_best_gpu()
-            self._model = model.cuda(self.gpu)
-        else:
-            self._model = model.cpu()
 
     @abstractmethod
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
-
-    @property
-    def model(self):
-        """attribute"""
-        return self._model
-
-    @property
-    def model_parameters(self):
-        """attribute"""
-        return SerializationTool.serialize_model(self._model)
-    
-    @property
-    def shape_list(self):
-        """attribute"""
-        shape_list = []
-        for parameters in self._model.parameters():
-            shape_list.append(parameters.shape)
-        return shape_list
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.

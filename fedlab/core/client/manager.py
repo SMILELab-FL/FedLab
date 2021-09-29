@@ -59,13 +59,6 @@ class ClientPassiveManager(ClientManager):
         else:
             self._LOGGER = logger
 
-    def run(self):
-        
-        self._LOGGER.info("connecting with server")
-        self.setup()
-        self.main_loop()
-        self._network.close_network_connection()
-
     def main_loop(self):
         """Actions to perform when receiving new message, including local training
 
@@ -158,10 +151,4 @@ class ClientActiveManager(ClientManager):
         model_parameters = self._trainer.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)
         pack.append_tensor_list([model_parameters, self.model_time + 1])
-        PackageProcessor.send_package(pack, dst=0)
-
-    def _request_parameter(self):
-        """send ParameterRequest"""
-        self._LOGGER.info("request parameter procedure")
-        pack = Package(message_code=MessageCode.ParameterRequest)
         PackageProcessor.send_package(pack, dst=0)

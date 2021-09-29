@@ -42,32 +42,6 @@ class ParameterServerBackendHandler(ModelMaintainer):
         """
         raise NotImplementedError()
 
-    @abstractmethod
-    def stop_condition(self) -> bool:
-        """Override this function to tell up layer when to stop process.
-
-        :class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned.
-        """
-        raise NotImplementedError()
-
-    @property
-    def model(self):
-        """Return torch.nn.module"""
-        return self._model
-
-    @property
-    def model_parameters(self):
-        """Return serialized model parameters."""
-        return SerializationTool.serialize_model(self._model)
-
-    @property
-    def shape_list(self):
-        """attribute"""
-        shape_list = []
-        for parameters in self._model.parameters():
-            shape_list.append(parameters.shape)
-        return shape_list
-
 
 class SyncParameterServerHandler(ParameterServerBackendHandler):
     """Synchronous Parameter Server Handler
