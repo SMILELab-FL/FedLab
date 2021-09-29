@@ -56,8 +56,8 @@ Pull Request Checklist
             │   └── server                  # server related implementations
             │       └── scale               # scale manager
             │           └── hierarchical    # hierarchical communication pattern modules
-            ├── compressor                  # compressor modules
             └── utils                       # functional modules
+                ├── compressor              # compressor modules
                 └── dataset                 # functional modules associated with dataset
 
 - The code should provide test cases using `unittest.TestCase`. And ensure all local tests passed:
