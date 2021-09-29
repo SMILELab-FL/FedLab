@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ..utils.serialization import SerializationTool
+from ..utils.functional import get_best_gpu
 
 class ModelMaintainer(object):
     """Maintain PyTorch model.
@@ -28,7 +29,9 @@ class ModelMaintainer(object):
         self.cuda = cuda
 
         if cuda:
-            self._model = model.cuda()
+            # dynamic gpu acquire.
+            self.gpu = get_best_gpu()
+            self._model = model.cuda(self.gpu)
         else:
             self._model = model.cpu()
 
@@ -44,6 +47,6 @@ class ModelMaintainer(object):
 
     @property
     def shape_list(self):
-        """attribute"""
+        """Return shape of parameters"""
         shape_list = [param.shape for param in self._model.parameters()]
         return shape_list
