@@ -21,7 +21,6 @@ FedLab provides the necessary modules for FL simulation, including communication
    install
    tutorials/tutorial
    examples/example
-   gallery
    contributing
    reference
 
