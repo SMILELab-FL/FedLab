@@ -15,6 +15,8 @@
 import logging
 import torch
 
+from fedlab.core.communicator import DATA_TYPE_INT
+
 from ...utils.message_code import MessageCode
 
 from ..communicator.processor import Package, PackageProcessor
@@ -22,33 +24,35 @@ from ..network_manager import NetworkManager
 
 
 class ClientManager(NetworkManager):
-    """Client Manager accept a object of DistNetwork and a ClientTrainer
+    """Base class for ClientManager.
+
+    ClientManager define client activation for different communication stage.
 
     Args:
         network (DistNetwork): network configuration.
-        trainer (ClientTrainer): performe local client training process.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
     """
     def __init__(self, network, trainer):
         super().__init__(network)
         self._trainer = trainer
 
     def setup(self):
-        """Setup agreements. Client report local client num."""
+        """Initialization stage. ClientManager reports the number of client that local process simulating."""
         super().setup()
         content = torch.Tensor([self._trainer.client_num]).int()
         setup_pack = Package(message_code=MessageCode.SetUp,
                              content=content,
-                             data_type=1)
+                             data_type=DATA_TYPE_INT)
         PackageProcessor.send_package(setup_pack, dst=0)
 
 
 class ClientPassiveManager(ClientManager):
-    """Passive communication :class:`NetworkManager` for client in synchronous FL
+    """Passive communication :class:`NetworkManager` for client in synchronous FL pattern.
 
     Args:
-        network (DistNetwork): Distributed network to use.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`.
-        logger (Logger, optional): object of :class:`Logger`.
+        network (DistNetwork): network configuration.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
+        logger (Logger, optional): object of :class:`Logger` or :class:`logging`. 
     """
     def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
@@ -60,15 +64,12 @@ class ClientPassiveManager(ClientManager):
             self._LOGGER = logger
 
     def main_loop(self):
-        """Actions to perform when receiving new message, including local training
+        """Actions to perform when receiving a new message, including local training.
 
         Main procedure of each client:
-            1. client waits for data from server （PASSIVELY）
-            2. after receiving data, client trains local model.
+            1. client waits for data from server (PASSIVELY).
+            2. after receiving data, client start local model training procedure.
             3. client synchronizes with server actively.
-
-        Note:
-            Customize the control flow of client corresponding with :class:`MessageCode`.
         """
         while True:
             sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
@@ -82,12 +83,7 @@ class ClientPassiveManager(ClientManager):
                 raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
         
     def synchronize(self):
-        """Synchronize local model with server actively
-
-        Note:
-            communication agreements related:
-            Overwrite this function to customize package for synchronizing.
-        """
+        """Synchronize local model with server"""
         self._LOGGER.info("synchronize model parameters with server")
         model_parameters = self._trainer.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate,
@@ -96,12 +92,12 @@ class ClientPassiveManager(ClientManager):
 
 
 class ClientActiveManager(ClientManager):
-    """Active communication :class:`NetworkManager` for client in asynchronous FL
+    """Active communication :class:`NetworkManager` for client in asynchronous FL pattern.
 
     Args:
-        network (DistNetwork): Distributed network to use.
-        handler (ClientTrainer): Subclass of ClientTrainer. Provides :meth:`train` and :attr:`model`.
-        logger (Logger, optional): object of :class:`Logger`.
+        network (DistNetwork): network configuration.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
+        logger (Logger, optional): object of :class:`Logger` or :class:`logging`.
     """
     def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
@@ -146,7 +142,7 @@ class ClientActiveManager(ClientManager):
                 raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
             
     def synchronize(self):
-        """Synchronize local model with server actively"""
+        """Synchronize local model with server"""
         self._LOGGER.info("synchronize procedure")
         model_parameters = self._trainer.model_parameters
         pack = Package(message_code=MessageCode.ParameterUpdate)

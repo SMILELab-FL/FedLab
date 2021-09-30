@@ -33,7 +33,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
         super().__init__(model, cuda)
 
     def _update_model(self, model_parameters_list):
-        """Override this function to update global model
+        """Override this function for global model aggregation strategy.
 
         Args:
             model_parameters_list (list[torch.Tensor]): A list of serialized model parameters collected from different clients.
@@ -42,7 +42,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
 
 
 class SyncParameterServerHandler(ParameterServerBackendHandler):
-    """Synchronous Parameter Server Handler
+    """Synchronous Parameter Server Handler.
 
     Backend of synchronous parameter server: this class is responsible for backend computing in synchronous server.
 

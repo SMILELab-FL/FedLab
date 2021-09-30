@@ -14,4 +14,4 @@
 
 from . import client, server, communicator
 from .network import DistNetwork
-
+from .network_manager import NetworkManager

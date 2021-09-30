@@ -26,23 +26,18 @@ from ....utils.message_code import MessageCode
 class ScaleClientPassiveManager(ClientPassiveManager):
     """Special client manager for :class:`SerialTrainer`.
         
-    We modify the communication agreements creating mapping between process rank and client id.
-    In this way, :class:`Manager` is able to represent multiple clients.
+    We modify the communication agreements to create a mapping from client id to process rank.
+    Thus, :class:`ScaleClientPassiveManager` is able to represent multiple clients.
 
     Args:
         network (DistNetwork): Distributed network to use.
-        handler (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`. For more client simulation with single process, you are supposed to use :class:`SerialTrainer` here.
     """
     def __init__(self, network, trainer):
         super().__init__(network, trainer)
 
     def main_loop(self):
-        """Actions to perform when receiving new message, including local training
-
-        .. note::
-            Customize the control flow of client corresponding with :class:`MessageCode`.
-
-        """
+        """Actions to perform when receiving new message, including local training."""
         while True:
             sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
             if message_code == MessageCode.Exit:
@@ -67,11 +62,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
                 raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
 
     def synchronize(self):
-        """Synchronize local model with server actively
-
-        .. note::
-            Communication agreements related. Overwrite this function to customize package for synchronizing.
-        """
+        """Synchronize local model with server actively"""
         pack = Package(message_code=MessageCode.ParameterUpdate,
                        content=self.model_parameters_list)
         PackageProcessor.send_package(package=pack, dst=0)

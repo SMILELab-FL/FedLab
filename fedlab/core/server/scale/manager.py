@@ -27,7 +27,10 @@ class ScaleSynchronousManager(ServerSynchronousManager):
         super().__init__(network, handler)
 
     def activate_clients(self):
-        """Add client id map"""
+        """Use client id mapping: Coordinator. 
+
+        Here we use coordinator to find the rank client process with specific client_id.
+        """
         clients_this_round = self._handler.sample_clients()
         rank_dict = self.coordinator.map_id_list(clients_this_round)
 

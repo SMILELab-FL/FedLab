@@ -27,11 +27,11 @@ DEFAULT_SERVER_RANK = 0
 
 
 class ServerManager(NetworkManager):
-    """Server Manager accept a object of DistNetwork and a ParameterServerBackendHandler
+    """Base class of ServerManager.
 
     Args:
         network (DistNetwork): network configuration.
-        trainer (ParameterServerBackendHandler): performe global server aggregation procedure.
+        handler (ParameterServerBackendHandler): performe global server aggregation procedure.
     """
     def __init__(self, network, handler):
         super().__init__(network)
@@ -39,7 +39,11 @@ class ServerManager(NetworkManager):
         self.coordinator = None
         
     def setup(self):
-        """Setup agreements. Server accept local client num report from client manager, and generate coordinator."""
+        """Initialization Stage. 
+            
+            Server accept local client num report from client manager.
+            Init a coordinator for client_id mapping.
+        """
         super().setup()
         rank_client_id_map = {}
 
@@ -55,11 +59,11 @@ class ServerSynchronousManager(ServerManager):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-    Synchronously communicate with clients following agreements defined in :meth:`run`.
+    Synchronously communicate with clients following agreements defined in :meth:`main_loop`.
 
     Args:
         network (DistNetwork): Manage ``torch.distributed`` network communication.
-        handler (ParameterServerBackendHandler, optional): Backend calculation handler for parameter server.
+        handler (ParameterServerBackendHandler): Backend calculation handler for parameter server.
         logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
     def __init__(self, network, handler, logger=None):
@@ -73,6 +77,7 @@ class ServerSynchronousManager(ServerManager):
             self._LOGGER = logger
 
     def shutdown(self):
+        """Shutdown stage."""
         self.shutdown_clients()
         super().shutdown()
 
@@ -113,10 +118,6 @@ class ServerSynchronousManager(ServerManager):
 
         Manager will start a new thread to send activation package to chosen clients' process rank.
         The ranks of clients are obtained from :meth:`handler.sample_clients`.
-
-        Note:
-            Communication agreements related: User can overwrite this function to customize
-            activation package.
         """
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
@@ -138,7 +139,6 @@ class ServerSynchronousManager(ServerManager):
         Note:
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
-
         """
         for rank in range(1, self._network.world_size):
             pack = Package(message_code=MessageCode.Exit)
@@ -213,11 +213,7 @@ class ServerAsynchronousManager(ServerManager):
                     "Unexpected message code {}".format(message_code))
 
     def watching_queue(self):
-        """Asynchronous communication maintain a message queue. A new thread will be started to run this function.
-
-        Note:
-            Customize strategy by overwriting this function.
-        """
+        """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""
         while self._handler.stop_condition() is not True:
             _, _, payload = self.message_queue.get()
             model_parameters = payload[0]

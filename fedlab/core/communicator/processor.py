@@ -25,8 +25,9 @@ class PackageProcessor(object):
     """Provide more flexible distributed tensor communication functions based on
     :func:`torch.distributed.send` and :func:`torch.distributed.recv`.
 
-    Notes:
-        EVERYTHING is :class:`torch.Tensor` in FedLab.
+    PackageProcessor defines the details of point-to-point package communication.
+
+    EVERYTHING is :class:`torch.Tensor` in FedLab.
     """
     @staticmethod
     def recv_package(src=None):

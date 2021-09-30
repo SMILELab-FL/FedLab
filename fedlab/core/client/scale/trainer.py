@@ -49,9 +49,16 @@ class SerialTrainer(ClientTrainer):
             self._LOGGER = logger
 
     def _train_alone(self, model_parameters, train_loader):
+        """train local model with model_parameters on train_loader
+        
+        Args:
+            model_parameters (torch.Tensor): serialized model parameters.
+            train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
+        """
         raise NotImplementedError()
 
     def _get_dataloader(self, client_id):
+        """Get dataloader for client_id"""
         raise NotImplementedError()
 
     def train(self, model_parameters, id_list, aggregate=False):
@@ -104,7 +111,6 @@ class SubsetSerialTrainer(SerialTrainer):
 
     .. note::
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
-
     """
     def __init__(self,
                  model,
@@ -153,9 +159,8 @@ class SubsetSerialTrainer(SerialTrainer):
             Overwrite this method to customize the PyTorch training pipeline.
 
         Args:
-            model_parameters (torch.Tensor): model parameters.
-            train_loader (torch.utils.data.DataLoader): dataloader for data iteration.
-            cuda (bool): use GPUs or not.
+            model_parameters (torch.Tensor): serialized model parameters.
+            train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         """
         epochs, lr = self.args["epochs"], self.args["lr"]
         SerializationTool.deserialize_model(self._model, model_parameters)
