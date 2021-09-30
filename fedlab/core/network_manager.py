@@ -33,7 +33,7 @@ class NetworkManager(Process):
 
             2. FL communication stage.
 
-            3. Shutdown stage, then close network connection.
+            3. Shutdown stage. Close network connection.
         """
         self.setup()
         self.main_loop()
@@ -41,8 +41,7 @@ class NetworkManager(Process):
 
     def setup(self, *args, **kwargs):
         """Initialize network connection and necessary setups.
-
-        Note:
+        
             At first, ``self._network.init_network_connection()`` is required to be called.
             Overwrite this method to implement system setup message communication procedure.
         """
@@ -53,5 +52,8 @@ class NetworkManager(Process):
         raise NotImplementedError()
 
     def shutdown(self, *args, **kwargs):
-        """Shut down stage"""
+        """Shutdown stage.
+
+            Close the network connection in the end.
+        """
         self._network.close_network_connection()

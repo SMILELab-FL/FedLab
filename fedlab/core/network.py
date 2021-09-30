@@ -16,7 +16,7 @@ import os
 import torch.distributed as dist
 
 class DistNetwork(object):
-    """Manage ``torch.distributed`` network
+    """Manage ``torch.distributed`` network.
 
     Args:
         address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``

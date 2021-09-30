@@ -27,26 +27,28 @@ from . import DATA_TYPE_FLOAT, DATA_TYPE_INT
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
+    Note:
+        ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
+        of a sub-Tensor in content.
+        
+
     :class:`Package` maintains 3 variables:
         :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
         :attr:`slices` : ``list[slice_size_1, slice_size_2]``
         :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
-    Note:
-        ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
-        of a sub-Tensor in content.
-
     Args:
         receiver_rank (int, optional): Rank of receiver
         message_code (MessageCode): Message code
         content (torch.Tensor, optional): Tensors contained in this package.
-        data_type (int): 0 for float, 1 for int.
+        data_type (int, optional): DATA_TYPE_FLOAT for torch.float32, DATA_TYPE_INT for torch.int64. Default is DATA_TYPE_FLOAT.
     """
     def __init__(self,
                  receiver_rank=None,
                  message_code=None,
                  content=None,
                  data_type=DATA_TYPE_FLOAT):
+
         if receiver_rank is None:
             receiver_rank = DEFAULT_RECEIVER_RANK
 

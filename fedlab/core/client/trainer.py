@@ -19,17 +19,17 @@ from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
 
 class ClientTrainer(ModelMaintainer):
-    """An abstract class representing a client backend handler.
+    """An abstract class representing a client backend trainer.
 
-    In our framework, we define the backend of client handler show manage its local model.
+    In our framework, we define the backend of client trainer show manage its local model.
     It should have a function to update its model called :meth:`train`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
     should subclass it. All subclasses should overwrite :meth:`train`.
 
     Args:
-        model (torch.nn.Module): Model used in this federation
-        cuda (bool): Use GPUs or not
+        model (torch.nn.Module): PyTorch model.
+        cuda (bool): Use GPUs or not.
     """
     def __init__(self, model, cuda):
         super().__init__(model, cuda)
@@ -44,11 +44,11 @@ class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
-        model (torch.nn.Module): model used in federation.
+        model (torch.nn.Module): PyTorch model.
         data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         epochs (int): the number of local epoch.
-        optimizer (torch.optim.Optimizer, optional): optimizer for this client's model. If set to ``None``, will use :func:`torch.optim.SGD` with :attr:`lr` of 0.1 and :attr:`momentum` of 0.9 as default.
-        criterion (torch.nn.Loss, optional): loss function used in local training process. If set to ``None``, will use:func:`nn.CrossEntropyLoss` as default.
+        optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
+        criterion (torch.nn.Loss, optional): loss function used in local training process.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
         logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
     """
@@ -73,21 +73,17 @@ class ClientSGDTrainer(ClientTrainer):
         else:
             self._LOGGER = logger
 
-    def train(self, model_parameters, epochs=None) -> None:
-        """
-        Client trains its local model on local dataset.åß
+    def train(self, model_parameters) -> None:
+        """Client trains its local model on local dataset.
 
         Args:
             model_parameters (torch.Tensor): Serialized model parameters.
-            epochs (int): Number of epoch for current local training.
         """
         self._LOGGER.info("Local train procedure is started")
         SerializationTool.deserialize_model(
             self._model, model_parameters)  # load parameters
-        if epochs is None:
-            epochs = self.epochs
         self._LOGGER.info("Local train procedure is running")
-        for _ in range(epochs):
+        for _ in range(self.epochs):
             self._model.train()
             for inputs, labels in self._data_loader:
                 if self.cuda:

@@ -19,6 +19,7 @@ class ModelMaintainer(object):
     """Maintain PyTorch model.
 
         Provide necessary attributes and operation methods.
+        More features with local or global model will be implemented here.
 
     Args:
         model (torch.Module): PyTorch model.
@@ -30,7 +31,7 @@ class ModelMaintainer(object):
 
         if cuda:
             # dynamic gpu acquire.
-            self.gpu = get_best_gpu()
+            self.gpu = get_best_gpu() 
             self._model = model.cuda(self.gpu)
         else:
             self._model = model.cpu()
@@ -47,6 +48,9 @@ class ModelMaintainer(object):
 
     @property
     def shape_list(self):
-        """Return shape of parameters"""
+        """Return shape of model parameters.
+        
+            Currently, this attributes used in tensor compression.
+        """
         shape_list = [param.shape for param in self._model.parameters()]
         return shape_list
