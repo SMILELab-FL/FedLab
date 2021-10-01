@@ -182,3 +182,113 @@ class CIFAR100Partitioner(CIFAR10Partitioner):
     This is a subclass of the :class:`CIFAR10Partitioner`.
     """
     num_classes = 100
+
+
+class MNISTPartitioner(DataPartitioner):
+    def __init__(self):
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class FMNISTPartitioner(DataPartitioner):
+    def __init__(self):
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class SVHNPartitioner(DataPartitioner):
+    def __init__(self):
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class FEMNISTPartitioner(DataPartitioner):
+    def __init__(self):
+        """
+        - feature-distribution-skew:real-world
+        - IID
+        """
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class FCUBEPartitioner(DataPartitioner):
+    def __init__(self):
+        """
+        - feature-distribution-skew:synthetic
+        - IID
+        """
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class TabularPartitioner(DataPartitioner):
+    def __init__(self, partition):
+        """
+        - label-distribution-skew:quantity-based
+        - label-distribution-skew:distributed-based (Dirichlet)
+        - quantity-skew (Dirichlet)
+        - IID
+        """
+        pass
+
+    def _perform_partition(self):
+        pass
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return len(self.client_dict)
+
+
+class adultPartitioner(TabularPartitioner):
+    num_classes = 2
+
+
+class rcv1Partitioner(TabularPartitioner):
+    num_classes = 2
+
+
+class covtypePartitioner(TabularPartitioner):
+    num_classes = 2
