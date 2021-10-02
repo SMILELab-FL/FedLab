@@ -325,8 +325,9 @@ class TabularPartitioner(DataPartitioner):
     def _perform_partition(self):
         if self.partition == "noniid-#label":
             # label-distribution-skew:quantity-based
-
-            pass
+            client_dict = F.label_skew_quantity_based_partition(self.targets, self.num_clients,
+                                                                self.num_classes,
+                                                                self.major_classes_num)
 
         elif self.partition == "noniid-labeldir":
             # label-distribution-skew:distributed-based (Dirichlet)

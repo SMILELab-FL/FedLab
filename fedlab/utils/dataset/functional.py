@@ -269,7 +269,47 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
 
             break
 
-    client_dict = dict([(cid, client_indices[cid]) for cid in range(num_clients)])
+    client_dict = {cid: client_indices[cid] for cid in range(num_clients)}
+    return client_dict
+
+
+def label_skew_quantity_based_partition(targets, num_clients, num_classes, major_classes_num):
+    idx_batch = [np.ndarray(0, dtype=np.int64) for _ in range(num_clients)]
+    if major_classes_num == num_classes:
+        for k in range(num_classes):
+            idx_k = np.where(targets == k)[0]
+            np.random.shuffle(idx_k)
+            split = np.array_split(idx_k, num_clients)
+            for cid in range(num_clients):
+                idx_batch[cid] = np.append(idx_batch[cid], split[cid])
+
+    else:
+        # if major_classes_num < num_classes
+        times = [0 for _ in range(10)]
+        contain = []
+        for cid in range(num_clients):
+            current = [cid % num_classes]
+            times[cid % num_classes] += 1
+            j = 1
+            while j < major_classes_num:
+                ind = np.random.randint(num_classes)
+                if ind not in current:
+                    j += 1
+                    current.append(ind)
+                    times[ind] += 1
+            contain.append(current)
+
+        for k in range(num_classes):
+            idx_k = np.where(targets == k)[0]
+            np.random.shuffle(idx_k)
+            split = np.array_split(idx_k, times[k])
+            ids = 0
+            for cid in range(num_clients):
+                if k in contain[cid]:
+                    idx_batch[cid] = np.append(idx_batch[cid], split[ids])
+                    ids += 1
+
+    client_dict = {cid: idx_batch[cid] for cid in range(num_clients)}
     return client_dict
 
 
