@@ -147,12 +147,10 @@ class CIFAR10Partitioner(DataPartitioner):
                                                                  self.unbalance_sgm)
 
             # perform iid/dirichlet partition for each client
-            rand_perm = np.random.permutation(self.num_samples)
             if self.partition == "iid":
-                client_dict = F.homo_partition(client_sample_nums, rand_perm)
+                client_dict = F.homo_partition(client_sample_nums, self.num_samples)
             else:  # for dirichlet
-                targets = self.targets[rand_perm]
-                client_dict = F.client_inner_dirichlet_partition(targets, self.num_clients,
+                client_dict = F.client_inner_dirichlet_partition(self.targets, self.num_clients,
                                                                  self.num_classes, self.dir_alpha,
                                                                  client_sample_nums, self.verbose)
 
@@ -296,23 +294,20 @@ class TabularPartitioner(DataPartitioner):
 
         if partition == "noniid-#label":
             # label-distribution-skew:quantity-based
-            assert isinstance(major_classes_num, int)
-            assert major_classes_num > 0
-            assert major_classes_num <= self.num_classes
+            assert isinstance(major_classes_num, int), f"'major_classes_num' should be integer, " \
+                                                       f"not {type(major_classes_num)}."
+            assert major_classes_num > 0, f"'major_classes_num' should be positive."
+            assert major_classes_num < self.num_classes, f"'major_classes_num' for each client " \
+                                                         f"should be less than number of total " \
+                                                         f"classes {self.num_classes}."
             self.major_classes_num = major_classes_num
-
-        elif partition == "noniid-labeldir":
-            # label-distribution-skew:distributed-based (Dirichlet)
-            pass  # TODO: label-distribution-skew:distributed-based (Dirichlet)
-
-        elif partition == "unbalance":
-            # quantity-skew (Dirichlet)
-            pass  # TODO: quantity-skew (Dirichlet)
-
+        elif partition in ["noniid-labeldir", "unbalance"]:
+            # label-distribution-skew:distributed-based (Dirichlet) and quantity-skew (Dirichlet)
+            assert dir_alpha > 0, f"Parameter 'dir_alpha' for Dirichlet distribution should be " \
+                                  f"positive."
         elif partition == "iid":
             # IID
-            pass  # TODO: iid partition
-
+            pass
         else:
             raise ValueError(
                 f"tabular data partition only supports 'noniid-#label', 'noniid-labeldir', "
@@ -339,14 +334,12 @@ class TabularPartitioner(DataPartitioner):
             # quantity-skew (Dirichlet)
             client_sample_nums = F.dirichlet_unbalance_split(self.num_clients, self.num_samples,
                                                              self.dir_alpha)
-            rand_perm = np.random.permutation(self.num_samples)
-            client_dict = F.homo_partition(client_sample_nums, rand_perm)
+            client_dict = F.homo_partition(client_sample_nums, self.num_samples)
 
         else:
             # IID
             client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
-            rand_perm = np.random.permutation(self.num_samples)
-            client_dict = F.homo_partition(client_sample_nums, rand_perm)
+            client_dict = F.homo_partition(client_sample_nums, self.num_samples)
 
         return client_dict
 
