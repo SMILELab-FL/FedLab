@@ -132,7 +132,7 @@ class CIFAR10Partitioner(DataPartitioner):
                                                      self.num_clients,
                                                      self.num_classes,
                                                      self.dir_alpha,
-                                                     min_require_size=self.num_classes)
+                                                     min_require_size=10)
 
             else:  # partition is 'shards'
                 client_dict = F.shards_partition(self.targets, self.num_clients, self.num_shards)
@@ -140,17 +140,16 @@ class CIFAR10Partitioner(DataPartitioner):
         else:  # if balance is True or False
             # perform sample number balance/unbalance partition over all clients
             if self.balance is True:
-                client_sample_nums = F.balance_partition(self.num_clients, self.num_samples)
+                client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
             else:
-                client_sample_nums = F.lognormal_unbalance_partition(self.num_clients,
-                                                                     self.num_samples,
-                                                                     self.unbalance_sgm)
+                client_sample_nums = F.lognormal_unbalance_split(self.num_clients,
+                                                                 self.num_samples,
+                                                                 self.unbalance_sgm)
 
             # perform iid/dirichlet partition for each client
             rand_perm = np.random.permutation(self.num_samples)
             if self.partition == "iid":
-                num_cumsum = np.cumsum(client_sample_nums).astype(int)
-                client_dict = F.split_indices(num_cumsum, rand_perm)
+                client_dict = F.homo_partition(client_sample_nums, rand_perm)
             else:  # for dirichlet
                 targets = self.targets[rand_perm]
                 client_dict = F.client_inner_dirichlet_partition(targets, self.num_clients,
@@ -186,6 +185,7 @@ class CIFAR100Partitioner(CIFAR10Partitioner):
 
 class MNISTPartitioner(DataPartitioner):
     def __init__(self):
+        self.num_classes = 10
         pass
 
     def _perform_partition(self):
@@ -232,6 +232,7 @@ class FEMNISTPartitioner(DataPartitioner):
         - feature-distribution-skew:real-world
         - IID
         """
+        # num_classes =
         pass
 
     def _perform_partition(self):
@@ -245,11 +246,17 @@ class FEMNISTPartitioner(DataPartitioner):
 
 
 class FCUBEPartitioner(DataPartitioner):
-    def __init__(self):
-        """
-        - feature-distribution-skew:synthetic
-        - IID
-        """
+    """
+    - feature-distribution-skew:synthetic
+    - IID
+
+    Args:
+        num_samples:
+    """
+
+    def __init__(self, num_samples):
+        self.num_classes = 2
+        self.num_clients = 4
         pass
 
     def _perform_partition(self):
@@ -263,17 +270,84 @@ class FCUBEPartitioner(DataPartitioner):
 
 
 class TabularPartitioner(DataPartitioner):
-    def __init__(self, partition):
+    num_classes = 2
+
+    def __init__(self, targets, num_clients,
+                 partition='iid',
+                 dir_alpha=None,
+                 major_classes_num=1,
+                 verbose=True,
+                 seed=None):
         """
         - label-distribution-skew:quantity-based
         - label-distribution-skew:distributed-based (Dirichlet)
         - quantity-skew (Dirichlet)
         - IID
         """
-        pass
+        self.targets = np.array(targets)  # with shape (num_samples,)
+        self.num_samples = self.targets.shape[0]
+        self.num_clients = num_clients
+        self.client_dict = dict()
+        self.partition = partition
+        self.dir_alpha = dir_alpha
+        self.verbose = verbose
+        # self.rng = np.random.default_rng(seed)  # rng currently not supports randint
+        np.random.seed(seed)
+
+        if partition == "noniid-#label":
+            # label-distribution-skew:quantity-based
+            assert isinstance(major_classes_num, int)
+            assert major_classes_num > 0
+            assert major_classes_num <= self.num_classes
+            self.major_classes_num = major_classes_num
+
+        elif partition == "noniid-labeldir":
+            # label-distribution-skew:distributed-based (Dirichlet)
+            pass  # TODO: label-distribution-skew:distributed-based (Dirichlet)
+
+        elif partition == "unbalance":
+            # quantity-skew (Dirichlet)
+            pass  # TODO: quantity-skew (Dirichlet)
+
+        elif partition == "iid":
+            # IID
+            pass  # TODO: iid partition
+
+        else:
+            raise ValueError(
+                f"tabular data partition only supports 'noniid-#label', 'noniid-labeldir', "
+                f"'unbalance', 'iid'. {partition} is not supported.")
+
+        self.client_dict = self._perform_partition()
+        # get sample number count for each client
+        self.client_sample_count = F.samples_num_count(self.client_dict, self.num_clients)
 
     def _perform_partition(self):
-        pass
+        if self.partition == "noniid-#label":
+            # label-distribution-skew:quantity-based
+
+            pass
+
+        elif self.partition == "noniid-labeldir":
+            # label-distribution-skew:distributed-based (Dirichlet)
+            client_dict = F.hetero_dir_partition(self.targets, self.num_clients, self.num_classes,
+                                                 self.dir_alpha,
+                                                 min_require_size=10)
+
+        elif self.partition == "unbalance":
+            # quantity-skew (Dirichlet)
+            client_sample_nums = F.dirichlet_unbalance_split(self.num_clients, self.num_samples,
+                                                             self.dir_alpha)
+            rand_perm = np.random.permutation(self.num_samples)
+            client_dict = F.homo_partition(client_sample_nums, rand_perm)
+
+        else:
+            # IID
+            client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
+            rand_perm = np.random.permutation(self.num_samples)
+            client_dict = F.homo_partition(client_sample_nums, rand_perm)
+
+        return client_dict
 
     def __getitem__(self, index):
         return self.client_dict[index]
@@ -283,12 +357,12 @@ class TabularPartitioner(DataPartitioner):
 
 
 class adultPartitioner(TabularPartitioner):
-    num_classes = 2
+    pass
 
 
 class rcv1Partitioner(TabularPartitioner):
-    num_classes = 2
+    pass
 
 
 class covtypePartitioner(TabularPartitioner):
-    num_classes = 2
+    pass

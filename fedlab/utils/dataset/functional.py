@@ -24,7 +24,7 @@ def split_indices(num_cumsum, rand_perm):
     return client_dict
 
 
-def balance_partition(num_clients, num_samples):
+def balance_split(num_clients, num_samples):
     """Assign same sample sample for each client.
 
     Args:
@@ -41,8 +41,14 @@ def balance_partition(num_clients, num_samples):
     return client_sample_nums
 
 
-def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
-    """Assign different sample number for each client.
+def homo_partition(client_sample_nums, rand_perm):
+    num_cumsum = np.cumsum(client_sample_nums).astype(int)
+    client_dict = split_indices(num_cumsum, rand_perm)
+    return client_dict
+
+
+def lognormal_unbalance_split(num_clients, num_samples, unbalance_sgm):
+    """Assign different sample number for each client using Log-Normal distribution.
 
     Sample numbers for clients are drawn from Log-Normal distribution.
 
@@ -73,6 +79,30 @@ def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
     else:
         client_sample_nums = (np.ones(num_clients) * num_samples_per_client).astype(int)
 
+    return client_sample_nums
+
+
+def dirichlet_unbalance_split(num_clients, num_samples, alpha):
+    """Assign different sample number for each client using Log-Normal distribution.
+
+    Sample numbers for clients are drawn from Log-Normal distribution.
+
+    Args:
+        num_clients (int): Number of clients for partition.
+        num_samples (int): Total number of samples.
+        alpha (float): Dirichlet concentration parameter
+
+    Returns:
+        numpy.ndarray: A numpy array consisting ``num_clients`` integer elements, each represents sample number of corresponding clients.
+
+    """
+    min_size = 0
+    while min_size < 10:
+        proportions = np.random.dirichlet(np.repeat(alpha, num_clients))
+        proportions = proportions / proportions.sum()
+        min_size = np.min(proportions * num_samples)
+
+    client_sample_nums = (proportions * num_samples).astype(int)
     return client_sample_nums
 
 
