@@ -15,11 +15,8 @@
 import numpy as np
 import random
 import os
-import pickle
 
 from torch.utils.data import Dataset
-
-from ..functional import save_dict, load_dict
 
 
 class FCUBE(Dataset):
@@ -57,7 +54,7 @@ class FCUBE(Dataset):
             if os.path.exists(full_file_paths['data']) and os.path.exists(
                     full_file_paths['targets']):
                 print(
-                    f"FCUBE data already generated. Load from file {full_file_paths['data']} "
+                    f"FCUBE data already generated. Load from {full_file_paths['data']} "
                     f"and {full_file_paths['targets']}...")
                 self.data = np.load(full_file_paths['data'])
                 self.targets = np.load(full_file_paths['targets'])
