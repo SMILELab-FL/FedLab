@@ -249,12 +249,15 @@ class FCUBEPartitioner(DataPartitioner):
     - IID
 
     Args:
-        num_samples:
+        targets (list or numpy.ndarray): Targets of dataset for partition. Each element is ``0`` or ``1``.
     """
+    num_classes = 2
+    num_clients = 4  # only accept partition for 4 clients
 
-    def __init__(self, num_samples):
-        self.num_classes = 2
-        self.num_clients = 4
+    def __init__(self, targets):
+        if isinstance(targets, list):
+            targets = np.array(targets)
+        self.partition = 'synthetic'
         pass
 
     def _perform_partition(self):
