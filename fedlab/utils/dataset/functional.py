@@ -291,7 +291,7 @@ def label_skew_quantity_based_partition(targets, num_clients, num_classes, major
     idx_batch = [np.ndarray(0, dtype=np.int64) for _ in range(num_clients)]
     # only for major_classes_num < num_classes.
     # if major_classes_num = num_classes, it equals to IID partition
-    times = [0 for _ in range(10)]
+    times = [0 for _ in range(num_classes)]
     contain = []
     for cid in range(num_clients):
         current = [cid % num_classes]

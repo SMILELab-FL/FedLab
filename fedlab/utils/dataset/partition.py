@@ -351,12 +351,12 @@ class TabularPartitioner(DataPartitioner):
 
 
 class adultPartitioner(TabularPartitioner):
-    pass
+    num_features = 123
 
 
 class rcv1Partitioner(TabularPartitioner):
-    pass
+    num_features = 47236
 
 
 class covtypePartitioner(TabularPartitioner):
-    pass
+    num_features = 54
