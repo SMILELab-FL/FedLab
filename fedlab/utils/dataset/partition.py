@@ -174,7 +174,7 @@ class CIFAR10Partitioner(DataPartitioner):
 
 
 class CIFAR100Partitioner(CIFAR10Partitioner):
-    """CIFAR100 for data partitioner.
+    """CIFAR100 data partitioner.
 
     This is a subclass of the :class:`CIFAR10Partitioner`.
     """
@@ -244,30 +244,55 @@ class FEMNISTPartitioner(DataPartitioner):
 
 
 class FCUBEPartitioner(DataPartitioner):
-    """
+    """FCUBE data partitioner.
+
+    FCUBE is a synthetic dataset for research in non-IID scenario with feature imbalance. This
+    dataset and its partition methods are proposed in `Federated Learning on Non-IID Data Silos: An
+    Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
+    Supported partition methods for FCUBE:
+
     - feature-distribution-skew:synthetic
+
     - IID
 
+    For more details, please refer to Section (IV-B-b) of original paper.
+
     Args:
-        targets (list or numpy.ndarray): Targets of dataset for partition. Each element is ``0`` or ``1``.
+        data (numpy.ndarray): Data of dataset :class:`FCUBE`.
     """
     num_classes = 2
     num_clients = 4  # only accept partition for 4 clients
 
-    def __init__(self, targets):
-        if isinstance(targets, list):
-            targets = np.array(targets)
-        self.partition = 'synthetic'
-        pass
+    def __init__(self, data, partition):
+        if partition not in ['synthetic', 'iid']:
+            raise ValueError(
+                f"FCUBE only supports 'synthetic' and 'iid' partition, not {partition}.")
+        self.partition = partition
+        self.data = data
+        if isinstance(data, np.ndarray):
+            self.num_samples = data.shape[0]
+        else:
+            self.num_samples = len(data)
+
+        self.client_dict = self._perform_partition()
 
     def _perform_partition(self):
-        pass
+        if self.partition == 'synthetic':
+            # feature-distribution-skew:synthetic
+            client_dict = F.fcube_synthetic_partition(self.data)
+        else:
+            # IID partition
+            client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
+            client_dict = F.homo_partition(client_sample_nums, self.num_samples)
+
+        return client_dict
 
     def __getitem__(self, index):
         return self.client_dict[index]
 
     def __len__(self):
-        return len(self.client_dict)
+        return self.num_clients
 
 
 class TabularPartitioner(DataPartitioner):

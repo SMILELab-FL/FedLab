@@ -288,6 +288,18 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
 
 
 def label_skew_quantity_based_partition(targets, num_clients, num_classes, major_classes_num):
+    """
+
+    Args:
+        targets (np.ndarray): Labels od dataset.
+        num_clients (int): Number of clients.
+        num_classes (int): Number of unique classes.
+        major_classes_num (int): Number of classes for each client, should be less then ``num_classes``.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+
+    """
     idx_batch = [np.ndarray(0, dtype=np.int64) for _ in range(num_clients)]
     # only for major_classes_num < num_classes.
     # if major_classes_num = num_classes, it equals to IID partition
@@ -316,6 +328,33 @@ def label_skew_quantity_based_partition(targets, num_clients, num_classes, major
                 ids += 1
 
     client_dict = {cid: idx_batch[cid] for cid in range(num_clients)}
+    return client_dict
+
+
+def fcube_synthetic_partition(data):
+    """Feature-distribution-skew:synthetic partition.
+
+    Synthetic partition for FCUBE dataset. This partition is from `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
+    Args:
+        data (np.ndarray): Data of dataset :class:`FCUBE`.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+    """
+    num_clients = 4
+    client_indices = [[] for _ in range(num_clients)]
+    for idx, sample in enumerate(data):
+        p1, p2, p3 = sample
+        if (p1 > 0 and p2 > 0 and p3 > 0) or (p1 < 0 and p2 < 0 and p3 < 0):
+            client_indices[0].append(idx)
+        elif (p1 > 0 and p2 > 0 and p3 < 0) or (p1 < 0 and p2 < 0 and p3 > 0):
+            client_indices[1].append(idx)
+        elif (p1 > 0 and p2 < 0 and p3 > 0) or (p1 < 0 and p2 > 0 and p3 < 0):
+            client_indices[2].append(idx)
+        else:
+            client_indices[3].append(idx)
+    client_dict = {cid: np.array(client_indices[cid]).astype(int) for cid in range(num_clients)}
     return client_dict
 
 
