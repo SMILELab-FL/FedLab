@@ -181,121 +181,22 @@ class CIFAR100Partitioner(CIFAR10Partitioner):
     num_classes = 100
 
 
-class MNISTPartitioner(DataPartitioner):
-    def __init__(self):
-        self.num_classes = 10
-        pass
-
-    def _perform_partition(self):
-        pass
-
-    def __getitem__(self, index):
-        return self.client_dict[index]
-
-    def __len__(self):
-        return len(self.client_dict)
-
-
-class FMNISTPartitioner(DataPartitioner):
-    def __init__(self):
-        pass
-
-    def _perform_partition(self):
-        pass
-
-    def __getitem__(self, index):
-        return self.client_dict[index]
-
-    def __len__(self):
-        return len(self.client_dict)
-
-
-class SVHNPartitioner(DataPartitioner):
-    def __init__(self):
-        pass
-
-    def _perform_partition(self):
-        pass
-
-    def __getitem__(self, index):
-        return self.client_dict[index]
-
-    def __len__(self):
-        return len(self.client_dict)
-
-
-class FEMNISTPartitioner(DataPartitioner):
-    def __init__(self):
-        """
-        - feature-distribution-skew:real-world
-        - IID
-        """
-        # num_classes =
-        pass
-
-    def _perform_partition(self):
-        pass
-
-    def __getitem__(self, index):
-        return self.client_dict[index]
-
-    def __len__(self):
-        return len(self.client_dict)
-
-
-class FCUBEPartitioner(DataPartitioner):
-    """FCUBE data partitioner.
-
-    FCUBE is a synthetic dataset for research in non-IID scenario with feature imbalance. This
-    dataset and its partition methods are proposed in `Federated Learning on Non-IID Data Silos: An
-    Experimental Study <https://arxiv.org/abs/2102.02079>`_.
-
-    Supported partition methods for FCUBE:
-
-    - feature-distribution-skew:synthetic
-
+class BasicPartitioner(DataPartitioner):
+    """
+    - label-distribution-skew:quantity-based
+    - label-distribution-skew:distributed-based (Dirichlet)
+    - quantity-skew (Dirichlet)
     - IID
 
-    For more details, please refer to Section (IV-B-b) of original paper.
-
     Args:
-        data (numpy.ndarray): Data of dataset :class:`FCUBE`.
+        targets:
+        num_clients:
+        partition:
+        dir_alpha:
+        major_classes_num:
+        verbose:
+        seed:
     """
-    num_classes = 2
-    num_clients = 4  # only accept partition for 4 clients
-
-    def __init__(self, data, partition):
-        if partition not in ['synthetic', 'iid']:
-            raise ValueError(
-                f"FCUBE only supports 'synthetic' and 'iid' partition, not {partition}.")
-        self.partition = partition
-        self.data = data
-        if isinstance(data, np.ndarray):
-            self.num_samples = data.shape[0]
-        else:
-            self.num_samples = len(data)
-
-        self.client_dict = self._perform_partition()
-
-    def _perform_partition(self):
-        if self.partition == 'synthetic':
-            # feature-distribution-skew:synthetic
-            client_dict = F.fcube_synthetic_partition(self.data)
-        else:
-            # IID partition
-            client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
-            client_dict = F.homo_partition(client_sample_nums, self.num_samples)
-
-        return client_dict
-
-    def __getitem__(self, index):
-        return self.client_dict[index]
-
-    def __len__(self):
-        return self.num_clients
-
-
-class TabularPartitioner(DataPartitioner):
     num_classes = 2
 
     def __init__(self, targets, num_clients,
@@ -304,12 +205,6 @@ class TabularPartitioner(DataPartitioner):
                  major_classes_num=1,
                  verbose=True,
                  seed=None):
-        """
-        - label-distribution-skew:quantity-based
-        - label-distribution-skew:distributed-based (Dirichlet)
-        - quantity-skew (Dirichlet)
-        - IID
-        """
         self.targets = np.array(targets)  # with shape (num_samples,)
         self.num_samples = self.targets.shape[0]
         self.num_clients = num_clients
@@ -378,13 +273,113 @@ class TabularPartitioner(DataPartitioner):
         return len(self.client_dict)
 
 
-class adultPartitioner(TabularPartitioner):
+class VisionPartitioner(BasicPartitioner):
+    num_classes = 10
+
+    def __init__(self, targets, num_clients,
+                 partition='iid',
+                 dir_alpha=None,
+                 major_classes_num=None,
+                 verbose=True,
+                 seed=None):
+        super(VisionPartitioner, self).__init__(targets=targets, num_clients=num_clients,
+                                                partition=partition,
+                                                dir_alpha=dir_alpha,
+                                                major_classes_num=major_classes_num,
+                                                verbose=verbose,
+                                                seed=seed)
+
+
+class MNISTPartitioner(VisionPartitioner):
+    num_features = 784
+
+
+class FMNISTPartitioner(VisionPartitioner):
+    num_features = 784
+
+
+class SVHNPartitioner(VisionPartitioner):
+    num_features = 1024
+
+
+# class FEMNISTPartitioner(DataPartitioner):
+#     def __init__(self):
+#         """
+#         - feature-distribution-skew:real-world
+#         - IID
+#         """
+#         # num_classes =
+#         pass
+#
+#     def _perform_partition(self):
+#         pass
+#
+#     def __getitem__(self, index):
+#         return self.client_dict[index]
+#
+#     def __len__(self):
+#         return len(self.client_dict)
+
+
+class FCUBEPartitioner(DataPartitioner):
+    """FCUBE data partitioner.
+
+    FCUBE is a synthetic dataset for research in non-IID scenario with feature imbalance. This
+    dataset and its partition methods are proposed in `Federated Learning on Non-IID Data Silos: An
+    Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
+    Supported partition methods for FCUBE:
+
+    - feature-distribution-skew:synthetic
+
+    - IID
+
+    For more details, please refer to Section (IV-B-b) of original paper.
+
+    Args:
+        data (numpy.ndarray): Data of dataset :class:`FCUBE`.
+    """
+    num_classes = 2
+    num_clients = 4  # only accept partition for 4 clients
+
+    def __init__(self, data, partition):
+        if partition not in ['synthetic', 'iid']:
+            raise ValueError(
+                f"FCUBE only supports 'synthetic' and 'iid' partition, not {partition}.")
+        self.partition = partition
+        self.data = data
+        if isinstance(data, np.ndarray):
+            self.num_samples = data.shape[0]
+        else:
+            self.num_samples = len(data)
+
+        self.client_dict = self._perform_partition()
+
+    def _perform_partition(self):
+        if self.partition == 'synthetic':
+            # feature-distribution-skew:synthetic
+            client_dict = F.fcube_synthetic_partition(self.data)
+        else:
+            # IID partition
+            client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
+            client_dict = F.homo_partition(client_sample_nums, self.num_samples)
+
+        return client_dict
+
+    def __getitem__(self, index):
+        return self.client_dict[index]
+
+    def __len__(self):
+        return self.num_clients
+
+
+class adultPartitioner(BasicPartitioner):
     num_features = 123
 
 
-class rcv1Partitioner(TabularPartitioner):
+class rcv1Partitioner(BasicPartitioner):
     num_features = 47236
 
 
-class covtypePartitioner(TabularPartitioner):
+class covtypePartitioner(BasicPartitioner):
     num_features = 54
