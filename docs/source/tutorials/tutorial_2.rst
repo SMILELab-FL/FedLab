@@ -130,7 +130,7 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
 **FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for example.
 
 
-**Client :meth:`main_loop()` part**:
+**Client part**:
 
 .. code-block:: python
 
@@ -154,7 +154,7 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
                 raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
 
 
-**Server :meth:`main_loop()` Part**:
+**Server Part**:
 
 .. code-block:: python
 
