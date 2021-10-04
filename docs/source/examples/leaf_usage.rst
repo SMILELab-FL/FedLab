@@ -12,7 +12,7 @@ corresponding dataset. The unified interface is in
 This markdown file introduces the process of using LEAF dataset in
 FedLab.
 
-description of Leaf datasets
+Description of Leaf datasets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The LEAF benchmark contains the federation settings of Celeba, femnist,
@@ -153,7 +153,7 @@ If you need to obtain or split data again, make sure to delete
 ``data`` folder in the dataset directory before re-running
 ``preprocess.sh`` to download and preprocess data.
 
-pickle file stores DataSet.
+Pickle file stores DataSet.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to speed up developers' reading data, fedlab provides a method
@@ -181,7 +181,7 @@ all pickle dataset files. 3. ``dataset_name``: Specify the name of the
 leaf data set to be processed. There are six options {femnist,
 shakespeare, celeba, sent140, synthetic, reddit}.
 
-dataloader loading data set
+Dataloader loading data set
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Leaf datasets are loaded by ``dataloader.py`` (located under
