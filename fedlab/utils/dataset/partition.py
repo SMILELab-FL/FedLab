@@ -373,7 +373,7 @@ class FCUBEPartitioner(DataPartitioner):
         return self.num_clients
 
 
-class adultPartitioner(BasicPartitioner):
+class AdultPartitioner(BasicPartitioner):
     num_features = 123
 
 
