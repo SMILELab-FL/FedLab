@@ -377,7 +377,7 @@ class AdultPartitioner(BasicPartitioner):
     num_features = 123
 
 
-class rcv1Partitioner(BasicPartitioner):
+class RCV1Partitioner(BasicPartitioner):
     num_features = 47236
 
 
