@@ -15,6 +15,7 @@ algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`l
    tutorial_2
    tutorial_3
    data_partition
+   fcube_tutorial
 
 
 .. card:: Learn Distributed Network Basics
