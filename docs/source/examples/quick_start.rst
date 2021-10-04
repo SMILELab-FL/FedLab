@@ -10,15 +10,11 @@ clients.
 
 Source code of this page can be seen in `fedlab-benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.
 
-Cross Machine/Process is suit for computer cluster deployment, simulating data-center FL system.
-In our experiment, the number of world_size can't be more than 50, otherwise the socket connecting
-will fail.
-
 
 Download dataset
 ================
 
-FedLab provides common dataset download and partition process program. Besides, FL dataset baseline
+FedLab provides scripts for common dataset download and partition process. Besides, FL dataset baseline
 LEAF :cite:p:`caldas2018leaf` is also implemented and compatible with PyTorch interfaces.
 
 Codes related to dataset download process are available at ``fedlab_benchamrks/datasets/data/{dataset name}``.
@@ -27,8 +23,8 @@ Codes related to dataset download process are available at ``fedlab_benchamrks/d
 
 .. code-block:: shell-session
 
-    $ cd fedlab_benchamrks/datasets/data/{mnist or cifar10}/
-    $ python download.py
+    $ cd fedlab_benchamrks/datasets/{mnist or cifar10}/
+    $ python download_{dataset}.py
 
 2. Partition
 
@@ -95,6 +91,7 @@ Start a FL simulation with 1 server and 2 clients.
 
 .. code-block:: shell-session
 
+    $ cd fedlab_benchamrks/algorithm/fedavg/cross_machine
     $ bash quick_start.sh
 
 The content of ``quick_start.sh`` is:
@@ -107,7 +104,7 @@ The content of ``quick_start.sh`` is:
 
 Cross Machine scenario allows users deploy their FL system in computer cluster. In this case, we
 set the address of server as localhost. Then three process will communicate with each other
-following our default agreements and start FL procedure.
+following standard FL procedure.
 
 .. note::
 
@@ -117,29 +114,29 @@ following our default agreements and start FL procedure.
 3. Scale
 ----------
 
-:class:`SerialTrainer` uses less computer resources (single process) to simulate multiple clients. Cross-Machine simulates one client with one process. In our experiment, the world size of ``torch.distributed`` can't more than 50, otherwise, the socket will crash, which limited the client number of FL simulation.
+:class:`SerialTrainer` uses less computer resources (single process) to simulate multiple clients. Cross Machine is suit for computer cluster deployment, simulating data-center FL system. In our experiment, the world size of ``torch.distributed`` can't more than 50 (Denpends on clusters), otherwise, the socket will crash, which limited the client number of FL simulation.
 
-To overcome this shortage, FedLab provides another scale standard implementation to combine
-:class:`SerialTrainer` and :class:`Manager`, which allows a single process simulate multiple clients as will.
+To improve scalability, FedLab provides scale standard implementation to combine
+:class:`SerialTrainer` and :class:`ClientManager`, which allows a single process simulate multiple clients.
 
 Our experimental results are also based on this scenario. Source codes are available in
 fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
 
 Here, I take mnist-cnn as example to introduce this demo. In this demo, we set world_size=11 (1 ServerManager, 10 ClientManagers), and each ClientManager represents 10 local client dataset partition. Our data partition strategy follows the experimental setting of fedavg as well. In this way, **we only use 11 processes to simulate a FL system with 100 clients.**
 
-To start this system, you need to open at least 2 terminal (we still use localhost as demo. Use multiple machine to start is OK as we tested):
+To start this system, you need to open at least 2 terminal (we still use localhost as demo. Use multiple machines is OK as long as with right network configuration):
 
-1. server
+1. server (terminal 1)
 
 .. code-block:: shell-session
 
     $ python server.py --ip 127.0.0.1 --port 3002 --world_size 11
 
-2. clients
+2. clients (terminal 2)
 
 .. code-block:: shell-session
 
-    $ bash start_clt.sh 11 1 10
+    $ bash start_clt.sh 11 1 10 # launch clients from rank 1 to rank 10 with world_size 11
 
 The content of ``start_clt.sh``:
 
@@ -154,10 +151,3 @@ The content of ``start_clt.sh``:
     }
     done
     wait
-
-Summary
-=======
-
-This page introduces how to quick start FedLab demo on localhost. For further usage of
-building customize FL similation, we highly encourage you to read our tutorials and source
-code.
