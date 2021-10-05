@@ -49,22 +49,22 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         return all_equal
 
     def test_balance_partition(self):
-        client_sample_nums = F.balance_partition(self.num_clients, self.num_samples)
+        client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
         self.assertTrue(client_sample_nums.shape[0] == self.num_clients)
         self.assertTrue(all(client_sample_nums == int(self.num_samples / self.num_clients)))
 
-    def test_lognormal_unbalance_partition(self):
+    def test_lognormal_unbalance_split(self):
         # check length
-        clt_sample_nums = F.lognormal_unbalance_partition(self.num_clients,
-                                                          self.num_samples, 0.6)
+        clt_sample_nums = F.lognormal_unbalance_split(self.num_clients,
+                                                      self.num_samples, 0.6)
         self.assertTrue(clt_sample_nums.shape[0] == self.num_clients)
         # sample number for each client should not be equal
         self.assertFalse(all(clt_sample_nums == int(self.num_samples / self.num_clients)))
 
         # when unbalanced_sgm=0, should have same result as balanced
-        lognormal_clt_sample_nums = F.lognormal_unbalance_partition(self.num_clients,
-                                                                    self.num_samples, 0)
-        balance_clt_sample_nums = F.balance_partition(self.num_clients, self.num_samples)
+        lognormal_clt_sample_nums = F.lognormal_unbalance_split(self.num_clients,
+                                                                self.num_samples, 0)
+        balance_clt_sample_nums = F.balance_split(self.num_clients, self.num_samples)
         self.assertTrue(all(lognormal_clt_sample_nums == balance_clt_sample_nums))
 
     def test_hetero_dir_partition(self):
@@ -121,7 +121,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
 
     def test_client_inner_dirichlet_partition(self):
         targets = np.random.randint(self.num_classes, size=self.num_samples)
-        client_sample_nums = F.balance_partition(self.num_clients, self.num_samples)
+        client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
 
         # use np.ndarray targets
         client_dict = F.client_inner_dirichlet_partition(targets,

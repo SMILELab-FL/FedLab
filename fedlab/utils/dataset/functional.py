@@ -24,7 +24,7 @@ def split_indices(num_cumsum, rand_perm):
     return client_dict
 
 
-def balance_partition(num_clients, num_samples):
+def balance_split(num_clients, num_samples):
     """Assign same sample sample for each client.
 
     Args:
@@ -41,8 +41,8 @@ def balance_partition(num_clients, num_samples):
     return client_sample_nums
 
 
-def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
-    """Assign different sample number for each client.
+def lognormal_unbalance_split(num_clients, num_samples, unbalance_sgm):
+    """Assign different sample number for each client using Log-Normal distribution.
 
     Sample numbers for clients are drawn from Log-Normal distribution.
 
@@ -74,6 +74,47 @@ def lognormal_unbalance_partition(num_clients, num_samples, unbalance_sgm):
         client_sample_nums = (np.ones(num_clients) * num_samples_per_client).astype(int)
 
     return client_sample_nums
+
+
+def dirichlet_unbalance_split(num_clients, num_samples, alpha):
+    """Assign different sample number for each client using Log-Normal distribution.
+
+    Sample numbers for clients are drawn from Log-Normal distribution.
+
+    Args:
+        num_clients (int): Number of clients for partition.
+        num_samples (int): Total number of samples.
+        alpha (float): Dirichlet concentration parameter
+
+    Returns:
+        numpy.ndarray: A numpy array consisting ``num_clients`` integer elements, each represents sample number of corresponding clients.
+
+    """
+    min_size = 0
+    while min_size < 10:
+        proportions = np.random.dirichlet(np.repeat(alpha, num_clients))
+        proportions = proportions / proportions.sum()
+        min_size = np.min(proportions * num_samples)
+
+    client_sample_nums = (proportions * num_samples).astype(int)
+    return client_sample_nums
+
+
+def homo_partition(client_sample_nums, num_samples):
+    """Partition data indices in IID way given sample numbers for each clients.
+
+    Args:
+        client_sample_nums (numpy.ndarray): Sample numbers for each clients.
+        num_samples (int): Number of samples.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+
+    """
+    rand_perm = np.random.permutation(num_samples)
+    num_cumsum = np.cumsum(client_sample_nums).astype(int)
+    client_dict = split_indices(num_cumsum, rand_perm)
+    return client_dict
 
 
 def hetero_dir_partition(targets, num_clients, num_classes, dir_alpha, min_require_size=None):
@@ -196,7 +237,7 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
     It's different from :func:`hetero_dir_partition`.
 
     Args:
-        targets (list or numpy.ndarray): Sample targets. Shuffled preferred.
+        targets (list or numpy.ndarray): Sample targets.
         num_clients (int): Number of clients for partition.
         num_classes (int): Number of classes in samples.
         dir_alpha (float): Parameter alpha for Dirichlet distribution.
@@ -209,6 +250,9 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
     """
     if not isinstance(targets, np.ndarray):
         targets = np.array(targets)
+
+    rand_perm = np.random.permutation(targets.shape[0])
+    targets = targets[rand_perm]
 
     class_priors = np.random.dirichlet(alpha=[dir_alpha] * num_classes,
                                        size=num_clients)
@@ -239,7 +283,78 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
 
             break
 
-    client_dict = dict([(cid, client_indices[cid]) for cid in range(num_clients)])
+    client_dict = {cid: client_indices[cid] for cid in range(num_clients)}
+    return client_dict
+
+
+def label_skew_quantity_based_partition(targets, num_clients, num_classes, major_classes_num):
+    """
+
+    Args:
+        targets (np.ndarray): Labels od dataset.
+        num_clients (int): Number of clients.
+        num_classes (int): Number of unique classes.
+        major_classes_num (int): Number of classes for each client, should be less then ``num_classes``.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+
+    """
+    idx_batch = [np.ndarray(0, dtype=np.int64) for _ in range(num_clients)]
+    # only for major_classes_num < num_classes.
+    # if major_classes_num = num_classes, it equals to IID partition
+    times = [0 for _ in range(num_classes)]
+    contain = []
+    for cid in range(num_clients):
+        current = [cid % num_classes]
+        times[cid % num_classes] += 1
+        j = 1
+        while j < major_classes_num:
+            ind = np.random.randint(num_classes)
+            if ind not in current:
+                j += 1
+                current.append(ind)
+                times[ind] += 1
+        contain.append(current)
+
+    for k in range(num_classes):
+        idx_k = np.where(targets == k)[0]
+        np.random.shuffle(idx_k)
+        split = np.array_split(idx_k, times[k])
+        ids = 0
+        for cid in range(num_clients):
+            if k in contain[cid]:
+                idx_batch[cid] = np.append(idx_batch[cid], split[ids])
+                ids += 1
+
+    client_dict = {cid: idx_batch[cid] for cid in range(num_clients)}
+    return client_dict
+
+
+def fcube_synthetic_partition(data):
+    """Feature-distribution-skew:synthetic partition.
+
+    Synthetic partition for FCUBE dataset. This partition is from `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
+    Args:
+        data (np.ndarray): Data of dataset :class:`FCUBE`.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+    """
+    num_clients = 4
+    client_indices = [[] for _ in range(num_clients)]
+    for idx, sample in enumerate(data):
+        p1, p2, p3 = sample
+        if (p1 > 0 and p2 > 0 and p3 > 0) or (p1 < 0 and p2 < 0 and p3 < 0):
+            client_indices[0].append(idx)
+        elif (p1 > 0 and p2 > 0 and p3 < 0) or (p1 < 0 and p2 < 0 and p3 > 0):
+            client_indices[1].append(idx)
+        elif (p1 > 0 and p2 < 0 and p3 > 0) or (p1 < 0 and p2 > 0 and p3 < 0):
+            client_indices[2].append(idx)
+        else:
+            client_indices[3].append(idx)
+    client_dict = {cid: np.array(client_indices[cid]).astype(int) for cid in range(num_clients)}
     return client_dict
 
 
