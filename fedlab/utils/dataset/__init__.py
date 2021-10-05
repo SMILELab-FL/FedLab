@@ -16,4 +16,4 @@
 from .sampler import SubsetSampler, RawPartitionSampler, DictFileSampler
 from .slicing import noniid_slicing, random_slicing
 from .partition import DataPartitioner, CIFAR10Partitioner, CIFAR100Partitioner, FCUBEPartitioner, \
-    AdultPartitioner, RCV1Partitioner
+    AdultPartitioner, RCV1Partitioner, CovtypePartitioner

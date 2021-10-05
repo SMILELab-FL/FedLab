@@ -375,11 +375,15 @@ class FCUBEPartitioner(DataPartitioner):
 
 class AdultPartitioner(BasicPartitioner):
     num_features = 123
+    num_classes = 2
 
 
 class RCV1Partitioner(BasicPartitioner):
     num_features = 47236
+    num_classes = 2
 
 
-class covtypePartitioner(BasicPartitioner):
+class CovtypePartitioner(BasicPartitioner):
     num_features = 54
+    num_classes = 2
+
