@@ -38,7 +38,7 @@ parser.add_argument('--port', type=str, default="3002")
 parser.add_argument('--world_size', type=int)
 
 parser.add_argument('--round', type=int)
-parser.add_argument('--sample', type=float, default=0.1)
+parser.add_argument('--sample', type=float, default=1)
 parser.add_argument('--ethernet', type=str, default=None)
 
 args = parser.parse_args()

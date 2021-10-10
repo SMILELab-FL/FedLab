@@ -22,7 +22,7 @@ class ModelMaintainer(object):
         More features with local or global model will be implemented here.
 
     Args:
-        model (torch.Module): PyTorch model.
+        model (torch.nn.Module): PyTorch model.
         cuda (bool): use GPUs or not.
     """
     def __init__(self, model, cuda) -> None:
