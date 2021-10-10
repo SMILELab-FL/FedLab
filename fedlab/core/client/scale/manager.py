@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import int32
+import torch
 
 from ...client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...client.manager import ClientPassiveManager
@@ -46,7 +46,8 @@ class ScaleClientPassiveManager(ClientPassiveManager):
                 model_parameters = payload[0]
 
                 _, message_code, payload = PackageProcessor.recv_package(src=0)
-                id_list = payload[0].to(int32).tolist()
+
+                id_list = payload[0].to(torch.int32).tolist()
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:

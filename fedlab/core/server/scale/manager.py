@@ -15,6 +15,8 @@
 import torch
 import threading
 
+from fedlab.core.communicator import DATA_TYPE_INT
+
 from ...server.manager import ServerSynchronousManager
 from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
@@ -44,10 +46,10 @@ class ScaleSynchronousManager(ServerSynchronousManager):
             PackageProcessor.send_package(package=param_pack, dst=rank)
 
             # Send activate id list
-            id_list = torch.Tensor(values).int()
+            id_list = torch.Tensor(values).to(torch.int64)
             act_pack = Package(message_code=MessageCode.ParameterUpdate,
                                content=id_list,
-                               data_type=1)
+                               data_type=DATA_TYPE_INT)
             PackageProcessor.send_package(package=act_pack, dst=rank)
 
     def main_loop(self):
