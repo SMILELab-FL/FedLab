@@ -26,8 +26,22 @@ DEFAULT_MESSAGE_CODE_VALUE = 0
 
 HEADER_SIZE = 5
 
+# previous version of DATA TYPE
 DATA_TYPE_FLOAT = 0
 DATA_TYPE_INT = 1
+
+# DATA TYPE CONSTANT
+FLOAT32 = 0
+INT64 = 1
+
+FLOAT8 = 2
+FLOAT16 = 3
+FLOAT64 = 4
+
+INT8 = 5
+INT16 = 6
+INT32 = 7
+
 
 from .package import Package
 from .processor import PackageProcessor
