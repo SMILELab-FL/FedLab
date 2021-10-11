@@ -26,7 +26,8 @@ setup(
                       'torchvision>=0.8.2',
                       'numpy',
                       'pandas',
-                      'pynvml'],
+                      'pynvml',
+                      'tqdm'],
     python_requires='>=3.6',
     classifiers=[
         'Topic :: Scientific/Engineering',
