@@ -21,7 +21,7 @@ CIFAR10
 
 FedLab provides a number of pre-defined partition schemes for some datasets (such as CIFAR10) that subclass :class:`fedlab.utils.dataset.partition.DataPartitioner` and implement functions specific to particular partition scheme. They can be used to prototype and benchmark your FL algorithms.
 
-Tutorial for :class:`CIFAR10Partitioner`: `CIFAR10 tutorial <data-cifar10>`_.
+Tutorial for :class:`CIFAR10Partitioner`: :ref:`CIFAR10 tutorial <data-cifar10>`.
 
 
 CIFAR100
