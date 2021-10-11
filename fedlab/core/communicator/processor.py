@@ -18,7 +18,7 @@ import torch
 import torch.distributed as dist
 
 from .package import Package
-from . import DATA_TYPE_FLOAT, DATA_TYPE_INT, HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX
+from . import HEADER_DATA_TYPE_IDX, HEADER_SIZE, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX, dtype_flab2torch, dtype_torch2flab
 
 
 class PackageProcessor(object):
@@ -29,61 +29,6 @@ class PackageProcessor(object):
 
     EVERYTHING is :class:`torch.Tensor` in FedLab.
     """
-    @staticmethod
-    def recv_package(src=None):
-        """Three-segment tensor communication pattern based on ``torch.distributed``
-
-        Pattern is shown as follows:
-            1.1 sender: send a header tensor containing ``slice_size`` to receiver
-
-            1.2 receiver: receive the header, and get the value of ``slice_size`` and create a buffer for incoming slices of content
-
-            2.1 sender: send a list of slices indicating the size of every content size.
-
-            2.2 receiver: receive the slices list.
-
-            3.1 sender: send a content tensor composed of a list of tensors.
-
-            3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
-        """
-        def recv_header(src=src, parse=True):
-            buffer = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int64)
-            dist.recv(buffer, src=src)
-            if parse is True:
-                return Package.parse_header(buffer)
-            else:
-                return buffer
-
-        def recv_slices(slices_size, src):
-            buffer_slices = torch.zeros(size=(slices_size, ),
-                                        dtype=torch.int64)
-            dist.recv(buffer_slices, src=src)
-            slices = [slc.item() for slc in buffer_slices]
-            return slices
-
-        def recv_content(slices, data_type, src):
-            content_size = sum(slices)
-            if data_type == DATA_TYPE_FLOAT:
-                buffer = torch.zeros(size=(content_size, ),
-                                     dtype=torch.float32)
-            elif data_type == DATA_TYPE_INT:
-                buffer = torch.zeros(size=(content_size, ), dtype=torch.int64)
-            else:
-                raise ValueError("Invalid data_type, expecting {} or {}, but get {}".format(DATA_TYPE_INT, DATA_TYPE_FLOAT, data_type))
-            
-            dist.recv(buffer, src=src)
-            return Package.parse_content(slices, buffer)
-
-        sender_rank, _, slices_size, message_code, data_type = recv_header(
-            src=src)
-
-        if slices_size > 0:
-            slices = recv_slices(slices_size=slices_size, src=sender_rank)
-            content = recv_content(slices, data_type, src=sender_rank)
-        else:
-            content = None
-
-        return sender_rank, message_code, content
 
     @staticmethod
     def send_package(package, dst):
@@ -104,18 +49,78 @@ class PackageProcessor(object):
         """
         def send_header(header, dst):
             header[HEADER_RECEIVER_RANK_IDX] = dst
+            
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
-            np_slices = np.array(slices, dtype=np.int64)
+            np_slices = np.array(slices, dtype=np.int32)
             tensor_slices = torch.from_numpy(np_slices)
             dist.send(tensor_slices, dst=dst)
 
         def send_content(content, dst):
             dist.send(content, dst=dst)
 
+        # body
+        if package.dtype is not None:
+            package.header[HEADER_DATA_TYPE_IDX] = dtype_torch2flab(package.dtype)
+
+        # sender header firstly
         send_header(header=package.header, dst=dst)
 
+        # if package got content, then send remain parts
         if package.header[HEADER_SLICE_SIZE_IDX] > 0:
             send_slices(slices=package.slices, dst=dst)
             send_content(content=package.content, dst=dst)
+
+
+    @staticmethod
+    def recv_package(src=None):
+        """Three-segment tensor communication pattern based on ``torch.distributed``
+
+        Pattern is shown as follows:
+            1.1 sender: send a header tensor containing ``slice_size`` to receiver
+
+            1.2 receiver: receive the header, and get the value of ``slice_size`` and create a buffer for incoming slices of content
+
+            2.1 sender: send a list of slices indicating the size of every content size.
+
+            2.2 receiver: receive the slices list.
+
+            3.1 sender: send a content tensor composed of a list of tensors.
+
+            3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
+        """
+        def recv_header(src=src, parse=True):
+            buffer = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int32)
+            dist.recv(buffer, src=src)
+            if parse is True:
+                return Package.parse_header(buffer)
+            else:
+                return buffer
+
+        def recv_slices(slices_size, src):
+            buffer_slices = torch.zeros(size=(slices_size, ),
+                                        dtype=torch.int32)
+            dist.recv(buffer_slices, src=src)
+            slices = [slc.item() for slc in buffer_slices]
+            return slices
+
+        def recv_content(slices, data_type, src):
+            content_size = sum(slices)
+            dtype = dtype_flab2torch(data_type)
+            buffer = torch.zeros(size=(content_size, ), dtype=dtype)
+
+            dist.recv(buffer, src=src)
+            return Package.parse_content(slices, buffer)
+
+        # body
+        sender_rank, _, slices_size, message_code, data_type = recv_header(
+            src=src)
+
+        if slices_size > 0:
+            slices = recv_slices(slices_size=slices_size, src=sender_rank)
+            content = recv_content(slices, data_type, src=sender_rank)
+        else:
+            content = None
+
+        return sender_rank, message_code, content

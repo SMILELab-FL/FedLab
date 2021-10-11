@@ -23,7 +23,7 @@ parser.add_argument("--world_size", type=int)
 parser.add_argument("--rank", type=int)
 
 parser.add_argument("--lr", type=float, default=0.01)
-parser.add_argument("--epoch", type=int, default=5)
+parser.add_argument("--epoch", type=int, default=2)
 parser.add_argument("--dataset", type=str)
 parser.add_argument("--batch_size", type=int, default=100)
 

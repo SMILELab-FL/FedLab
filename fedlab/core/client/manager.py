@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 import torch
 
-from fedlab.core.communicator import DATA_TYPE_INT
-
+from ...utils import Logger
 from ...utils.message_code import MessageCode
 
 from ..communicator.processor import Package, PackageProcessor
@@ -44,8 +42,7 @@ class ClientManager(NetworkManager):
         super().setup()
         content = torch.Tensor([self._trainer.client_num]).int()
         setup_pack = Package(message_code=MessageCode.SetUp,
-                             content=content,
-                             data_type=DATA_TYPE_INT)
+                             content=content)
         PackageProcessor.send_package(setup_pack, dst=0)
 
 
@@ -55,16 +52,11 @@ class ClientPassiveManager(ClientManager):
     Args:
         network (DistNetwork): network configuration.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
-        logger (Logger, optional): object of :class:`Logger` or :class:`logging`. 
+        logger (Logger): object of :class:`Logger`.
     """
-    def __init__(self, network, trainer, logger=None):
+    def __init__(self, network, trainer, logger=Logger()):
         super().__init__(network, trainer)
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
     def main_loop(self):
         """Actions to perform when receiving a new message, including local training.
@@ -100,16 +92,11 @@ class ClientActiveManager(ClientManager):
     Args:
         network (DistNetwork): network configuration.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
-        logger (Logger, optional): Logger for the current client manager. If ``None``, only log to command line.
+        logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, network, trainer, logger=None):
+    def __init__(self, network, trainer, logger=Logger()):
         super().__init__(network, trainer)
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
         self.model_time = None
 

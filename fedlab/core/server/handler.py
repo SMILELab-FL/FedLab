@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 import random
 import torch
 
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
+from ...utils import Logger
 from ..model_maintainer import ModelMaintainer
 
 
@@ -29,6 +29,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
     Example:
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
+
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
@@ -56,21 +57,18 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         global_round (int): stop condition. Shut down FL system when global round is reached.
         cuda (bool): Use GPUs or not. Default: ``False``
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
-                 logger=None):
+                 logger=Logger()):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
         if sample_ratio < 0.0 or sample_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(sample_ratio))
@@ -134,7 +132,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """
         self._LOGGER.info(
             "Model parameters aggregation, number of aggregation elements {}".
-            format(len(model_parameters_list)))
+                format(len(model_parameters_list)))
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             model_parameters_list)
@@ -162,22 +160,18 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         total_time (int): stop condition. Shut down FL system when total_time is reached.
         strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  alpha=0.5,
                  total_time=5,
                  strategy="constant",
                  cuda=False,
-                 logger=None):
+                 logger=Logger()):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
         self.client_num_in_total = 0
 
@@ -220,6 +214,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                 return torch.mul(self.alpha,
                                  1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return (staleness + 1)**(-self.a)
+            return (staleness + 1) ** (-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))

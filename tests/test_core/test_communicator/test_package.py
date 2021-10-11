@@ -23,7 +23,7 @@ from fedlab.core.communicator.package import Package
 from fedlab.utils.message_code import MessageCode
 from fedlab.core.communicator.package import (
     HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
-    HEADER_MESSAGE_CODE_IDX, DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE,
+    HEADER_MESSAGE_CODE_IDX, DEFAULT_SLICE_SIZE,
     DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE, HEADER_DATA_TYPE_IDX)
 
 
@@ -64,7 +64,7 @@ class PackageTestCase(unittest.TestCase):
 
         assert p.content == None
         assert p.header[HEADER_SENDER_RANK_IDX] == dist.get_rank()
-        assert p.header[HEADER_RECEIVER_RANK_IDX] == DEFAULT_RECEIVER_RANK
+        assert p.header[HEADER_RECEIVER_RANK_IDX] == -1
         assert p.header[HEADER_MESSAGE_CODE_IDX] == DEFAULT_MESSAGE_CODE_VALUE
         assert p.header[HEADER_SLICE_SIZE_IDX] == DEFAULT_SLICE_SIZE
 

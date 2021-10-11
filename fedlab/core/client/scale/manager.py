@@ -21,7 +21,7 @@ from ...communicator.package import Package
 from ...communicator.processor import PackageProcessor
 
 from ....utils.message_code import MessageCode
-
+from ....utils import Logger
 
 class ScaleClientPassiveManager(ClientPassiveManager):
     """Special client manager for :class:`SerialTrainer`.
@@ -32,9 +32,10 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     Args:
         network (DistNetwork): Distributed network to use.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`. For more client simulation with single process, you are supposed to use :class:`SerialTrainer` here.
+        logger (Logger): object of :class:`Logger`.
     """
-    def __init__(self, network, trainer):
-        super().__init__(network, trainer)
+    def __init__(self, network, trainer, logger=Logger()):
+        super().__init__(network, trainer, logger)
 
     def main_loop(self):
         """Actions to perform when receiving new message, including local training."""
@@ -47,7 +48,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
 
                 _, message_code, payload = PackageProcessor.recv_package(src=0)
 
-                id_list = payload[0].to(torch.int32).tolist()
+                id_list = payload[0].tolist()
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:
