@@ -30,8 +30,14 @@ class Logger(object):
         log_name (str): log name for output.
         log_file (str): a file path of log file.
     """
-    def __init__(self, log_name, log_file=None):
-        self.logger = logging.getLogger(log_name)
+    def __init__(self, log_name=None, log_file=None):
+        if log_name is not None:
+            self.logger = logging.getLogger(log_name)
+            self.name = log_name
+        else:
+            logging.getLogger().setLevel(logging.INFO)
+            self.logger = logging
+            self.name = "root"
 
         if log_file is not None:
             handler = logging.FileHandler(log_file, mode='w')

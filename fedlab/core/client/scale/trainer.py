@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import torch
-import logging
 
 from ...client import SERIAL_TRAINER
 from ..trainer import ClientTrainer
 from ....utils.serialization import SerializationTool
 from ....utils.dataset.sampler import SubsetSampler
-
+from ....utils import Logger
 
 class SerialTrainer(ClientTrainer):
     """Base class. 
@@ -29,24 +28,19 @@ class SerialTrainer(ClientTrainer):
         model (torch.nn.Module): Model used in this federation.
         cuda (bool): Use GPUs or not. Default: ``True``.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
-        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to console.
+        logger (Logger, optional): object of :class:`Logger`.
     """
     def __init__(self,
                  model,
                  client_num,
                  aggregator=None,
                  cuda=True,
-                 logger=None):
+                 logger= Logger()):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
         self.aggregator = aggregator
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
     def _train_alone(self, model_parameters, train_loader):
         """train local model with model_parameters on train_loader
@@ -105,7 +99,7 @@ class SubsetSerialTrainer(SerialTrainer):
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
         data_slices (list[list]): subset of indices of dataset.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
-        logger (Logger, optional): Logger for the current trainer. If ``None``, only log to command line.
+        logger (Logger, optional): object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``True``.
         args (dict, optional): Uncertain variables.
 
@@ -117,7 +111,7 @@ class SubsetSerialTrainer(SerialTrainer):
                  dataset,
                  data_slices,
                  aggregator=None,
-                 logger=None,
+                 logger=Logger(),
                  cuda=True,
                  args=None) -> None:
 

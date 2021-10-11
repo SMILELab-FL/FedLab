@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-
+from tqdm import tqdm
 from ..client import ORDINARY_TRAINER
+from ...utils import Logger
 from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
 
@@ -39,6 +39,10 @@ class ClientTrainer(ModelMaintainer):
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
+    
+    def evaluate(self):
+        """Evaluate quality of local model."""
+        raise NotImplementedError()
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
@@ -50,7 +54,7 @@ class ClientSGDTrainer(ClientTrainer):
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
         criterion (torch.nn.Loss, optional): loss function used in local training process.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): :object of :class:`Logger`. 
     """
     def __init__(self,
                  model,
@@ -59,19 +63,14 @@ class ClientSGDTrainer(ClientTrainer):
                  optimizer,
                  criterion,
                  cuda=True,
-                 logger=None):
+                 logger=Logger()):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
         self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
     def train(self, model_parameters) -> None:
         """Client trains its local model on local dataset.
@@ -79,13 +78,12 @@ class ClientSGDTrainer(ClientTrainer):
         Args:
             model_parameters (torch.Tensor): Serialized model parameters.
         """
-        self._LOGGER.info("Local train procedure is started")
         SerializationTool.deserialize_model(
             self._model, model_parameters)  # load parameters
         self._LOGGER.info("Local train procedure is running")
-        for _ in range(self.epochs):
+        for ep in range(self.epochs):
             self._model.train()
-            for inputs, labels in self._data_loader:
+            for inputs, labels in tqdm(self._data_loader, desc="{}, Epoch {}".format(self._LOGGER.name, ep)):
                 if self.cuda:
                     inputs, labels = inputs.cuda(self.gpu), labels.cuda(
                         self.gpu)

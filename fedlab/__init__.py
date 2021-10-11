@@ -14,4 +14,4 @@
 
 __version__ = "1.1.2"
 
-from .core.communicator import FLOAT8, FLOAT16, FLOAT32, FLOAT64, INT8, INT16, INT32, INT64
+from .core.communicator import FLOAT16, FLOAT32, FLOAT64, INT8, INT16, INT32, INT64
