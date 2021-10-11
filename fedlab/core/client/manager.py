@@ -26,10 +26,10 @@ from ..network_manager import NetworkManager
 class ClientManager(NetworkManager):
     """Base class for ClientManager.
 
-    ClientManager define client activation for different communication stage.
+    :class:`ClientManager` defines client activation for different communication stages.
 
     Args:
-        network (DistNetwork): network configuration.
+        network (DistNetwork): Network configuration.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
     """
     def __init__(self, network, trainer):
@@ -37,7 +37,10 @@ class ClientManager(NetworkManager):
         self._trainer = trainer
 
     def setup(self):
-        """Initialization stage. ClientManager reports the number of client that local process simulating."""
+        """Initialization stage.
+
+        :class:`ClientManager` reports number of clients simulated by current client process.
+        """
         super().setup()
         content = torch.Tensor([self._trainer.client_num]).int()
         setup_pack = Package(message_code=MessageCode.SetUp,
@@ -97,7 +100,7 @@ class ClientActiveManager(ClientManager):
     Args:
         network (DistNetwork): network configuration.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
-        logger (Logger, optional): object of :class:`Logger` or :class:`logging`.
+        logger (Logger, optional): Logger for the current client manager. If ``None``, only log to command line.
     """
     def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)

@@ -18,6 +18,7 @@ from ..client import ORDINARY_TRAINER
 from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
 
+
 class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
 
@@ -31,6 +32,7 @@ class ClientTrainer(ModelMaintainer):
         model (torch.nn.Module): PyTorch model.
         cuda (bool): Use GPUs or not.
     """
+
     def __init__(self, model, cuda):
         super().__init__(model, cuda)
         self.client_num = 1  # default is 1.
@@ -39,6 +41,7 @@ class ClientTrainer(ModelMaintainer):
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
+
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
@@ -50,8 +53,9 @@ class ClientSGDTrainer(ClientTrainer):
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
         criterion (torch.nn.Loss, optional): loss function used in local training process.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (Logger, optional): :attr:`logger` for client trainer. . If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): Logger for the current client trainer. If ``None``, only log to command line.
     """
+
     def __init__(self,
                  model,
                  data_loader,

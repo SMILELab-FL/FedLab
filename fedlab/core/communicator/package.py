@@ -33,15 +33,15 @@ class Package(object):
         
 
     :class:`Package` maintains 3 variables:
-        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
-        :attr:`slices` : ``list[slice_size_1, slice_size_2]``
-        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
+        - :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
+        - :attr:`slices` : ``list[slice_size_1, slice_size_2]``
+        - :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
     Args:
         receiver_rank (int, optional): Rank of receiver
         message_code (MessageCode): Message code
         content (torch.Tensor, optional): Tensors contained in this package.
-        data_type (int, optional): DATA_TYPE_FLOAT for torch.float32, DATA_TYPE_INT for torch.int64. Default is DATA_TYPE_FLOAT.
+        data_type (int, optional): ``DATA_TYPE_FLOAT`` for ``torch.float32``, ``DATA_TYPE_INT`` for ``torch.int64``. Default is ``DATA_TYPE_FLOAT``.
     """
     def __init__(self,
                  receiver_rank=None,
@@ -131,7 +131,7 @@ class Package(object):
         corresponding offsets. For more details about :class:`Package`.
 
         Returns:
-            [torch.Tensor]: a list of 1-D tensors parsed from ``content``
+            list[torch.Tensor]: A list of 1-D tensors parsed from ``content``
         """
         index = 0
         parse_result = []
@@ -143,7 +143,7 @@ class Package(object):
 
     @staticmethod
     def parse_header(header):
-        """Parse header to get information of current package
+        """Parse header to get information of current package.
 
         Args:
             header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``. For more details about :class:`Package`.

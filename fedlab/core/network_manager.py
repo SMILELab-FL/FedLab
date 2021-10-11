@@ -19,7 +19,7 @@ class NetworkManager(Process):
     """Abstract class
 
     Args:
-        newtork (DistNetwork): object to manage torch.distributed network communication.
+        network (DistNetwork): object to manage torch.distributed network communication.
     """
 
     def __init__(self, network):
@@ -29,11 +29,10 @@ class NetworkManager(Process):
     def run(self):
         """
         Main Process:
-            1. Initialization stage.
 
-            2. FL communication stage.
-
-            3. Shutdown stage. Close network connection.
+          1. Initialization stage.
+          2. FL communication stage.
+          3. Shutdown stage. Close network connection.
         """
         self.setup()
         self.main_loop()
@@ -42,8 +41,9 @@ class NetworkManager(Process):
     def setup(self, *args, **kwargs):
         """Initialize network connection and necessary setups.
         
-            At first, ``self._network.init_network_connection()`` is required to be called.
-            Overwrite this method to implement system setup message communication procedure.
+        At first, ``self._network.init_network_connection()`` is required to be called.
+
+        Overwrite this method to implement system setup message communication procedure.
         """
         self._network.init_network_connection()
 
@@ -54,6 +54,6 @@ class NetworkManager(Process):
     def shutdown(self, *args, **kwargs):
         """Shutdown stage.
 
-            Close the network connection in the end.
+        Close the network connection in the end.
         """
         self._network.close_network_connection()
