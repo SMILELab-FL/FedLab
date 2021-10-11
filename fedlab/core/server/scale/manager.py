@@ -15,18 +15,16 @@
 import torch
 import threading
 
-from fedlab.core.communicator import DATA_TYPE_INT
-
 from ...server.manager import ServerSynchronousManager
 from ...communicator.processor import PackageProcessor
 from ...communicator.package import Package
 from ....utils.message_code import MessageCode
-
+from ....utils import Logger
 
 class ScaleSynchronousManager(ServerSynchronousManager):
     """ServerManager used in scale scenario."""
-    def __init__(self, network, handler):
-        super().__init__(network, handler)
+    def __init__(self, network, handler, logger=Logger()):
+        super().__init__(network, handler, logger)
 
     def activate_clients(self):
         """Use client id mapping: Coordinator. 
@@ -46,10 +44,9 @@ class ScaleSynchronousManager(ServerSynchronousManager):
             PackageProcessor.send_package(package=param_pack, dst=rank)
 
             # Send activate id list
-            id_list = torch.Tensor(values).to(torch.int64)
+            id_list = torch.Tensor(values).to(torch.int32)
             act_pack = Package(message_code=MessageCode.ParameterUpdate,
-                               content=id_list,
-                               data_type=DATA_TYPE_INT)
+                               content=id_list)
             PackageProcessor.send_package(package=act_pack, dst=rank)
 
     def main_loop(self):

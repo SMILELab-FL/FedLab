@@ -15,13 +15,13 @@
 import threading
 import torch
 from torch.multiprocessing import Queue
-import logging
 
 from ..network_manager import NetworkManager
 from ..communicator.processor import Package, PackageProcessor
 from ..coordinator import Coordinator
 
 from ...utils.message_code import MessageCode
+from ...utils import Logger
 
 DEFAULT_SERVER_RANK = 0
 
@@ -64,17 +64,12 @@ class ServerSynchronousManager(ServerManager):
     Args:
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         handler (ParameterServerBackendHandler): Backend calculation handler for parameter server.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only on screen. Default: ``None``.
+        logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, network, handler, logger=None):
+    def __init__(self, network, handler, logger=Logger()):
 
         super(ServerSynchronousManager, self).__init__(network, handler)
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
     def shutdown(self):
         """Shutdown stage."""
@@ -154,26 +149,15 @@ class ServerAsynchronousManager(ServerManager):
     Args:
         network (DistNetwork): Manage ``torch.distributed`` network communication.
         handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
-        logger (Logger, optional): :attr:`logger` for server handler. If set to ``None``, none logging output files will be generated while only in console. Default: ``None``.
+        logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self, network, handler, logger=None):
+    def __init__(self, network, handler, logger=Logger()):
 
         super(ServerAsynchronousManager, self).__init__(network, handler)
-
-        if logger is None:
-            logging.getLogger().setLevel(logging.INFO)
-            self._LOGGER = logging
-        else:
-            self._LOGGER = logger
+        self._LOGGER = logger
 
         self.message_queue = Queue()
-
-    def run(self):
-        """Main process"""
-        self.setup()
-        self.main_loop()
-        self.shutdown()
-
+        
     def shutdown(self):
         self.shutdown_clients()
         super().shutdown()

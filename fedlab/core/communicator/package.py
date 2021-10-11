@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
 from typing import List
 from copy import deepcopy
 import torch
 import torch.distributed as dist
-from ...utils.message_code import MessageCode
+
 
 from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX, HEADER_MESSAGE_CODE_IDX, HEADER_DATA_TYPE_IDX
-from . import DEFAULT_RECEIVER_RANK, DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
+from . import DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
 from . import HEADER_SIZE
-from . import DATA_TYPE_FLOAT, DATA_TYPE_INT
-
+from . import supported_torch_dtypes
+from ...utils.message_code import MessageCode
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
@@ -38,24 +39,10 @@ class Package(object):
         :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
     Args:
-        receiver_rank (int, optional): Rank of receiver
         message_code (MessageCode): Message code
         content (torch.Tensor, optional): Tensors contained in this package.
-        data_type (int, optional): DATA_TYPE_FLOAT for torch.float32, DATA_TYPE_INT for torch.int64. Default is DATA_TYPE_FLOAT.
     """
-    def __init__(self,
-                 receiver_rank=None,
-                 message_code=None,
-                 content=None,
-                 data_type=DATA_TYPE_FLOAT):
-
-        if receiver_rank is None:
-            receiver_rank = DEFAULT_RECEIVER_RANK
-
-        assert isinstance(
-            receiver_rank,
-            int), "receiver_rank should be integer, not {}".format(
-                type(receiver_rank))
+    def __init__(self, message_code=None, content=None):
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -67,25 +54,22 @@ class Package(object):
         ), "message_code can only be MessageCode or integer, not {}".format(
             type(message_code))
 
-        # initialize header
-        self.header = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int64)
+        # initialize header. The dtype of header is set as torch.int32 as default.
+        self.header = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int32)
+
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
         else:
             self.header[HEADER_SENDER_RANK_IDX] = -1
-
-        self.header[HEADER_RECEIVER_RANK_IDX] = receiver_rank
+        self.header[HEADER_RECEIVER_RANK_IDX] = -1  # assigned by processor
         self.header[HEADER_MESSAGE_CODE_IDX] = message_code
         self.header[HEADER_SLICE_SIZE_IDX] = DEFAULT_SLICE_SIZE
-
-        if data_type == DATA_TYPE_INT:
-            self.header[HEADER_DATA_TYPE_IDX] = DATA_TYPE_INT
-        else:
-            self.header[HEADER_DATA_TYPE_IDX] = DATA_TYPE_FLOAT
+        self.header[HEADER_DATA_TYPE_IDX] = -1  # assigned by processor
 
         # initialize content and slices
         self.slices = []
         self.content = None
+        self.dtype = None
 
         if isinstance(content, torch.Tensor):
             self.append_tensor(content)
@@ -106,7 +90,13 @@ class Package(object):
         size = tensor.shape[0]
         if self.content is None:
             self.content = deepcopy(tensor)
+            self.dtype = tensor.dtype
         else:
+            if tensor.dtype is not self.dtype:
+                warnings.warn(
+                    "The dtype of current tensor is {}. But package dtype is {}. The current data type will be coerced to {} and we do not guarantee lossless conversion."
+                    .format(tensor.dtype, self.dtype, self.dtype))
+            tensor = tensor.to(self.dtype)
             self.content = torch.cat((self.content, tensor))
 
         self.slices.append(size)
@@ -120,6 +110,15 @@ class Package(object):
         """
         for tensor in tensor_list:
             self.append_tensor(tensor)
+
+    def to(self, dtype):
+        if dtype in supported_torch_dtypes:
+            self.dtype = dtype
+            self.content.to(self.dtype)
+        else:
+            warnings.warn(
+                "Currently FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
+            )
 
     @staticmethod
     def parse_content(slices, content):
