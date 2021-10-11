@@ -13,8 +13,6 @@
 # limitations under the License.
 
 """FedLab communication API"""
-import torch
-
 HEADER_SENDER_RANK_IDX = 0
 HEADER_RECEIVER_RANK_IDX = 1
 HEADER_SLICE_SIZE_IDX = 2
@@ -37,7 +35,6 @@ FLOAT16 = 4
 FLOAT32 = 5
 FLOAT64 = 6
 
-supported_torch_dtypes = [torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]
 
 def dtype_torch2flab(torch_type):
     return supported_torch_dtypes.index(torch_type)
@@ -45,5 +42,5 @@ def dtype_torch2flab(torch_type):
 def dtype_flab2torch(fedlab_type):
     return supported_torch_dtypes[fedlab_type]
 
-from .package import Package
+from .package import Package, supported_torch_dtypes
 from .processor import PackageProcessor

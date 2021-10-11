@@ -22,9 +22,9 @@ from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZ
     HEADER_MESSAGE_CODE_IDX, HEADER_DATA_TYPE_IDX
 from . import DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
 from . import HEADER_SIZE
-from . import supported_torch_dtypes
 from ...utils.message_code import MessageCode
 
+supported_torch_dtypes = [torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
