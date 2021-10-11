@@ -13,5 +13,3 @@
 # limitations under the License.
 
 __version__ = "1.1.2"
-
-#from .core.communicator import FLOAT16, FLOAT32, FLOAT64, INT8, INT16, INT32, INT64
