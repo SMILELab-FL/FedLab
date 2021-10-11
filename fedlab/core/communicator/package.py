@@ -18,12 +18,13 @@ from copy import deepcopy
 import torch
 import torch.distributed as dist
 
-
-from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX, HEADER_MESSAGE_CODE_IDX, HEADER_DATA_TYPE_IDX
+from . import HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX, \
+    HEADER_MESSAGE_CODE_IDX, HEADER_DATA_TYPE_IDX
 from . import DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
 from . import HEADER_SIZE
 from . import supported_torch_dtypes
 from ...utils.message_code import MessageCode
+
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
@@ -34,14 +35,15 @@ class Package(object):
         
 
     :class:`Package` maintains 3 variables:
-        :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
-        :attr:`slices` : ``list[slice_size_1, slice_size_2]``
-        :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
+        - :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
+        - :attr:`slices` : ``list[slice_size_1, slice_size_2]``
+        - :attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``
 
     Args:
         message_code (MessageCode): Message code
         content (torch.Tensor, optional): Tensors contained in this package.
     """
+
     def __init__(self, message_code=None, content=None):
 
         if message_code is None:
@@ -55,7 +57,7 @@ class Package(object):
             type(message_code))
 
         # initialize header. The dtype of header is set as torch.int32 as default.
-        self.header = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int32)
+        self.header = torch.zeros(size=(HEADER_SIZE,), dtype=torch.int32)
 
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
@@ -95,7 +97,7 @@ class Package(object):
             if tensor.dtype is not self.dtype:
                 warnings.warn(
                     "The dtype of current tensor is {}. But package dtype is {}. The current data type will be coerced to {} and we do not guarantee lossless conversion."
-                    .format(tensor.dtype, self.dtype, self.dtype))
+                        .format(tensor.dtype, self.dtype, self.dtype))
             tensor = tensor.to(self.dtype)
             self.content = torch.cat((self.content, tensor))
 
@@ -126,11 +128,10 @@ class Package(object):
 
         Args:
             slices (list[int]): A list containing number of elements of each tensor. Each number is used as offset in parsing process.
-            content (torch.Tensor): :attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and their
-        corresponding offsets. For more details about :class:`Package`.
+            content (torch.Tensor): :attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and their corresponding offsets. For more details about :class:`Package`.
 
         Returns:
-            [torch.Tensor]: a list of 1-D tensors parsed from ``content``
+            list[torch.Tensor]: A list of 1-D tensors parsed from ``content``
         """
         index = 0
         parse_result = []
@@ -142,7 +143,7 @@ class Package(object):
 
     @staticmethod
     def parse_header(header):
-        """Parse header to get information of current package
+        """Parse header to get information of current package.
 
         Args:
             header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``. For more details about :class:`Package`.

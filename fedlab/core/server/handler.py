@@ -29,6 +29,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
     Example:
         Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
     """
+
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
@@ -58,6 +59,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  global_round=5,
@@ -130,7 +132,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """
         self._LOGGER.info(
             "Model parameters aggregation, number of aggregation elements {}".
-            format(len(model_parameters_list)))
+                format(len(model_parameters_list)))
         # use aggregator
         serialized_parameters = Aggregators.fedavg_aggregate(
             model_parameters_list)
@@ -160,6 +162,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  alpha=0.5,
@@ -211,6 +214,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                 return torch.mul(self.alpha,
                                  1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return (staleness + 1)**(-self.a)
+            return (staleness + 1) ** (-self.a)
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))

@@ -33,16 +33,17 @@ class ServerManager(NetworkManager):
         network (DistNetwork): network configuration.
         handler (ParameterServerBackendHandler): performe global server aggregation procedure.
     """
+
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
         self.coordinator = None
-        
+
     def setup(self):
         """Initialization Stage. 
             
-            Server accept local client num report from client manager.
-            Init a coordinator for client_id mapping.
+        - Server accept local client num report from client manager.
+        - Init a coordinator for client_id mapping.
         """
         super().setup()
         rank_client_id_map = {}
@@ -67,7 +68,6 @@ class ServerSynchronousManager(ServerManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
     def __init__(self, network, handler, logger=Logger()):
-
         super(ServerSynchronousManager, self).__init__(network, handler)
         self._LOGGER = logger
 
@@ -83,9 +83,8 @@ class ServerSynchronousManager(ServerManager):
         manipulations.
 
         Loop:
-            1 activate clients.
-
-            2 listen for message from clients -> transmit received parameters to server backend.
+            1. activate clients for current training round.
+            2. listen for message from clients -> transmit received parameters to server backend.
 
         Note:
             Communication agreements related: user can overwrite this function to customize
@@ -127,9 +126,9 @@ class ServerSynchronousManager(ServerManager):
             PackageProcessor.send_package(pack, dst=rank)
 
     def shutdown_clients(self):
-        """Shut down all clients.
+        """Shutdown all clients.
 
-        Send package to every client with :attr:`MessageCode.Exit` to ask client to exit.
+        Send package to each client with :attr:`MessageCode.Exit` to ask client to exit.
 
         Note:
             Communication agreements related: User can overwrite this function to define package
@@ -152,12 +151,11 @@ class ServerAsynchronousManager(ServerManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
     def __init__(self, network, handler, logger=Logger()):
-
         super(ServerAsynchronousManager, self).__init__(network, handler)
         self._LOGGER = logger
 
         self.message_queue = Queue()
-        
+
     def shutdown(self):
         self.shutdown_clients()
         super().shutdown()
@@ -186,7 +184,7 @@ class ServerAsynchronousManager(ServerManager):
                 ])
                 self._LOGGER.info(
                     "Send model to rank {}, current server model time is {}".
-                    format(sender, self._handler.server_time))
+                        format(sender, self._handler.server_time))
                 PackageProcessor.send_package(pack, dst=sender)
 
             elif message_code == MessageCode.ParameterUpdate:

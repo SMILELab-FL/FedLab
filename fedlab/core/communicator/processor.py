@@ -25,7 +25,7 @@ class PackageProcessor(object):
     """Provide more flexible distributed tensor communication functions based on
     :func:`torch.distributed.send` and :func:`torch.distributed.recv`.
 
-    PackageProcessor defines the details of point-to-point package communication.
+    :class:`PackageProcessor` defines the details of point-to-point package communication.
 
     EVERYTHING is :class:`torch.Tensor` in FedLab.
     """

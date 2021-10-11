@@ -27,7 +27,7 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     """Special client manager for :class:`SerialTrainer`.
         
     We modify the communication agreements to create a mapping from client id to process rank.
-    Thus, :class:`ScaleClientPassiveManager` is able to represent multiple clients.
+    Thus, :class:`ScaleClientPassiveManager` is able to simulate multiple clients in sequence.
 
     Args:
         network (DistNetwork): Distributed network to use.

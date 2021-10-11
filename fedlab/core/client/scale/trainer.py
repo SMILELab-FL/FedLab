@@ -20,22 +20,24 @@ from ....utils.serialization import SerializationTool
 from ....utils.dataset.sampler import SubsetSampler
 from ....utils import Logger
 
+
 class SerialTrainer(ClientTrainer):
-    """Base class. 
-        Train multiple clients in a single process.
+    """Base class. Train multiple clients in sequence with a single process.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        cuda (bool): Use GPUs or not. Default: ``True``.
+        client_num (int): Number of clients in current trainer.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
+        cuda (bool): Use GPUs or not. Default: ``True``.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  client_num,
                  aggregator=None,
                  cuda=True,
-                 logger= Logger()):
+                 logger=Logger()):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
@@ -43,25 +45,25 @@ class SerialTrainer(ClientTrainer):
         self._LOGGER = logger
 
     def _train_alone(self, model_parameters, train_loader):
-        """train local model with model_parameters on train_loader
+        """Train local model with :attr:`model_parameters` on :attr:`train_loader`.
         
         Args:
-            model_parameters (torch.Tensor): serialized model parameters.
+            model_parameters (torch.Tensor): Serialized model parameters of one model.
             train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         """
         raise NotImplementedError()
 
     def _get_dataloader(self, client_id):
-        """Get dataloader for client_id"""
+        """Get :class:`DataLoader` for ``client_id``."""
         raise NotImplementedError()
 
     def train(self, model_parameters, id_list, aggregate=False):
-        """Train local model with different dataset according to :attr:`idx` in :attr:`id_list`.
+        """Train local model with different dataset according to client id in ``id_list``.
 
         Args:
             model_parameters (torch.Tensor): Serialized model parameters.
             id_list (list[int]): Client id in this training serial.
-            aggregate (bool): Whether to perform partial aggregation on this group of clients' local model in the end of local training round.
+            aggregate (bool): Whether to perform partial aggregation on this group of clients' local models at the end of each local training round.
 
         Note:
             Normally, aggregation is performed by server, while we provide :attr:`aggregate` option here to perform
@@ -94,6 +96,8 @@ class SerialTrainer(ClientTrainer):
 class SubsetSerialTrainer(SerialTrainer):
     """Train multiple clients in a single process.
 
+    Customize :meth:`_get_dataloader` or :meth:`_train_alone` for specific algorithm design in clients.
+
     Args:
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
@@ -106,6 +110,7 @@ class SubsetSerialTrainer(SerialTrainer):
     .. note::
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
     """
+
     def __init__(self,
                  model,
                  dataset,
@@ -132,10 +137,10 @@ class SubsetSerialTrainer(SerialTrainer):
             client_id (int): :attr:`client_id` of client to generate dataloader
 
         Note:
-            :attr:`client_id` here is not equal to ``client_id`` in the FL setting. It is the index of client in current :class:`SerialTrainer`.
+            :attr:`client_id` here is not equal to ``client_id`` in global FL setting. It is the index of client in current :class:`SerialTrainer`.
 
         Returns:
-            :class:`DataLoader` for specific client sub-dataset
+            :class:`DataLoader` for specific client's sub-dataset
         """
         batch_size = self.args["batch_size"]
 

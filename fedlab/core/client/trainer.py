@@ -18,6 +18,7 @@ from ...utils import Logger
 from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
 
+
 class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
 
@@ -31,6 +32,7 @@ class ClientTrainer(ModelMaintainer):
         model (torch.nn.Module): PyTorch model.
         cuda (bool): Use GPUs or not.
     """
+
     def __init__(self, model, cuda):
         super().__init__(model, cuda)
         self.client_num = 1  # default is 1.
@@ -39,10 +41,11 @@ class ClientTrainer(ModelMaintainer):
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
-    
+
     def evaluate(self):
         """Evaluate quality of local model."""
         raise NotImplementedError()
+
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
@@ -54,8 +57,9 @@ class ClientSGDTrainer(ClientTrainer):
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
         criterion (torch.nn.Loss, optional): loss function used in local training process.
         cuda (bool, optional): use GPUs or not. Default: ``True``.
-        logger (Logger, optional): :object of :class:`Logger`. 
+        logger (Logger, optional): :object of :class:`Logger`.
     """
+
     def __init__(self,
                  model,
                  data_loader,
@@ -83,7 +87,8 @@ class ClientSGDTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is running")
         for ep in range(self.epochs):
             self._model.train()
-            for inputs, labels in tqdm(self._data_loader, desc="{}, Epoch {}".format(self._LOGGER.name, ep)):
+            for inputs, labels in tqdm(self._data_loader,
+                                       desc="{}, Epoch {}".format(self._LOGGER.name, ep)):
                 if self.cuda:
                     inputs, labels = inputs.cuda(self.gpu), labels.cuda(
                         self.gpu)

@@ -18,8 +18,8 @@ from ..utils.functional import get_best_gpu
 class ModelMaintainer(object):
     """Maintain PyTorch model.
 
-        Provide necessary attributes and operation methods.
-        More features with local or global model will be implemented here.
+    Provide necessary attributes and operation methods. More features with local or global model
+    will be implemented here.
 
     Args:
         model (torch.nn.Module): PyTorch model.
@@ -38,7 +38,7 @@ class ModelMaintainer(object):
 
     @property
     def model(self):
-        """Return torch.nn.module"""
+        """Return :class:`torch.nn.module`"""
         return self._model
 
     @property
@@ -50,7 +50,7 @@ class ModelMaintainer(object):
     def shape_list(self):
         """Return shape of model parameters.
         
-            Currently, this attributes used in tensor compression.
+        Currently, this attributes used in tensor compression.
         """
         shape_list = [param.shape for param in self._model.parameters()]
         return shape_list
