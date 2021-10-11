@@ -1,19 +1,9 @@
-.. _data-partition:
+.. _data-cifar10:
 
-***************
-DataPartitioner
-***************
-
-Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including
-iid and non-iid scenarios. Though there already exists some partition schemes for published data benchmark,
-it still can be very messy and hard for researchers to partition datasets according to their specific
-research problems, and maintain partition results during simulation. FedLab provides :class:`fedlab.utils.dataset.partition.DataPartitioner` that allows you to use pre-partitioned datasets as well as your own data. :class:`DataPartitioner` stores sample indices for each client given a data partition scheme.
-
-FedLab provides a number of pre-defined partition schemes for some datasets (such as CIFAR10) that subclass :class:`fedlab.utils.dataset.partition.DataPartitioner` and implement functions specific to particular partition scheme. They can be used to prototype and benchmark your FL algorithms.
-
-
+******************
 CIFAR10Partitioner
-==================
+******************
+
 
 For CIFAR10, we provides 6 pre-defined partition schemes. We partition CIFAR10 with the following parameters:
 
