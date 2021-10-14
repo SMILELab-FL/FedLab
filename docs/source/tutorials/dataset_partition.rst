@@ -42,6 +42,10 @@ MNIST
 
 MNIST is very similar with FMNIST, please check `FMNIST tutorial <https://github.com/SMILELab-FL/FedLab-benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_.
 
+SVHN
+^^^^
+
+Data partition tutorial for SVHN: `SVHN tutorial <https://github.com/SMILELab-FL/FedLab-benchmarks/blob/master/fedlab_benchmarks/datasets/svhn/svhn_tutorial.ipynb>`_
 
 CelebA
 ^^^^^^
@@ -54,6 +58,7 @@ FEMNIST
 ^^^^^^^
 
 Data partition of FEMNIST: `FEMNIST tutorial <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/femnist>`_.
+
 
 
 Text Data
