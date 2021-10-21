@@ -13,3 +13,4 @@
 # limitations under the License.
 
 from .topk import TopkCompressor
+from .qsgd import QSGDCompressor
