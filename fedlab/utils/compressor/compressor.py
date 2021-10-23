@@ -12,37 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import ABC
 
-from abc import ABC, abstractmethod
+
 class Compressor(ABC):
     def __init__(self) -> None:
         super().__init__()
 
-    @abstractmethod
     def compress(self, *args, **kwargs):
-        pass
+        raise NotImplementedError()
 
-    @abstractmethod
     def decompress(self, *args, **kwargs):
-        pass
+        raise NotImplementedError()
+
 
 class Memory(ABC):
-    @staticmethod
-    def initialize(*args, **kwargs):
-        pass
+    def __init__(self) -> None:
+        super().__init__()
 
-    @staticmethod
-    def compensate(tensor, *args, **kwargs):
-        return tensor
+    def initialize(self, *args, **kwargs):
+        raise NotImplementedError()
 
-    @staticmethod
-    def update(*args, **kwargs):
-        pass
+    def compensate(self, tensor, *args, **kwargs):
+        raise NotImplementedError()
 
-    @staticmethod
-    def state_dict():
-        return None
+    def update(self, *args, **kwargs):
+        raise NotImplementedError()
 
-    @staticmethod
-    def load_state_dict(state_dict):
-        pass
+    def state_dict(self):
+        raise NotImplementedError()
+
+    def load_state_dict(self, state_dict):
+        raise NotImplementedError()
