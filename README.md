@@ -20,8 +20,23 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [Contribute Guideline](https://fedlab.readthedocs.io/en/master/contributing.html)
 - [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
+## Benchmarks
 
-**The implementations of FL algorithm using FedLab can be found in** [FedLab Benchmark repository](https://github.com/SMILELab-FL/FedLab-benchmarks).
+1. Optimization Algorithms
+- [x] FedAvg: [Communication-Efficient Learning of Deep Networks from Decentralized Data](http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf)
+- [x] FedAsync: [Asynchronous Federated Optimization](http://arxiv.org/abs/1903.03934)
+- [x] FedProx: [Federated Optimization in Heterogeneous Networks](https://arxiv.org/abs/1812.06127)
+
+2. Compression Algorithms
+- [x] DGC: [Deep Gradient Compression: Reducing the Communication Bandwidth for Distributed Training](https://arxiv.org/abs/1712.01887)
+- [x] QSGD: [Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html)
+
+3. Datasets
+- [x] LEAF: [A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097)
+- [x] NIID-Bench: [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079)
+
+
+ More FedLab version of FL algorithms are coming soon. For more information, please star our [FedLab Benchmark repository](https://github.com/SMILELab-FL/FedLab-benchmarks).
 
 ## Contribution
 
@@ -29,10 +44,7 @@ You're welcome to contribute to this project through _Pull Request_.
 
 - By contributing, you agree that your contributions will be licensed under [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) 
 - Docstring  and code should follow Google Python Style Guide: [中文版](https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/)|[English](https://google.github.io/styleguide/pyguide.html)
-- The code should provide test cases using `unittest.TestCase`
-
-
-
+- The code should provide test cases using `unittest.TestCase
 
 ## Citation
 
