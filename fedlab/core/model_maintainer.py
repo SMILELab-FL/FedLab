@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 from ..utils.serialization import SerializationTool
 from ..utils.functional import get_best_gpu
 
@@ -45,6 +46,11 @@ class ModelMaintainer(object):
     def model_parameters(self):
         """Return serialized model parameters."""
         return SerializationTool.serialize_model(self._model)
+
+    @property
+    def model_gradients(self):
+        """Return serialized model gradients."""
+        return SerializationTool.serialize_model_gradients(self._model)
 
     @property
     def shape_list(self):
