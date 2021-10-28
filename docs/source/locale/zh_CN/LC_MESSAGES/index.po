@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/index.rst:16
 msgid "Contents:"
-msgstr ""
+msgstr "目录："
 
 #: ../../source/index.rst:14
 msgid ""
@@ -27,19 +27,19 @@ msgid ""
 "communication, compression, model optimization, data partition and other "
 "functional modules. Users can build FL simulation environment with custom"
 " modules like playing with LEGO bricks."
-msgstr ""
+msgstr "FedLab提供了联邦学习模拟中必要的模块，包括通信模块，压缩模块，模型优化模块，数据划分模块以及其他的功能性模块"
 
 #: ../../source/index.rst:29
 msgid "Citation"
-msgstr ""
+msgstr "引用"
 
 #: ../../source/index.rst:31
 msgid "Please cite **FedLab** in your publications if it helps your research:"
-msgstr ""
+msgstr "如果FedLab在您的研究工作中起到了帮助，请在您的发表作品中引用FedLab："
 
 #: ../../source/index.rst:43
 msgid "Contacts"
-msgstr ""
+msgstr "联系方式"
 
 #: ../../source/index.rst:45
 msgid "Contact the **FedLab** development team through Github issues or email:"
