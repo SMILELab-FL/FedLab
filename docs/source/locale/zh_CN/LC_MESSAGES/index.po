@@ -43,7 +43,7 @@ msgstr "联系方式"
 
 #: ../../source/index.rst:45
 msgid "Contact the **FedLab** development team through Github issues or email:"
-msgstr ""
+msgstr "请使用邮件或者GitHub issues联系FedLab开发团队："
 
 #: ../../source/index.rst:47
 msgid "Dun Zeng: zengdun@foxmail.com"
