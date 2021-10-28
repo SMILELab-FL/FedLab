@@ -32,7 +32,7 @@ msgstr ""
 #: ../../source/autoapi/fedlab/core/client/index.rst:68
 #: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
 msgid "Base class for ClientManager."
-msgstr ""
+msgstr "ClientManager的基类。"
 
 #: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
 msgid ":obj:`ClientActiveManager <fedlab.core.client.ClientActiveManager>`\\"
@@ -43,7 +43,7 @@ msgstr ""
 msgid ""
 "Active communication :class:`NetworkManager` for client in asynchronous "
 "FL pattern."
-msgstr ""
+msgstr "在异步联邦学习中client的主动 :class:`NetworkManager`。"
 
 #: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
 msgid ":obj:`ClientPassiveManager <fedlab.core.client.ClientPassiveManager>`\\"
