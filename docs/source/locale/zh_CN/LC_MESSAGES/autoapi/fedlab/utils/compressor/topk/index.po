@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:2
+msgid "topk"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:8
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:18:<autosummary>:1
+msgid ":obj:`TopkCompressor <fedlab.utils.compressor.topk.TopkCompressor>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:24
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:18:<autosummary>:1
+msgid "Compressor for federated communication"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:22
+msgid "Bases: :class:`fedlab.utils.compressor.compressor.Compressor`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:26
+msgid "Top-k gradient or weights selection"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:28
+msgid "compress ratio"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:33
+msgid "compress tensor into (values, indices)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:35
+msgid "tensor"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:38
+msgid "(values, indices)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:44
+msgid "decompress tensor"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:49
+msgid "compress model"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:51
+msgid "PyTorch module."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:54
+msgid "list(values) and list(indices)."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:60
+msgid "decompress model"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:62
+msgid "The shape of every corresponding tensor."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:64
+msgid "list(values)."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/compressor/topk/index.rst:66
+msgid "list(indices)."
+msgstr ""
+

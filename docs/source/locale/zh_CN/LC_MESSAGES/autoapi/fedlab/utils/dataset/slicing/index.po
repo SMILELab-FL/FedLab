@@ -1,0 +1,101 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:2
+msgid "slicing"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:8
+msgid "functions associated with data and dataset slicing"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:13
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+msgid ""
+":obj:`noniid_slicing <fedlab.utils.dataset.slicing.noniid_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\, num\\_shards\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:27
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+msgid "Slice a dataset for non-IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+msgid ""
+":obj:`random_slicing <fedlab.utils.dataset.slicing.random_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:47
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+msgid "Slice a dataset randomly and equally for IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:29
+msgid "Dataset to slice."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:31
+msgid "Number of client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:33
+msgid "Number of shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:37
+msgid "Notes"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:38
+msgid ""
+"The size of a shard equals to ``int(len(dataset)/num_shards)``. Each "
+"client will get ``int(num_shards/num_clients)`` shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:41
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:53
+msgid "Returns："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:42
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:54
+msgid ""
+"dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices "
+"of dataset }``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:51
+msgid "Args："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:50
+msgid ""
+"dataset (torch.utils.data.Dataset): a dataset for slicing. num_clients "
+"(int):  the number of client."
+msgstr ""
+

@@ -1,0 +1,280 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/cifar10_tutorial.rst:5
+msgid "CIFAR10Partitioner"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:8
+msgid ""
+"For CIFAR10, we provides 6 pre-defined partition schemes. We partition "
+"CIFAR10 with the following parameters:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:10
+msgid "``targets`` is labels of dataset to partition"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:11
+msgid "``num_clients`` specifies number of clients in partition scheme"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:12
+msgid ""
+"``balance`` refers to FL scenario that sample numbers for different "
+"clients are the same"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:13
+msgid "``partition`` specifies partition scheme name"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:14
+msgid "``unbalance_sgm`` is parameter for unbalance partition"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:15
+msgid "``num_shards`` is parameter for non-iid partition using shards"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:16
+msgid "``dir_alpha`` is parameter for Dirichlet distribution used in partition"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:17
+msgid "``verbose`` controls whether to print intermediate information"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:18
+msgid "``seed`` sets the random seed"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:20
+msgid ""
+"Each partition scheme can be applied on CIFAR10 using different "
+"combinations of parameters:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:22
+msgid ""
+"``balance=None``: do not specify sample numbers for each clients in "
+"advance"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:24
+msgid ""
+"``partition=\"dirichlet\"``: non-iid partition used in "
+":cite:t:`yurochkin2019bayesian` and :cite:t:`wang2020federated`. "
+"``dir_alpha`` need to be specified in this partition scheme"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:27
+msgid ""
+"``partition=\"shards\"``: non-iid method used in FedAvg "
+":cite:p:`mcmahan2017communication`. Refer to "
+":func:`fedlab.utils.dataset.functional.shards_partition` for more "
+"information. ``num_shards`` need to be specified here."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:29
+msgid ""
+"``balance=True``: \"Balance\" refers to FL scenario that sample numbers "
+"for different clients are the same. Refer to "
+":func:`fedlab.utils.dataset.functional.balance_partition` for more "
+"information. This partition scheme is from :cite:t:`acar2020federated`."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:31
+#: ../../source/tutorials/cifar10_tutorial.rst:37
+msgid ""
+"``partition=\"iid\"``: Random select samples from complete dataset given "
+"sample number for each client."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:33
+msgid ""
+"``partition=\"dirichlet\"``: Refer to "
+":func:`fedlab.utils.dataset.functional.client_inner_dirichlet_partition` "
+"for more information. ``dir_alpha`` need to be specified in this "
+"partition scheme"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:35
+msgid ""
+"``balance=False``: \"Unbalance\" refers to FL scenario that sample "
+"numbers for different clients are different. For unbalance method, sample"
+" number for each client is drown from Log-Normal distribution with "
+"variance ``unbalanced_sgm``. When ``unbalanced_sgm=0``, partition is "
+"balanced. This partition scheme is from :cite:t:`acar2020federated`."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:39
+msgid ""
+"``partition=\"dirichlet\"``: Given sample number of each client, use "
+"Dirichlet distribution for each client's class distribution. "
+"``dir_alpha`` need to be specified in this partition scheme"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:41
+msgid "To conclude, 6 pre-defined partition schemes can be summarized as:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:43
+msgid "Hetero Dirichlet (non-iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:44
+msgid "Shards (non-iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:45
+msgid "Balanced IID (iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:46
+msgid "Unbalanced IID (iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:47
+msgid "Balanced Dirichlet (non-iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:48
+msgid "Unbalanced Dirichlet (non-iid)"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:50
+msgid ""
+"Now, we introduce how to use these pre-defined partition on CIFAR10 in FL"
+" setting with 100 clients, and provide statistical plots for each scheme."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:52
+msgid "First, import related package and basic setting:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:73
+msgid "Second, we need to load CIFAR10 dataset from ``torchvision``:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:82
+msgid "Hetero Dirichlet"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:84
+#: ../../source/tutorials/cifar10_tutorial.rst:169
+#: ../../source/tutorials/cifar10_tutorial.rst:191
+#: ../../source/tutorials/cifar10_tutorial.rst:210
+#: ../../source/tutorials/cifar10_tutorial.rst:236
+#: ../../source/tutorials/cifar10_tutorial.rst:257
+msgid "Perform partition:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:96
+msgid "``hetero_dir_part.client_dict`` is a dictionary like this："
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:106
+msgid ""
+"For visualization and check partition result, we generate partition "
+"report for current partition, and save it into csv file:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:115
+msgid "Report generated here is like:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:126
+msgid ""
+"which can be easily parsed by :func:`csv.reader` or "
+":func:`pandas.read_csv`:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:136
+msgid "Now, select the first 10 clients for class distribution bar plot:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:149
+msgid "We also can check sample number statistic result for all clients:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:167
+msgid "Shards"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:181
+#: ../../source/tutorials/cifar10_tutorial.rst:201
+#: ../../source/tutorials/cifar10_tutorial.rst:221
+#: ../../source/tutorials/cifar10_tutorial.rst:247
+#: ../../source/tutorials/cifar10_tutorial.rst:269
+msgid "Class distribution bar plot:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:189
+msgid "Balanced IID"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:208
+msgid "Unbalanced IID"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:227
+#: ../../source/tutorials/cifar10_tutorial.rst:275
+msgid "Sample number statistic result for clients:"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:234
+msgid "Balanced Dirichlet"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:255
+msgid "Unbalanced Dirichlet"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:283
+msgid ""
+"For complete usage example of :class:`CIFAR10Partitioner`, check FedLab "
+"benchmark `datasets part <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets/cifar10/>`_."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:286
+msgid "SubsetSampler"
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:288
+msgid ""
+"By using torch's sampler, only the right part of the sample is taken from"
+" the overall dataset."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:298
+msgid ""
+"There is also a similar implementation of directly reordering and "
+"partition the dataset, see "
+":class:`fedlab.utils.dataset.sampler.RawPartitionSampler` for details."
+msgstr ""
+
+#: ../../source/tutorials/cifar10_tutorial.rst:300
+msgid ""
+"In addition to dividing the dataset by the sampler of torch, dataset can "
+"also be divided directly by splitting the dataset file. The "
+"implementation can refer to FedLab version of LEAF."
+msgstr ""
+

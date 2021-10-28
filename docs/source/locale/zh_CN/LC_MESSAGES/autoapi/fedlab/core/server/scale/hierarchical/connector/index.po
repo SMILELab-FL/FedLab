@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:2
+msgid "connector"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:8
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid ""
+":obj:`Connector "
+"<fedlab.core.server.scale.hierarchical.connector.Connector>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:26
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid ""
+"Abstract class for basic Connector, which is a sub-module of "
+":class:`Scheduler`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid ""
+":obj:`ClientConnector "
+"<fedlab.core.server.scale.hierarchical.connector.ClientConnector>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:75
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid "Connect with clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid ""
+":obj:`ServerConnector "
+"<fedlab.core.server.scale.hierarchical.connector.ServerConnector>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:120
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:20:<autosummary>:1
+msgid "Connect with server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:24
+msgid "Bases: :class:`fedlab.core.network_manager.NetworkManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:28
+msgid ""
+"Connector inherits :class:`NetworkManager`, maintaining two Message "
+"Queue. One is for sending messages to collaborator, the other is for read"
+" messages from others."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:31
+msgid ""
+"Connector is a basic component for scheduler, Example code can be seen in"
+" ``scheduler.py``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:33
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:79
+msgid "Manage ``torch.distributed`` network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:35
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:81
+msgid "Message queue to write."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:37
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:83
+msgid "Message queue to read."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:43
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:88
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:133
+msgid "Main Process:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:45
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:90
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:135
+msgid "Initialization stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:46
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:91
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:136
+msgid "FL communication stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:47
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:92
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:137
+msgid "Shutdown stage. Close network connection."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:53
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:97
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:142
+msgid "Define the reaction of receiving message."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:55
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:99
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:144
+msgid "rank of sender in dist group."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:57
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:101
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:146
+msgid "Message code."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:59
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:103
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:148
+msgid "A list of tensors received from other process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:66
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:154
+msgid "Define the procedure of dealing with message queue."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:73
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:118
+msgid "Bases: :class:`fedlab.core.server.scale.hierarchical.connector.Connector`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:77
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:122
+msgid ""
+"This class is a part of middle server which used in hierarchical "
+"structure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:109
+msgid "Process message queue"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:111
+msgid "Strategy of processing message from server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:124
+msgid "object to manage torch.distributed network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:126
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/connector/index.rst:128
+msgid "message queue"
+msgstr ""
+

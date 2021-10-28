@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:2
+msgid "sampler"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:8
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid ":obj:`SubsetSampler <fedlab.utils.dataset.sampler.SubsetSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:26
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid ""
+"Samples elements from a given list of indices, always in the same order "
+"once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid ""
+":obj:`RawPartitionSampler "
+"<fedlab.utils.dataset.sampler.RawPartitionSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:47
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid "Partition dataset according to ``num_replicas``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid ":obj:`DictFileSampler <fedlab.utils.dataset.sampler.DictFileSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:70
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+msgid "Get data sample indices given client id from data file with dict."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:24
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:45
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:68
+msgid "Bases: :class:`torch.utils.data.Sampler`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:28
+msgid ""
+"It is a :class:`Sampler` used in :class:`Dataloader`, that each partition"
+" will be fixed once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:30
+msgid "Indices in the whole set selected for subset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:32
+msgid "shuffle the indices or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:49
+msgid "Every client get a equal shard of dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:55
+msgid ""
+"Number of data replications. Default ``None`` means total number of "
+"client processes."
+msgstr ""
+

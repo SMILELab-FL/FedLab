@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/dataset_partition.rst:5
+msgid "Federated Dataset and DataPartitioner"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:7
+msgid ""
+"Sophisticated in real world, FL need to handle various kind of data "
+"distribution scenarios, including iid and non-iid scenarios. Though there"
+" already exists some datasets and partition schemes for published data "
+"benchmark, it still can be very messy and hard for researchers to "
+"partition datasets according to their specific research problems, and "
+"maintain partition results during simulation. FedLab provides "
+":class:`fedlab.utils.dataset.partition.DataPartitioner` that allows you "
+"to use pre-partitioned datasets as well as your own data. "
+":class:`DataPartitioner` stores sample indices for each client given a "
+"data partition scheme. Also, FedLab provides some extra datasets that are"
+" used in current FL researches while not provided by official Pytorch "
+":class:`torchvision.datasets` yet."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:14
+msgid ""
+"Current implementation and design of this part are based on  LEAF "
+":cite:p:`caldas2018leaf`, :cite:t:`acar2020federated`, "
+":cite:t:`yurochkin2019bayesian` and NIID-Bench :cite:p:`li2021federated`."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:17
+msgid "Vision Data"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:20
+msgid "CIFAR10"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:22
+msgid ""
+"FedLab provides a number of pre-defined partition schemes for some "
+"datasets (such as CIFAR10) that subclass "
+":class:`fedlab.utils.dataset.partition.DataPartitioner` and implement "
+"functions specific to particular partition scheme. They can be used to "
+"prototype and benchmark your FL algorithms."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:24
+msgid ""
+"Tutorial for :class:`CIFAR10Partitioner`: :ref:`CIFAR10 tutorial <data-"
+"cifar10>`."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:28
+msgid "CIFAR100"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:30
+msgid ""
+"Notebook tutorial for :class:`CIFAR100Partitioner`: `CIFAR100 tutorial "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/cifar100/data_partitioner.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:35
+msgid "FMNIST"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:37
+msgid ""
+"Notebook tutorial for data partition of FMNIST (FashionMNIST) : `FMNIST "
+"tutorial <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:41
+msgid "MNIST"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:43
+msgid ""
+"MNIST is very similar with FMNIST, please check `FMNIST tutorial "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:46
+msgid "SVHN"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:48
+msgid ""
+"Data partition tutorial for SVHN: `SVHN tutorial <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/svhn/svhn_tutorial.ipynb>`_"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:51
+msgid "CelebA"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:53
+msgid ""
+"Data partition for CelebA: `CelebA tutorial <https://github.com/SMILELab-"
+"FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/celeba>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:58
+msgid "FEMNIST"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:60
+msgid ""
+"Data partition of FEMNIST: `FEMNIST tutorial <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/femnist>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:65
+msgid "Text Data"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:68
+msgid "Shakespeare"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:70
+msgid ""
+"Data partition of Shakespeare dataset: `Shakespeare tutorial "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/shakespeare>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:74
+msgid "Sent140"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:76
+msgid ""
+"Data partition of Sent140: `Sent140 tutorial <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/sent140>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:79
+msgid "Reddit"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:80
+msgid ""
+"Data partition of Reddit: `Reddit tutorial <https://github.com/SMILELab-"
+"FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/reddit>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:84
+msgid "Tabular Data"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:87
+msgid "Adult"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:89
+msgid ""
+"Adult is from `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_. "
+"Its original source is from `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/Adult. FedLab provides both "
+"``Dataset`` and :class:`DataPartitioner` for Adult. Notebook tutorial for"
+" Adult: `Adult tutorial <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/adult/adult_tutorial.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:93
+msgid "Covtype"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:95
+msgid ""
+"Covtype is from `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_. "
+"Its original source is from `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/Covtype. FedLab provides both"
+" ``Dataset`` and :class:`DataPartitioner` for Covtype. Notebook tutorial "
+"for Covtype: `Covtype tutorial <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/covtype/covtype_tutorial.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:99
+msgid "RCV1"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:101
+msgid ""
+"RCV1 is from `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_. "
+"Its original source is from `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/RCV1. FedLab provides both "
+"``Dataset`` and :class:`DataPartitioner` for RCV1. Notebook tutorial for "
+"RCV1: `RCV1 tutorial <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/rcv1/rcv1_tutorial.ipynb>`_."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:105
+msgid "Synthetic Data"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:108
+msgid "FCUBE"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:110
+msgid ""
+"FCUBE is a synthetic dataset for federated learning. FedLab provides both"
+" ``Dataset`` and :class:`DataPartitioner` for FCUBE. Tutorial for FCUBE: "
+":ref:`FCUBE tutorial <fcube-tutorial>`."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:114
+msgid "LEAF-Synthetic"
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:116
+msgid ""
+"LEAF-Synthetic is a federated dataset proposed by LEAF. Client number, "
+"class number and feature dimensions can all be customized by user."
+msgstr ""
+
+#: ../../source/tutorials/dataset_partition.rst:118
+msgid ""
+"Please check `LEAF-Synthetic <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/synthetic>`_ for more "
+"details."
+msgstr ""
+

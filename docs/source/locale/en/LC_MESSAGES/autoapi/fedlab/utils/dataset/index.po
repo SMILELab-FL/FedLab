@@ -1,0 +1,459 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-28 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:2
+msgid "dataset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:20
+msgid "Package Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`SubsetSampler <fedlab.utils.dataset.SubsetSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:58
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ""
+"Samples elements from a given list of indices, always in the same order "
+"once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`RawPartitionSampler <fedlab.utils.dataset.RawPartitionSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:79
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "Partition dataset according to ``num_replicas``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`DictFileSampler <fedlab.utils.dataset.DictFileSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:102
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "Get data sample indices given client id from data file with dict."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`DataPartitioner <fedlab.utils.dataset.DataPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:147
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "Base class for data partition in federated learning."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`BasicPartitioner <fedlab.utils.dataset.BasicPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:167
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:200
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:326
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:350
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:374
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:440
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:469
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:498
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "label-distribution-skew:quantity-based"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`VisionPartitioner <fedlab.utils.dataset.VisionPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`CIFAR10Partitioner <fedlab.utils.dataset.CIFAR10Partitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:224
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "CIFAR10 data partitioner."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`CIFAR100Partitioner <fedlab.utils.dataset.CIFAR100Partitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:311
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "CIFAR100 data partitioner."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`FMNISTPartitioner <fedlab.utils.dataset.FMNISTPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`MNISTPartitioner <fedlab.utils.dataset.MNISTPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`SVHNPartitioner <fedlab.utils.dataset.SVHNPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`FCUBEPartitioner <fedlab.utils.dataset.FCUBEPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:398
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid "FCUBE data partitioner."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`AdultPartitioner <fedlab.utils.dataset.AdultPartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`RCV1Partitioner <fedlab.utils.dataset.RCV1Partitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:45:<autosummary>:1
+msgid ":obj:`CovtypePartitioner <fedlab.utils.dataset.CovtypePartitioner>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:52:<autosummary>:1
+msgid ""
+":obj:`noniid_slicing <fedlab.utils.dataset.noniid_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\, num\\_shards\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:113
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:52:<autosummary>:1
+msgid "Slice a dataset for non-IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:52:<autosummary>:1
+msgid ""
+":obj:`random_slicing <fedlab.utils.dataset.random_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:133
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:52:<autosummary>:1
+msgid "Slice a dataset randomly and equally for IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:56
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:77
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:100
+msgid "Bases: :class:`torch.utils.data.Sampler`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:60
+msgid ""
+"It is a :class:`Sampler` used in :class:`Dataloader`, that each partition"
+" will be fixed once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:62
+msgid "Indices in the whole set selected for subset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:64
+msgid "shuffle the indices or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:81
+msgid "Every client get a equal shard of dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:87
+msgid ""
+"Number of data replications. Default ``None`` means total number of "
+"client processes."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:115
+msgid "Dataset to slice."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:117
+msgid "Number of client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:119
+msgid "Number of shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:123
+msgid "Notes"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:124
+msgid ""
+"The size of a shard equals to ``int(len(dataset)/num_shards)``. Each "
+"client will get ``int(num_shards/num_clients)`` shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:127
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:139
+msgid "Returns："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:128
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:140
+msgid ""
+"dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices "
+"of dataset }``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:137
+msgid "Args："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:136
+msgid ""
+"dataset (torch.utils.data.Dataset): a dataset for slicing. num_clients "
+"(int):  the number of client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:145
+msgid "Bases: :class:`abc.ABC`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:165
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:222
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:396
+msgid "Bases: :class:`fedlab.utils.dataset.partition.DataPartitioner`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:168
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:201
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:327
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:351
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:375
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:441
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:470
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:499
+msgid "label-distribution-skew:distributed-based (Dirichlet)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:169
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:202
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:328
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:352
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:376
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:442
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:471
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:500
+msgid "quantity-skew (Dirichlet)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:170
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:203
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:329
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:353
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:377
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:408
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:443
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:472
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:501
+msgid "IID"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:198
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:438
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:467
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:496
+msgid "Bases: :class:`fedlab.utils.dataset.partition.BasicPartitioner`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:226
+msgid ""
+"Partition CIFAR10 given specific client number. Currently 6 supported "
+"partition schemes can be achieved by passing different combination of "
+"parameters in initialization:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:229
+msgid "``balance=None``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:231
+msgid ""
+"``partition=\"dirichlet\"``: non-iid partition used in `Bayesian "
+"Nonparametric Federated Learning of Neural Networks "
+"<https://arxiv.org/abs/1905.12022>`_ and `Federated Learning with Matched"
+" Averaging <https://arxiv.org/abs/2002.06440>`_. Refer to "
+":func:`fedlab.utils.dataset.functional.hetero_dir_partition` for more "
+"information."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:236
+msgid ""
+"``partition=\"shards\"``: non-iid method used in FedAvg `paper "
+"<https://arxiv.org/abs/1602.05629>`_. Refer to "
+":func:`fedlab.utils.dataset.functional.shards_partition` for more "
+"information."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:240
+msgid ""
+"``balance=True``: \"Balance\" refers to FL scenario that sample numbers "
+"for different clients are the same. Refer to "
+":func:`fedlab.utils.dataset.functional.balance_partition` for more "
+"information."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:244
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:256
+msgid ""
+"``partition=\"iid\"``: Random select samples from complete dataset given "
+"sample number for each client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:247
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:259
+msgid ""
+"``partition=\"dirichlet\"``: Refer to "
+":func:`fedlab.utils.dataset.functional.client_inner_dirichlet_partition` "
+"for more information."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:250
+msgid ""
+"``balance=False``: \"Unbalance\" refers to FL scenario that sample "
+"numbers for different clients are different. For unbalance method, sample"
+" number for each client is drown from Log-Normal distribution with "
+"variance ``unbalanced_sgm``. When ``unbalanced_sgm=0``, partition is "
+"balanced. Refer to "
+":func:`fedlab.utils.dataset.functional.lognormal_unbalance_partition` for"
+" more information. The method is from paper `Federated Learning Based on "
+"Dynamic Regularization <https://openreview.net/forum?id=B7v4QMR6Z9w>`_."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:262
+msgid ""
+"Targets of dataset for partition. Each element is in range of [0, 1, ...,"
+" 9]."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:264
+msgid "Number of clients for data partition."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:266
+msgid "Balanced partition over all clients or not. Default as ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:268
+msgid ""
+"Partition type, only ``\"iid\"``, ``shards``, ``\"dirichlet\"`` are "
+"supported. Default as ``\"iid\"``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:270
+msgid ""
+"Log-normal distribution variance for unbalanced data partition over "
+"clients. Default as ``0`` for balanced partition."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:272
+msgid ""
+"Number of shards in non-iid ``\"shards\"`` partition. Only works if "
+"``partition=\"shards\"``. Default as ``None``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:274
+msgid ""
+"Dirichlet distribution parameter for non-iid partition. Only works if "
+"``partition=\"dirichlet\"``. Default as ``None``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:276
+msgid "Whether to print partition process. Default as ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:278
+msgid "Random seed. Default as ``None``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:291
+msgid "Obtain sample indices for client ``index``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:293
+msgid "Client ID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:296
+msgid "List of sample indices for client ID ``index``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:302
+msgid "Usually equals to number of clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:309
+msgid "Bases: :class:`fedlab.utils.dataset.partition.CIFAR10Partitioner`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:313
+msgid "This is a subclass of the :class:`CIFAR10Partitioner`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:324
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:348
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:372
+msgid "Bases: :class:`fedlab.utils.dataset.partition.VisionPartitioner`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:400
+msgid ""
+"FCUBE is a synthetic dataset for research in non-IID scenario with "
+"feature imbalance. This dataset and its partition methods are proposed in"
+" `Federated Learning on Non-IID Data Silos: An Experimental Study "
+"<https://arxiv.org/abs/2102.02079>`_."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:404
+msgid "Supported partition methods for FCUBE:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:406
+msgid "feature-distribution-skew:synthetic"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:410
+msgid "For more details, please refer to Section (IV-B-b) of original paper."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/index.rst:412
+msgid "Data of dataset :class:`FCUBE`."
+msgstr ""
+
