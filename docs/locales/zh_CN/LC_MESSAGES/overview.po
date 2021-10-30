@@ -116,11 +116,12 @@ msgid ""
 "``NetworkManager`` in charge of message processing as well as network "
 "communication with server, and `Trainer` for client local training "
 "procedure."
-msgstr ""
+msgstr "``Client`` 的设计与结构和 ``Server`` 非常相似，即 ``NetworkManager``"
+" 负责消息处理以及和server的网络通信，``Trainer`` 负责client的本地训练过程。"
 
 #: ../../source/overview.rst:82 414827192dc545c2baa4d6adc6d462d6
 msgid "Communication"
-msgstr ""
+msgstr "通信"
 
 #: ../../source/overview.rst:84 fc977de1a4ab4bc59671d7ccd1e77ae8
 msgid ""
@@ -133,14 +134,16 @@ msgstr ""
 msgid ""
 "Synchronous FL: each round is launched by server, that is, server "
 "performs clients sampling first then broadcasts global model parameters."
-msgstr ""
+msgstr "同步联邦：每一轮训练由server开启，即，server先随机选择client，然后将全局"
+"模型广播给选中的client。"
 
 #: ../../source/overview.rst:98 2a148a12540f4ce78bc0930b948d3521
 msgid ""
 "Asynchronous FL :cite:p:`xie2019asynchronous`: each round is launched by "
 "clients, that is, clients request current global model parameters then "
 "perform local training."
-msgstr ""
+msgstr "异步联邦 :cite:p:`xie2019asynchronous`：每一轮由client开启，即，client向server"
+"请求传输全局模型参数，然后再执行本地训练。"
 
 #: ../../source/overview.rst:112 3116807dd1ee44639d2b0182c3d3c4b4
 msgid "Experimental Scene"
@@ -221,11 +224,13 @@ msgid ""
 ":cite:p:`caldas2018leaf`, and implementations of some FL algorithms, like"
 " FedAvg :cite:p:`mcmahan2017communication`. More benchmarks and FL "
 "algorithms demos are coming."
-msgstr ""
+msgstr "**FedLab** 还提供了数据划分需要的函数以及划分器，以及一些联邦学习算法的"
+"实现，如FedAvg :cite:p:`mcmahan2017communication`。更多的benchmark和联邦学习"
+"算法demo即将出现。"
 
 #: ../../source/overview.rst:182 6f1e69f8286446ae8378c0774bc15e43
 msgid "How to use FedLab?"
-msgstr ""
+msgstr "如何使用FedLab？"
 
 #: ../../source/overview.rst:184 ec392f851ed94384888ba0534bceb294
 msgid ":ref:`installation`."
