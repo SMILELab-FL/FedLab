@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial.rst:5 9ba6dc9afa69413ca59186e09cc95899
 msgid "Tutorials"
-msgstr ""
+msgstr "教程"
 
 #: ../../source/tutorials/tutorial.rst:7 6e429ee6c8b44230a37f2d5663609586
 msgid ""
@@ -31,19 +31,19 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial.rst:25 0f3a201d163140189de181df571a26f6
 msgid "Step-by-step guide on distributed network setup and package transmission."
-msgstr ""
+msgstr "分布式网络设置以及包传输的分步指南。"
 
 #: ../../source/tutorials/tutorial.rst:32 12b694f73e2c403ab0c6800f2ab4fc2a
 msgid ""
 "Use :class:`NetworkManager` to customize communication strategies, "
 "including synchronous and asynchronous communication."
-msgstr ""
+msgstr "用 :class:`NetworkManager` 来自定义通信策略，包括同步和异步通信。"
 
 #: ../../source/tutorials/tutorial.rst:40 a3b77880c97b47099e078d36412ef630
 msgid "Define your own model optimization process for both server and client."
-msgstr ""
+msgstr "在server和client上定义你自己的模型优化过程。"
 
 #: ../../source/tutorials/tutorial.rst:48 5fc5855e000e48419f483f5272653964
 msgid "Get federated datasets and data partition for IID and non-IID setting."
-msgstr ""
+msgstr "根据IID和non-IID设定获得联邦化的数据集和数据划分。"
 

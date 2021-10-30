@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/index.rst:16 d9d6402a22704f83ba0fab2402088af9
 msgid "Contents:"
-msgstr ""
+msgstr "内容："
 
 #: ../../source/index.rst:14 9cd128d76f174a55ad4dc165d081ce4d
 msgid ""

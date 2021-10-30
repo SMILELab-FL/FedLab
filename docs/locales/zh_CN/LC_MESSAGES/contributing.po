@@ -40,7 +40,7 @@ msgid ""
 "FL/FedLab/issues>`_. You are also welcome to post feature requests or "
 "pull requests."
 msgstr "如果您在使用FedLab框架时发现了各种问题，请向 `Bug Tracker <https://github.com/SMILELab-"
-"FL/FedLab/issues>`_ 提交ticket。当然我们也欢迎大家积极提出新功能需求或者发起pull request。"
+"FL/FedLab/issues>`_ 提交表单。当然我们也欢迎大家积极提出新功能需求或者发起pull request。"
 
 #: ../../source/contributing.rst:17 d258c732251f4e02b8529f0568977d5c
 msgid "Contributing Code"
@@ -53,8 +53,7 @@ msgid ""
 "`Apache License, Version 2.0 "
 "<https://www.apache.org/licenses/LICENSE-2.0.html>`_"
 msgstr "我们欢迎大家通过 **Pull Request** 向FedLab贡献代码。当您贡献代码的时候我们将默认您"
-"允许自己提交的代码遵从"
-"`Apache License, Version 2.0 "
+"允许自己提交的代码遵从 `Apache License, Version 2.0 "
 "<https://www.apache.org/licenses/LICENSE-2.0.html>`_ 。"
 
 #: ../../source/contributing.rst:20 7595262e46054da49f70599ef02cc8d4
@@ -63,7 +62,9 @@ msgid ""
 " implementation of existing FL methods. The preferred workflow for "
 "contributing to FedLab is to fork the main repository on GitHub, clone, "
 "and develop on a branch. Steps as follow:"
-msgstr ""
+msgstr "我们鼓励您向FedLab提交贡献，可以是功能改进或是联邦学习算法的实现。我们推荐的向"
+"FedLab提交贡献的流程是先fork FedLab的主仓库，clone到本地，然后在新的分支上进行开发。"
+"步骤如下所示："
 
 #: ../../source/contributing.rst:22 6f5532e0b0254e6b8f169f67cb006804
 msgid ""
@@ -79,27 +80,28 @@ msgstr ""
 
 #: ../../source/contributing.rst:31 3c9fcec6ff2d4405bac87c4544172192
 msgid "Create a new branch to save your changes:"
-msgstr ""
+msgstr "创建新的分支来保存您的代码改动："
 
 #: ../../source/contributing.rst:37 1087dfbd97254820bead4bced761b24b
 msgid "Develop the feature on your branch."
-msgstr ""
+msgstr "在您自己的分支上开发新功能："
 
 #: ../../source/contributing.rst:45 2df4ad5dc10b4729acc144cdd6e2c2a2
 msgid "Pull Request Checklist"
-msgstr ""
+msgstr "Pull Request清单"
 
 #: ../../source/contributing.rst:47 cf4cf0df1e2148ca90b2456ea194fc45
 msgid ""
 "Please follow the file structure below for new features or create new "
 "file if there are something new."
-msgstr ""
+msgstr "请让新功能开发分支中遵循以下文件结构，或者按照新的需求创建新的文件。"
 
 #: ../../source/contributing.rst:63 264a104af76c4e3ab913501b04f8ea52
 msgid ""
 "The code should provide test cases using `unittest.TestCase`. And ensure "
 "all local tests passed:"
-msgstr ""
+msgstr "代码应该提供使用 `unittest.TestCase` 编写的测试样例，并且保证所有的本地测试"
+"均能通过："
 
 #: ../../source/contributing.rst:69 184edc8bc94042059f26f9155ef1ae9e
 msgid ""
@@ -109,5 +111,9 @@ msgid ""
 "styleguide.readthedocs.io/en/latest/google-python-"
 "styleguide/python_style_rules/>`_ | `English "
 "<https://google.github.io/styleguide/pyguide.html>`_."
-msgstr ""
+msgstr "所有公开提交的代码应包含有效的说明文档以及使用样例。说明文档和代码应遵循"
+"Google Python风格指南：`中文版 <https://zh-google-"
+"styleguide.readthedocs.io/en/latest/google-python-"
+"styleguide/python_style_rules/>`_ | `English "
+"<https://google.github.io/styleguide/pyguide.html>`_。"
 
