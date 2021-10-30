@@ -86,9 +86,10 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 
 # multi-language docs
-language = ['en', 'zh_CN']
-locale_dirs = ['locale/']   # path is example but recommended.
-gettext_compact = False     # optional.
+language = 'en'
+# locale_dirs = ['locales/']   # path is example but recommended.
+gettext_compact = False  # optional.
+gettext_uuid = True  # optional.
 
 # -- Options for HTML output -------------------------------------------------
 
