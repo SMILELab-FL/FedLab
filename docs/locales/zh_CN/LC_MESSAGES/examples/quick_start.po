@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/examples/quick_start.rst:5 97920d7ed4a64a8eb60af675b0b1da8f
 msgid "Quick Start"
-msgstr ""
+msgstr "快速入门"
 
 #: ../../source/examples/quick_start.rst:7 59d65ef043ca46229b7616a7e34de301
 msgid ""
@@ -33,11 +33,13 @@ msgid ""
 "Source code of this page can be seen in `fedlab-"
 "benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks>`_."
-msgstr ""
+msgstr "本页的源代码请参考 `fedlab-"
+"benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks>`_。"
 
 #: ../../source/examples/quick_start.rst:15 6fdea920b9654fea9157c99c85932d43
 msgid "Download dataset"
-msgstr ""
+msgstr "下载数据集"
 
 #: ../../source/examples/quick_start.rst:17 1ee79f2722c1461abe96bd44c87acbd2
 msgid ""
@@ -62,11 +64,11 @@ msgstr ""
 
 #: ../../source/examples/quick_start.rst:31 2cd8ff624eea45b3bf45711f0e0f8a50
 msgid "Run follow python file to generate partition file."
-msgstr ""
+msgstr "运行如下Python脚本来生成划分文件。"
 
 #: ../../source/examples/quick_start.rst:37 6143a0f4bc5446bc993f5f9ce2d52afd
 msgid "Source codes of partition scripts:"
-msgstr ""
+msgstr "数据划分脚本的源码："
 
 #: ../../source/examples/quick_start.rst:54 0b2541d0b0f74658bba0e64ca876da56
 msgid ""
@@ -78,18 +80,19 @@ msgstr ""
 
 #: ../../source/examples/quick_start.rst:57 79f6ac6b867643afb34e68c768114f6d
 msgid "LEAF dataset process"
-msgstr ""
+msgstr "LEAF数据集处理"
 
 #: ../../source/examples/quick_start.rst:59 d8acd898497947ee8c8056d65ed365b7
 msgid ""
 "Please follow the `FedLab benchmark <https://github.com/SMILELab-"
 "FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ to learn how to generate LEAF "
 "related dataset partition."
-msgstr ""
+msgstr "请按照 `FedLab benchmark <https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ 来学习如何生成LEAF相关的数据划分。"
 
 #: ../../source/examples/quick_start.rst:64 8e6f3ce702954ecba5710422b66267b8
 msgid "Run FedLab demos"
-msgstr ""
+msgstr "运行FedLab demos"
 
 #: ../../source/examples/quick_start.rst:66 7bcc9a08aeed4a0987ccb02ab7f21353
 msgid ""
@@ -109,7 +112,7 @@ msgstr ""
 
 #: ../../source/examples/quick_start.rst:71 dfa0aaf400ea408f800c960bc29cd2cc
 msgid "1. Standalone"
-msgstr ""
+msgstr "1. 单机单进程"
 
 #: ../../source/examples/quick_start.rst:73 0475dde6b13e4da396804813077e861d
 msgid ""

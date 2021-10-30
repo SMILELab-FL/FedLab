@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/examples/leaf_usage.rst:5 a3681e109cd74647ad83d9791c3dd2d3
 msgid "PyTorch version of LEAF"
-msgstr ""
+msgstr "PyTorch版本的LEAF"
 
 #: ../../source/examples/leaf_usage.rst:7 1460f0f23e264b04b8158ed0fa95cc3f
 msgid ""
@@ -35,7 +35,7 @@ msgstr ""
 
 #: ../../source/examples/leaf_usage.rst:16 a25230b7f05e497aba840a3bbced8f0d
 msgid "Description of Leaf datasets"
-msgstr ""
+msgstr "LEAF数据集描述"
 
 #: ../../source/examples/leaf_usage.rst:18 656b36a1c50c4eb28fac658cd5755746
 msgid ""
