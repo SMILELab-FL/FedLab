@@ -1,0 +1,230 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:2
+#: 4c8a67210c104d2ea3d7044cfbb8f78f
+msgid "communicator"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:8
+#: 2f32733399cd452ca8a6131c699671b7
+msgid "FedLab communication API"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:23
+#: 073177344b0f459b8bd6cb5931b885c9
+msgid "Package Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:34:<autosummary>:1
+#: d907b7688e1d4ec1b2a1f49d2b327012
+msgid ":obj:`PackageProcessor <fedlab.core.communicator.PackageProcessor>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:34:<autosummary>:1
+#: 46397b67627544d59539084635471f35
+msgid "Provide more flexible distributed tensor communication functions based on"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:43:<autosummary>:1
+#: 6371506a58bc4d6191299cfdc07923b1
+msgid ""
+":obj:`dtype_torch2flab <fedlab.core.communicator.dtype_torch2flab>`\\ "
+"\\(torch\\_type\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:43:<autosummary>:1
+#: b58abde9889b4e7ba0c5aef3fd8b5ae3
+msgid ""
+":obj:`dtype_flab2torch <fedlab.core.communicator.dtype_flab2torch>`\\ "
+"\\(fedlab\\_type\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: ba9c5d9a0cd946098680b0841733f217
+msgid ""
+":obj:`HEADER_SENDER_RANK_IDX "
+"<fedlab.core.communicator.HEADER_SENDER_RANK_IDX>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 0716bad488a84c2e94808b6b6c22f2d9
+msgid ""
+":obj:`HEADER_RECEIVER_RANK_IDX "
+"<fedlab.core.communicator.HEADER_RECEIVER_RANK_IDX>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 7a31425f4344481f9b7510bc254157e5
+msgid ""
+":obj:`HEADER_SLICE_SIZE_IDX "
+"<fedlab.core.communicator.HEADER_SLICE_SIZE_IDX>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 764e54068d5443dab288eca17baa4cb4
+msgid ""
+":obj:`HEADER_MESSAGE_CODE_IDX "
+"<fedlab.core.communicator.HEADER_MESSAGE_CODE_IDX>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: d06370e4dd5c43be9fbade80b231cbd6
+msgid ""
+":obj:`HEADER_DATA_TYPE_IDX "
+"<fedlab.core.communicator.HEADER_DATA_TYPE_IDX>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 7f54bd9d31a04d47a86ca55041f7b9bf
+msgid ""
+":obj:`DEFAULT_RECEIVER_RANK "
+"<fedlab.core.communicator.DEFAULT_RECEIVER_RANK>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: d7a9bcfa3c2947c988e233b34c2b26fb
+msgid ":obj:`DEFAULT_SLICE_SIZE <fedlab.core.communicator.DEFAULT_SLICE_SIZE>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 78e323ffb2474dd1806b6999c62ed81f
+msgid ""
+":obj:`DEFAULT_MESSAGE_CODE_VALUE "
+"<fedlab.core.communicator.DEFAULT_MESSAGE_CODE_VALUE>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: c5638efc372f4930901e76f60d0cc72f
+msgid ":obj:`HEADER_SIZE <fedlab.core.communicator.HEADER_SIZE>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 3639f1e6050140809c31755e3071a56a
+msgid ":obj:`INT8 <fedlab.core.communicator.INT8>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 343854080cb040c6938589809e3a1f97
+msgid ":obj:`INT16 <fedlab.core.communicator.INT16>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 923c24b957184c90ba0a404617772e31
+msgid ":obj:`INT32 <fedlab.core.communicator.INT32>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: c3969286d3804016b5ee0ea41b7d4bb0
+msgid ":obj:`INT64 <fedlab.core.communicator.INT64>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: 2fe5444cbefe40f7863321e301cd649b
+msgid ":obj:`FLOAT16 <fedlab.core.communicator.FLOAT16>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: d60599bef9cd4adcb8ecc4eb1df9005e
+msgid ":obj:`FLOAT32 <fedlab.core.communicator.FLOAT32>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:63:<autosummary>:1
+#: b6cc0bc585314d958885b1a1cae8c62a
+msgid ":obj:`FLOAT64 <fedlab.core.communicator.FLOAT64>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:152
+#: bca05b708e32476a90cb920811b5ac8c
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:154
+#: d99de8dd496e4a6fb920cf94e9e2a07b
+msgid ""
+"Provide more flexible distributed tensor communication functions based on"
+" :func:`torch.distributed.send` and :func:`torch.distributed.recv`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:157
+#: b726002a6ca64662a0cd101d6e08c6f5
+msgid ""
+":class:`PackageProcessor` defines the details of point-to-point package "
+"communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:159
+#: b2876c91588441c4a553118a20717c38
+msgid "EVERYTHING is :class:`torch.Tensor` in FedLab."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:164
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:183
+#: 193a73db4ede496db6031996858b9146 2706fdf3a82543f4aa799d4993278c8d
+msgid "Three-segment tensor communication pattern based on ``torch.distributed``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:176
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:195
+#: 3b36d17c9eb449b6a34d8a3a9e7128ed 9d4997ac973f4a9e96ca14d0c875d950
+msgid "Pattern is shown as follows:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:167
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:186
+#: 4b4af35c4d6c410a9b247d2efaa125ff b32a9011c5e446d6b79581dd9607946d
+msgid "1.1 sender: send a header tensor containing ``slice_size`` to receiver"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:169
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:188
+#: 9b5e899b23e74750979fd75035304133 9c30637debf34be082bf94af63da0641
+msgid ""
+"1.2 receiver: receive the header, and get the value of ``slice_size`` and"
+" create a buffer for incoming slices of content"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:171
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:190
+#: 48f692e0b9044dc49910e3f8ee5ae126 7ad114ef028b46c0a5c2f2c3ec3e8b24
+msgid ""
+"2.1 sender: send a list of slices indicating the size of every content "
+"size."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:173
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:192
+#: 57e81debad924834bd7f67e4ab1603c6 949f3535b08c455aad326c4048159af1
+msgid "2.2 receiver: receive the slices list."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:175
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:194
+#: 6c9821b13cc44545bf00fcf47273ab8b d56c514c05344b40af5676e0fb6861be
+msgid "3.1 sender: send a content tensor composed of a list of tensors."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:177
+#: ../../source/autoapi/fedlab/core/communicator/index.rst:196
+#: 252c590cc9ed4377b003fd1be7b75cb5 80947dccf7144651b6d48a6f5afe67a0
+msgid ""
+"3.2 receiver: receive the content tensor, and parse it to obtain slices "
+"list using parser function"
+msgstr ""
+

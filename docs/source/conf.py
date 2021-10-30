@@ -85,6 +85,12 @@ pygments_style = 'sphinx'
 # Config for 'sphinx.ext.todo'
 todo_include_todos = True
 
+# multi-language docs
+language = 'en'
+locale_dirs = ['../locales/']   # path is example but recommended.
+gettext_compact = False  # optional.
+gettext_uuid = True  # optional.
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

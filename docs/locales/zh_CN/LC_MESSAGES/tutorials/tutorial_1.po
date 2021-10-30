@@ -1,0 +1,146 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/tutorial_1.rst:5 a3b5472c87a6446a97e6b4ecdf982b39
+msgid "Distributed Communication"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:9 4c60dd00035c4f4caa3ac554ec5331b8
+msgid "How to initialize distributed network?"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:11 e3c9b4f628b943369f28c2f3f131c457
+msgid ""
+"FedLab uses `torch.distributed "
+"<https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point "
+"communication package. The communication backend is Gloo as default. "
+"FedLab processes send/receive data through TCP network connection. If the"
+" automatically detected interface is not correct, you need to choose the "
+"network interface to use for Gloo, by setting the environment variables "
+"``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or"
+" ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:20 4b201a9f9bcc4ce484304d98acd7afc7
+msgid "Check the available ethernet:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:26 d3532588f9d542fea1f595f3c56d83f9
+msgid ""
+"You need to assign right ethernet to :class:`DistNetwork`, making sure "
+"``torch.distributed`` network initialization works. :class:`DistNetwork` "
+"is for quickly network configuration, which you can create one as "
+"follows:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:43 13d7888ffb11427eafc5702a68d77059
+msgid ""
+"The ``(server_ip, server_port)`` is the address of server. please be "
+"aware of that the rank of server is 0 as default."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:44 a8d45124439348e4adf92a9a82b1de0f
+msgid "Make sure ``world_size`` is the same across process."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:45 8508c885d08c478598438f928ed5e36d
+msgid "Rank should be different (from ``0`` to ``world_size-1``)."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:46 42f75dfebf1f477393c19cc0a7ef2633
+msgid "world_size = 1 (server) + client number."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:47 ff450e7ccde64f45b3ab16d3299f673a
+msgid ""
+"The ethernet can be None, torch.distributed will try to find the right "
+"ethernet. If it doesn't work, user need to assign right ethernet name."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:48 1cdce3c2e5204b0eb3fac6fdcadaea99
+msgid ""
+"The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, "
+"network initialization would fail."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:52 3a403c53b06441cea98de3c8589c67c8
+msgid "How to create package?"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:54 5d5440e4dd184f588099da3a87e5fd2d
+msgid ""
+"The communication module of FedLab is in core/communicator. "
+"core.communicator.Package defines the basic data structure of network "
+"package. In our implementation, Package contains Header and Content."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:62 c5ce1cab86b14a3fa4ce635d91722eb0
+msgid "Currently, you can create a network package from following methods:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:65 f723afbd9948439e8dc4bb9e3cc5d0fb
+msgid ""
+"Currently, **FedLab** only supports vectorized tensors as content, which "
+"means that tensors with different shape should be flatterned before "
+"appended into Package (call tensor.view(-1))."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:67 bc7a32a3aa1a45fab66b7e893d077be3
+msgid "initialize with tensor"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:74 90acb28253af487a99b922887c77310e
+msgid "initialize with tensor list"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:82 3ac62080067d4ae78ff013b848896538
+msgid "append a tensor to exist package"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:92 999991a9d2774e80a0dc65cb362b3d80
+msgid "append a tensor list to exist package"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:102 7b3996eed4054727987b78b784df4ae8
+msgid "Two static methods are provided by Package to parse header and content:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:111 c4af8ba2289b4a7ba09fa6ba7dbadd18
+msgid "How to send package?"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:113 807e13d1bcbd453fa747768f943f2cb7
+msgid ""
+"The point-to-point communicating agreements is implemented in "
+"PackageProcessor module. PackageProcessor is a static class to manage "
+"package sending/receiving procedure."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:115 ec6bab9ef9694b209b87dee7ed89aa2d
+msgid ""
+"User can send a package to a process with rank=0 (the parameter dst must "
+"be assigned):"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_1.rst:122 80fcb8396ac946c4b78b323a59033cfb
+msgid ""
+"or, receive a package from rank=0 (set the parameter src=None to receive "
+"package from any other process):"
+msgstr ""
+

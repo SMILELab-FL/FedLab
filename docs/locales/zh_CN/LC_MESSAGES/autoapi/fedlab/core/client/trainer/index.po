@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:2
+#: 5590c66089ca45418d72d15dba185408
+msgid "trainer"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:8
+#: 3f248ce4d5324973a8a64fbb7b2bc8eb
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:19:<autosummary>:1
+#: 2773d236df1b402aa38e5c1aa82c1f55
+msgid ":obj:`ClientTrainer <fedlab.core.client.trainer.ClientTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:25
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:19:<autosummary>:1
+#: 0ebc645110c74714a2a1c9cc1da2df2b efa80dcdb6cf4263ab04deafb8d5168e
+msgid "An abstract class representing a client backend trainer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:19:<autosummary>:1
+#: 8687f8f427194c6aad3f3993c9b3fc03
+msgid ":obj:`ClientSGDTrainer <fedlab.core.client.trainer.ClientSGDTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:56
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:19:<autosummary>:1
+#: 61ac9ac536e148ef96d6dd85260fa127 adace33e55554faaa61f887112378f3d
+msgid ""
+"Client backend handler, this class provides data process method to upper "
+"layer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:23
+#: 04ee578958bc43f2bd04bb75ad1d5e8d
+msgid "Bases: :class:`fedlab.core.model_maintainer.ModelMaintainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:27
+#: 946f7fdc8a9f4409abb1febf9cc2d3a6
+msgid ""
+"In our framework, we define the backend of client trainer show manage its"
+" local model. It should have a function to update its model called "
+":meth:`train`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:30
+#: 658fa83975dd4b569af8f6363f930745
+msgid ""
+"If you use our framework to define the activities of client, please make "
+"sure that your self-defined class should subclass it. All subclasses "
+"should overwrite :meth:`train`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst
+#: 08901e87041c44b093130aaa16330fa7 6c34867478454629b2a9b8514a45e25e
+#: 8b9653f9bc904b5cb6389e23a9814b7d
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:33
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:58
+#: 7a528a09f7d74936a9b0ababc4b321c0 89737a78a2424b0ca86ba0b2665bcde1
+msgid "PyTorch model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:35
+#: 238d70573b084c31bf23ea7b172850e0
+msgid "Use GPUs or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:41
+#: b53827bdb7844cfcb9e010ea74bdaf95
+msgid ""
+"Override this method to define the algorithm of training your model. This"
+" function should manipulate :attr:`self._model`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:47
+#: e7b84f8ccf9345f8864e2dd3e7926918
+msgid "Evaluate quality of local model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:54
+#: 90eb48edfe5d4a7ab531a3b758437d79
+msgid "Bases: :class:`fedlab.core.client.trainer.ClientTrainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:60
+#: b6cca55e1840467eb71b73cc4ce825fb
+msgid ":class:`torch.utils.data.DataLoader` for this client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:62
+#: a57c8f4722434820ba576c415720b4cf
+msgid "the number of local epoch."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:64
+#: 167e17a2edea4eb2986e46fcde44baaf
+msgid "optimizer for this client's model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:66
+#: 06e1f1e097804e42af06c39f50282285
+msgid "loss function used in local training process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:68
+#: cc137a02f1c24bddb271e148f149a237
+msgid "use GPUs or not. Default: ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:70
+#: 242b3be054704e73a39e2312e3f56eaa
+msgid ":object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:75
+#: 0ebc25c52c3c4e5394e6641be0db0e31
+msgid "Client trains its local model on local dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/trainer/index.rst:77
+#: 218f9f2005e1469e8d0380f3278d79a0
+msgid "Serialized model parameters."
+msgstr ""
+

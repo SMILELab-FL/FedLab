@@ -1,0 +1,332 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/examples/leaf_usage.rst:5 a3681e109cd74647ad83d9791c3dd2d3
+msgid "PyTorch version of LEAF"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:7 1460f0f23e264b04b8158ed0fa95cc3f
+msgid ""
+"**FedLab migrates the TensorFlow version of LEAF dataset to the PyTorch "
+"framework, and provides the implementation of dataloader for the "
+"corresponding dataset. The unified interface is in "
+"``fedlab_benchmarks/leaf/dataloader.py``**"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:12 63c040485d6c4489a6505743c37aab17
+msgid "This markdown file introduces the process of using LEAF dataset in FedLab."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:16 a25230b7f05e497aba840a3bbced8f0d
+msgid "Description of Leaf datasets"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:18 656b36a1c50c4eb28fac658cd5755746
+msgid ""
+"The LEAF benchmark contains the federation settings of Celeba, femnist, "
+"Reddit, sent140, shakespeare and synthetic datasets. With reference to "
+"`leaf-readme.md <https://github.com/talwalkarlab/leaf>`__ , the "
+"introduction the total number of users and the corresponding task "
+"categories of leaf datasets are given below."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:24 1843989b2dbe4e92961d473ca26201b1
+msgid "FEMNIST"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:26 64136214431b4a74b6ec2d4ea9cdcb27
+msgid "**Overview:** Image Dataset"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:27 ce85a11f53c44bd6817918a487258b56
+msgid ""
+"**Details:** 62 different classes (10 digits, 26 lowercase, 26 "
+"uppercase), images are 28 by 28 pixels (with option to make them all 128 "
+"by 128 pixels), 3500 users"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:30 d97f5067b9b14dd5b15bdb1176f230d8
+msgid "**Task:** Image Classification"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:32 97aca86adced4c83a94bb8c5d3a39f6a
+msgid "Sentiment140"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:34 0def1fb4def4499dac1850735c50f1c9
+msgid "**Overview:** Text Dataset of Tweets"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:35 c26d2ed95bca4ca1840974f755c755b0
+msgid "**Details** 660120 users"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:36 07ea66fa9817443c81d5fae051cb1aa8
+msgid "**Task:** Sentiment Analysis"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:38 8157347098aa4ac387ab11a704c211a0
+msgid "Shakespeare"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:40 125d714e6d5147b89b1237529d772f9a
+msgid "**Overview:** Text Dataset of Shakespeare Dialogues"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:41 4d88bb6de4904ec28a05ba98ae53b5e2
+msgid ""
+"**Details:** 1129 users (reduced to 660 with our choice of sequence "
+"length. See `bug <https://github.com/TalwalkarLab/leaf/issues/19>`__.)"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:44 752baa1831564baa84403bc6102b4892
+msgid "**Task:** Next-Character Prediction"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:46 b2e5c725c2d843df99fe2ab15550ab2f
+msgid "Celeba"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:48 5adbc9bdee854b349117e7a2aeed7728
+msgid ""
+"**Overview:** Image Dataset based on the `Large-scale CelebFaces "
+"Attributes Dataset <http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html>`__"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:51 db452bd8af874c609c3aa561a357f641
+msgid "**Details:** 9343 users (we exclude celebrities with less than 5 images)"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:53 eb130963db2442eda9d853113f2b45ec
+msgid "**Task:** Image Classification (Smiling vs. Not smiling)"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:55 fe8b860dba934997ab1c039d79e019dc
+msgid "Synthetic Dataset"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:57 e29e0f6a614e473e9e3a128127351a48
+msgid ""
+"**Overview:** We propose a process to generate synthetic, challenging "
+"federated datasets. The high-level goal is to create devices whose true "
+"models are device-dependant. To see a description of the whole generative"
+" process, please refer to the paper"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:61 a420253d84fe4b97abc94d6ded946c76
+msgid ""
+"**Details:** The user can customize the number of devices, the number of "
+"classes and the number of dimensions, among others"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:63 8bf040671c384107beacfcfa92dd47d2
+msgid "**Task:** Classification"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:65 3e854ae6049f42a6812cb4f45c6ed61d
+msgid "Reddit"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:67 70c6395a4140460fbe7ac0bb365247c6
+msgid ""
+"**Overview:** We preprocess the Reddit data released by `pushshift.io "
+"<https://files.pushshift.io/reddit/>`__ corresponding to December 2017."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:70 2d8061f6018c4c919df7a71ec67218eb
+msgid "**Details:** 1,660,820 users with a total of 56,587,343 comments."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:71 203978d932824ac3aa48a6e634cb9c27
+msgid "**Task:** Next-word Prediction."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:74 f716be4d200e4f558dba59cf43227774
+msgid "Download and preprocess data"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:76 5e65e44dc14b425eb3eed14c8037c5e3
+msgid ""
+"For the six types of leaf datasets, refer to `leaf/data "
+"<https://github.com/talwalkarlab/leaf/tree/master/data>`__ and provide "
+"data download and preprocessing scripts in ``fedlab _ "
+"benchmarks/datasets/data``. In order to facilitate developers to use "
+"leaf, fedlab integrates the download and processing scripts of leaf six "
+"types of data sets into ``fedlab_benchmarks/datasets/data``, which stores"
+" the download scripts of various data sets."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:85 72ae5d98dbdd4cdcbed846a26e1fd5f6
+msgid "Common structure of leaf dataset folders:"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:96 371cdd99c708476189b98698a29c5f68
+msgid "``preprocess.sh``: downloads and preprocesses the dataset"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:97 ede7fd7996b1415eb07c848005f54b11
+msgid ""
+"``stats.sh``: performs information statistics on all data (stored in "
+"``./data/all_data/all_data.json``) processed by ``preprocess.sh``"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:99 090d3b57419b4669b9b14b200fa5f38a
+msgid ""
+"``README.md``: gives a detailed description of the process of downloading"
+" and preprocessing the dataset, including parameter descriptions and "
+"precautions."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:103 cb4466995d56460b9e0980a21a6718b5
+msgid ""
+"**Developers can directly run the executable script "
+"``create_datasets_and_save.sh`` to obtain the dataset, process and store "
+"the corresponding dataset data in the form of a pickle file.** This "
+"script provides an example of using the preprocess.sh script, and "
+"developers can modify the parameters according to application "
+"requirements."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:110 527c54757d8b4c3f936a817945dca049
+msgid "**preprocess.sh Script usage example:**"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:131 892dba3171944a73a69596e49f0f4773
+msgid ""
+"By setting parameters for ``preprocess.sh``, the original data can be "
+"sampled and spilted. The ``readme.md`` in each dataset folder provides "
+"the example and explanation of script parameters, the common parameters "
+"are:"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:136 cac14bc1b12f4720b23808410e0cfd67
+msgid ""
+"``-s`` := 'iid' to sample in an i.i.d. manner, or 'niid' to sample in a "
+"non-i.i.d. manner; more information on i.i.d. versus non-i.i.d. is "
+"included in the 'Notes' section"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:139 4deadf667c3347fa87295a69dab5970e
+msgid ""
+"``--sf`` := fraction of data to sample, written as a decimal; default is "
+"0.1"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:141 fdb6d3c408064f4abc10e7918a919602
+msgid "``-k`` := minimum number of samples per user"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:142 1eab519dac00440d986be5f703aa5371
+msgid ""
+"``-t`` := 'user' to partition users into train-test groups, or 'sample' "
+"to partition each user's samples into train-test groups"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:144 82524097c2924524b221b28bf44fc5de
+msgid ""
+"``--tf`` := fraction of data in training set, written as a decimal; "
+"default is 0.9, representing train set: test set = 9:1."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:147 d003e67f88ba49bf9e3ef047c26a6ce8
+msgid ""
+"At present, FedLab's Leaf experiment need provided training data and test"
+" data, so we needs to provide related data training set-test set "
+"splitting parameter for ``preprocess.sh`` to carry out the experiment, "
+"default is 0.9."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:152 db2d32f95e7143b9b9431f73b428caeb
+msgid ""
+"If you need to obtain or split data again, make sure to delete ``data`` "
+"folder in the dataset directory before re-running ``preprocess.sh`` to "
+"download and preprocess data."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:157 e46911440a48492bae03e4a6a2d66656
+msgid "Pickle file stores DataSet."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:159 a35ab619557b4d9cb2564d645c6470b9
+msgid ""
+"In order to speed up developers' reading data, fedlab provides a method "
+"of processing raw data into DataSet and storing it as a pickle file. The "
+"DataSet of the corresponding data of each client can be obtained by "
+"reading the pickle file after data processing."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:164 ee1d1812387c460aa0ea1d61965b2e7a
+msgid ""
+"set the parameters and run ``create_pickle_dataset.py``. The usage "
+"example is as follows:"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:172 6898204f6acd4f2ea57d1f6e3c2a20da
+msgid ""
+"Parameter Description: 1. ``data_root`` : the root path for storing leaf "
+"data sets, which contains all leaf data sets; If you use the "
+"``Fedlab_benchmarks/datasets/`` provided by fedlab to download leaf data,"
+" 'data\\_root' can be set to this path, a relative address of which is "
+"shown in this example. 2. ``save_root``: directory to store the pickle "
+"file address of the processed DataSet; Each dataset DataSet will be saved"
+" in ``{save_root}/{dataset_name}/{train,test}``; the example is to create"
+" a ``pickle_dataset`` folder under the current path to store all pickle "
+"dataset files. 3. ``dataset_name``: Specify the name of the leaf data set"
+" to be processed. There are six options {femnist, shakespeare, celeba, "
+"sent140, synthetic, reddit}."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:185 7759e518eee84663a8a097dcc9202160
+msgid "Dataloader loading data set"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:187 2f1a6cf3805e488ebdea954345b9bb51
+msgid ""
+"Leaf datasets are loaded by ``dataloader.py`` (located under "
+"``fedlab_benchmarks/leaf/dataloader.py``). All returned data types are "
+"pytorch `Dataloader <https://pytorch.org/docs/stable/data.html>`__."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:191 74f4431c833c42e1a4df640ab234f98e
+msgid ""
+"By calling this interface and specifying the name of the data set, the "
+"corresponding Dataloader can be obtained."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:194 dd1b2d059de747daba6e3a824cd14737
+msgid "**Example of use:**"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:209 b2f133793f0648488d4ba90df24bdbfe
+msgid "Run experiment"
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:211 84546bee3afd4e0ca3ee7019f59abda0
+msgid ""
+"The current experiment of LEAF data set is the **single-machine multi-"
+"process** scenario under FedAvg's Cross machine implement, and the tests "
+"of femnist and Shakespeare data sets have been completed."
+msgstr ""
+
+#: ../../source/examples/leaf_usage.rst:215 b8114fae0acb4d74bf79e21d512e8531
+msgid ""
+"Run \\`fedlab\\_benchmarks/fedavg/cross\\_machine/LEAF\\_test.sh' to "
+"quickly execute the simulation experiment of fedavg under leaf data set."
+msgstr ""
+

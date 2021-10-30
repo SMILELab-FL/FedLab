@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/tutorial_2.rst:5 4acdd76dea31464baabcd5f38f33d6d2
+msgid "Communication Strategy"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:7 a371070268764d098c4c72eb81217b88
+msgid ""
+"Communication strategy is implemented by ClientManager and ServerManager "
+"together."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:9 22ed7e74146f4845b8e994b5494e20a2
+msgid ""
+"The prototype of :class:`NetworkManager` is defined in "
+"``fedlab.core.network_manager``, which is also a subclass of "
+"``torch.multiprocessing.process``."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:12 8450d2a9f2054007a207db84696eb3e0
+msgid ""
+"Typically, standard implementations is shown in "
+"``fedlab.core.client.manager`` and ``fedlab.core.server.manager``. "
+":class:`NetworkManager` manages network operation and control flow "
+"procedure."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:16 d1f055846ce54c4e90ab7829a903088a
+msgid "Base class definition shows below:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:61 5425073f2a0a4eb08d31346205b9b4df
+msgid ""
+"FedLab provides 2 standard communication pattern implementations: "
+"synchronous and asynchronous. You can customize process flow by: 1. "
+"create a new class inherited from corresponding class in our standard "
+"implementations; 2. overwrite the functions in target stage."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:65 efbfa605993e4e5da000885929ca4434
+msgid ""
+"To sum up, communication strategy can be customized by overwriting as the"
+" note below mentioned."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:69 67bee671c549466dabc588d53481445b
+msgid ""
+":meth:`setup()` defines the network initialization stage. Can be used for"
+" FL algorithm initialization."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:70 c90a894c7bee4d1289c47dc6bd1b0bab
+msgid ""
+":meth:`main_loop()` is the main process of client and server. User need "
+"to define the communication strategy for both client and server manager."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:71 bc96a83f426b4744a626c978d26aeaf0
+msgid ":meth:`shutdown()` defines the shutdown stage."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:73 a9988366a38742d5ae3b758bed225db7
+msgid ""
+"Importantly, ServerManager and ClientManager should be defined and used "
+"as a pair. The control flow and information agreements should be "
+"compatible. FedLab provides standard implementation for typical "
+"synchronous and asynchronous, as depicted below."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:76 f8ba213529fc4eb683bbbaf9b6a261b8
+msgid "Synchronous"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:78 4eb8c407333543868fd1f565916d8fa7
+msgid ""
+"Synchronous communication involves :class:`ServerSynchronousManager` and "
+":class:`ClientPassiveManager`. Communication procedure is shown as "
+"follows."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:89 f3a3ea2fdbf74a5ea7e9145c9eeac9fd
+msgid "Asynchronous"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:91 e134a04da38c44a29f1be905acb73885
+msgid ""
+"Asynchronous is given by :class:`ServerAsynchronousManager` and "
+":class:`ClientActiveManager`. Communication procedure is shown as "
+"follows."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:103 bffeb834ddb146bf84cb73e3d2bb6cd8
+msgid "Initialization stage"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:105 1110a877bf6649099bad4df1f671352a
+msgid "Initialization stage is represented by :meth:`manager.setup()` function."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:107 ae2d5279517c4867b7a28cbe33a8228a
+msgid ""
+"User can customize initialization procedure as follows(use ClientManager "
+"as example):"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:127 1156f81acfbc4190b55c667c9442a341
+msgid "Communication stage"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:129 7a4cee2b27f944419b3c4db0ab6a1ac8
+msgid ""
+"After Initialization Stage, user can define :meth:`main_loop()` to define"
+" main process for server and client. To standardize **FedLab**'s "
+"implementation, here we give the :meth:`main_loop()` of "
+":class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for "
+"example."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:133 99dc160bae0549fc9c8c61de447a70df
+msgid "**Client part**:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:157 7fa9d6a55ee54d0fbc1337a01c76ab2d
+msgid "**Server Part**:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:194 14c825013a0044ddb77af252afc7c288
+msgid "Shutdown stage"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:196 99e8074ab96a47a1ab9564c34260170d
+msgid ""
+":meth:`shutdown()` will be called when :meth:`main_loop()` finished. You "
+"can define the actions for client and server seperately."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:198 5ddee1215cb9470ba298733a15e5a99c
+msgid ""
+"Typically in our implementation, shutdown stage is started by server. It "
+"will send a package with ``MessageCode.Exit`` to inform client to stop "
+"its main loop."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:202 fc8ea7b746e44e9b904fe3f0ce65872f
+msgid ""
+"Codes below is the actions of :class:`ServerSynchronousManager` in "
+"shutdown stage."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:221 372e8aa437d9439eac26a87e206fe337
+msgid "Example"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:223 aa2a61231eef466591f1fdf140e4fee9
+msgid ""
+"In fact, the scale module of **FedLab** is a communication strategy re-"
+"definition to both ClientManager and ServerManager. Please see the source"
+" code in fedlab/core/{client or server}/scale/manager.py (It it really "
+"simple. We did nothing but add a map function from rank to client id)."
+msgstr ""
+
