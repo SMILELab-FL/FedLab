@@ -19,11 +19,11 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_1.rst:5 a3b5472c87a6446a97e6b4ecdf982b39
 msgid "Distributed Communication"
-msgstr ""
+msgstr "分布式通信"
 
 #: ../../source/tutorials/tutorial_1.rst:9 4c60dd00035c4f4caa3ac554ec5331b8
 msgid "How to initialize distributed network?"
-msgstr ""
+msgstr "如何初始化分布式通信网络？"
 
 #: ../../source/tutorials/tutorial_1.rst:11 e3c9b4f628b943369f28c2f3f131c457
 msgid ""
@@ -39,7 +39,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_1.rst:20 4b201a9f9bcc4ce484304d98acd7afc7
 msgid "Check the available ethernet:"
-msgstr ""
+msgstr "检查可用的以太网："
 
 #: ../../source/tutorials/tutorial_1.rst:26 d3532588f9d542fea1f595f3c56d83f9
 msgid ""

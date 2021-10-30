@@ -19,13 +19,13 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_2.rst:5 4acdd76dea31464baabcd5f38f33d6d2
 msgid "Communication Strategy"
-msgstr ""
+msgstr "通信策略"
 
 #: ../../source/tutorials/tutorial_2.rst:7 a371070268764d098c4c72eb81217b88
 msgid ""
 "Communication strategy is implemented by ClientManager and ServerManager "
 "together."
-msgstr ""
+msgstr "可以通过复写 ``ClientManager`` 和 ``ServerManager`` 来自定义通信策略。"
 
 #: ../../source/tutorials/tutorial_2.rst:9 22ed7e74146f4845b8e994b5494e20a2
 msgid ""

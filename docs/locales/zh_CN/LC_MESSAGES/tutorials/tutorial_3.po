@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_3.rst:5 c68910525a734b1293ce3857cd8ddfb4
 msgid "Federated Optimization"
-msgstr ""
+msgstr "联邦优化"
 
 #: ../../source/tutorials/tutorial_3.rst:7 85118bb5074342b1834762f152d232ba
 msgid ""
@@ -38,7 +38,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_3.rst:52 dd27c8c7f8d545259c57deb4b2d8b193
 msgid "Client local training"
-msgstr ""
+msgstr "Client本地训练"
 
 #: ../../source/tutorials/tutorial_3.rst:54 926a630fd295497eaf26ad868c6ef67f
 msgid ""
@@ -63,11 +63,11 @@ msgstr ""
 msgid ""
 "**A standard implementation of this part is in "
 ":class:`ClientSGDTrainer`.**"
-msgstr ""
+msgstr "这部分的一个标准实现可以参考 :class:`ClientSGDTrainer`。"
 
 #: ../../source/tutorials/tutorial_3.rst:88 d84eb2c249624514acb3dabe39293237
 msgid "Server global aggregation"
-msgstr ""
+msgstr "Server的全局聚合"
 
 #: ../../source/tutorials/tutorial_3.rst:90 fc73bd04e29d4039b146293641d298d4
 msgid ""
@@ -85,7 +85,8 @@ msgid ""
 "You can overwrite ``_update_model(model_parameters_list)`` to customize "
 "aggregation procedure. Typically, you can define aggregation functions as"
 " FedLab."
-msgstr ""
+msgstr "你可以通过复写 ``_update_model(model_parameters_list)`` 来自定义聚合"
+"过程。通常你可以定义聚合函数。"
 
 #: ../../source/tutorials/tutorial_3.rst:119 0a27406027e84aa8a2c3cada05fbd4f3
 msgid ""

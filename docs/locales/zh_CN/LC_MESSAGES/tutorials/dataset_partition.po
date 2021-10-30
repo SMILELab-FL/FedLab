@@ -20,7 +20,7 @@ msgstr ""
 #: ../../source/tutorials/dataset_partition.rst:5
 #: cb9a1cdc9a2846b69782df6391d40cbf
 msgid "Federated Dataset and DataPartitioner"
-msgstr ""
+msgstr "联邦化数据集和DataPartitioner"
 
 #: ../../source/tutorials/dataset_partition.rst:7
 #: a8b27e70f56f4087a22cfa30c3fb800e
@@ -37,7 +37,14 @@ msgid ""
 "data partition scheme. Also, FedLab provides some extra datasets that are"
 " used in current FL researches while not provided by official Pytorch "
 ":class:`torchvision.datasets` yet."
-msgstr ""
+msgstr "考虑到现实真实情况的复杂性，联邦学习需要应对各种数据分布的场景，包括iid"
+"和non-iid场景。在实验中往往需要根据client数量以及具体分布和划分策略对完整的训"
+"练数据集和测试数据集进行划分。尽管当前公开的数据集已存在一些划分策略，如何维护数"
+"据划分相关数据结构仍旧非常麻烦，以及尽管用了相同分布，不同复现给出的具体代码实"
+"现划分实现仍旧存在差异。FedLab为用户提供了 :class:`fedlab.utils.dataset.partition.DataPartitioner` "
+"来使用一些预划分的数据集或是你自己的数据。给定划分策略，:class:`DataPartitioner` "
+"可以维护每个client在划分后拥有的样本序号。同时，FedLab提供了已被用于联邦"
+"学习但是PyTorch的 :class:`torchvision.datasets` 尚未提供的一些数据集。"
 
 #: ../../source/tutorials/dataset_partition.rst:14
 #: 37f90e3e6d164c46b12d30174a8d3160
@@ -45,12 +52,13 @@ msgid ""
 "Current implementation and design of this part are based on  LEAF "
 ":cite:p:`caldas2018leaf`, :cite:t:`acar2020federated`, "
 ":cite:t:`yurochkin2019bayesian` and NIID-Bench :cite:p:`li2021federated`."
-msgstr ""
+msgstr "目前这部分设计和实现是基于 LEAF :cite:p:`caldas2018leaf`，:cite:t:`acar2020federated`，"
+":cite:t:`yurochkin2019bayesian` 和NIID-Bench :cite:p:`li2021federated`。"
 
 #: ../../source/tutorials/dataset_partition.rst:17
 #: 76ce516603da40c1867a2c73cf526954
 msgid "Vision Data"
-msgstr ""
+msgstr "视觉数据"
 
 #: ../../source/tutorials/dataset_partition.rst:20
 #: d8ef8fef810e491db5ddaf243f285db9
@@ -65,14 +73,16 @@ msgid ""
 ":class:`fedlab.utils.dataset.partition.DataPartitioner` and implement "
 "functions specific to particular partition scheme. They can be used to "
 "prototype and benchmark your FL algorithms."
-msgstr ""
+msgstr "FedLab为部分数据集（比如CIFAR10）提供了一些预定义的数据划分方案，以及为"
+"特定数据划分方案提供的函数实现。他们可以被用作你的联邦学习算法的测试基准设置。"
 
 #: ../../source/tutorials/dataset_partition.rst:24
 #: bb8d7b49d8bd4a1f9c6cb8a26736b0a3
 msgid ""
 "Tutorial for :class:`CIFAR10Partitioner`: :ref:`CIFAR10 tutorial <data-"
 "cifar10>`."
-msgstr ""
+msgstr ":class:`CIFAR10Partitioner` 的教程：:ref:`CIFAR10教程 <data-"
+"cifar10>`。"
 
 #: ../../source/tutorials/dataset_partition.rst:28
 #: cd94c053ba4e4faab0a8a3c819cc9b8a
@@ -85,7 +95,9 @@ msgid ""
 "Notebook tutorial for :class:`CIFAR100Partitioner`: `CIFAR100 tutorial "
 "<https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/cifar100/data_partitioner.ipynb>`_."
-msgstr ""
+msgstr ":class:`CIFAR100Partitioner` 的notebook教程：`CIFAR100教程 "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/cifar100/data_partitioner.ipynb>`_."
 
 #: ../../source/tutorials/dataset_partition.rst:35
 #: 2bc3495429414b07a6e0121871e3ece8
@@ -98,7 +110,9 @@ msgid ""
 "Notebook tutorial for data partition of FMNIST (FashionMNIST) : `FMNIST "
 "tutorial <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_."
-msgstr ""
+msgstr "FMNIST（FashionMNIST）划分的notebook教程：`FMNIST"
+"教程 <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_."
 
 #: ../../source/tutorials/dataset_partition.rst:41
 #: 3b9fc77bc85b4b49a6b8e2da761d28cf
@@ -111,7 +125,9 @@ msgid ""
 "MNIST is very similar with FMNIST, please check `FMNIST tutorial "
 "<https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_."
-msgstr ""
+msgstr "MNIST和FMNIST非常相似，请参考 `FMNIST教程 "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/fmnist/fmnist_tutorial.ipynb>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:46
 #: 85d7fcbe5116478c960593ce4d71fdd7
@@ -124,7 +140,9 @@ msgid ""
 "Data partition tutorial for SVHN: `SVHN tutorial <https://github.com"
 "/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/svhn/svhn_tutorial.ipynb>`_"
-msgstr ""
+msgstr "SVHN的数据划分教程：`SVHN教程 <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/svhn/svhn_tutorial.ipynb>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:51
 #: 0b7d0ec0e2974f7289f7fbdd49ee1981
@@ -136,7 +154,8 @@ msgstr ""
 msgid ""
 "Data partition for CelebA: `CelebA tutorial <https://github.com/SMILELab-"
 "FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/celeba>`_."
-msgstr ""
+msgstr "CelebA的数据划分：`CelebA教程 <https://github.com/SMILELab-"
+"FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/celeba>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:58
 #: bd597c2bba374ae596c5dd1e9fac7882
@@ -149,12 +168,14 @@ msgid ""
 "Data partition of FEMNIST: `FEMNIST tutorial <https://github.com"
 "/SMILELab-FL/FedLab-"
 "benchmarks/tree/master/fedlab_benchmarks/datasets/femnist>`_."
-msgstr ""
+msgstr "FEMNIST的数据划分：`FEMNIST教程 <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/femnist>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:65
 #: 706b756002df49c3ac8a6fba5bcfb405
 msgid "Text Data"
-msgstr ""
+msgstr "文本数据"
 
 #: ../../source/tutorials/dataset_partition.rst:68
 #: 060da8fc3e04409c90f1bd9e17a63f1b
@@ -167,7 +188,9 @@ msgid ""
 "Data partition of Shakespeare dataset: `Shakespeare tutorial "
 "<https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/tree/master/fedlab_benchmarks/datasets/shakespeare>`_."
-msgstr ""
+msgstr "Shakespeare数据集的数据划分：`Shakespeare教程 "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/shakespeare>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:74
 #: 67001f645f1747358f684fade516e46f
@@ -180,7 +203,9 @@ msgid ""
 "Data partition of Sent140: `Sent140 tutorial <https://github.com"
 "/SMILELab-FL/FedLab-"
 "benchmarks/tree/master/fedlab_benchmarks/datasets/sent140>`_."
-msgstr ""
+msgstr "Sent140数据划分：`Sent140教程 <https://github.com"
+"/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/sent140>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:79
 #: 0f1c6a9854a14f719bcd4efbc61e8108
@@ -192,12 +217,13 @@ msgstr ""
 msgid ""
 "Data partition of Reddit: `Reddit tutorial <https://github.com/SMILELab-"
 "FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/reddit>`_."
-msgstr ""
+msgstr "Reddit数据划分：`Reddit教程 <https://github.com/SMILELab-"
+"FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/datasets/reddit>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:84
 #: 1d6b4292fc0146aeb4fe519e48da1fc2
 msgid "Tabular Data"
-msgstr ""
+msgstr "列表数据"
 
 #: ../../source/tutorials/dataset_partition.rst:87
 #: 452389c2ac244d88bba685a5990d7fb9
@@ -214,7 +240,13 @@ msgid ""
 "``Dataset`` and :class:`DataPartitioner` for Adult. Notebook tutorial for"
 " Adult: `Adult tutorial <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/adult/adult_tutorial.ipynb>`_."
-msgstr ""
+msgstr "Adult数据集出自 `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_。"
+"数据原始来源于 `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/Adult. FedLab不仅提供了Adult对应的"
+" ``Dataset``，还提供了对应的 :class:`DataPartitioner`。Adult的notebook教程："
+"`Adult教程 <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/adult/adult_tutorial.ipynb>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:93
 #: 4630343c11b94253b4eb9d726e5701a2
@@ -231,7 +263,13 @@ msgid ""
 " ``Dataset`` and :class:`DataPartitioner` for Covtype. Notebook tutorial "
 "for Covtype: `Covtype tutorial <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/covtype/covtype_tutorial.ipynb>`_."
-msgstr ""
+msgstr "Covtype数据集出自 `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_。"
+"数据原始来源于 `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/Covtype. FedLab不仅提供了Covtype对应的"
+" ``Dataset``，还提供了对应的 :class:`DataPartitioner`。Covtype的notebook教程："
+"`Covtype教程 <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/covtype/covtype_tutorial.ipynb>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:99
 #: 5f272ce86a5449b5ad2ab0ad2f53f5f3
@@ -248,12 +286,18 @@ msgid ""
 "``Dataset`` and :class:`DataPartitioner` for RCV1. Notebook tutorial for "
 "RCV1: `RCV1 tutorial <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/blob/master/fedlab_benchmarks/datasets/rcv1/rcv1_tutorial.ipynb>`_."
-msgstr ""
+msgstr "RCV1数据集出自 `LIBSVM Data "
+"<https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html>`_。"
+"数据原始来源于 `UCI "
+"<http://archive.ics.uci.edu/ml/index.php>`_/RCV1. FedLab不仅提供了RCV1对应的"
+" ``Dataset``，还提供了对应的 :class:`DataPartitioner`。RCV1的notebook教程："
+"`RCV1教程 <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/rcv1/rcv1_tutorial.ipynb>`_。"
 
 #: ../../source/tutorials/dataset_partition.rst:105
 #: 267b4477715841c7acc47efa81cc13fa
 msgid "Synthetic Data"
-msgstr ""
+msgstr "合成数据"
 
 #: ../../source/tutorials/dataset_partition.rst:108
 #: 130aa0fa47464a5faa4c6802c2a4bed6
@@ -266,7 +310,8 @@ msgid ""
 "FCUBE is a synthetic dataset for federated learning. FedLab provides both"
 " ``Dataset`` and :class:`DataPartitioner` for FCUBE. Tutorial for FCUBE: "
 ":ref:`FCUBE tutorial <fcube-tutorial>`."
-msgstr ""
+msgstr "FCUBE是为联邦学习设计的一种合成数据集。FedLab提供了对应的 ``Dataset`` "
+"和 :class:`DataPartitioner`。FCUBE教程：:ref:`FCUBE教程 <fcube-tutorial>`."
 
 #: ../../source/tutorials/dataset_partition.rst:114
 #: c6936d483beb40caa86f02537cc96cf2
@@ -278,7 +323,8 @@ msgstr ""
 msgid ""
 "LEAF-Synthetic is a federated dataset proposed by LEAF. Client number, "
 "class number and feature dimensions can all be customized by user."
-msgstr ""
+msgstr "LEAF-Synthetic是由LEAF提出的联邦化数据集。client数量、类数量"
+"和特征维度均可由用户自定义。"
 
 #: ../../source/tutorials/dataset_partition.rst:118
 #: 60d6fe3b32f74314b7d9cd76ed155a94
@@ -286,5 +332,6 @@ msgid ""
 "Please check `LEAF-Synthetic <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/tree/master/fedlab_benchmarks/datasets/synthetic>`_ for more "
 "details."
-msgstr ""
+msgstr "更多细节请参考 `LEAF-Synthetic <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/master/fedlab_benchmarks/datasets/synthetic>`_。"
 

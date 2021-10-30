@@ -144,7 +144,7 @@ msgstr ""
 
 #: ../../source/overview.rst:112 3116807dd1ee44639d2b0182c3d3c4b4
 msgid "Experimental Scene"
-msgstr ""
+msgstr "实验场景"
 
 #: ../../source/overview.rst:114 99724995cdff4048a4baeb18f4e9f779
 msgid ""
@@ -156,7 +156,7 @@ msgstr ""
 
 #: ../../source/overview.rst:119 fff783b06a6c46f0abda798f31331139
 msgid "Standalone"
-msgstr ""
+msgstr "单机（单进程）"
 
 #: ../../source/overview.rst:121 a39f43713dc74e2e9eb254e7d5ad63cc
 msgid ""
@@ -169,7 +169,7 @@ msgstr ""
 
 #: ../../source/overview.rst:135 8f949c021ed94e61a08399a038c2ac88
 msgid "Cross-Machine"
-msgstr ""
+msgstr "跨机"
 
 #: ../../source/overview.rst:137 9015fba7bd4844c5bb2548e51655091c
 msgid ""
@@ -188,7 +188,7 @@ msgstr ""
 
 #: ../../source/overview.rst:155 61119301825a44dda3af7a2575532556
 msgid "Hierarchical"
-msgstr ""
+msgstr "分层架构"
 
 #: ../../source/overview.rst:157 57fb4c116d7d49179fae41f736864435
 msgid ""
