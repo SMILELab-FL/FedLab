@@ -1,0 +1,235 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:2
+#: 5d579c67b84944cda867a9e6ebeabefa
+msgid "trainer"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:8
+#: dba0bbd9943f4429ac0b040af5e28667
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:19:<autosummary>:1
+#: 37ba83b84df74e5b80514017405dee93
+msgid ":obj:`SerialTrainer <fedlab.core.client.scale.trainer.SerialTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:25
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:19:<autosummary>:1
+#: 3e2e6bb756354bdd97af5fa89d22758b 89aba950f4f2416c9b1614206e3151c2
+msgid "Base class. Train multiple clients in sequence with a single process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:19:<autosummary>:1
+#: 3e298601e5984865a00016d1e68d00bd
+msgid ""
+":obj:`SubsetSerialTrainer "
+"<fedlab.core.client.scale.trainer.SubsetSerialTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:81
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:19:<autosummary>:1
+#: 7c32a820fc1f42baaadc89366e59b0d2 d843e69a0ad64103b59cf5784114d6f1
+msgid "Train multiple clients in a single process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:23
+#: 6d42069107ca4b42a71032fc1ff2b6fa
+msgid "Bases: :class:`fedlab.core.client.trainer.ClientTrainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst
+#: 0be1f31b87e84c73a2652b86ffd20803 13830ea8a55e4496b543d7b17169445d
+#: 157856db8e9a4e89bd77d743215c9b50 71d4d6f41feb49049423ec2cbc5b0db5
+#: 81471ad944a94706a55d8c514c7aa689 a7368c6253bb472ebc797f63e6e9cd9f
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:27
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:85
+#: a7952600a9ef4e26bec49319cb81e291 da0d8fb3f4cb4d58bbeb1df940db6178
+msgid "Model used in this federation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:29
+#: 97d0b82eca3d4dbaab03a1d2c357690e
+msgid "Number of clients in current trainer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:31
+#: 6aba9436183c4ad4a539d2d91f7c48ea
+msgid "Function to perform aggregation on a list of serialized model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:33
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:95
+#: 6f092c77a0434ef1b90c106ac152a2cd 869d2ae7dd9044d7bc20da73791299a7
+msgid "Use GPUs or not. Default: ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:35
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:93
+#: 6999caec1e4e4e498b10e294f726d995 aa6f425470af4465a9772076a611dcbf
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:41
+#: 26df5d0904f048bebd2c15ad5b57cf41
+msgid "Train local model with :attr:`model_parameters` on :attr:`train_loader`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:43
+#: 0013f111244b44e0b015411c009bc012
+msgid "Serialized model parameters of one model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:45
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:123
+#: a89b9696a70847faa4d81ec2a74c0c04 ef18c7ea3a6344289a64e2d0fc91436d
+msgid ":class:`torch.utils.data.DataLoader` for this client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:52
+#: d3ae9ada064a408087835364e5027936
+msgid "Get :class:`DataLoader` for ``client_id``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:57
+#: 6793042c8155478ca504db0b939589f7
+msgid ""
+"Train local model with different dataset according to client id in "
+"``id_list``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:59
+#: a95f7ba1ca0e4025926ad9636af2ecc0
+msgid "Serialized model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:61
+#: 5d0456e00bc046078332cbbd47459b95
+msgid "Client id in this training serial."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:63
+#: 4b5b7c5a005744b888632528f3bbfaea
+msgid ""
+"Whether to perform partial aggregation on this group of clients' local "
+"models at the end of each local training round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:68
+#: 0fa77c1c990440809c1cd89d981ba180
+msgid ""
+"Normally, aggregation is performed by server, while we provide "
+":attr:`aggregate` option here to perform partial aggregation on current "
+"client group. This partial aggregation can reduce the aggregation "
+"workload of server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst
+#: 86c42e379ca4472db54ad9b96e812b89 9849f218ee9245129d48f6b1367197b5
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:72
+#: 638214116cca4f34a16cdae756b1c5f0
+msgid "Serialized model parameters / list of model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:79
+#: 705d3b1547294280abde308fd51210a8
+msgid "Bases: :class:`fedlab.core.client.scale.trainer.SerialTrainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:83
+#: df26d857535d4fafa0415419b3eabd4c
+msgid ""
+"Customize :meth:`_get_dataloader` or :meth:`_train_alone` for specific "
+"algorithm design in clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:87
+#: 640926fc881c47ff98cc2c2f0a39c97b
+msgid "Local dataset for this group of clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:89
+#: ee824eca1fcd407a8d8e4c808b664d52
+msgid "subset of indices of dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:91
+#: cbacbafa266d431bb2cc41c4c76aa632
+msgid "Function to perform aggregation on a list of model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:97
+#: 35ae4d78b13744a984d552435b2fb33a
+msgid "Uncertain variables."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:101
+#: 08f858948af74f0d83e19e4cef695435
+msgid ""
+"``len(data_slices) == client_num``, that is, each sub-index of "
+":attr:`dataset` corresponds to a client's local dataset one-by-one."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:105
+#: a907cdac46df47e0a06ecb1db1ea37a6
+msgid ""
+"Return a training dataloader used in :meth:`train` for client with "
+":attr:`id`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:107
+#: 4723e92420444e57b64be545d1fb419a
+msgid ":attr:`client_id` of client to generate dataloader"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:110
+#: b8c04be63eb34151b537b3078e8d78df
+msgid ""
+":attr:`client_id` here is not equal to ``client_id`` in global FL "
+"setting. It is the index of client in current :class:`SerialTrainer`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:112
+#: e9fb44695e214558b74343a654af6ad8
+msgid ":class:`DataLoader` for specific client's sub-dataset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:117
+#: 2b61d0061b834eda9128fdddca7a3c9d
+msgid "Single round of local training for one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:119
+#: 006a2e39b8844ebab7c96e895890b51d
+msgid "Overwrite this method to customize the PyTorch training pipeline."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/trainer/index.rst:121
+#: dc731469f71b4344b588064a4e249eac
+msgid "serialized model parameters."
+msgstr ""
+

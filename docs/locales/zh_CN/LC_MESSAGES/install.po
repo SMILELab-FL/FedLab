@@ -1,0 +1,66 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/install.rst:4 7813d48d1511476d8ee17ae724e2dfa2
+msgid "Installation & Set up"
+msgstr "安装 & 设置"
+
+#: ../../source/install.rst:6 f73ef8cc90f9468c947c4a20f133212a
+msgid "FedLab can be installed by source code or pip."
+msgstr "可以通过源代码或者pip来安装FedLab。"
+
+#: ../../source/install.rst:9 4b1d697b6e0440c6889f582eb4093c78
+msgid "Source Code"
+msgstr "源代码"
+
+#: ../../source/install.rst:11 3494c9e7394a4b149c2876f9c5046619
+msgid "Install **lastest version** from GitHub:"
+msgstr "从GitHub上下载FedLab最新版本的源代码："
+
+#: ../../source/install.rst:18 99390671a91a4cf2849a4db72026cc7d
+msgid "Install dependencies:"
+msgstr "安装依赖："
+
+#: ../../source/install.rst:25 ace4acc85f494caebb15643115af42e8
+msgid "Pip"
+msgstr ""
+
+#: ../../source/install.rst:27 d1311635d6554d049cb163b5a81b58a6
+msgid "Install **stable version** with pip:"
+msgstr "用pip安装FedLab的稳定版本："
+
+#: ../../source/install.rst:34 3dfd6393534345269fad70ed4623954f
+msgid "Dataset Download"
+msgstr "数据集下载"
+
+#: ../../source/install.rst:36 cfb99ca1d9574e478f2558d17478aa98
+msgid "FedLab provides common dataset used in FL researches."
+msgstr "FedLab提供了联邦学习研究中常用的数据集。"
+
+#: ../../source/install.rst:38 6144f6788a7942be91fac0336a58c85e
+msgid ""
+"Download procedure scripts are available in `fedlab_benchmarks/datasets "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets>`_. For details of "
+"dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets>`_."
+msgstr "数据集的下载脚本可以在 `fedlab_benchmarks/datasets <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/main/fedlab_benchmarks/datasets>`_ "
+"中找到。如需获得数据集的具体细节，请参考 `README.md <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets>`_."
+

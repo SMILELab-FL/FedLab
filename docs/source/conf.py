@@ -87,7 +87,7 @@ todo_include_todos = True
 
 # multi-language docs
 language = 'en'
-# locale_dirs = ['locales/']   # path is example but recommended.
+locale_dirs = ['locales/']   # path is example but recommended.
 gettext_compact = False  # optional.
 gettext_uuid = True  # optional.
 

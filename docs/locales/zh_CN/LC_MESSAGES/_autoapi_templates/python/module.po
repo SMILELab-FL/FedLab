@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/_autoapi_templates/python/module.rst:1
+#: 3098b60689834ed7baa016febdb9cb98
+#, python-format
+msgid "{% if not obj.display %} :orphan:"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:4
+#: e72dbc811cac4a8bb19f258e63dcfcf6
+#, python-format
+msgid "{% endif %} {{ obj.short_name }} {{ \"=\" * obj.short_name|length }}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:10
+#: adfa6ad17b6548e584b7d863ba4b5063
+#, python-format
+msgid "{% if obj.docstring %} .. autoapi-nested-parse::"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:15
+#: 711015aec1244653b888f62887689715
+#, python-format
+msgid "{% endif %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:17
+#: 59c7a73bb4264fbf80c64a57591ef116
+#, python-format
+msgid ""
+"{% block subpackages %} {% set visible_subpackages = "
+"obj.subpackages|selectattr(\"display\")|list %} {% if visible_subpackages"
+" %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:26
+#: af9d3569b23740e59021c146dbd2d298
+#, python-format
+msgid "{% for subpackage in visible_subpackages %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:27
+#: 0f31b01f9b13413088a63542945afe38
+msgid "{{ subpackage.short_name }}/index.rst"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:28
+#: ../../source/_autoapi_templates/python/module.rst:44
+#: ../../source/_autoapi_templates/python/module.rst:73
+#: ../../source/_autoapi_templates/python/module.rst:87
+#: ../../source/_autoapi_templates/python/module.rst:101
+#: 111b1ad2709648f5822c41f7da7758e4 9095e020d3f641839f90331ff7e056ca
+#: 95f732804719415aba94ae8bb61439d0 9dd4848134934f728ea3ecf8b019b095
+#: c9b5cb6b60634b7cacf1eff07a2e1005
+#, python-format
+msgid "{% endfor %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:31
+#: b9f4219fd994479eaea345f96cd4ee21
+#, python-format
+msgid ""
+"{% endif %} {% endblock %} {% block submodules %} {% set "
+"visible_submodules = obj.submodules|selectattr(\"display\")|list %} {% if"
+" visible_submodules %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:42
+#: ae3346c1fdb44a97aa7cbcfba7c61451
+#, python-format
+msgid "{% for submodule in visible_submodules %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:43
+#: 561e3498792240ceb226e499ab9b72e3
+msgid "{{ submodule.short_name }}/index.rst"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:47
+#: 06bc0fe2dcdb4d11ad617483d7e69cc8
+#, python-format
+msgid ""
+"{% endif %} {% endblock %} {% block content %} {% if obj.all is not none "
+"%} {% set visible_children = obj.children|selectattr(\"short_name\", "
+"\"in\", obj.all)|list %} {% elif obj.type is equalto(\"package\") %} {% "
+"set visible_children = obj.children|selectattr(\"display\")|list %} {% "
+"else %} {% set visible_children = "
+"obj.children|selectattr(\"display\")|rejectattr(\"imported\")|list %} {% "
+"endif %} {% if visible_children %} {{ obj.type|title }} Contents {{ \"-\""
+" * obj.type|length }}---------"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:61
+#: 1166b94580a44ab2aca523693ff138a2
+#, python-format
+msgid ""
+"{% set visible_classes = visible_children|selectattr(\"type\", "
+"\"equalto\", \"class\")|list %} {% set visible_functions = "
+"visible_children|selectattr(\"type\", \"equalto\", \"function\")|list %} "
+"{% set visible_attributes = visible_children|selectattr(\"type\", "
+"\"equalto\", \"data\")|list %} {% if \"show-module-summary\" in "
+"autoapi_options and (visible_classes or visible_functions) %} {% block "
+"classes scoped %} {% if visible_classes %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:71
+#: 2f6d5f5ec0ee49d98b2c9d47ee95c486
+#, python-format
+msgid "{% for klass in visible_classes %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:72
+#: 4d297a71a48a474dbe83bd5771a44c43
+msgid "{{ klass.id }}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:76
+#: ../../source/_autoapi_templates/python/module.rst:90
+#: 920275143fa34ec39797d926f92ccb2b c867164187754f86b4968c687f7fa3ec
+#, python-format
+msgid "{% endif %} {% endblock %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:79
+#: c28f015daca64b89b8fdeb246f322b98
+#, python-format
+msgid "{% block functions scoped %} {% if visible_functions %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:85
+#: 478da87e39964223a6c95ccd468c3e41
+#, python-format
+msgid "{% for function in visible_functions %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:86
+#: 3aa064b59085447386bb4b065ad83da7
+msgid "{{ function.id }}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:93
+#: 28695eac31b545578323de31d3e74c38
+#, python-format
+msgid "{% block attributes scoped %} {% if visible_attributes %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:99
+#: e7172c2c88a2430fb2ab969ea8cc6fcd
+#, python-format
+msgid "{% for attribute in visible_attributes %}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:100
+#: 2c29f84c8a704a6b80bfb03181281e70
+msgid "{{ attribute.id }}"
+msgstr ""
+
+#: ../../source/_autoapi_templates/python/module.rst:104
+#: e628d98dacb042038ee53c24aff00d87
+#, python-format
+msgid ""
+"{% endif %} {% endblock %} {% endif %} {% for obj_item in "
+"visible_children %} {{ obj_item.render()|indent(0) }} {% endfor %} {% "
+"endif %} {% endblock %}"
+msgstr ""
+

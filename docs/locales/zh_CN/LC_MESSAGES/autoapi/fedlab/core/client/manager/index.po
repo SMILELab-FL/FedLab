@@ -1,0 +1,184 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:2
+#: d40744b1313e4f219851293b6caa4099
+msgid "manager"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:8
+#: fe69bce9cec740609936f490d673b6db
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: 63a9d71698894ab6a4fb324d5aff6013
+msgid ":obj:`ClientManager <fedlab.core.client.manager.ClientManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:26
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: 8e5390ae064140238286ca22fc5697ec df7b3809bac94df5b80c69592e9c714c
+msgid "Base class for ClientManager."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: 10d44ecf9c544589aa6087882b0475c9
+msgid ""
+":obj:`ClientPassiveManager "
+"<fedlab.core.client.manager.ClientPassiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:48
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: bdcd57065cb545ac9718c215b62dd959 eaa0415ffd064d8db6eefaff8d39a4f0
+msgid ""
+"Passive communication :class:`NetworkManager` for client in synchronous "
+"FL pattern."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: 50fab68e5da142649e4b29aa67885e9a
+msgid ""
+":obj:`ClientActiveManager "
+"<fedlab.core.client.manager.ClientActiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:78
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:20:<autosummary>:1
+#: e40240c17f1743078a59eba9475bee1f f97647f475f745239ee3478fa995cc2f
+msgid ""
+"Active communication :class:`NetworkManager` for client in asynchronous "
+"FL pattern."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:24
+#: a94bc216547f43c1a394010ff0f7c295
+msgid "Bases: :class:`fedlab.core.network_manager.NetworkManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:28
+#: fd692f9812a1437cbe6a3e7fec25554a
+msgid ""
+":class:`ClientManager` defines client activation for different "
+"communication stages."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst
+#: 085eb87f7486497d968658ada8c668d9 4ced05344b3046a3bfe51bd6c5c507bf
+#: f8bf1d821b8f415282735121afed5198
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:30
+#: 0ed1d8f81acd483686585369d33f3f6b
+msgid "Network configuration."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:32
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:52
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:82
+#: 3e306f0d7e8a45289ec295e5308a0015 3f130e269b8245009032622f4b127ff1
+#: f62690cee4fe492fa11d1e2875de3911
+msgid ""
+"Subclass of :class:`ClientTrainer`. Provides :meth:`train` and "
+":attr:`model`. Define local client training procedure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:37
+#: 74c37d384e544f5f97afd2b98d317545
+msgid "Initialization stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:39
+#: 78f18f98264849b5be6aa9ee3cedefcc
+msgid ""
+":class:`ClientManager` reports number of clients simulated by current "
+"client process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:46
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:76
+#: 1c6c7f33dcd0458582deb855d4f4bf2b 6f104c9daa3d45a19e9178854371d738
+msgid "Bases: :class:`fedlab.core.client.manager.ClientManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:50
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:80
+#: 3fdf97ef6f6546ad95ce6a9a63e24e39 606df13768514778a52084172fe19a64
+msgid "network configuration."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:54
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:84
+#: 02f51fa279c145339d9a42322687aa68 a600f0744b824949a692a44b9306fdfb
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:59
+#: f0275626ec104ee8ac3d164b3d9d677c
+msgid "Actions to perform when receiving a new message, including local training."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:63
+#: 7abad774222b42dcb5b2d2afd8155685
+msgid "Main procedure of each client:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:62
+#: d6cdda010bc1435b9c6566feb13f3b0d
+msgid "client waits for data from server (PASSIVELY)."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:63
+#: 890019f0872141e49b2077ef59403508
+msgid "after receiving data, client start local model training procedure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:64
+#: 063a6e9fed5e44f8b49dd6804c370d99
+msgid "client synchronizes with server actively."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:69
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:98
+#: 5c1b65c9128243a1a01279dab195987e ca04b7ed5fc24d2c95edb269d36851d9
+msgid "Synchronize local model with server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:89
+#: 2fee3901b49f4ae68a6d9b84048fe6d1
+msgid "Actions to perform on receiving new message, including local training"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:91
+#: bda9a7bcf87641288360efe0f01cecaa
+msgid "client requests data from server (ACTIVE)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:92
+#: 4087bc9120cc44138e0f28b6fc8d7f1b
+msgid "after receiving data, client will train local model"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/manager/index.rst:93
+#: 190ec98ee2e54e5d8cb3c06e808a19d6
+msgid "client will synchronize with server actively"
+msgstr ""
+
