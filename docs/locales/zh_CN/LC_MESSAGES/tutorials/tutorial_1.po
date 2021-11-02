@@ -36,6 +36,14 @@ msgid ""
 "``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or"
 " ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``."
 msgstr ""
+"FedLab 基于 `torch.distributed "
+"<https://pytorch.org/docs/stable/distributed.html>`_ 实现了点对点"
+"通信模块。 默认Gloo为分布式通信后端。 "
+"FedLab 进程通过TCP网络连接发送/接收数据。 如果"
+"自动使用的以太网接口错误，则需要用户设置环境变量 ``GLOO_SOCKET_IFNAME`` 的方式，"
+"手动指定正确的以太网口。比如在终端运行 ``export GLOO_SOCKET_IFNAME=eth0`` 或者"
+"在Python代码中 ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"`` 。"
+
 
 #: ../../source/tutorials/tutorial_1.rst:20 4b201a9f9bcc4ce484304d98acd7afc7
 msgid "Check the available ethernet:"
@@ -48,23 +56,28 @@ msgid ""
 "is for quickly network configuration, which you can create one as "
 "follows:"
 msgstr ""
+"用户需要正确初始化 :class:`DistNetwork` 来保证 ``torch.distributed`` 的网络通信连接成功。"
+"可以通过一下方式来创建一个正确的 :class:`DistNetwork` 。"
 
 #: ../../source/tutorials/tutorial_1.rst:43 13d7888ffb11427eafc5702a68d77059
 msgid ""
 "The ``(server_ip, server_port)`` is the address of server. please be "
 "aware of that the rank of server is 0 as default."
 msgstr ""
+"``(server_ip, server_port)`` 是服务器端的ip地址。"
+"服务端的rank默认为0。"
+
 
 #: ../../source/tutorials/tutorial_1.rst:44 a8d45124439348e4adf92a9a82b1de0f
 msgid "Make sure ``world_size`` is the same across process."
-msgstr ""
+msgstr "保证所有进程上的 :class:`DistNetwork` 的 ``world_size`` 值是一致的。"
 
 #: ../../source/tutorials/tutorial_1.rst:45 8508c885d08c478598438f928ed5e36d
 msgid "Rank should be different (from ``0`` to ``world_size-1``)."
-msgstr ""
+msgstr "任意两个进程的rank应该不同，可选的rank号应该为 ``0`` 到 ``world_size-1`` 。"
 
 #: ../../source/tutorials/tutorial_1.rst:46 42f75dfebf1f477393c19cc0a7ef2633
-msgid "world_size = 1 (server) + client number."
+msgid "world_size = 1 (服务进程数) + 客户进程数."
 msgstr ""
 
 #: ../../source/tutorials/tutorial_1.rst:47 ff450e7ccde64f45b3ab16d3299f673a
@@ -72,16 +85,21 @@ msgid ""
 "The ethernet can be None, torch.distributed will try to find the right "
 "ethernet. If it doesn't work, user need to assign right ethernet name."
 msgstr ""
+" ``ethernet`` 可以设置为None， ``torch.distributed`` 会尝试搜索正确的网络以太网接口。"
+"如果默认时，网络初始化失败，可以尝试手动指定 ``ethernet`` 。"
+
 
 #: ../../source/tutorials/tutorial_1.rst:48 1cdce3c2e5204b0eb3fac6fdcadaea99
 msgid ""
 "The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, "
 "network initialization would fail."
 msgstr ""
+"务必在终端运行指令 ``ifconfig`` 检查可用的以太网接口。"
+"否则网络初始化会失败。"
 
 #: ../../source/tutorials/tutorial_1.rst:52 3a403c53b06441cea98de3c8589c67c8
 msgid "How to create package?"
-msgstr ""
+msgstr "如何创建一个FedLab通信包"
 
 #: ../../source/tutorials/tutorial_1.rst:54 5d5440e4dd184f588099da3a87e5fd2d
 msgid ""
@@ -89,6 +107,9 @@ msgid ""
 "core.communicator.Package defines the basic data structure of network "
 "package. In our implementation, Package contains Header and Content."
 msgstr ""
+
+
+
 
 #: ../../source/tutorials/tutorial_1.rst:62 c5ce1cab86b14a3fa4ce635d91722eb0
 msgid "Currently, you can create a network package from following methods:"

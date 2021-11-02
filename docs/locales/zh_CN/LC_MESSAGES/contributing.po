@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/contributing.rst:5 e6642662746c41a29b3ce1f48f65c9d9
 msgid "Contributing to FedLab"
-msgstr "给FedLab做贡献"
+msgstr "加入FedLab开源"
 
 #: ../../source/contributing.rst:9 ce0732ea81a749abbd7cd2f1279df7d9
 msgid "Reporting bugs"
