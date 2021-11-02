@@ -159,7 +159,8 @@ msgid ""
 ":class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for "
 "example."
 msgstr ""
-"初始化阶段后，用户可以重写 :meth:`main_loop()` 定义主进程。可以参考FedLab提供的 :class:`ClientPassiveManager`: "
+"初始化阶段后，用户可以重写 :meth:`main_loop()` 定义主进程。可以参考FedLab提供的 "
+":class:`ClientPassiveManager`: "
 "和 :class:`ServerSynchronousManager` 的标准实现。 如下："
 
 
@@ -212,6 +213,7 @@ msgid ""
 " code in fedlab/core/{client or server}/scale/manager.py (It it really "
 "simple. We did nothing but add a map function from rank to client id)."
 msgstr ""
-"**FedLab**的scale模式的通信模块就是对标准的多机模式做了通信逻辑上的简单修改。
-相关代码可见于fedlab/core/{client or server}/scale/manager.py。
-我们觉得这里实现的非常简单，只是单纯的加了一个从rank到本地client id的映射方法，便使得manager可以管理多个clint后端。"
+"**FedLab** 的scale模式的通信模块就是对标准的多机模式做了通信逻辑上的简单修改。"
+"相关代码可见于fedlab/core/{client or server}/scale/manager.py。"
+"我们觉得这里实现的非常简单，只是单纯的加了一个从rank到本地client "
+"id的映射方法，便使得manager可以管理多个clint后端。"
