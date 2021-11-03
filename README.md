@@ -13,7 +13,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 
 
-- [Documentation](https://fedlab.readthedocs.io/en/master/)
+- Documentation [English version](https://fedlab.readthedocs.io/en/master/)｜[Chinese version](https://fedlab.readthedocs.io/zh_CN/latest/)
 - [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
 - [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
 - [Examples](https://fedlab.readthedocs.io/en/master/example.html)
