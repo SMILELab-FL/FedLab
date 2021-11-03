@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial.rst:5 9ba6dc9afa69413ca59186e09cc95899
 msgid "Tutorials"
-msgstr "教程"
+msgstr "使用指南"
 
 #: ../../source/tutorials/tutorial.rst:7 6e429ee6c8b44230a37f2d5663609586
 msgid ""

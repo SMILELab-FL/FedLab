@@ -5,7 +5,7 @@ Quick Start
 ***********
 
 In this page, we introduce how to build a FL simulation system with FedLab in cross machine or
-cross process scenario. We implement FedAvg algorithm wit CNN and partitioned MNIST dataset across
+cross process scenario. We implement FedAvg algorithm with CNN and partitioned MNIST dataset across
 clients.
 
 Source code of this page can be seen in `fedlab-benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.
@@ -63,7 +63,7 @@ generate LEAF related dataset partition.
 Run FedLab demos
 ^^^^^^^^^^^^^^^^
 
-**FedLab** provides both asynchronous and synchronous standard implementation demos for uses to learn. Since the structure of out implementations are similar, therefore, I  only introduce the usage of synchronous FL system simulation demo(FedAvg) with different scenario in this page.
+**FedLab** provides both asynchronous and synchronous standard implementation demos for uses to learn. We only introduce the usage of synchronous FL system simulation demo(FedAvg) with different scenario in this page. (Code structures are similar.)
 
 **We are very confident in the readability of FedLab code, so we recommend that users read the source code according to the following demos for better understanding.**
 
@@ -79,8 +79,7 @@ clients with a single process.
 
     $ python standalone.py --total_client 100 --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --lr 0.02 --partition iid
 
-Run command above to start a single process simulating FedAvg algorithm with 100 clients with
- 10 communication round in total, with 10 clients joining each round randomly.
+Run command above to start a single process simulating FedAvg algorithm with 100 clients with 10 communication round in total, with 10 clients joining each round randomly.
 
 
 
@@ -119,10 +118,9 @@ following standard FL procedure.
 To improve scalability, FedLab provides scale standard implementation to combine
 :class:`SerialTrainer` and :class:`ClientManager`, which allows a single process simulate multiple clients.
 
-Our experimental results are also based on this scenario. Source codes are available in
-fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
+Source codes are available in fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
 
-Here, I take mnist-cnn as example to introduce this demo. In this demo, we set world_size=11 (1 ServerManager, 10 ClientManagers), and each ClientManager represents 10 local client dataset partition. Our data partition strategy follows the experimental setting of fedavg as well. In this way, **we only use 11 processes to simulate a FL system with 100 clients.**
+Here, we take mnist-cnn as example to introduce this demo. In this demo, we set world_size=11 (1 ServerManager, 10 ClientManagers), and each ClientManager represents 10 local client dataset partition. Our data partition strategy follows the experimental setting of fedavg as well. In this way, **we only use 11 processes to simulate a FL system with 100 clients.**
 
 To start this system, you need to open at least 2 terminal (we still use localhost as demo. Use multiple machines is OK as long as with right network configuration):
 
