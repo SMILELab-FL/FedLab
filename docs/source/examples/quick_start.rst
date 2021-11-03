@@ -52,7 +52,7 @@ Source codes of partition scripts:
     save_dict(data_indices, "cifar10_iid.pkl")
 
 ``data_indices`` is a ``dict`` mapping from client id to data indices(list) of raw dataset.
-**FedLab** provides random partition and non-I.I.D. partition methods, in which the noniid partition method is totally reimplementation in paper fedavg.
+**FedLab** provides random partition and non-I.I.D. partition methods, in which the noniid partition method is totally re-implementation in paper FedAvg.
 
 3. LEAF dataset process
 

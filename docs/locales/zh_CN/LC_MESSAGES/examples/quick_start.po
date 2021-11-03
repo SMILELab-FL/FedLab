@@ -83,8 +83,10 @@ msgid ""
 "``data_indices`` is a ``dict`` mapping from client id to data "
 "indices(list) of raw dataset. **FedLab** provides random partition and "
 "non-I.I.D. partition methods, in which the noniid partition method is "
-"totally reimplementation in paper fedavg."
+"totally re-implementation in paper FedAvg."
 msgstr ""
+" ``data_indices`` 是一个字典（dict），存有一个从client id到原数据集所对应的相关的子数据集序号列表。"
+"FedLab 目前提供了随机划分和Non-I.I.D 划分方法，其中Non-I.I.D划分方法是FedAvg中划分的复现。"
 
 #: ../../source/examples/quick_start.rst:57 79f6ac6b867643afb34e68c768114f6d
 msgid "LEAF dataset process"
@@ -119,7 +121,7 @@ msgid ""
 "recommend that users read the source code according to the following "
 "demos for better understanding.**"
 msgstr ""
-" ** 我们强烈建议用户尝试阅读源码去了解FedLab的架构和工作机制（我们认为我们的代码非常友好）。 ** "
+"我们强烈建议用户尝试阅读源码去了解FedLab的架构和工作机制（我们认为我们的代码非常友好）。"
 
 #: ../../source/examples/quick_start.rst:71 dfa0aaf400ea408f800c960bc29cd2cc
 msgid "1. Standalone"
