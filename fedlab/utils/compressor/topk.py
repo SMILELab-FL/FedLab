@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import math
-from numpy import dtype
 import torch
 
 from .compressor import Compressor

@@ -6,12 +6,9 @@ Communication Strategy
 
 Communication strategy is implemented by ClientManager and ServerManager together.
 
-The prototype of :class:`NetworkManager` is defined in ``fedlab.core.network_manager``, which is
-also a subclass of ``torch.multiprocessing.process``.
+The prototype of :class:`NetworkManager` is defined in ``fedlab.core.network_manager``, which is also a subclass of ``torch.multiprocessing.process``.
 
-Typically, standard implementations is shown in ``fedlab.core.client.manager`` and
-``fedlab.core.server.manager``. :class:`NetworkManager` manages network operation and control flow
-procedure.
+Typically, standard implementations is shown in ``fedlab.core.client.manager`` and ``fedlab.core.server.manager``. :class:`NetworkManager` manages network operation and control flow procedure.
 
 Base class definition shows below:
 
@@ -58,9 +55,7 @@ Base class definition shows below:
             """Shut down stage"""
             self._network.close_network_connection()
 
-FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You
-can customize process flow by: 1. create a new class inherited from corresponding class in our
-standard implementations; 2. overwrite the functions in target stage.
+FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You can customize process flow by: 1. create a new class inherited from corresponding class in our standard implementations; 2. overwrite the functions in target stage.
 
 To sum up, communication strategy can be customized by overwriting as the note below mentioned.
 

@@ -8,12 +8,7 @@ Distributed Communication
 How to initialize distributed network?
 ======================================
 
-FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as
-point-to-point communication package. The communication backend is Gloo as default. FedLab processes
-send/receive data through TCP network connection. If the automatically detected interface is not
-correct, you need to choose the network interface to use for Gloo, by setting the environment
-variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or
-``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
+FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication package. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. If the automatically detected interface is not correct, you need to choose the network interface to use for Gloo, by setting the environment variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
 
 .. note::
 
@@ -23,9 +18,7 @@ variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0``
 
         $ ifconfig
 
-You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed``
-network initialization works. :class:`DistNetwork` is for quickly network configuration, which you
-can create one as follows:
+You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed`` network initialization works. :class:`DistNetwork` is for quickly network configuration, which you can create one as follows:
 
 .. code-block:: python
 

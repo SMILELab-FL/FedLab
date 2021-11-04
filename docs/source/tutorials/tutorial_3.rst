@@ -4,9 +4,7 @@
 Federated Optimization
 **********************
 
-Standard FL Optimization contains two parts: 1. local train in client; 2. global aggregation in
-server.  Local train and aggregation procedure are customizable in FedLab. You need to define
-:class:`ClientTrainer` and :class:`ParameterServerBackendHandler`.
+Standard FL Optimization contains two parts: 1. local train in client; 2. global aggregation in server.  Local train and aggregation procedure are customizable in FedLab. You need to define :class:`ClientTrainer` and :class:`ParameterServerBackendHandler`.
 
 Since :class:`ClientTrainer` and :class:`ParameterServerBackendHandler` are required to manipulate PyTorch Model. They are both inherited from :class:`ModelMaintainer`.
 
@@ -87,8 +85,7 @@ The basic class of ClientTrainer is shown below, we encourage users define local
 Server global aggregation
 ==========================
 
-Calculation tasks related with PyTorch should be define in ServerHandler part. In **FedLab**, our basic
-class of Handler is defined in :class:`ParameterServerBackendHandler`.
+Calculation tasks related with PyTorch should be define in ServerHandler part. In **FedLab**, our basic class of Handler is defined in :class:`ParameterServerBackendHandler`.
 
 .. code-block:: python
 
