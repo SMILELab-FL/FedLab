@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-04 14:14+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,131 +37,123 @@ msgid ""
 " ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``."
 msgstr ""
 "FedLab 基于 `torch.distributed "
-"<https://pytorch.org/docs/stable/distributed.html>`_ 实现了点对点"
-"通信模块。 默认Gloo为分布式通信后端。 "
-"FedLab 进程通过TCP网络连接发送/接收数据。 如果"
-"自动使用的以太网接口错误，则需要用户设置环境变量 ``GLOO_SOCKET_IFNAME`` 的方式，"
-"手动指定正确的以太网口。比如在终端运行 ``export GLOO_SOCKET_IFNAME=eth0`` 或者"
-"在Python代码中 ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"`` 。"
+"<https://pytorch.org/docs/stable/distributed.html>`_ 实现了点对点通信模块。 "
+"默认Gloo为分布式通信后端。 FedLab 进程通过TCP网络连接发送/接收数据。 如果自动使用的以太网接口错误，则需要用户设置环境变量 "
+"``GLOO_SOCKET_IFNAME`` 的方式，手动指定正确的以太网口。比如在终端运行 ``export "
+"GLOO_SOCKET_IFNAME=eth0`` 或者在Python代码中 ``os.environ['GLOO_SOCKET_IFNAME']"
+" = \"eth0\"`` 。"
 
-
-#: ../../source/tutorials/tutorial_1.rst:20 4b201a9f9bcc4ce484304d98acd7afc7
+#: ../../source/tutorials/tutorial_1.rst:15 4b201a9f9bcc4ce484304d98acd7afc7
 msgid "Check the available ethernet:"
 msgstr "检查可用的以太网："
 
-#: ../../source/tutorials/tutorial_1.rst:26 d3532588f9d542fea1f595f3c56d83f9
+#: ../../source/tutorials/tutorial_1.rst:21 d3532588f9d542fea1f595f3c56d83f9
 msgid ""
 "You need to assign right ethernet to :class:`DistNetwork`, making sure "
 "``torch.distributed`` network initialization works. :class:`DistNetwork` "
 "is for quickly network configuration, which you can create one as "
 "follows:"
 msgstr ""
-"用户需要正确初始化 :class:`DistNetwork` 来保证 ``torch.distributed`` 的网络通信连接成功。"
-"可以通过一下方式来创建一个正确的 :class:`DistNetwork` 。"
+"用户需要正确初始化 :class:`DistNetwork` 来保证 ``torch.distributed`` "
+"的网络通信连接成功。可以通过一下方式来创建一个正确的 :class:`DistNetwork` 。"
 
-#: ../../source/tutorials/tutorial_1.rst:43 13d7888ffb11427eafc5702a68d77059
+#: ../../source/tutorials/tutorial_1.rst:36 13d7888ffb11427eafc5702a68d77059
 msgid ""
 "The ``(server_ip, server_port)`` is the address of server. please be "
 "aware of that the rank of server is 0 as default."
-msgstr ""
-"``(server_ip, server_port)`` 是服务器端的ip地址。"
-"服务端的rank默认为0。"
+msgstr "``(server_ip, server_port)`` 是服务器端的ip地址。服务端的rank默认为0。"
 
-
-#: ../../source/tutorials/tutorial_1.rst:44 a8d45124439348e4adf92a9a82b1de0f
+#: ../../source/tutorials/tutorial_1.rst:37 a8d45124439348e4adf92a9a82b1de0f
 msgid "Make sure ``world_size`` is the same across process."
 msgstr "保证所有进程上的 :class:`DistNetwork` 的 ``world_size`` 值是一致的。"
 
-#: ../../source/tutorials/tutorial_1.rst:45 8508c885d08c478598438f928ed5e36d
+#: ../../source/tutorials/tutorial_1.rst:38 8508c885d08c478598438f928ed5e36d
 msgid "Rank should be different (from ``0`` to ``world_size-1``)."
 msgstr "任意两个进程的rank应该不同，可选的rank号应该为 ``0`` 到 ``world_size-1`` 。"
 
-#: ../../source/tutorials/tutorial_1.rst:46 42f75dfebf1f477393c19cc0a7ef2633
-msgid "world_size = 1 (服务进程数) + 客户进程数."
+#: ../../source/tutorials/tutorial_1.rst:39 42f75dfebf1f477393c19cc0a7ef2633
+msgid "world_size = 1 (server) + client number."
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:47 ff450e7ccde64f45b3ab16d3299f673a
+#: ../../source/tutorials/tutorial_1.rst:40 ff450e7ccde64f45b3ab16d3299f673a
 msgid ""
 "The ethernet can be None, torch.distributed will try to find the right "
 "ethernet. If it doesn't work, user need to assign right ethernet name."
 msgstr ""
-" ``ethernet`` 可以设置为None， ``torch.distributed`` 会尝试搜索正确的网络以太网接口。"
-"如果默认时，网络初始化失败，可以尝试手动指定 ``ethernet`` 。"
+" ``ethernet`` 可以设置为None， ``torch.distributed`` "
+"会尝试搜索正确的网络以太网接口。如果默认时，网络初始化失败，可以尝试手动指定 ``ethernet`` 。"
 
-
-#: ../../source/tutorials/tutorial_1.rst:48 1cdce3c2e5204b0eb3fac6fdcadaea99
+#: ../../source/tutorials/tutorial_1.rst:41 1cdce3c2e5204b0eb3fac6fdcadaea99
 msgid ""
 "The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, "
 "network initialization would fail."
-msgstr ""
-"务必在终端运行指令 ``ifconfig`` 检查可用的以太网接口。"
-"否则网络初始化会失败。"
+msgstr "务必在终端运行指令 ``ifconfig`` 检查可用的以太网接口。否则网络初始化会失败。"
 
-#: ../../source/tutorials/tutorial_1.rst:52 3a403c53b06441cea98de3c8589c67c8
+#: ../../source/tutorials/tutorial_1.rst:45 3a403c53b06441cea98de3c8589c67c8
 msgid "How to create package?"
 msgstr "如何创建一个FedLab通信包"
 
-#: ../../source/tutorials/tutorial_1.rst:54 5d5440e4dd184f588099da3a87e5fd2d
+#: ../../source/tutorials/tutorial_1.rst:47 5d5440e4dd184f588099da3a87e5fd2d
 msgid ""
 "The communication module of FedLab is in core/communicator. "
 "core.communicator.Package defines the basic data structure of network "
 "package. In our implementation, Package contains Header and Content."
 msgstr ""
 
-
-
-
-#: ../../source/tutorials/tutorial_1.rst:62 c5ce1cab86b14a3fa4ce635d91722eb0
+#: ../../source/tutorials/tutorial_1.rst:55 c5ce1cab86b14a3fa4ce635d91722eb0
 msgid "Currently, you can create a network package from following methods:"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:65 f723afbd9948439e8dc4bb9e3cc5d0fb
+#: ../../source/tutorials/tutorial_1.rst:58 f723afbd9948439e8dc4bb9e3cc5d0fb
 msgid ""
 "Currently, **FedLab** only supports vectorized tensors as content, which "
 "means that tensors with different shape should be flatterned before "
 "appended into Package (call tensor.view(-1))."
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:67 bc7a32a3aa1a45fab66b7e893d077be3
+#: ../../source/tutorials/tutorial_1.rst:60 bc7a32a3aa1a45fab66b7e893d077be3
 msgid "initialize with tensor"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:74 90acb28253af487a99b922887c77310e
+#: ../../source/tutorials/tutorial_1.rst:67 90acb28253af487a99b922887c77310e
 msgid "initialize with tensor list"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:82 3ac62080067d4ae78ff013b848896538
+#: ../../source/tutorials/tutorial_1.rst:75 3ac62080067d4ae78ff013b848896538
 msgid "append a tensor to exist package"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:92 999991a9d2774e80a0dc65cb362b3d80
+#: ../../source/tutorials/tutorial_1.rst:85 999991a9d2774e80a0dc65cb362b3d80
 msgid "append a tensor list to exist package"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:102 7b3996eed4054727987b78b784df4ae8
+#: ../../source/tutorials/tutorial_1.rst:95 7b3996eed4054727987b78b784df4ae8
 msgid "Two static methods are provided by Package to parse header and content:"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:111 c4af8ba2289b4a7ba09fa6ba7dbadd18
+#: ../../source/tutorials/tutorial_1.rst:104 c4af8ba2289b4a7ba09fa6ba7dbadd18
 msgid "How to send package?"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:113 807e13d1bcbd453fa747768f943f2cb7
+#: ../../source/tutorials/tutorial_1.rst:106 807e13d1bcbd453fa747768f943f2cb7
 msgid ""
 "The point-to-point communicating agreements is implemented in "
 "PackageProcessor module. PackageProcessor is a static class to manage "
 "package sending/receiving procedure."
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:115 ec6bab9ef9694b209b87dee7ed89aa2d
+#: ../../source/tutorials/tutorial_1.rst:108 ec6bab9ef9694b209b87dee7ed89aa2d
 msgid ""
 "User can send a package to a process with rank=0 (the parameter dst must "
 "be assigned):"
 msgstr ""
 
-#: ../../source/tutorials/tutorial_1.rst:122 80fcb8396ac946c4b78b323a59033cfb
+#: ../../source/tutorials/tutorial_1.rst:115 80fcb8396ac946c4b78b323a59033cfb
 msgid ""
 "or, receive a package from rank=0 (set the parameter src=None to receive "
 "package from any other process):"
 msgstr ""
+
+#~ msgid "world_size = 1 (服务进程数) + 客户进程数."
+#~ msgstr ""
 
