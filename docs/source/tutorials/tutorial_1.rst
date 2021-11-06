@@ -55,7 +55,10 @@ The communication module of FedLab is in core/communicator. core.communicator.Pa
 Currently, you can create a network package from following methods:
 
 .. note::
-    Currently, **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
+
+    Currently, following restrictions need to be noticed：
+        1. **Tensor shape:** **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
+        2. **Data type:** Package doesn't accept tensors of different data type. In other words, **FedLab** force all appended tensors to be the same data type as the first appended tensor. Torch data types like **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]** are supported.
 
 1. initialize with tensor
 

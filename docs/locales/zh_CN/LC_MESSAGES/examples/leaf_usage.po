@@ -251,14 +251,14 @@ msgid ""
 "``-s`` := 'iid' to sample in an i.i.d. manner, or 'niid' to sample in a "
 "non-i.i.d. manner; more information on i.i.d. versus non-i.i.d. is "
 "included in the 'Notes' section."
-msgstr "``-s`` 表示采样方式，取值有iid和niid两种选择，表示是否使用i.i.d方式进行采样；"
+msgstr "``-s`` 表示采样方式，取值有iid和niid两种选择，表示是否使用i.i.d方式进行采样。"
 
 #: ../../source/examples/leaf_usage.rst:103 4deadf667c3347fa87295a69dab5970e
 #, fuzzy
 msgid ""
 "``--sf`` := fraction of data to sample, written as a decimal; default is "
 "0.1."
-msgstr "``--sf`` 表示采样数据比例，取值为小数，默认为0.1；"
+msgstr "``--sf`` 表示采样数据比例，取值为小数，默认为0.1。"
 
 #: ../../source/examples/leaf_usage.rst:105 fdb6d3c408064f4abc10e7918a919602
 msgid "``-k`` := minimum number of samples per user"
@@ -270,7 +270,7 @@ msgid ""
 "to partition each user's samples into train-test groups"
 msgstr ""
 "``-t`` "
-"表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中；"
+"表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中。"
 
 #: ../../source/examples/leaf_usage.rst:109 82524097c2924524b221b28bf44fc5de
 msgid ""
@@ -284,9 +284,9 @@ msgid ""
 " data, so we needs to provide related data training set-test set "
 "splitting parameter for ``preprocess.sh`` to carry out the experiment, "
 "default is 0.9."
-msgstr "目前FedLab的Leaf实验需要提供训练数据和测试数据，因此需要对 ``preprocess.sh`` "
-"提供相关的数据训练集-测试集划分参数，默认划分比例为0.9。若需要重新获取数据或划分数据，"
-"需要先删除各数据集下的data文件夹再运行相关脚本进行数据下载和处理。"
+msgstr ""
+"目前FedLab的Leaf实验需要提供训练数据和测试数据，因此需要对 ``preprocess.sh`` 提供相关的数据训练集-测试集划分参数，"
+"默认划分比例为0.9。"
 
 #: ../../source/examples/leaf_usage.rst:113 db2d32f95e7143b9b9431f73b428caeb
 msgid ""
@@ -294,6 +294,7 @@ msgid ""
 "folder in the dataset directory before re-running ``preprocess.sh`` to "
 "download and preprocess data."
 msgstr ""
+"若需要重新获取数据或划分数据，需要先删除各数据集下的data文件夹再运行相关脚本进行数据下载和处理。"
 
 #: ../../source/examples/leaf_usage.rst:116 e46911440a48492bae03e4a6a2d66656
 msgid "Pickle file stores Dataset."
@@ -316,7 +317,7 @@ msgstr "设定参数并运行 ``create_pickle_dataset.py`` ，使用样例如下
 
 #: ../../source/examples/leaf_usage.rst:127 50e7cc178d394cbf9230fd24c65b50e3
 msgid "Parameter Description:"
-msgstr ""
+msgstr "参数说明："
 
 #: ../../source/examples/leaf_usage.rst:129 6898204f6acd4f2ea57d1f6e3c2a20da
 msgid ""
@@ -325,6 +326,7 @@ msgid ""
 "provided by fedlab to download leaf data, 'data\\_root' can be set to "
 "this path, a relative address of which is shown in this example."
 msgstr ""
+"``data_root`` ：存储leaf数据集的root路径，该路径包含leaf各数据集；若使用fedlab所提供的 ``Fedlab_benchmarks/datasets/`` 下载leaf数据，则data_root可设置为该路径，示例给出了该路径的相对地址。"
 
 #: ../../source/examples/leaf_usage.rst:131 6898204f6acd4f2ea57d1f6e3c2a20da
 msgid ""
@@ -334,6 +336,9 @@ msgid ""
 "``pickle_dataset`` folder under the current path to store all pickle "
 "dataset files."
 msgstr ""
+"``save_root`` ：存储处理后DataSet的pickle文件地址，各数据集DataSet将另存为 ``{save_root}/{dataset_name}/{train,test}`` ；"
+"示例则在当前路径下创建 ``pickle_dataset`` 文件夹存储所有的pickle dataset文件。"
+
 
 #: ../../source/examples/leaf_usage.rst:133 8ca50acee37d489997bb115db1d6a484
 msgid ""
@@ -341,10 +346,11 @@ msgid ""
 "There are six options {femnist, shakespeare, celeba, sent140, synthetic, "
 "reddit}."
 msgstr ""
+"``dataset_name`` ：指定要处理的leaf数据集名称，有{feminist, Shakespeare, celeba, sent140, synthetic, reddit}六种选择。"
 
 #: ../../source/examples/leaf_usage.rst:136 7759e518eee84663a8a097dcc9202160
-msgid "Dataloader loading data set"
-msgstr ""
+msgid "Dataloader loading dataset"
+msgstr "Dataloader加载数据集"
 
 #: ../../source/examples/leaf_usage.rst:138 2f1a6cf3805e488ebdea954345b9bb51
 msgid ""
@@ -352,20 +358,22 @@ msgid ""
 "``fedlab_benchmarks/leaf/dataloader.py``). All returned data types are "
 "pytorch `Dataloader <https://pytorch.org/docs/stable/data.html>`__."
 msgstr ""
+"leaf数据集由 ``dataloader.py`` 加载(位于 ``fedlab_benchmarks/leaf/dataloader.py`` )，"
+"所有返回数据类型均为pytorch `Dataloader <https://pytorch.org/docs/stable/data.html>`__ 。"
 
 #: ../../source/examples/leaf_usage.rst:140 74f4431c833c42e1a4df640ab234f98e
 msgid ""
 "By calling this interface and specifying the name of the data set, the "
 "corresponding Dataloader can be obtained."
-msgstr ""
+msgstr "通过调用该接口并指明数据集名称，即可获得相应的Dataloader。"
 
 #: ../../source/examples/leaf_usage.rst:142 dd1b2d059de747daba6e3a824cd14737
 msgid "**Example of use:**"
-msgstr ""
+msgstr "使用样例"
 
 #: ../../source/examples/leaf_usage.rst:157 b2f133793f0648488d4ba90df24bdbfe
 msgid "Run experiment"
-msgstr ""
+msgstr "运行实验"
 
 #: ../../source/examples/leaf_usage.rst:159 84546bee3afd4e0ca3ee7019f59abda0
 msgid ""
@@ -373,9 +381,11 @@ msgid ""
 "process** scenario under FedAvg's Cross machine implement, and the tests "
 "of femnist and Shakespeare data sets have been completed."
 msgstr ""
+"当前LEAF数据集所进行的实验为FedAvg的cross machine场景。"
 
 #: ../../source/examples/leaf_usage.rst:161 b8114fae0acb4d74bf79e21d512e8531
 msgid ""
 "Run \\`fedlab\\_benchmarks/fedavg/cross\\_machine/LEAF\\_test.sh\\` to "
 "quickly execute the simulation experiment of fedavg under leaf data set."
 msgstr ""
+"通过运行fedlab_benchmarks/fedavg/cross_machine/LEAF_test.sh可快速执行LEAF数据集下FedAvg的模拟实验。"
