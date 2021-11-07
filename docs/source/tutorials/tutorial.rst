@@ -4,9 +4,7 @@
 Tutorials
 *********
 
-**FedLab** standardizes FL simulation procedure, including synchronous algorithm, asynchronous
-algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`.
-**FedLab** provides modular tools and standard implementations to simplify FL research.
+**FedLab** standardizes FL simulation procedure, including synchronous algorithm, asynchronous algorithm :cite:p:`xie2019asynchronous` and communication compression :cite:p:`lin2017deep`. **FedLab** provides modular tools and standard implementations to simplify FL research.
 
 .. toctree::
    :hidden:

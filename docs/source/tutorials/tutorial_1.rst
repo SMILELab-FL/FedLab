@@ -8,12 +8,7 @@ Distributed Communication
 How to initialize distributed network?
 ======================================
 
-FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as
-point-to-point communication package. The communication backend is Gloo as default. FedLab processes
-send/receive data through TCP network connection. If the automatically detected interface is not
-correct, you need to choose the network interface to use for Gloo, by setting the environment
-variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or
-``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
+FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication package. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. If the automatically detected interface is not correct, you need to choose the network interface to use for Gloo, by setting the environment variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
 
 .. note::
 
@@ -23,9 +18,7 @@ variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0``
 
         $ ifconfig
 
-You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed``
-network initialization works. :class:`DistNetwork` is for quickly network configuration, which you
-can create one as follows:
+You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed`` network initialization works. :class:`DistNetwork` is for quickly network configuration, which you can create one as follows:
 
 .. code-block:: python
 
@@ -62,7 +55,10 @@ The communication module of FedLab is in core/communicator. core.communicator.Pa
 Currently, you can create a network package from following methods:
 
 .. note::
-    Currently, **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
+
+    Currently, following restrictions need to be noticed：
+        1. **Tensor shape:** **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
+        2. **Data type:** Package doesn't accept tensors of different data type. In other words, **FedLab** force all appended tensors to be the same data type as the first appended tensor. Torch data types like **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]** are supported.
 
 1. initialize with tensor
 

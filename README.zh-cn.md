@@ -13,13 +13,12 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 
 
 
-- [文档](https://fedlab.readthedocs.io/en/master/)
+- [英文版文档](https://fedlab.readthedocs.io/en/master/) | [中文版文档](https://fedlab.readthedocs.io/zh_CN/latest/)
 - [FedLab简介](https://fedlab.readthedocs.io/en/master/overview.html)
 - [安装与设置](https://fedlab.readthedocs.io/en/master/install.html)
 - [使用例子](https://fedlab.readthedocs.io/en/master/example.html)
 - [如何贡献代码](https://fedlab.readthedocs.io/en/master/contributing.html)
 - [API介绍](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
-
 - [联系方式](#联系方式)
 
 ## 基准实现

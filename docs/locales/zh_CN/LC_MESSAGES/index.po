@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/index.rst:16 d9d6402a22704f83ba0fab2402088af9
+msgid "Contents:"
+msgstr "内容："
+
+#: ../../source/index.rst:14 9cd128d76f174a55ad4dc165d081ce4d
+msgid ""
+"FedLab provides the necessary modules for FL simulation, including "
+"communication, compression, model optimization, data partition and other "
+"functional modules. Users can build FL simulation environment with custom"
+" modules like playing with LEGO bricks."
+msgstr "FedLab提供了联邦学习模拟需要的模块，包括通信模块、压缩模块、模型优化模块、数据划分模块，"
+"以及其他功能性模块。用户可以像玩乐高积木一样用不同的自定义模块来搭建联邦学习模拟环境。"
+
+#: ../../source/index.rst:29 3b852269a846448aa3c0a714c32e9ec2
+msgid "Citation"
+msgstr "引用"
+
+#: ../../source/index.rst:31 08c4e78ad05f454885b5243d588691ef
+msgid "Please cite **FedLab** in your publications if it helps your research:"
+msgstr "如果 **FedLab** 对您的研究有帮助，请在您的发表中引用 **FedLab**："
+
+#: ../../source/index.rst:43 319eb085b32e4cffbfbac02e2dfd3b6a
+msgid "Contacts"
+msgstr "联系方式"
+
+#: ../../source/index.rst:45 0efce32b04174d55a18ff39e601ddec8
+msgid "Contact the **FedLab** development team through Github issues or email:"
+msgstr "请通过邮件或者GitHub issues联系 **FedLab** 开发团队："
+
+#: ../../source/index.rst:47 f6d59ae5bbdf4f53957a0e33a29e2d5f
+msgid "Dun Zeng: zengdun@foxmail.com"
+msgstr ""
+
+#: ../../source/index.rst:49 ae6ad701863d48788f0c31cd4b253671
+msgid "Siqi Liang: zszxlsq@gmail.com"
+msgstr ""
+

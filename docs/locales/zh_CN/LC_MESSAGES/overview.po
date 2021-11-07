@@ -1,0 +1,264 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/overview.rst:3 7202c2e680414ca4ad89a73439b880ab
+msgid "Overview of FedLab"
+msgstr "FedLab概述"
+
+#: ../../source/overview.rst:7 fc8df26a79994aa89e0f85023dab9de9
+msgid "Introduction"
+msgstr "引言"
+
+#: ../../source/overview.rst:9 be8f36cc98d541bf9ef8c9928915173d
+msgid ""
+"Federated learning (FL), proposed by Google at the very beginning, is "
+"recently a burgeoning research area of machine learning, which aims to "
+"protect individual data privacy in distributed machine learning process, "
+"especially in finance, smart healthcare and edge computing. Different "
+"from traditional data-centered distributed machine learning, participants"
+" in FL setting utilize localized data to train local model, then "
+"leverages specific strategies with other participants to acquire the "
+"final model collaboratively, avoiding direct data sharing behavior."
+msgstr "联邦学习最早由Google提出，是近几年一个新兴的机器学习研究领域。联邦学习旨"
+"在在分布式机器学习过程中保护个人数据隐私，尤其是金融、智能医疗以及边缘计算方面。不同于传统的"
+"存在数据中心的分布式机器学习，联邦学习中的参与者利用本地数据训练本地模型，然后利用特定"
+"策略与其他参与者协作得到最终模型，从而避免了直接分享数据的行为。"
+
+#: ../../source/overview.rst:16 4d0429f3828e4f52bf63ed8202dfa1bb
+msgid ""
+"To relieve the burden of researchers in implementing FL algorithms and "
+"emancipate FL scientists from repetitive implementation of basic FL "
+"setting, we introduce highly customizable framework **FedLab** in this "
+"work. **FedLab** provides the necessary modules for FL simulation, "
+"including communication, compression, model optimization, data partition "
+"and other functional modules. **FedLab** users can build FL simulation "
+"environment with custom modules like playing with LEGO bricks. For better"
+" understanding and easy usage, FL algorithm benchmark implemented in "
+"**FedLab** are also presented."
+msgstr "为了减轻研究者们在实现联邦学习算法的负担，减少联邦学习实现中的重复性工作，我们"
+"向大家介绍可高度自定义的联邦学习框架 **FedLab**。FedLab提供了联邦学习模拟需要的模块，"
+"包括通信模块、压缩模块、模型优化模块、数据划分模块，以及其他功能性模块。用户可以像玩乐高"
+"积木一样用不同的自定义模块来搭建联邦学习模拟环境。为了用户更好地理解和更简便的使用，我们"
+"还提供了用FedLab实现的联邦学习算法基准。"
+
+#: ../../source/overview.rst:24 544a7230566343288d47b19b2a39f952
+msgid "For more details, please read our `full paper`__."
+msgstr "更多细节请参考我们的 `完整论文`__ 。 "
+
+#: ../../source/overview.rst:30 9d7bb7581a71484781202f530a8a7e7d
+msgid "Overview"
+msgstr "概述"
+
+#: ../../source/overview.rst:40 063612a4d9454f15af2b03b25a723f02
+msgid ""
+"**FedLab** provides two basic roles in FL setting: ``Server`` and "
+"``Client``. Each ``Server``/``Client`` consists of two components called "
+"``NetworkManager`` and ``ParameterHandler``/``Trainer``."
+msgstr "FedLab提供了联邦学习中的两种基本角色：``Server`` 和 ``Client``。每个"
+" ``Server``/``Client`` 包含两个部件，分别是 ``NetworkManager`` 和 ``ParameterHandler``/``Trainer``。"
+
+
+#: ../../source/overview.rst:43 55e02aee86c94b92bfce4fedeb71cc31
+msgid ""
+"``NetworkManager`` module manages message process task, which provides "
+"interfaces to customize communication agreements and compression"
+msgstr "``NetworkManager`` 模块负责管理消息处理过程，且提供了自定义通信协议和"
+"压缩的接口。"
+
+#: ../../source/overview.rst:45 43d5fe52f6904158bea9746e0f519b83
+msgid ""
+"``ParameterHandler`` is responsible for backend computation in "
+"``Server``; and ``Trainer`` is in charge of backend computation in "
+"``Client``"
+msgstr "``ParameterHandler`` 负责 ``Server`` 的后端计算；``Trainer`` 负责 "
+"``Client`` 的后端计算。"
+
+#: ../../source/overview.rst:50 7fc8c06d36af4c008578af8794e8997b
+msgid "Server"
+msgstr ""
+
+#: ../../source/overview.rst:52 a1fdb9fe12ff478ca1b7a678c0951e39
+msgid ""
+"The connection between ``NetworkManager`` and ``ParameterServerHandler`` "
+"in ``Server`` is shown as below. ``NetworkManager`` processes message and"
+" calls ``ParameterServerHandler.on_receive()`` method, while "
+"``ParameterServerHandler`` performs training as well as computation "
+"process of server (model aggregation for example), and updates the global"
+" model."
+msgstr "``Server`` 中的 ``NetworkManager`` 和 ``ParameterServerHandler`` "
+"的关系如下图所示。``NetworkManager`` 处理消息并调用 ``ParameterServerHandler.on_receive()`` "
+"方法，而 ``ParameterServerHandler`` 用于执行server上具体的计算以及模型训练过程（比如模型聚合）,"
+"和全局模型的更新。"
+
+#: ../../source/overview.rst:67 d4bacc0935f74dd5a81c6e75da8b25ea
+msgid "Client"
+msgstr ""
+
+#: ../../source/overview.rst:69 de0ae683c7c5423aab44fbe189a13e12
+msgid ""
+"``Client`` shares similar design and structure with ``Server``, with "
+"``NetworkManager`` in charge of message processing as well as network "
+"communication with server, and `Trainer` for client local training "
+"procedure."
+msgstr "``Client`` 的设计与结构和 ``Server`` 非常相似，即 ``NetworkManager``"
+" 负责消息处理以及和server的网络通信，``Trainer`` 负责client的本地训练过程。"
+
+#: ../../source/overview.rst:82 414827192dc545c2baa4d6adc6d462d6
+msgid "Communication"
+msgstr "通信"
+
+#: ../../source/overview.rst:84 fc977de1a4ab4bc59671d7ccd1e77ae8
+msgid ""
+"**FedLab** furnishes both synchronous and asynchronous communication "
+"patterns, and their corresponding communication logics of "
+"``NetworkManager`` is shown as below."
+msgstr ""
+"**FedLab** 内置了同步联邦和异步联邦两种通信模式，"
+"相对应的 ``NetworkManager`` 的通信逻辑如下图"
+
+
+#: ../../source/overview.rst:87 a0c13b27c71645deb156b411fcfd6343
+msgid ""
+"Synchronous FL: each round is launched by server, that is, server "
+"performs clients sampling first then broadcasts global model parameters."
+msgstr "同步联邦：每一轮训练由server开启，即server先随机采样client，并将全局"
+"模型广播给被选中的client；client收到后，执行本地训练，结束后向server同步本地信息；"
+
+#: ../../source/overview.rst:98 2a148a12540f4ce78bc0930b948d3521
+msgid ""
+"Asynchronous FL :cite:p:`xie2019asynchronous`: each round is launched by "
+"clients, that is, clients request current global model parameters then "
+"perform local training."
+msgstr "异步联邦 :cite:p:`xie2019asynchronous`：每一轮由client开启，server等待；client向server"
+"发送请求； server收到请求并下发模型信息；client收到信息后执行本地训练，并与server同步；"
+
+#: ../../source/overview.rst:112 3116807dd1ee44639d2b0182c3d3c4b4
+msgid "Experimental Scene"
+msgstr "实验场景"
+
+#: ../../source/overview.rst:114 99724995cdff4048a4baeb18f4e9f779
+msgid ""
+"**FedLab** supports both single machine and  multi-machine FL "
+"simulations, with **standalone** mode for single machine experiments, "
+"while cross-machine mode and **hierarchical** mode for multi-machine "
+"experiments."
+msgstr ""
+"**FedLab** 支持单机和多机模拟大规模联邦系统。 **standalone** 模式用于单机模拟。"
+"而 **cross-machine** 和 **hierarchical** 模式支持多机器和多集群通信模拟联邦系统。"
+
+
+#: ../../source/overview.rst:119 fff783b06a6c46f0abda798f31331139
+msgid "Standalone"
+msgstr "单机（单进程）"
+
+#: ../../source/overview.rst:121 a39f43713dc74e2e9eb254e7d5ad63cc
+msgid ""
+"**FedLab** implements ``SerialTrainer`` for FL simulation in single "
+"system process. ``SerialTrainer`` allows user to simulate a FL system "
+"with multiple clients executing one by one in serial in one "
+"``SerialTrainer``. It is designed for simulation in environment with "
+"limited computation resources."
+msgstr ""
+"**FedLab** 实现了 ``SerialTrainer`` 串行训练器，支持在计算资源有限的情况下模拟多个联邦节点。"
+"仅占用一个进程资源的情况下，模拟多个联邦节点计算。 逻辑上是一个接一个的计算任务串行执行。"
+
+
+#: ../../source/overview.rst:135 8f949c021ed94e61a08399a038c2ac88
+msgid "Cross-Machine"
+msgstr "跨机（多进程）"
+
+#: ../../source/overview.rst:137 9015fba7bd4844c5bb2548e51655091c
+msgid ""
+"**FedLab** supports simulation executed on multiple machines with correct"
+" network topology configuration. More flexibly in parallel, "
+"``SerialTrainer`` is able to replace the regular ``Trainer``. In this "
+"way, machine with more computation resources can be assigned with more "
+"workload of simulating."
+msgstr ""
+"**FedLab** 分布式通信基于 ``torch.distributed`` 模块， 需要用户对网络拓扑进行正确的配置。"
+"串行训练器可以替换该场景下常规的训练器，使得单个网络管理器可以代理多个训练节点，在满足多机或多进程并行训练的要求下，进一步拓展联邦系统规模。这里的跨机模式指单机多进程（scale模式）或者多机多进程。"
+
+
+
+
+#: ../../source/overview.rst:144 1ca624607bbc4eca93ba371907868434
+msgid ""
+"All machines must be in the same network (LAN or WAN) for cross-machine "
+"deployment."
+msgstr ""
+"在跨机场景下，所有的集群应该处于同一个局域网下，即它们可以直接通过ip地址互联。"
+
+#: ../../source/overview.rst:155 61119301825a44dda3af7a2575532556
+msgid "Hierarchical"
+msgstr "分层架构"
+
+#: ../../source/overview.rst:157 57fb4c116d7d49179fae41f736864435
+msgid ""
+"**Hierarchical** mode for **FedLab** is designed for situations where "
+"both **standalone** and **cross-machine** are insufficient for "
+"simulation. **FedLab** promotes ``Scheduler`` as middle-server to "
+"organize client groups. Each ``Scheduler`` manages the communication "
+"between server and a client group containing a subset of clients. And "
+"server can communicate with clients in different LAN via corresponding "
+"``Scheduler``."
+msgstr ""
+"分层联邦的通信模式适用于多种单机和多机部署难以模拟的场景。 在多机的基础上，"
+"**FedLab** 实现了可作为中间服务器的模块 ``Scheduler`` 。 ``Scheduler`` 可以"
+"作为中间节点管理client和server之间的通信拓扑关系。 此外，通过适当的网络配置， 分层联邦"
+"可以支持不同的局域网的集群跨域互联。"
+
+
+#: ../../source/overview.rst:163 3874011f1bc847bbb2151916ba71a319
+msgid ""
+"The client group for each scheduler can be either **standalone** or "
+"**cross-machine**."
+msgstr ""
+"由 ``Scheduler`` 代理的用户组，既可以是单机模式，也可以是多机模式。"
+
+#: ../../source/overview.rst:165 6afb5f532ebc41c780737800590300f1
+msgid "A hierarchical FL system with ``K`` client groups is depicted as below."
+msgstr ""
+"一个由K个用户组的分层联邦系统如下图"
+
+#: ../../source/overview.rst:176 865d9901756b4bf3bb8cbd3311ddd46e
+msgid "Benchmarks"
+msgstr ""
+
+#: ../../source/overview.rst:178 a1d96f6ea3784305965c4171e1b0fbf3
+msgid ""
+"**FedLab** also contains data partition scripts from LEAF "
+":cite:p:`caldas2018leaf`, and implementations of some FL algorithms, like"
+" FedAvg :cite:p:`mcmahan2017communication`. More benchmarks and FL "
+"algorithms demos are coming."
+msgstr "**FedLab** 还提供了常用的联邦数据划分方法实现，以及一些联邦学习算法的"
+"实现，如FedAvg :cite:p:`mcmahan2017communication`。未来将提供更多的前言联邦学习算法"
+"实现集合，也欢迎贡献你的开源代码。"
+
+#: ../../source/overview.rst:182 6f1e69f8286446ae8378c0774bc15e43
+msgid "How to use FedLab?"
+msgstr "如何使用FedLab？"
+
+#: ../../source/overview.rst:184 ec392f851ed94384888ba0534bceb294
+msgid ":ref:`installation`."
+msgstr ""
+
+#: ../../source/overview.rst:185 c0f0c2599c8a403ab018b40ff57955fa
+msgid ":ref:`tutorial`."
+msgstr ""
+

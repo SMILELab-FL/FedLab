@@ -1,0 +1,231 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-04 14:14+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/examples/quick_start.rst:5 97920d7ed4a64a8eb60af675b0b1da8f
+msgid "Quick Start"
+msgstr "快速开始"
+
+#: ../../source/examples/quick_start.rst:7 59d65ef043ca46229b7616a7e34de301
+msgid ""
+"In this page, we introduce how to build a FL simulation system with "
+"FedLab in cross machine or cross process scenario. We implement FedAvg "
+"algorithm with CNN and partitioned MNIST dataset across clients."
+msgstr "本节主要介绍如何使用FedLab快速实现一个联邦学习算法模拟。 用FedAvg算法优化CNN模型，并使用划分的MNIST数据集。"
+
+#: ../../source/examples/quick_start.rst:11 09ff4063880e456cb360b1d9eb00309f
+msgid ""
+"Source code of this page can be seen in `fedlab-"
+"benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks>`_."
+msgstr ""
+"本页相关内容的源代码请参考 `fedlab-benchmarks/fedavg/cross_machine <https://github.com"
+"/SMILELab-FL/FedLab-benchmarks>`_。"
+
+#: ../../source/examples/quick_start.rst:15 6fdea920b9654fea9157c99c85932d43
+msgid "Download dataset"
+msgstr "下载数据集"
+
+#: ../../source/examples/quick_start.rst:17 1ee79f2722c1461abe96bd44c87acbd2
+msgid ""
+"FedLab provides scripts for common dataset download and partition "
+"process. Besides, FL dataset baseline LEAF :cite:p:`caldas2018leaf` is "
+"also implemented and compatible with PyTorch interfaces."
+msgstr ""
+"FedLab提供了对常用数据集的划分方法。 此外联邦划分的基线数据集LEAF :cite:p:`caldas2018leaf` "
+"也实现在FedLab benchmarks库中， 并从TensorFlow迁移到PyTorch。"
+
+#: ../../source/examples/quick_start.rst:20 46b71c4f59624c5396b1b5ab048c89ed
+msgid ""
+"Codes related to dataset download process are available at "
+"``fedlab_benchamrks/datasets/data/{dataset name}``."
+msgstr "与数据下载和联邦划分相关的代码可以参考路径 ``fedlab_benchamrks/datasets/data/{dataset name}`` 。"
+
+#: ../../source/examples/quick_start.rst:22 842d7bd99a6e4fd4accb0b53370c916d
+msgid "Download MNIST/CIFAR10"
+msgstr "下载 MNIST/CIFAR10"
+
+#: ../../source/examples/quick_start.rst:29 7c1213726af641e8b833e706237c31bb
+msgid "Partition"
+msgstr "联邦划分"
+
+#: ../../source/examples/quick_start.rst:31 2cd8ff624eea45b3bf45711f0e0f8a50
+msgid "Run follow python file to generate partition file."
+msgstr "运行如下Python脚本来生成划分文件。"
+
+#: ../../source/examples/quick_start.rst:37 6143a0f4bc5446bc993f5f9ce2d52afd
+msgid "Source codes of partition scripts:"
+msgstr "数据划分脚本的源码："
+
+#: ../../source/examples/quick_start.rst:54 0b2541d0b0f74658bba0e64ca876da56
+msgid ""
+"``data_indices`` is a ``dict`` mapping from client id to data "
+"indices(list) of raw dataset. **FedLab** provides random partition and "
+"non-I.I.D. partition methods, in which the noniid partition method is "
+"totally re-implementation in paper FedAvg."
+msgstr ""
+" ``data_indices`` 是一个字典（dict），存有一个从client id到原数据集所对应的相关的子数据集序号列表。FedLab "
+"目前提供了随机划分和Non-I.I.D 划分方法，其中Non-I.I.D划分方法是FedAvg中划分的复现。"
+
+#: ../../source/examples/quick_start.rst:57 79f6ac6b867643afb34e68c768114f6d
+msgid "LEAF dataset process"
+msgstr "LEAF数据集处理"
+
+#: ../../source/examples/quick_start.rst:59 d8acd898497947ee8c8056d65ed365b7
+msgid ""
+"Please follow the `FedLab benchmark <https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ to learn how to generate LEAF "
+"related dataset partition."
+msgstr ""
+"请按照 `FedLab benchmark <https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ 来学习如何生成LEAF相关的数据划分。"
+
+#: ../../source/examples/quick_start.rst:64 8e6f3ce702954ecba5710422b66267b8
+msgid "Run FedLab demos"
+msgstr "运行FedLab demos"
+
+#: ../../source/examples/quick_start.rst:66 7bcc9a08aeed4a0987ccb02ab7f21353
+#, fuzzy
+msgid ""
+"**FedLab** provides both asynchronous and synchronous standard "
+"implementation demos for uses to learn. We only introduce the usage of "
+"synchronous FL system simulation demo(FedAvg) with different scenario in "
+"this page. (Code structures are similar.)"
+msgstr "**FedLab** 提供标准异步和同步联邦的实现供用户使用或学习。本页仅介绍不同场景下的FedAvg的实现。"
+
+#: ../../source/examples/quick_start.rst:68 0ebc68cc6ebb45d18eafc76f05c43055
+msgid ""
+"**We are very confident in the readability of FedLab code, so we "
+"recommend that users read the source code according to the following "
+"demos for better understanding.**"
+msgstr "我们强烈建议用户尝试阅读源码去了解FedLab的架构和工作机制（我们认为我们的代码非常友好）。"
+
+#: ../../source/examples/quick_start.rst:71 dfa0aaf400ea408f800c960bc29cd2cc
+msgid "1. Standalone"
+msgstr "1. 单机单进程"
+
+#: ../../source/examples/quick_start.rst:73 0475dde6b13e4da396804813077e861d
+msgid ""
+"Main process is under `fedlab_benchamrks/algorithm/fedavg/standalone "
+"<https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/standalone>`_. "
+"This is a standard usage of :class:`SerialTrainer` which allows users to "
+"simulate a group of clients with a single process."
+msgstr ""
+"该方法的主要实现可见 `fedlab_benchamrks/algorithm/fedavg/standalone "
+"<https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/standalone>`_. "
+"这是一个 :class:`SerialTrainer` 类的标准实现方法，让用户可以单进程去模拟多个联邦参与者。"
+
+#: ../../source/examples/quick_start.rst:82 19791c0d79f7486ea3589140f70e7846
+msgid ""
+"Run command above to start a single process simulating FedAvg algorithm "
+"with 100 clients with 10 communication round in total, with 10 clients "
+"joining each round randomly."
+msgstr "在终端执行以上命令可以开启一个模拟有100个client的FedAvg算法，且每轮随机选取10个client参与。"
+
+#: ../../source/examples/quick_start.rst:87 0cdb599a75154c99b2618a8a107ac6ca
+msgid "2. Cross-Machine"
+msgstr "2. 跨机（多进程）"
+
+#: ../../source/examples/quick_start.rst:89 2d239c6b0d4e4e469694bf076726d49f
+msgid "Start a FL simulation with 1 server and 2 clients."
+msgstr "启动一个联邦模拟系统：1个server和2个clients。"
+
+#: ../../source/examples/quick_start.rst:96 ba595e0748e84a099a2c11550a8083cf
+msgid "The content of ``quick_start.sh`` is:"
+msgstr "脚本 ``quick_start.sh`` 的内容如下："
+
+#: ../../source/examples/quick_start.rst:104 533f3a64950f4a67ba298281512d4204
+msgid ""
+"Cross Machine scenario allows users deploy their FL system in computer "
+"cluster. In this case, we set the address of server as localhost. Then "
+"three process will communicate with each other following standard FL "
+"procedure."
+msgstr "跨机场景允许用户在多机集群内模拟联邦学习系统。在本页面中的场景下，我们改用localhost作为server地址。一共启动了三个进程来执行联邦学习流程。"
+
+#: ../../source/examples/quick_start.rst:110 0ffade537be94de2b51cd21db48e65ef
+msgid ""
+"Due to the rank of torch.distributed is unique for every process. "
+"Therefore, we use rank represent client id for this scenario."
+msgstr "因为torch.distributed模块要求每个进程的rank是不同的。因此，在这个场景下rank等于client id。"
+
+#: ../../source/examples/quick_start.rst:114 c23336f74e35441abf4da876c3ea713c
+msgid "3. Scale"
+msgstr "3. Scale"
+
+#: ../../source/examples/quick_start.rst:116 534ff409c7b24567a5b37761b749698c
+msgid ""
+":class:`SerialTrainer` uses less computer resources (single process) to "
+"simulate multiple clients. Cross Machine is suit for computer cluster "
+"deployment, simulating data-center FL system. In our experiment, the "
+"world size of ``torch.distributed`` can't more than 50 (Denpends on "
+"clusters), otherwise, the socket will crash, which limited the client "
+"number of FL simulation."
+msgstr ""
+":class:`SerialTrainer` "
+"能够仅使用单个进程的资源来模拟多个参与者，而跨机场景适合计算集群的模拟。在我们的实验中，``torch.distributed`` "
+"的world_size过大会导致网络通信崩溃，从而限制了FedLab可模拟的规模。"
+
+#: ../../source/examples/quick_start.rst:118 16e36373524c4c2aaae7678da29d1327
+msgid ""
+"To improve scalability, FedLab provides scale standard implementation to "
+"combine :class:`SerialTrainer` and :class:`ClientManager`, which allows a"
+" single process simulate multiple clients."
+msgstr ""
+"为了提高伸缩性， FedLab实现了Scale场景，将 :class:`SerialTrainer` 模块与 "
+":class:`ClientManager` 模块协同起来，让单进程可模拟多个client的同时，支持多进程的多机通信。"
+
+#: ../../source/examples/quick_start.rst:121 28fe06bb41b7496cb4aedd63f0dff092
+msgid ""
+"Source codes are available in "
+"fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}."
+msgstr "源代码可见 fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}。"
+
+#: ../../source/examples/quick_start.rst:123 e062f214a2cd481a96429e19d09f1c00
+msgid ""
+"Here, we take mnist-cnn as example to introduce this demo. In this demo, "
+"we set world_size=11 (1 ServerManager, 10 ClientManagers), and each "
+"ClientManager represents 10 local client dataset partition. Our data "
+"partition strategy follows the experimental setting of fedavg as well. In"
+" this way, **we only use 11 processes to simulate a FL system with 100 "
+"clients.**"
+msgstr ""
+"以mnist-cnn作为样例来介绍这一块内容。 在这个demo中， "
+"我们设置world_size=11（1*server，11*clients），每个ClientManager下代理了1个承担10个client的本地训练任务的SerialTrainer。"
+" 数据划分方法与FedAvg论文中一致。 在这个场景下，我们 ** 仅用了11个进程来模拟了一个有100个client的联邦学习系统 ** 。"
+
+#: ../../source/examples/quick_start.rst:125 a1ff110456e54a3d83443c6db9b49648
+msgid ""
+"To start this system, you need to open at least 2 terminal (we still use "
+"localhost as demo. Use multiple machines is OK as long as with right "
+"network configuration):"
+msgstr "可以通过两个终端来启动这个系统（本例中我们仍然使用localhost。但在我们的测试实验中，在正常的网络配置下，多机场景仍然可以正常启动）。"
+
+#: ../../source/examples/quick_start.rst:127 15174b70423b48acb85a1fef7abc4702
+msgid "server (terminal 1)"
+msgstr "server (终端 1)"
+
+#: ../../source/examples/quick_start.rst:133 3376440a77a64d2c847e7efe3b7a3908
+msgid "clients (terminal 2)"
+msgstr "clients (终端 2)"
+
+#: ../../source/examples/quick_start.rst:139 076e037500bf4797bddf9f5695d0d232
+msgid "The content of ``start_clt.sh``:"
+msgstr "脚本 ``start_clt.sh`` 的内容如下："
+

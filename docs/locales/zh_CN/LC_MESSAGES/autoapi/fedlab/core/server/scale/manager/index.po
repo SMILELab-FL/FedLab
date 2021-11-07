@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:2
+#: c936f0f9b74d408c95049f94a9061add
+msgid "manager"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:8
+#: 06723ff20481447ea57926e8a0ac386d
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:18:<autosummary>:1
+#: 29cc2cd5e68441da881e509263469084
+msgid ""
+":obj:`ScaleSynchronousManager "
+"<fedlab.core.server.scale.manager.ScaleSynchronousManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:24
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:18:<autosummary>:1
+#: 3a489e11cff3471e8d5acd43681fd5aa a630b998fd71412f9fa8c949172225af
+msgid "ServerManager used in scale scenario."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:22
+#: c81e49e018bb42a9a63d3e012a8f1f5a
+msgid "Bases: :class:`fedlab.core.server.manager.ServerSynchronousManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:28
+#: db9d6057b00a4106a5280342e5881e28
+msgid "Use client id mapping: Coordinator."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:30
+#: 6bbda880d0014b08ad0cfe7b2169b098
+msgid ""
+"Here we use coordinator to find the rank client process with specific "
+"client_id."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:35
+#: 6f7ee02dca2f448dab5e6f7d887abd72
+msgid "Actions to perform in server when receiving a package from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:37
+#: 383f89c92330464088fb544d89989fd6
+msgid ""
+"Server transmits received package to backend computation handler for "
+"aggregation or others manipulations."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:42
+#: 69cd9521464d4f988e3b7d94a07668e6
+msgid "Loop:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:41
+#: 46945067a14442b99538c1d0abfc7418
+msgid "activate clients for current training round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:42
+#: 2576eb6e563f448f81a9641de2b29b55
+msgid ""
+"listen for message from clients -> transmit received parameters to server"
+" backend."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:46
+#: 6f70b8457d1b47b89b0cf9da76c2f7ba
+msgid ""
+"Communication agreements related: user can overwrite this function to "
+"customize communication agreements. This method is key component "
+"connecting behaviors of :class:`ParameterServerBackendHandler` and "
+":class:`NetworkManager`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst
+#: b1de5f06a1234005928dcfa0c3c8b173
+msgid "Raises"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/manager/index.rst:50
+#: 6f140dd9042341ce9fd48d2f5a5afc94
+msgid "Unexpected :class:`MessageCode`."
+msgstr ""
+

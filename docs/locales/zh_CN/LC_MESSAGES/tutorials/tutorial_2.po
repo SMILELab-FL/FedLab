@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/tutorial_2.rst:5 4acdd76dea31464baabcd5f38f33d6d2
+msgid "Communication Strategy"
+msgstr "通信逻辑"
+
+#: ../../source/tutorials/tutorial_2.rst:7 a371070268764d098c4c72eb81217b88
+msgid ""
+"Communication strategy is implemented by ClientManager and ServerManager "
+"together."
+msgstr "可以通过复写 ``ClientManager`` 和 ``ServerManager`` 来自定义通信逻辑。"
+
+#: ../../source/tutorials/tutorial_2.rst:9 22ed7e74146f4845b8e994b5494e20a2
+msgid ""
+"The prototype of :class:`NetworkManager` is defined in "
+"``fedlab.core.network_manager``, which is also a subclass of "
+"``torch.multiprocessing.process``."
+msgstr ""
+":class:`NetworkManager` 定义在 ``fedlab.core.network_manager`` ， 是"
+"``torch.multiprocessing.process`` 的子类。 :class:`NetworkManager` 作为"
+"FedLab中角色的网络层，是角色（client/server/scheduler）的进程入口。"
+
+
+#: ../../source/tutorials/tutorial_2.rst:12 8450d2a9f2054007a207db84696eb3e0
+msgid ""
+"Typically, standard implementations is shown in "
+"``fedlab.core.client.manager`` and ``fedlab.core.server.manager``. "
+":class:`NetworkManager` manages network operation and control flow "
+"procedure."
+msgstr ""
+"FedLab官方的 :class:`NetworkManager` 实现代码在 ``fedlab.core.client.manager`` ， ``fedlab.core.server.manager`` 。 "
+":class:`NetworkManager` 应该负责定义网络通信协议和调用下层的接口的控制逻辑。" 
+
+
+
+#: ../../source/tutorials/tutorial_2.rst:16 d1f055846ce54c4e90ab7829a903088a
+msgid "Base class definition shows below:"
+msgstr "基类的代码定义如下："
+
+#: ../../source/tutorials/tutorial_2.rst:61 5425073f2a0a4eb08d31346205b9b4df
+msgid ""
+"FedLab provides 2 standard communication pattern implementations: "
+"synchronous and asynchronous. You can customize process flow by: 1. "
+"create a new class inherited from corresponding class in our standard "
+"implementations; 2. overwrite the functions in target stage."
+msgstr "FedLab 提供了2个标准的通信模式对应的manager的实现：同步联邦和异步联邦。"
+"用户可以通过以下步骤自定义一个manager："
+"1. 创建一个Python类并继承于类 :class:`NetworkManager` ；"
+"2. 重写目标通信阶段的逻辑；"
+
+#: ../../source/tutorials/tutorial_2.rst:65 efbfa605993e4e5da000885929ca4434
+msgid ""
+"To sum up, communication strategy can be customized by overwriting as the"
+" note below mentioned."
+msgstr "总之， manager层的通信逻辑可以通过简单重写下面注解中的函数来自定义。"
+
+#: ../../source/tutorials/tutorial_2.rst:69 67bee671c549466dabc588d53481445b
+msgid ""
+":meth:`setup()` defines the network initialization stage. Can be used for"
+" FL algorithm initialization."
+msgstr ""
+":meth:`setup()` 定义网络初始化阶段. 用于初始化网络链接，设计上可用于约定联邦算法和系统参数等"
+
+
+#: ../../source/tutorials/tutorial_2.rst:70 c90a894c7bee4d1289c47dc6bd1b0bab
+msgid ""
+":meth:`main_loop()` is the main process of client and server. User need "
+"to define the communication strategy for both client and server manager."
+msgstr ""
+":meth:`main_loop()` 是通信逻辑定义的主方法。 用户可以在该函数下定义server和client在通信阶段的逻辑。"
+
+
+#: ../../source/tutorials/tutorial_2.rst:71 bc96a83f426b4744a626c978d26aeaf0
+msgid ":meth:`shutdown()` defines the shutdown stage."
+msgstr ""
+"定义结束阶段： 可用于实现资源释放逻辑等。"
+
+
+#: ../../source/tutorials/tutorial_2.rst:73 a9988366a38742d5ae3b758bed225db7
+msgid ""
+"Importantly, ServerManager and ClientManager should be defined and used "
+"as a pair. The control flow and information agreements should be "
+"compatible. FedLab provides standard implementation for typical "
+"synchronous and asynchronous, as depicted below."
+msgstr ""
+"值得注意的是， ServerManager 和 ClientManager的通信定义应该是成对的。 即client"
+"和server的接收和发送包的方法应该是一一对应的，否则会导致进程阻塞。FedLab 提供的两种"
+"通信模式如下示意图。"
+
+
+#: ../../source/tutorials/tutorial_2.rst:76 f8ba213529fc4eb683bbbaf9b6a261b8
+msgid "Synchronous"
+msgstr "同步模式"
+
+#: ../../source/tutorials/tutorial_2.rst:78 4eb8c407333543868fd1f565916d8fa7
+msgid ""
+"Synchronous communication involves :class:`ServerSynchronousManager` and "
+":class:`ClientPassiveManager`. Communication procedure is shown as "
+"follows."
+msgstr ""
+"同步模式由 :class:`ServerSynchronousManager` and :class:`ClientPassiveManager` 组成。"
+"通信流程如下图"
+
+#: ../../source/tutorials/tutorial_2.rst:89 f3a3ea2fdbf74a5ea7e9145c9eeac9fd
+msgid "Asynchronous"
+msgstr "异步模式"
+
+#: ../../source/tutorials/tutorial_2.rst:91 e134a04da38c44a29f1be905acb73885
+msgid ""
+"Asynchronous is given by :class:`ServerAsynchronousManager` and "
+":class:`ClientActiveManager`. Communication procedure is shown as "
+"follows."
+msgstr ""
+"异步模式由 :class:`ServerAsynchronousManager` 和 :class:`ClientActiveManager` 组成。"
+"通信流程如下图"
+
+
+
+#: ../../source/tutorials/tutorial_2.rst:103 bffeb834ddb146bf84cb73e3d2bb6cd8
+msgid "Initialization stage"
+msgstr "初始化阶段"
+
+#: ../../source/tutorials/tutorial_2.rst:105 1110a877bf6649099bad4df1f671352a
+msgid "Initialization stage is represented by :meth:`manager.setup()` function."
+msgstr "初始化阶段由函数 :meth:`manager.setup()` 执行。"
+
+#: ../../source/tutorials/tutorial_2.rst:107 ae2d5279517c4867b7a28cbe33a8228a
+msgid ""
+"User can customize initialization procedure as follows(use ClientManager "
+"as example):"
+msgstr "用户可以通过重写该函数自定义初始化阶段动作。以ClientManager为例如下："
+
+#: ../../source/tutorials/tutorial_2.rst:127 1156f81acfbc4190b55c667c9442a341
+msgid "Communication stage"
+msgstr "通信阶段"
+
+#: ../../source/tutorials/tutorial_2.rst:129 7a4cee2b27f944419b3c4db0ab6a1ac8
+msgid ""
+"After Initialization Stage, user can define :meth:`main_loop()` to define"
+" main process for server and client. To standardize **FedLab**'s "
+"implementation, here we give the :meth:`main_loop()` of "
+":class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for "
+"example."
+msgstr ""
+"初始化阶段后，用户可以重写 :meth:`main_loop()` 定义主进程。可以参考FedLab提供的 "
+":class:`ClientPassiveManager`: "
+"和 :class:`ServerSynchronousManager` 的标准实现。 如下："
+
+
+#: ../../source/tutorials/tutorial_2.rst:133 99dc160bae0549fc9c8c61de447a70df
+msgid "**Client part**:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:157 7fa9d6a55ee54d0fbc1337a01c76ab2d
+msgid "**Server Part**:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_2.rst:194 14c825013a0044ddb77af252afc7c288
+msgid "Shutdown stage"
+msgstr "结束阶段"
+
+#: ../../source/tutorials/tutorial_2.rst:196 99e8074ab96a47a1ab9564c34260170d
+msgid ""
+":meth:`shutdown()` will be called when :meth:`main_loop()` finished. You "
+"can define the actions for client and server seperately."
+msgstr ""
+":meth:`shutdown()` 会在 :meth:`main_loop()` 结束后自动调用。 "
+"用户可自定义结束网络链接前后的逻辑。"
+
+#: ../../source/tutorials/tutorial_2.rst:198 5ddee1215cb9470ba298733a15e5a99c
+msgid ""
+"Typically in our implementation, shutdown stage is started by server. It "
+"will send a package with ``MessageCode.Exit`` to inform client to stop "
+"its main loop."
+msgstr ""
+"值得注意的是, 在我们的实现中结束阶段是由server发起。"
+"当server发送一个带有 ``MessageCode.Exit`` 的网络通信包时，"
+"client会自动结束通信阶段并进入结束阶段。"
+
+
+#: ../../source/tutorials/tutorial_2.rst:202 fc8ea7b746e44e9b904fe3f0ce65872f
+msgid ""
+"Codes below is the actions of :class:`ServerSynchronousManager` in "
+"shutdown stage."
+msgstr ""
+"如下代码块所示，:class:`ServerSynchronousManager` 向所有 :class:`ClientManager` 发送 ``exit`` 包。"
+
+#: ../../source/tutorials/tutorial_2.rst:221 372e8aa437d9439eac26a87e206fe337
+msgid "Example"
+msgstr "重写通信逻辑的示例"
+
+#: ../../source/tutorials/tutorial_2.rst:223 aa2a61231eef466591f1fdf140e4fee9
+msgid ""
+"In fact, the scale module of **FedLab** is a communication strategy re-"
+"definition to both ClientManager and ServerManager. Please see the source"
+" code in fedlab/core/{client or server}/scale/manager.py (It it really "
+"simple. We did nothing but add a map function from rank to client id)."
+msgstr ""
+"**FedLab** 的scale模式的通信模块就是对标准的多机模式做了通信逻辑上的简单修改。"
+"相关代码可见于 ``fedlab/core/{client or server}/scale/manager.py``。"
+"我们觉得这里实现的非常简单，只是单纯的加了一个从rank到本地client "
+"id的映射方法，便使得manager可以管理多个client后端。"
