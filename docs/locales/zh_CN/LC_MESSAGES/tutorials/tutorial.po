@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/tutorial.rst:5 023b66ded0f34b6abe37d4587c3d7c19
+msgid "Tutorials"
+msgstr ""
+
+#: ../../source/tutorials/tutorial.rst:7 fb257f3f22a84a1fbf677d8178178918
+msgid ""
+"**FedLab** standardizes FL simulation procedure, including synchronous "
+"algorithm, asynchronous algorithm :cite:p:`xie2019asynchronous` and "
+"communication compression :cite:p:`lin2017deep`. **FedLab** provides "
+"modular tools and standard implementations to simplify FL research."
+msgstr ""
+
+#: ../../source/tutorials/tutorial.rst:23 4d84f1d7b0424d00b2bf4b331a88ea0b
+msgid "Step-by-step guide on distributed network setup and package transmission."
+msgstr ""
+
+#: ../../source/tutorials/tutorial.rst:30 7121d8f63ed643c8824c518ec66ac6c5
+msgid ""
+"Use :class:`NetworkManager` to customize communication strategies, "
+"including synchronous and asynchronous communication."
+msgstr ""
+
+#: ../../source/tutorials/tutorial.rst:38 2d99a79926d741d6a0a5beb34cd6716f
+msgid "Define your own model optimization process for both server and client."
+msgstr ""
+
+#: ../../source/tutorials/tutorial.rst:46 bf50ee22e8c6480bb8ade3498ff120d6
+msgid "Get federated datasets and data partition for IID and non-IID setting."
+msgstr ""
+

@@ -1,0 +1,261 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:2
+#: effb9982a7794e2888beba1b4a0c546d
+msgid "handler"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:8
+#: d15b94f5f228400aaa7af87704b75396
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: 2bb6930a8ddf4e5e8887df3944d6cbe3
+msgid ""
+":obj:`ParameterServerBackendHandler "
+"<fedlab.core.server.handler.ParameterServerBackendHandler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:26
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: 84355730e9c947c39d588d85dd50c6dc b544349058e3404a8701ff139b3ef254
+msgid "An abstract class representing handler of parameter server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: 10ecf7d36279435780a05fbd11d7518f
+msgid ""
+":obj:`SyncParameterServerHandler "
+"<fedlab.core.server.handler.SyncParameterServerHandler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:49
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: 7f7ae068ab6c443fb9124a23d9e1385d eb5bbb4361344a0e8dc6c32b165e9ebb
+msgid "Synchronous Parameter Server Handler."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: d08264e5bd8647fcb032f07b2eee8fd3
+msgid ""
+":obj:`AsyncParameterServerHandler "
+"<fedlab.core.server.handler.AsyncParameterServerHandler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:117
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:20:<autosummary>:1
+#: 7861263c83224106b98c5d658fe14cf0 b554da9911664b24a9293a17c02f0a81
+msgid "Asynchronous Parameter Server Handler"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:24
+#: 9714fa84fa63483c81fde039409bb144
+msgid "Bases: :class:`fedlab.core.model_maintainer.ModelMaintainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:28
+#: 52a1e5aa52a446e1b5b5087ec5164a6d
+msgid ""
+"Please make sure that your self-defined server handler class subclasses "
+"this class"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:31
+#: 5ccd8293784b433d947aa05a2c72a70c
+msgid "Example"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:32
+#: 0a565c9b4c9942218d0114214ed75a21
+msgid ""
+"Read source code of :class:`SyncParameterServerHandler` and "
+":class:`AsyncParameterServerHandler`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:37
+#: d55ef60490614bb9979ce4a48e758db9
+msgid "Override this function for global model aggregation strategy."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst
+#: 069bcda26b6f486299738578ba68de8e 2cd34154dc434f29b067263d3127ff61
+#: 5d70b2c1beb14159b9573848908b6bdf 5e94e125d95d47e8922f4d950c8c55f2
+#: 89446558a13e48a99f10cf503c1eb80b
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:39
+#: d392529a7d004f108e0fca3b3fb4f971
+msgid "A list of serialized model parameters collected from different clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:47
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:115
+#: 2a119def4b154503a521e1a842353a3f 3556f1374d8c481685e6eeab3dc5a9e4
+msgid "Bases: :class:`fedlab.core.server.handler.ParameterServerBackendHandler`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:51
+#: 1f1c58eb31704ff4b15474a6087e3423
+msgid ""
+"Backend of synchronous parameter server: this class is responsible for "
+"backend computing in synchronous server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:53
+#: 281a527a545e4718bc52bf6b93911336
+msgid ""
+"Synchronous parameter server will wait for every client to finish local "
+"training process before the next FL round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:56
+#: f1434034b5fb4473903c148cdbe5c18c
+msgid "Details in paper: http://proceedings.mlr.press/v54/mcmahan17a.html"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:58
+#: 91adbbe71bfa4c76b99e1c869b8bf0df
+msgid "Model used in this federation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:60
+#: 4d67ddf2b41c456aa63d54f8ada9b716
+msgid "stop condition. Shut down FL system when global round is reached."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:62
+#: 909418b2be6e4cec9cf37d74a2d48f2d
+msgid "Use GPUs or not. Default: ``False``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:64
+#: 2c0fee7c335d45eabe516d7d8f43ca78
+msgid ""
+"``sample_ratio * client_num`` is the number of clients to join in every "
+"FL round. Default: ``1.0``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:66
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:132
+#: 2273e0a79a6e4d6194c986e6e5e3e435 96ed19a5a1a74dd2a873a50b81409990
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:71
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:141
+#: 17a2c67855314eaeac4686a2c90cd5ea a5b6ddea391d4a929f1027b0e195e33b
+msgid ""
+":class:`NetworkManager` keeps monitoring the return of this method, and "
+"it will stop all related processes and threads when ``True`` returned."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:76
+#: c128c3745cc9435ca33899363e34dffb
+msgid ""
+"Return a list of client rank indices selected randomly. The client ID is "
+"from ``1`` to ``self.client_num_in_total + 1``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:82
+#: d8774e8d77c149669b0a281e803d60b2
+msgid "Deal with incoming model parameters from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:84
+#: 00b3ce434e834f38b65a76e380f875a2
+msgid "Return True when self._update_model is called."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:86
+#: ca9a9ff3bf03418e8c9eaaf6baa3d938
+msgid "Rank of sender client in ``torch.distributed`` group."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:88
+#: fc24596d8367433ca5a8c5ce240d96d5
+msgid "Serialized model parameters from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:94
+#: 4fe333fd237844fab72fa9206e43a2ff
+msgid "Update global model with collected parameters from clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:98
+#: ee874b6fbee14d5b9b846bf944646bc4
+msgid ""
+"Server handler will call this method when its ``client_buffer_cache`` is "
+"full. User can overwrite the strategy of aggregation to apply on "
+":attr:`model_parameters_list`, and use "
+":meth:`SerializationTool.deserialize_model` to load serialized parameters"
+" after aggregation into :attr:`self._model`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:103
+#: 3f4e1d966a7d433bb8bb9ec06d774df1
+msgid "A list of parameters.aq"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:119
+#: 375e4cb85f554de0a0bd98f35f91b890
+msgid ""
+"Update global model immediately after receiving a ParameterUpdate message"
+" Paper: https://arxiv.org/abs/1903.03934"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:122
+#: 47e0b7bc5c814a208c053debd4c4380f
+msgid "Global model in server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:124
+#: f23e0604a1554e93bc3179ded0d2ca53
+msgid "weight used in async aggregation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:126
+#: cd9e0286a09f47ea8e8e0c398a480eac
+msgid "stop condition. Shut down FL system when total_time is reached."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:128
+#: 301bfd0bba5b4973b78068facac4e4ce
+msgid ""
+"adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is "
+"optional. Default: ``constant``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:130
+#: def60de1b1624f04bd2568cf56a933f0
+msgid "Use GPUs or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:147
+#: 4b616acab1614470af47863db3b840c6
+msgid "\"update global model from client_model_queue"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/handler/index.rst:152
+#: b452f08ac351477cb063c43da399cd39
+msgid "update the alpha according to staleness"
+msgstr ""
+

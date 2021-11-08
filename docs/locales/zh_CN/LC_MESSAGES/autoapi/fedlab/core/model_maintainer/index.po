@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:2
+#: 3dd21f5bdee84fce83810344c6a3cffa
+msgid "model_maintainer"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:8
+#: 971b888cc815415bb387246768bd335d
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:18:<autosummary>:1
+#: 3698ebbe2f7d4c8e8021be8bb4711199
+msgid ":obj:`ModelMaintainer <fedlab.core.model_maintainer.ModelMaintainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:24
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:18:<autosummary>:1
+#: 6a66168d7d00432ea5dc2536706f936d 9d92160cf9f74cfaa21f5b91806889bb
+msgid "Maintain PyTorch model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:22
+#: 96df46697c034124b6280454f25c748f
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:26
+#: 0a6f8fcf110846a1b42c3a8d408524a9
+msgid ""
+"Provide necessary attributes and operation methods. More features with "
+"local or global model will be implemented here."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst
+#: 01c7c80dd2a04b7b9c9cf5d268d801a4
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:29
+#: a6415607ae234772b26bac8e8de32cc4
+msgid "PyTorch model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:31
+#: 0f96a08e937c46e9a71c97e21b4c3fbf
+msgid "use GPUs or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:37
+#: fb0b6c6e7f784e588b81e6d22a05b257
+msgid "Return :class:`torch.nn.module`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:43
+#: d9573eedb3f04a3491d620491d57ce0a
+msgid "Return serialized model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:49
+#: a6f1e64d87854cbeb9c52f3a01eaa0ce
+msgid "Return serialized model gradients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:55
+#: dc959aa916844a01842f360c67cf59a8
+msgid "Return shape of model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/model_maintainer/index.rst:57
+#: c6e163c4b6e646daa3576e1377a38a45
+msgid "Currently, this attributes used in tensor compression."
+msgstr ""
+

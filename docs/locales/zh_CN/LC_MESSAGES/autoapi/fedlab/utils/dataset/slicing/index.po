@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:2
+#: f0be4653a17d45d4895f0a9530e1d03f
+msgid "slicing"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:8
+#: 110c8cb16e1746af9355395fcfcb0142
+msgid "functions associated with data and dataset slicing"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:13
+#: 3c1b6b8397454cf0aaf00fc508828012
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+#: 8dad7acd7d3b4afeb2ec6192596efd2e
+msgid ""
+":obj:`noniid_slicing <fedlab.utils.dataset.slicing.noniid_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\, num\\_shards\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:27
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+#: 64c4d6f4bba74175b1dd6bdcbb92c134 6eeb8998b5b64846a3a5f00b0e4742b0
+msgid "Slice a dataset for non-IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+#: a70170fce10d4d478efccdd13a6e2f0c
+msgid ""
+":obj:`random_slicing <fedlab.utils.dataset.slicing.random_slicing>`\\ "
+"\\(dataset\\, num\\_clients\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:47
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
+#: 87b1f9e3d7ad4ea7867e7dc88f80b7dd f7d51460d7e44ddd852fdd5c6f36be1d
+msgid "Slice a dataset randomly and equally for IID."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst
+#: 59814894329441269b5fbf611abec05c
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:29
+#: c5d31783ebc14923b4b18821a0958d32
+msgid "Dataset to slice."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:31
+#: adee65eb67c84dc38589ad3d5d0e2acb
+msgid "Number of client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:33
+#: 7ac2659b056d401ab24f004b84f4307b
+msgid "Number of shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:37
+#: c166e18ccc884138a2e86f24f474eae9
+msgid "Notes"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:38
+#: 2713d385e2bb43df90d4271eed28a756
+msgid ""
+"The size of a shard equals to ``int(len(dataset)/num_shards)``. Each "
+"client will get ``int(num_shards/num_clients)`` shards."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:41
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:53
+#: 7cc24e88fc2842f7af4db8ff5e2529dd ea2865f40c6b46579cfd6f420956024f
+msgid "Returns："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:42
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:54
+#: 10595f1a131f4185bdeaf0fc4633e0eb b0d13fe08937458f847bc16fe37789c4
+msgid ""
+"dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices "
+"of dataset }``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:51
+#: 4d601c3e42e84589a238900ca5ebb570
+msgid "Args："
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:50
+#: a970988b7c644e62af41375af11c0f60
+msgid ""
+"dataset (torch.utils.data.Dataset): a dataset for slicing. num_clients "
+"(int):  the number of client."
+msgstr ""
+

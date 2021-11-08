@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:2
+#: 47148f7b64be473ca579cf83a6d2372b
+msgid "sampler"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:8
+#: e451bc6c1aa24b59a9366fc910d61e57
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: 5983ed0fff6e4c4f8a102fd856b40606
+msgid ":obj:`SubsetSampler <fedlab.utils.dataset.sampler.SubsetSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:26
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: 01e271fbc82a4916a1aa0879860cb27c 27098061b75f45d49e69c1bfcb91166b
+msgid ""
+"Samples elements from a given list of indices, always in the same order "
+"once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: b9455b7c05e44f7a9bfe706008651e6e
+msgid ""
+":obj:`RawPartitionSampler "
+"<fedlab.utils.dataset.sampler.RawPartitionSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:47
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: 32d8de6e38144273a0a8525e8f465964 c995e1dfd110419b8ff9b9fc3ec2943a
+msgid "Partition dataset according to ``num_replicas``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: 320a687b8036428eb103242555ffb927
+msgid ":obj:`DictFileSampler <fedlab.utils.dataset.sampler.DictFileSampler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:70
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:20:<autosummary>:1
+#: 241bba76b3dd4bfebaa799e00e3a2b0f 92ccc58bee2a4d96a6e59d1453d6b3f0
+msgid "Get data sample indices given client id from data file with dict."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:24
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:45
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:68
+#: 085e44f5f1db40bc94875ec33fc26e16 0a62c48c5a704883bf04ace6fcc82a7b
+#: 130dbbc7304a4b2985ca586014a9fce8
+msgid "Bases: :class:`torch.utils.data.Sampler`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:28
+#: ecc72c5ae8754551a3c809da6b0692ee
+msgid ""
+"It is a :class:`Sampler` used in :class:`Dataloader`, that each partition"
+" will be fixed once initialized."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst
+#: 1423ff6011c94bbf95889ab7d2b7c39c 85a607f9435b489180a6ba71e608cf0d
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:30
+#: b855f22f1c4447bf8ae7e9469ef43f42
+msgid "Indices in the whole set selected for subset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:32
+#: c0e5b0ff344148a79a057fca6d776a2d
+msgid "shuffle the indices or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:49
+#: e3f195fdd0084105a8984fcf72135c5c
+msgid "Every client get a equal shard of dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/dataset/sampler/index.rst:55
+#: 63fc7982c64f40f094b190c687208ff0
+msgid ""
+"Number of data replications. Default ``None`` means total number of "
+"client processes."
+msgstr ""
+

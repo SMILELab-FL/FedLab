@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/install.rst:4 18774df59340492196f147260cd75358
+msgid "Installation & Set up"
+msgstr ""
+
+#: ../../source/install.rst:6 4986e0fa67904006826c2a2f2f80f1e5
+msgid "FedLab can be installed by source code or pip."
+msgstr ""
+
+#: ../../source/install.rst:9 ac1b42452bca49d9ab19a77a0240ff7d
+msgid "Source Code"
+msgstr ""
+
+#: ../../source/install.rst:11 3520cda89ca6422880c1ceb6b50a5bd5
+msgid "Install **lastest version** from GitHub:"
+msgstr ""
+
+#: ../../source/install.rst:18 bf3d9cd315d645ed8863d1b50a2ed968
+msgid "Install dependencies:"
+msgstr ""
+
+#: ../../source/install.rst:25 86ddd41ed4934bc3b9ebab29abe0f4a3
+msgid "Pip"
+msgstr ""
+
+#: ../../source/install.rst:27 726fbb4ab57d441992a8b6a3cebf53e8
+msgid "Install **stable version** with pip:"
+msgstr ""
+
+#: ../../source/install.rst:34 e1579007053548f9bb410acfe27fffeb
+msgid "Dataset Download"
+msgstr ""
+
+#: ../../source/install.rst:36 db3f9049bfc640ac90edb998b94f7220
+msgid "FedLab provides common dataset used in FL researches."
+msgstr ""
+
+#: ../../source/install.rst:38 2977268a70a6430c962f13d99cbd683e
+msgid ""
+"Download procedure scripts are available in `fedlab_benchmarks/datasets "
+"<https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets>`_. For details of "
+"dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets>`_."
+msgstr ""
+

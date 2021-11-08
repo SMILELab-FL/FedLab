@@ -1,0 +1,171 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/fcube_tutorial.rst:5 4b36b69c2baa4e39bf53c3cde24c523c
+msgid "FCUBE"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:7 d35f2f8930454335aa55988a26a202b2
+msgid ""
+"FCUBE :cite:p:`li2021federated` is a synthetic dataset for research in "
+"non-IID scenario with feature imbalance. This dataset is proposed in "
+"`Federated Learning on Non-IID Data Silos: An Experimental Study "
+"<https://arxiv.org/abs/2102.02079>`_."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:9 634e965ce6fc4c81a59a63efefd47c2f
+msgid ""
+"Data points of FCUBE conain 3 features, that is, "
+":math:`\\mathcal{D}_{\\text{FCUBE}} = \\{ (\\mathbf{x}, y) \\}`, where "
+"each data point :math:`\\mathbf{x} = (x_1, x_2, x_3)`, and label :math:`y"
+" \\in \\{ 0, 1 \\}`. The distribution of data points is a cube in three "
+"dimentions, and if :math:`x_1 > 0`, then :math:`y = 0`, while :math:`y=1`"
+" when :math:`x_1 < 0`. By default, we suggest 4000 data points for "
+"trainset, and 1000 for testset."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:12
+#: 762b2be31ae541ac9456bfbbfa55bdaa
+msgid "For more details, please refer to Section (IV-B-b) of original paper."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:14
+#: d940450df57a4da586032c1cf182bd28
+msgid ""
+"Dataset ``FCUBE`` will generate local ``.npy`` file if ``generate=True``."
+" And it also accepts common arguments for dataset: ``transform`` and "
+"``target_transform`` to transform the input and target respectively."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:16
+#: 9b6ec2bcb8664d8db7949f8bbd5bed60
+msgid "Import related package and basic setting:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:40
+#: 739f3ef0db4344be92dab810e9840c89
+msgid "Dataset"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:43
+#: 83359af801614fbd8b6d605a4c2ac0cb
+msgid "Generation"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:45
+#: f65991030b32488190b5567838d705e4
+msgid "Generate trainset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:60
+#: 4af50ebb49b341ffa8be0a8be2acaeaf
+msgid "Generate testset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:77
+#: 0141956495d94fec83f3fbe577a1ffec
+msgid "Visualization"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:79
+#: 3f875f7cbb504df2a41b53cc4ae9d904
+msgid "For visualization, we first construct  ``DataFrame`` for dataset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:96
+#: 71113789f34e4c019e56d0566a069dee
+msgid ""
+"The class distribution in FCUBE is balanced. Visualization of class "
+"distribution in trainset/testset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:107
+#: 770345acc57d4c5cbc1ba5cc848b88b9
+msgid "Data points distribution for trainset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:133
+#: 63f3dfb9956d4862811302b5ac702d34
+msgid "Data points distribution for testset:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:161
+#: e36407795b2745958591d47ffb740e4d
+msgid "Data Partition"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:163
+#: 1e867da9d3e843ee8fe0922721d6df77
+msgid ""
+"FCUBE only supports 2 partition methods: - feature distribution skew: "
+"synthetic - IID"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:167
+#: b888711bc13c4eeba5224b3a7220e5a4
+msgid "Limited by synthetic partition, client number for FCUBE can only be 4."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:177
+#: 22d03797fd8a49109dec1b7f49499c88
+msgid "Synthetic partition"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:179
+#: 1bd54ccf752d4f029b7bc5cb45b7f052
+msgid ""
+"From dataset visualization, we can see that the distribution of FCUBE "
+"data points is in a cube with :math:`-1 < x_1 < 1`, :math:`-1 < x_2 < 1`,"
+" :math:`-1 < x_3 < 1`."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:181
+#: 46afa3cd7d3b474e91235ab5d4bc85c1
+msgid ""
+"In ``'synthetic'`` partition, the cube is divided into 8 parts by plane "
+":math:`x_1=0`, :math:`x_2=0`, and :math:`x_3=0`. Then, each pair of parts"
+" which are symmetric of :math:`(0,0,0)` is allocated for each client. In "
+"this way, feature distribution varies among parties while labels are "
+"still balanced."
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:183
+#: 379a6fd24ba3497caf56031de23b4176
+msgid "Visualization from original paper:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:222
+#: ../../source/tutorials/fcube_tutorial.rst:290
+#: a515afd5d38647eb89c9bf995ffdba8f e35eefdb4a8d46cab15cc630856003cc
+msgid "Visualization of data points for each client:"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:261
+#: 992b5c85202942e6babaeaa43ee965f9
+msgid "IID partition"
+msgstr ""
+
+#: ../../source/tutorials/fcube_tutorial.rst:330
+#: 75f1a358e05340c5a664a0a35237bbf5
+msgid ""
+"Complete code for FCUBE tutorial is `here <https://github.com/SMILELab-FL"
+"/FedLab-"
+"benchmarks/blob/master/fedlab_benchmarks/datasets/fcube/fcube_tutorial.ipynb>`_."
+msgstr ""
+

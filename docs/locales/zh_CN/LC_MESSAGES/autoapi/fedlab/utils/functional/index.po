@@ -1,0 +1,262 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:2
+#: 68173fd9841b4ca6b8423e799b58822e
+msgid "functional"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:8
+#: 60e8ab04d49d4193a52c01efa806a675
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:19:<autosummary>:1
+#: 9008d0f1c1ff48a3aca0a99f1e276110
+msgid ":obj:`AverageMeter <fedlab.utils.functional.AverageMeter>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:37
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:19:<autosummary>:1
+#: 1f678e578eab4bd29242ed49bc17bcf9 8c4ec7568b904559a000b4a6d72ae998
+msgid "Record metrics information"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 5c126969eb544619a353c79c4e7cd8e1
+msgid ""
+":obj:`evaluate <fedlab.utils.functional.evaluate>`\\ \\(model\\, "
+"criterion\\, test\\_loader\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:48
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 110b1b903e194e1d97c874806c954d76 e978ae0acd3e4df7aef33f78b3a85904
+msgid "Evaluate classify task model accuracy."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 24b1c89184f44eccbcea1984b134c257
+msgid ""
+":obj:`read_config_from_json "
+"<fedlab.utils.functional.read_config_from_json>`\\ \\(json\\_file\\: "
+"str\\, user\\_name\\: str\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:53
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: c1b2081b464a49f4a25d5bbd6971e20b c5be4215b049478d85e5bdc208c6550f
+msgid "Read config from `json_file` to get config for `user_name`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: ea432d34b0fc4a8880a694300d277fd3
+msgid ":obj:`get_best_gpu <fedlab.utils.functional.get_best_gpu>`\\ \\(\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:93
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 0f7bc2dfe9274db29b1138819e64248e 4a1e587e45ca4d61a0dc6d843ed72cf4
+msgid "Return gpu (:class:`torch.device`) with largest free memory."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 1a3b13fc5d504353869f017fac270d99
+msgid ":obj:`save_dict <fedlab.utils.functional.save_dict>`\\ \\(dict\\, path\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 3db8d132744e4034be81897b3d92f81b
+msgid ":obj:`load_dict <fedlab.utils.functional.load_dict>`\\ \\(path\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: c6fbbb9ac361458b8b01648754b6b3ef
+msgid ""
+":obj:`partition_report <fedlab.utils.functional.partition_report>`\\ "
+"\\(targets\\, data\\_indices\\, class\\_num\\=None\\, verbose\\=True\\, "
+"file\\=None\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:104
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 3659df1382444c4699d3a9c618921819 81ad161de3fb4d9f90203925a4136944
+msgid "Generate data partition report for clients in ``data_indices``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 50e968947ac846e2ab7b3f4a56e3de38
+msgid ""
+":obj:`accuracy <fedlab.utils.functional.accuracy>`\\ \\(output\\, "
+"target\\, topk\\=\\(1\\, \\)\\)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:157
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:31:<autosummary>:1
+#: 2d16203c2e7c41a5992283ebb3c280c2 baa7b404373d43a9b9ceab1232d47fd6
+msgid ""
+"Computes the top-k accuracy for the specified values of k, in range of "
+"[0, 1]"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:35
+#: 82b93f33d5fe4ce5b2c30c41aec674f3
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst
+#: 24dd69bbe81a446c8c2baf2f942cd921 9ee511b17fe1452fa61b4854ac456ca3
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:55
+#: 3bd7a6c9e01b40929e9d203bda41f55b
+msgid "path for json_file"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:57
+#: 3da398c427e3436f91ab7bc2f05fe628
+msgid "read config for this user, it can be 'server' or 'client_id'"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst
+#: 2870404d6b034207bd7a1fa728e91a7c
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:60
+#: a58c76a4cf20454884bfcab3bf4bd1bf
+msgid "a tuple with ip, port, world_size, rank about user with `user_name`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:63
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:123
+#: 0220a652b57e4916bcb930a2b2cf9a70 8b6db598ee5b4b7db14d178e779d2cf8
+msgid "Examples"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:64
+#: a8132142c310449e8c73b887965ef2af
+msgid "read_config_from_json('../../../tests/data/config.json', 'server')"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:67
+#: 940782ac142e48fcb9ef03b517881e91
+msgid "Notes"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:68
+#: 74cb5f059cc34561abd6abd05fc172a3
+msgid "config.json example as follows {"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:73
+#: 78c52ed28edf4fd9b2a0107a9572ae9f
+msgid "\"server\": {"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:71
+#: fb8c2f415dc5413fa126ef6ca03da7d8
+msgid "\"ip\" : \"127.0.0.1\", \"port\": \"3002\", \"world_size\": 3, \"rank\": 0"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:75
+#: ba6ea5e24d86487fb485536abfb39e5c
+msgid "}, \"client_0\": {"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:77
+#: 0ff634102d4c4f86a6e0364f0ff06f3a
+msgid "\"ip\": \"127.0.0.1\", \"port\": \"3002\", \"world_size\": 3, \"rank\": 1"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:81
+#: 92899d1bfbc547ed9ec3248f7c23cc86
+msgid "}, \"client_1\": {"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:83
+#: b27ad202dd3e45feb161ad7c0799e7b0
+msgid "\"ip\": \"127.0.0.1\", \"port\": \"3002\", \"world_size\": 3, \"rank\": 2"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:87
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:88
+#: dd8b72b1aeb84a2bb675c9d4bf04765c e7d90b4f7ad04433a6a6a7ddfa890c7e
+msgid "}"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:106
+#: 9887aa65632d487c8062213168a85068
+msgid ""
+"Generate data partition report for each client according to "
+"``data_indices``, including ratio of each class and dataset size in "
+"current client. Report can be printed in screen or into file. The output "
+"format is comma-separated values which can be read by "
+":func:`pandas.read_csv` or :func:`csv.reader`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:111
+#: 9270046ab1b5404c877bf9caa3ab239a
+msgid ""
+"Targets for all data samples, with each element is in range of ``0`` to "
+"``class_num-1``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:113
+#: 1f10f943c14440a9a29a3955f7ed5abc
+msgid "Dict of ``client_id: [data indices]``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:115
+#: 37413896992c4d0688167305e3f24788
+msgid ""
+"Total number of classes. If set to ``None``, then ``class_num = "
+"max(targets) + 1``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:117
+#: 1b39af1a1f154f5b9d9ea6cfef200a70
+msgid "Whether print data partition report in screen. Default as ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:119
+#: ac1d13efa1ef4c1cbe46de03f8adebb4
+msgid ""
+"Output file name of data partition report. If ``None``, then no output in"
+" file. Default as ``None``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:124
+#: 86d52f792dbb4ddc8149ab60ce38dd0e
+msgid ""
+"First generate synthetic data labels and data partition to obtain "
+"``data_indices`` (``{ client_id: sample indices}``):"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:138
+#: 3c91734a437a47e7a5d2bf19262661e3
+msgid "Check ``data_indices`` may look like:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/functional/index.rst:145
+#: b963c3cfae7f47f7840682380d8eced5
+msgid "Now generate partition report for each client and each class:"
+msgstr ""
+

@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:2
+#: 6d6993dc427e4b78af5aef72c567948c
+msgid "aggregator"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:8
+#: 340df2f8a26c42739039023184c5e212
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:18:<autosummary>:1
+#: 2111c9ce8b83419bb1acc2a147a17255
+msgid ":obj:`Aggregators <fedlab.utils.aggregator.Aggregators>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:23
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:18:<autosummary>:1
+#: 3049b45d3fc2437dba30d767fd00381b 94f03c8ff40344869774d92ba670c141
+msgid "Define the algorithm of parameters aggregation"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:21
+#: 9c37a06ac6f34a35b73dd1dc97af1c2c
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:28
+#: a00f541f9d474e1ba3118be73a52adc3
+msgid "FedAvg aggregator"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:30
+#: d4572222433745a7b56be06cfebfe981
+msgid "Paper: http://proceedings.mlr.press/v54/mcmahan17a.html"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst
+#: 120df283053547049411f4c2883e509b
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:32
+#: d0ecfeb16faf437b84b74f85d5e42d05
+msgid "Merge all tensors following FedAvg."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:34
+#: e797080e605a43a3be3c464cfbe4e18b
+msgid ""
+"Weights for each params, the length of weights need to be same as length "
+"of ``serialized_params_list``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst
+#: 135b9b2052fd42ab93ba9dcb5d0a308e
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:37
+#: 21da86cacaf64dfdbc52255c4c19c694
+msgid "torch.Tensor"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:43
+#: e0a336d226a645d8b4d7bf800b8dcf12
+msgid "FedAsync aggregator"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/aggregator/index.rst:45
+#: 5119e72de159486181421272006bf307
+msgid "Paper: https://arxiv.org/abs/1903.03934"
+msgstr ""
+

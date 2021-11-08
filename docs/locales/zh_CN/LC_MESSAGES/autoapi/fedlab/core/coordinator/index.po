@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:2
+#: e332c82299ba455b8ff15ad2b731ea84
+msgid "coordinator"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:8
+#: 3de753b162734d48b9fa6ade5664ae79
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:18:<autosummary>:1
+#: 3a63053cdc064b99b8bd10d9b82d4324
+msgid ":obj:`Coordinator <fedlab.core.coordinator.Coordinator>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:24
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:18:<autosummary>:1
+#: 07760e30ae3347b6be63717d72fa939a 35665a2e8ad548028be0403c63397db2
+msgid ""
+"Deal with the mapping relation between client id in FL system and process"
+" rank in communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:22
+#: f2e899d6b0f14b798b716c3a60d886d9
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:30
+#: 1146493e89234a26a4d789565b45eed4
+msgid "Note"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:27
+#: aa7c493aee1d45bfa834b6152a9891a5
+msgid ""
+"Server Manager creates a Coordinator following: 1. init network "
+"connection. 2. client send local group info (the number of client "
+"simulating in local) to server. 4. server receive all info and init a "
+"server Coordinator."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst
+#: 1f91b9eb6f59423ba3b30de6540370b0 4df0d05f329f4a6c9412b40ed64601fd
+#: 8efe38efb9e34228b03ffd8ff5cee31c
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:32
+#: 58a7eb5986994c608f92edcaeefc0967
+msgid ""
+"A dict like {rank:client_num ...}, representing the map relation between "
+"process rank and client id."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:34
+#: 7030277f233540658ef69c92e200c668
+msgid ""
+"“GLOBAL” and \"LOCAL\". Coordinator will map client id to (rank, global "
+"id) or (rank, local id) according to mode. For example, client id 51 is "
+"in a machine which has 1 manager and serial trainer simulating 10 "
+"clients. LOCAL id means the index of its 10 clients. Therefore, global id"
+" 51 will be mapped into local id 1 (depending on setting)."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:39
+#: 84b227f01f3a4cada1c4c425ed6fb17e
+msgid "a map function from client id to (rank,local id)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:41
+#: e3d92cd73fa041a886b02097abfaae5f
+msgid "client id"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst
+#: 069eee9343f4424fa69443f6b21220b0 7758456b693e4660812ccb7f6318fa40
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:44
+#: 1decd834b9d740b0a71ea67bba3328b3
+msgid "rank in distributed group and local id."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst
+#: 49936aeaea7842fb9bf11768ec985b15 68e5dd752b77452fbbfe66428b9bfd6f
+msgid "Return type"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:50
+#: 475c99e90c7e44c5af08d41682cf3892
+msgid "a map function from id_list to dict{rank:local id}"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:52
+#: 1c0f3401390d48ae90e7ed5c915c96cc
+msgid "This can be very useful in Scale modules."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:54
+#: 539d08e738594caca9fd016b2f295dec
+msgid "a list of client id."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:57
+#: 9ef44e405f3641c6a454297d9d226cde
+msgid "contains process rank and its relative local client ids."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/coordinator/index.rst:70
+#: 11ea435aa72f4c3c8dc3bf750fe1c65c
+msgid "Return str(self)."
+msgstr ""
+

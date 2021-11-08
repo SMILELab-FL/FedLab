@@ -1,0 +1,210 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/examples/quick_start.rst:5 d42b691816f44f3b94bba8b06d8831eb
+msgid "Quick Start"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:7 36b43153f36e4578a06d35a30d9b0a3a
+msgid ""
+"In this page, we introduce how to build a FL simulation system with "
+"FedLab in cross machine or cross process scenario. We implement FedAvg "
+"algorithm with CNN and partitioned MNIST dataset across clients."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:11 df5e9ea6b9214ca88cc10ba73dc083a4
+msgid ""
+"Source code of this page can be seen in `fedlab-"
+"benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks>`_."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:15 9849535d0e9f406e8de18c648bfcbf87
+msgid "Download dataset"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:17 303bf51b5f344b9fb765066cc65d187a
+msgid ""
+"FedLab provides scripts for common dataset download and partition "
+"process. Besides, FL dataset baseline LEAF :cite:p:`caldas2018leaf` is "
+"also implemented and compatible with PyTorch interfaces."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:20 882746b663bd450fa68f0635a6d18d4b
+msgid ""
+"Codes related to dataset download process are available at "
+"``fedlab_benchamrks/datasets/data/{dataset name}``."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:22 4c64a1272dd64fa6897b4e1c4f2b2d35
+msgid "Download MNIST/CIFAR10"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:29 167d4f92e1d943d28f4ef7234c8428c2
+msgid "Partition"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:31 ecd49726d7854f5d8718dab393645d7c
+msgid "Run follow python file to generate partition file."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:37 d2fd5ba0c90e42de944374050b200cf4
+msgid "Source codes of partition scripts:"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:54 707901bdbd17412ca78aabe049bb1d78
+msgid ""
+"``data_indices`` is a ``dict`` mapping from client id to data "
+"indices(list) of raw dataset. **FedLab** provides random partition and "
+"non-I.I.D. partition methods, in which the noniid partition method is "
+"totally re-implementation in paper FedAvg."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:57 9868bf989c274408a135d8ee0f819851
+msgid "LEAF dataset process"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:59 aff0d3c3bd984f2d9cd99add23fae645
+msgid ""
+"Please follow the `FedLab benchmark <https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks>`_ to learn how to generate LEAF "
+"related dataset partition."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:64 363192f84fa6495c8ceafa9f53376575
+msgid "Run FedLab demos"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:66 70a1b3f09b0c4ef895c49f0c7b8781b2
+msgid ""
+"**FedLab** provides both asynchronous and synchronous standard "
+"implementation demos for uses to learn. We only introduce the usage of "
+"synchronous FL system simulation demo(FedAvg) with different scenario in "
+"this page. (Code structures are similar.)"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:68 08a4d8ee281d49a283fd782a31255b16
+msgid ""
+"**We are very confident in the readability of FedLab code, so we "
+"recommend that users read the source code according to the following "
+"demos for better understanding.**"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:71 5faabf72ff42499488f3bd0dc6dc3b26
+msgid "1. Standalone"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:73 617fec759e52432c97fa2e7b332cba19
+msgid ""
+"Main process is under `fedlab_benchamrks/algorithm/fedavg/standalone "
+"<https://github.com/SMILELab-"
+"FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/standalone>`_. "
+"This is a standard usage of :class:`SerialTrainer` which allows users to "
+"simulate a group of clients with a single process."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:82 ebb32cde89ba4c11be3668060e8ac0fd
+msgid ""
+"Run command above to start a single process simulating FedAvg algorithm "
+"with 100 clients with 10 communication round in total, with 10 clients "
+"joining each round randomly."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:87 3aba8ce6a2cc4577926a365b009dd81c
+msgid "2. Cross-Machine"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:89 3f1ae2187c4a4a3b80e91b9e4c18109b
+msgid "Start a FL simulation with 1 server and 2 clients."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:96 36a7f1f3a2da463ca16820859846df81
+msgid "The content of ``quick_start.sh`` is:"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:104 98ba472a151b417c975b7af25549fedd
+msgid ""
+"Cross Machine scenario allows users deploy their FL system in computer "
+"cluster. In this case, we set the address of server as localhost. Then "
+"three process will communicate with each other following standard FL "
+"procedure."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:110 87351881d4374af3bd8cdc4ab9aea933
+msgid ""
+"Due to the rank of torch.distributed is unique for every process. "
+"Therefore, we use rank represent client id for this scenario."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:114 ec40f0713fb54727b8d92145546dafd9
+msgid "3. Scale"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:116 5e91056e957f4b0a8c0c9265aa2c6245
+msgid ""
+":class:`SerialTrainer` uses less computer resources (single process) to "
+"simulate multiple clients. Cross Machine is suit for computer cluster "
+"deployment, simulating data-center FL system. In our experiment, the "
+"world size of ``torch.distributed`` can't more than 50 (Denpends on "
+"clusters), otherwise, the socket will crash, which limited the client "
+"number of FL simulation."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:118 abff5627ec87463a9fefef8d0db4a2e4
+msgid ""
+"To improve scalability, FedLab provides scale standard implementation to "
+"combine :class:`SerialTrainer` and :class:`ClientManager`, which allows a"
+" single process simulate multiple clients."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:121 d75107f0949d4e959621312e1bb194ae
+msgid ""
+"Source codes are available in "
+"fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}."
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:123 3b56c815ca5748e2b6fe537da0616606
+msgid ""
+"Here, we take mnist-cnn as example to introduce this demo. In this demo, "
+"we set world_size=11 (1 ServerManager, 10 ClientManagers), and each "
+"ClientManager represents 10 local client dataset partition. Our data "
+"partition strategy follows the experimental setting of fedavg as well. In"
+" this way, **we only use 11 processes to simulate a FL system with 100 "
+"clients.**"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:125 f8b000c9caae442eb421f94490656cdf
+msgid ""
+"To start this system, you need to open at least 2 terminal (we still use "
+"localhost as demo. Use multiple machines is OK as long as with right "
+"network configuration):"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:127 9d9e1f92ebc1403ea2c65d322348c28f
+msgid "server (terminal 1)"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:133 b1a3574b543e4d38be73a79664e2777a
+msgid "clients (terminal 2)"
+msgstr ""
+
+#: ../../source/examples/quick_start.rst:139 a0fde0246187443ca8b09d224c065a92
+msgid "The content of ``start_clt.sh``:"
+msgstr ""
+

@@ -1,0 +1,409 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:2
+#: 5dc0f0599ba8436d9cb9d4946857504c
+msgid "server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:27
+#: d73a8139898a496894881da58ac5e6ff
+msgid "Package Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: c6a78e82cdf74caca0675de1aff85c21
+msgid ""
+":obj:`SyncParameterServerHandler "
+"<fedlab.core.server.SyncParameterServerHandler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:46
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 7cf6753c6daa4023894e3effd007558e e27efb0cfa6542dfa498966614cedfe4
+msgid "Synchronous Parameter Server Handler."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 59675f53145e4b87bacc21c4b5a04a38
+msgid ""
+":obj:`AsyncParameterServerHandler "
+"<fedlab.core.server.AsyncParameterServerHandler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:114
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 3e4d377269734f4d90d2c3a88265bc4f c0107d3df6d143ef95503e6781a3b12c
+msgid "Asynchronous Parameter Server Handler"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 8a13b611346e45a2a0f926161f268559
+msgid ""
+":obj:`ServerSynchronousManager "
+"<fedlab.core.server.ServerSynchronousManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:158
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 4487727889b34777ba30217adfc0b26d cb424f79f29846829d5b0f57bc1343b5
+msgid "Synchronous communication"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 88bfbf7d7dca4e468cc3c343ea1d53bb
+msgid ""
+":obj:`ServerAsynchronousManager "
+"<fedlab.core.server.ServerAsynchronousManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:221
+#: ../../source/autoapi/fedlab/core/server/index.rst:40:<autosummary>:1
+#: 5629d2f6794c46b39dc8df484a5c9844 a697983954a04c5d8ced22a786dccb20
+msgid "Asynchronous communication network manager for server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:44
+#: ../../source/autoapi/fedlab/core/server/index.rst:112
+#: ab4c3d9e4497451cab2eb5b3a3ef415b c6841bf54a2f47098cbcda390b7610f5
+msgid "Bases: :class:`fedlab.core.server.handler.ParameterServerBackendHandler`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:48
+#: d1deea5480bc444c8ef3106b37b217ed
+msgid ""
+"Backend of synchronous parameter server: this class is responsible for "
+"backend computing in synchronous server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:50
+#: ee47776c99b144fb835edf9ba2f29b19
+msgid ""
+"Synchronous parameter server will wait for every client to finish local "
+"training process before the next FL round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:53
+#: a9b2c5b9fbf24533b81f702aba64f9fa
+msgid "Details in paper: http://proceedings.mlr.press/v54/mcmahan17a.html"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst
+#: 2d2ba6b4cb734114a1a7bf92ca20fce5 5cedfb7b21a946eb81de5c465d29429d
+#: 72c040314dd94defa3a7de8e9d5df98a b61ed223726044b3ba3bb3b7a3ddd020
+#: bd05b9abbf0b4cb8a2c5f1c16f5e6ba1 df4ea19d175f4b87ae436678e5edbaac
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:55
+#: df81cfc2d93245b283411fd45786f2a8
+msgid "Model used in this federation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:57
+#: 6ae978f485b84478847977e45bf0e6d4
+msgid "stop condition. Shut down FL system when global round is reached."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:59
+#: a2d521b4e2f249adad48498ab9aeaa80
+msgid "Use GPUs or not. Default: ``False``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:61
+#: 8c80bb6051994208bde6cf1c666a602a
+msgid ""
+"``sample_ratio * client_num`` is the number of clients to join in every "
+"FL round. Default: ``1.0``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:63
+#: ../../source/autoapi/fedlab/core/server/index.rst:129
+#: ../../source/autoapi/fedlab/core/server/index.rst:167
+#: ../../source/autoapi/fedlab/core/server/index.rst:230
+#: 31f09c06b27b49178b1241f1db520fef 3c9e1dc897264bc1a5884c3e36fcbff9
+#: a136513fa01e404e944253aecb6ccf5f f52d3b84aa9f407bbdd8893c06443cdc
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:68
+#: ../../source/autoapi/fedlab/core/server/index.rst:138
+#: 3fb0d4caf1f5482e8ada7939b39437f8 55dae0b3555744b4833085cbcda0f09e
+msgid ""
+":class:`NetworkManager` keeps monitoring the return of this method, and "
+"it will stop all related processes and threads when ``True`` returned."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:73
+#: 7644d2841f2f4b54b770ff88391ae79c
+msgid ""
+"Return a list of client rank indices selected randomly. The client ID is "
+"from ``1`` to ``self.client_num_in_total + 1``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:79
+#: d7fc56b54c014412ae3f9b197d5c9026
+msgid "Deal with incoming model parameters from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:81
+#: c8602f02d7d14c26a4815d2f2e944f96
+msgid "Return True when self._update_model is called."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:83
+#: 73cda118574f4ab8a0d9bc6f4aafcb6d
+msgid "Rank of sender client in ``torch.distributed`` group."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:85
+#: c2a65482690142d8af1ac21c71abee3b
+msgid "Serialized model parameters from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:91
+#: c0c50546fe99443c82cad0b9a77bd1c5
+msgid "Update global model with collected parameters from clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:95
+#: 4be60bbcf9ce419cb0a9444cec2abf9b
+msgid ""
+"Server handler will call this method when its ``client_buffer_cache`` is "
+"full. User can overwrite the strategy of aggregation to apply on "
+":attr:`model_parameters_list`, and use "
+":meth:`SerializationTool.deserialize_model` to load serialized parameters"
+" after aggregation into :attr:`self._model`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:100
+#: cbb359935e304088a59a0776fa6356ab
+msgid "A list of parameters.aq"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:116
+#: 20ae775df05e4bfdb38f4cae02f87650
+msgid ""
+"Update global model immediately after receiving a ParameterUpdate message"
+" Paper: https://arxiv.org/abs/1903.03934"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:119
+#: 57ca42f18457407c894b2b56283c3e27
+msgid "Global model in server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:121
+#: 7b1e32d28c1c40b4af4031b65e9f12db
+msgid "weight used in async aggregation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:123
+#: 39317834b764462280629e6a3c70f8ef
+msgid "stop condition. Shut down FL system when total_time is reached."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:125
+#: fbd0628d0d7f45edbb4e087c8457dcdb
+msgid ""
+"adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is "
+"optional. Default: ``constant``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:127
+#: f213e3e3bdfe456198d92c9455cd730f
+msgid "Use GPUs or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:144
+#: 7e4769b11a4b4f328e5005bbebdb6a4c
+msgid "\"update global model from client_model_queue"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:149
+#: a378c66839b34bfea15d2d82d979b030
+msgid "update the alpha according to staleness"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:156
+#: ../../source/autoapi/fedlab/core/server/index.rst:219
+#: 9996ed30678143edb7ddcd730b7c867f ed97d869de2d475884b71b8c1197ea35
+msgid "Bases: :class:`fedlab.core.server.manager.ServerManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:160
+#: 029296901edc4230ba47544e179e6ff8
+msgid ""
+"This is the top class in our framework which is mainly responsible for "
+"network communication of SERVER!. Synchronously communicate with clients "
+"following agreements defined in :meth:`main_loop`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:163
+#: ../../source/autoapi/fedlab/core/server/index.rst:226
+#: 3b428c3391ef4e49ba393b0e9de22a92 63bb8e972c0b4466a42085f726a1800f
+msgid "Manage ``torch.distributed`` network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:165
+#: 1f9d8abb78e6429cb58f48a412b33568
+msgid "Backend calculation handler for parameter server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:172
+#: ../../source/autoapi/fedlab/core/server/index.rst:235
+#: 344482e4c38f413cb4527f6792b98a53 381f5607042b46f99b5025a7628674fe
+msgid "Shutdown stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:177
+#: 1ef16fdd15044bfeba3ab7e2eb5dc005
+msgid "Actions to perform in server when receiving a package from one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:179
+#: b7f1ee63322f42b68c690cc7dad15a36
+msgid ""
+"Server transmits received package to backend computation handler for "
+"aggregation or others manipulations."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:184
+#: c37270eff1804f8b9c909122c51b455d
+msgid "Loop:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:183
+#: 528c8180a18b4a5bac5ccb2f2d6d1c83
+msgid "activate clients for current training round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:184
+#: 1a2a2e07566d4637906076a5e8859ad8
+msgid ""
+"listen for message from clients -> transmit received parameters to server"
+" backend."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:188
+#: 61f5efda3139469da02bb5932b309a51
+msgid ""
+"Communication agreements related: user can overwrite this function to "
+"customize communication agreements. This method is key component "
+"connecting behaviors of :class:`ParameterServerBackendHandler` and "
+":class:`NetworkManager`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst
+#: b5d9f5c1609242308f32b5c09ba7a3f0 be15ffa93f0445c9a0c98c173a257e84
+msgid "Raises"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:192
+#: 2bb91576f44a448d9a02030f40f120bd
+msgid "Unexpected :class:`MessageCode`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:197
+#: a640d5d1f8504544a228e6139d1f1d3a
+msgid "Activate subset of clients to join in one FL round"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:199
+#: cc9b3b8046de49e0bf029a1c0d29bad2
+msgid ""
+"Manager will start a new thread to send activation package to chosen "
+"clients' process rank. The ranks of clients are obtained from "
+":meth:`handler.sample_clients`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:205
+#: ../../source/autoapi/fedlab/core/server/index.rst:257
+#: 8c7811467df14be8928285c7c7e1b1eb e8eb14acb8b245b7bbb1845a0516d58c
+msgid "Shutdown all clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:207
+#: 7cc7a84a2ffd4b1685379186ba7eb127
+msgid ""
+"Send package to each client with :attr:`MessageCode.Exit` to ask client "
+"to exit."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:211
+#: 8dfc5b48f7b64e60a67cd0ad15d76adc
+msgid ""
+"Communication agreements related: User can overwrite this function to "
+"define package for exiting information."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:223
+#: 53aee36c932b463bbc92b842087a51cb
+msgid ""
+"This is the top class in our framework which is mainly responsible for "
+"network communication of SERVER!. Asynchronously communicate with clients"
+" following agreements defined in :meth:`run`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:228
+#: dadd22c37896400ebc08ee5f0f84c827
+msgid "Backend computation handler for parameter server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:237
+#: 92913e8ce73c46d88099c4d7390bc483
+msgid "Close the network connection in the end."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:242
+#: a5865e47c744465b9a7cbb02c5f23e6c
+msgid "Communication agreements of asynchronous FL."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:244
+#: 1f64059a01dd4c4d9945a4207043858f
+msgid ""
+"Server receive ParameterRequest from client. Send model parameter to "
+"client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:245
+#: 38ab87c7b04d4062be900c40df5f465d
+msgid ""
+"Server receive ParameterUpdate from client. Transmit parameters to queue "
+"waiting for aggregation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:247
+#: 97173973255a4cb88a0d89733b25f5cc
+msgid "invalid message code."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:252
+#: 39ee317e268d46b0ab7bccac2bf0c8ce
+msgid ""
+"Asynchronous communication maintain a message queue. A new thread will be"
+" started to run this function."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/index.rst:259
+#: d7b4ae167e3644a2a4836cf3b6eb1945
+msgid "Send package to clients with ``MessageCode.Exit``."
+msgstr ""
+

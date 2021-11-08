@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/contributing.rst:5 75796d83ad794ea7a17ab55288db38de
+msgid "Contributing to FedLab"
+msgstr ""
+
+#: ../../source/contributing.rst:9 ff1dad1b14b148b29fd87f80c6852d56
+msgid "Reporting bugs"
+msgstr ""
+
+#: ../../source/contributing.rst:11 c07ea3f2698a4cf5930fb2a3444aea8c
+msgid ""
+"We use GitHub issues to track all bugs and feature requests. Feel free to"
+" open an issue if you have found a bug or wish to see a feature "
+"implemented."
+msgstr ""
+
+#: ../../source/contributing.rst:13 ae271f3fd91a464a9912dbb4fa4abeb5
+msgid ""
+"In case you experience issues using this package, do not hesitate to "
+"submit a ticket to the `Bug Tracker <https://github.com/SMILELab-"
+"FL/FedLab/issues>`_. You are also welcome to post feature requests or "
+"pull requests."
+msgstr ""
+
+#: ../../source/contributing.rst:17 e3b730c985744e56871523d12eacaf8e
+msgid "Contributing Code"
+msgstr ""
+
+#: ../../source/contributing.rst:18 e793515026c84021afcc42acb4770756
+msgid ""
+"You're welcome to contribute to this project through **Pull Request**. By"
+" contributing, you agree that your contributions will be licensed under "
+"`Apache License, Version 2.0 "
+"<https://www.apache.org/licenses/LICENSE-2.0.html>`_"
+msgstr ""
+
+#: ../../source/contributing.rst:20 a8e7d7f81a224cc5ac81409a257eb66e
+msgid ""
+"We encourage you to contribute to the improvement of FedLab or the FedLab"
+" implementation of existing FL methods. The preferred workflow for "
+"contributing to FedLab is to fork the main repository on GitHub, clone, "
+"and develop on a branch. Steps as follow:"
+msgstr ""
+
+#: ../../source/contributing.rst:22 af0d6e31f7a945a98586ad8f33b01664
+msgid ""
+"Fork the project repository by clicking on the 'Fork'. For contributing "
+"new features, please fork FedLab `core repo <https://github.com/SMILELab-"
+"FL/FedLab>`_ or new implementations for FedLab `benchmarks repo "
+"<https://github.com/SMILELab-FL/FedLab-benchmarks>`_."
+msgstr ""
+
+#: ../../source/contributing.rst:24 c32943c272ef4267a5e39feeb048e8f3
+msgid "Clone your fork of repo from your GitHub to your local:"
+msgstr ""
+
+#: ../../source/contributing.rst:31 b3e7aa982c774b5cbbf0865a78a03659
+msgid "Create a new branch to save your changes:"
+msgstr ""
+
+#: ../../source/contributing.rst:37 f30449b495b042aa8dae3a3538bde4d0
+msgid "Develop the feature on your branch."
+msgstr ""
+
+#: ../../source/contributing.rst:45 ef2a327127104d13911f8bcfc1879644
+msgid "Pull Request Checklist"
+msgstr ""
+
+#: ../../source/contributing.rst:47 0860760a5497486b8886716511fa8c9f
+msgid ""
+"Please follow the file structure below for new features or create new "
+"file if there are something new."
+msgstr ""
+
+#: ../../source/contributing.rst:63 7f06169cc31c477db6b8231d53d0897d
+msgid ""
+"The code should provide test cases using `unittest.TestCase`. And ensure "
+"all local tests passed:"
+msgstr ""
+
+#: ../../source/contributing.rst:69 d5f0d5a5dc744ad69bfe2be7398989df
+msgid ""
+"All public methods should have informative docstrings with sample usage "
+"presented as doctests when appropriate. Docstring and code should follow "
+"Google Python Style Guide: `中文版 <https://zh-google-"
+"styleguide.readthedocs.io/en/latest/google-python-"
+"styleguide/python_style_rules/>`_ | `English "
+"<https://google.github.io/styleguide/pyguide.html>`_."
+msgstr ""
+

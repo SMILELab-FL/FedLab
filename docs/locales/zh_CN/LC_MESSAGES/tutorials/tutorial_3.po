@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/tutorials/tutorial_3.rst:5 70beb32c646d406c97e534b2811848d2
+msgid "Federated Optimization"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:7 a882c68b631f4ec087b5b2da0dcca22f
+msgid ""
+"Standard FL Optimization contains two parts: 1. local train in client; 2."
+" global aggregation in server.  Local train and aggregation procedure are"
+" customizable in FedLab. You need to define :class:`ClientTrainer` and "
+":class:`ParameterServerBackendHandler`."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:9 44fb9b0b15f84b9b988776e3cf1e8565
+msgid ""
+"Since :class:`ClientTrainer` and :class:`ParameterServerBackendHandler` "
+"are required to manipulate PyTorch Model. They are both inherited from "
+":class:`ModelMaintainer`."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:50 9dd10d95521344a89c10b5b6d2c1d2e3
+msgid "Client local training"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:52 7da327fa481648568c81fe8dcb2c4ee3
+msgid ""
+"The basic class of ClientTrainer is shown below, we encourage users "
+"define local training process following our code pattern:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:80 932f668d2fa04ed0b337af397ed0c1aa
+msgid ""
+"Overwrite :meth:`ClientTrainer.train()` to define local train procedure. "
+"Typically, you need to implement standard training pipeline of PyTorch."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:81 2a5934b2c9324224bd575dc87be6f4a4
+msgid ""
+"Attributes ``model`` and ``model_parameters`` is is associated with "
+"``self._model``. Please make sure the function ``train()`` will "
+"manipulate ``self._model``."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:83 232ee20c948b490d95b33738eb067d91
+msgid ""
+"**A standard implementation of this part is in "
+":class:`ClientSGDTrainer`.**"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:86 b464a2a08b03428796d541a7e23c22a6
+msgid "Server global aggregation"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:88 c8758235fd3b411ebe8ea9b892ad1369
+msgid ""
+"Calculation tasks related with PyTorch should be define in ServerHandler "
+"part. In **FedLab**, our basic class of Handler is defined in "
+":class:`ParameterServerBackendHandler`."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:112 9679566fb388485894dfb2e5ac206dae
+msgid "User can define server aggregation strategy by finish following functions:"
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:114 cd147366f068490295e33f5a31e6222f
+msgid ""
+"You can overwrite ``_update_model(model_parameters_list)`` to customize "
+"aggregation procedure. Typically, you can define aggregation functions as"
+" FedLab."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:116 45a3d48fb8f0492684977c209126495b
+msgid ""
+"``_update_model(model_parameters_list)`` is required to manipulate global"
+" model parameters (self._model)."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:118 3cea3c59201e49fab9a881204b53d326
+msgid ""
+"implemented in ``fedlab.utils.aggregator`` which used in FedLab standard "
+"implementations."
+msgstr ""
+
+#: ../../source/tutorials/tutorial_3.rst:120 20ca8b6b19cd47ad93b35b95c9c497ec
+msgid ""
+"**A standard implementation of this part is in "
+"SyncParameterServerHandler.**"
+msgstr ""
+

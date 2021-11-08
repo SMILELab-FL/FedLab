@@ -1,0 +1,542 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:2
+#: 5e08f79c30034c8eb108097b2eb0d45d
+msgid "client"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:27
+#: 0de5cd93be23433fa10492cf00733fcc
+msgid "Package Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: d941d090d64b436f9cfe7b511b2b3d4e
+msgid ":obj:`ClientManager <fedlab.core.client.ClientManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:68
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 11bc4b99a8fe42828f720a3d875ceccd 7a509ec5773f4c5d9a7d08755062e89e
+msgid "Base class for ClientManager."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: d512202131aa402782e760a0f188fd83
+msgid ":obj:`ClientActiveManager <fedlab.core.client.ClientActiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:90
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 0d8067377d974092a253885516bc4aa2 f3d3ea2e60bb4db88dc1a9aadacf09a1
+msgid ""
+"Active communication :class:`NetworkManager` for client in asynchronous "
+"FL pattern."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 25290c4ced4f4c27b496600edba3284f
+msgid ":obj:`ClientPassiveManager <fedlab.core.client.ClientPassiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:119
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 360b9d9fcd2f4a1b8deba31b3591b302 9b45d2c2b4d044a99ab2bfe88eab852d
+msgid ""
+"Passive communication :class:`NetworkManager` for client in synchronous "
+"FL pattern."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: e8217cbe119c45eca62602649eae40da
+msgid ":obj:`ClientTrainer <fedlab.core.client.ClientTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:149
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 2efc336dc93d440ab51c8ee5d3341f74 7c496d3abcce45fc8ecedc7a2005fedc
+msgid "An abstract class representing a client backend trainer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 70cb28752d304bf1bcdcf781e6fd3fbf
+msgid ":obj:`ClientSGDTrainer <fedlab.core.client.ClientSGDTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:180
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 2c976d858bc240a4ba725f2f9d5b0eed 4998088792a0430e9476d5ab896503e7
+msgid ""
+"Client backend handler, this class provides data process method to upper "
+"layer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 0aa218ed46c544a48f21e422474840d6
+msgid ""
+":obj:`ScaleClientPassiveManager "
+"<fedlab.core.client.ScaleClientPassiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:211
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 3cf08fecf9f048168bd8044501d157d0 c43322a7b7f54f62b4a5fa69d32e3f1a
+msgid "Special client manager for :class:`SerialTrainer`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 542dab696c664a8e9c87e3cd69999003
+msgid ":obj:`SerialTrainer <fedlab.core.client.SerialTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:239
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 4191cc89787349008ec8fd76070040f3 8433c90c220446588b4686eccb079401
+msgid "Base class. Train multiple clients in sequence with a single process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 5a7669248deb4c709bd5b14685b7a73e
+msgid ":obj:`SubsetSerialTrainer <fedlab.core.client.SubsetSerialTrainer>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:295
+#: ../../source/autoapi/fedlab/core/client/index.rst:46:<autosummary>:1
+#: 7290ca7be11040a4abdadd38a9371514 cbeada3ce9bf4e148808e0c725e8620b
+msgid "Train multiple clients in a single process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:52:<autosummary>:1
+#: 61c99fd34e0242fba992f38892ea1ca8
+msgid ":obj:`ORDINARY_TRAINER <fedlab.core.client.ORDINARY_TRAINER>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:52:<autosummary>:1
+#: e4199df9ceca424786ebe4cc2411043e
+msgid ":obj:`SERIAL_TRAINER <fedlab.core.client.SERIAL_TRAINER>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:66
+#: 377fb37916aa4fd0906f90d3a2f5e457
+msgid "Bases: :class:`fedlab.core.network_manager.NetworkManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:70
+#: 3c53a24a391d46998ede03c282aa5c3e
+msgid ""
+":class:`ClientManager` defines client activation for different "
+"communication stages."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst
+#: 17b15de4662348e58cb77bd9bedfc74b 3e277b9b084842578c73a2e1f6fee477
+#: 4be9726334b34d3da671df0cedd78c07 4e440581bc374b7eaf1c9e8a5751eb3c
+#: 56e06b1d5c0c4a4884b934031f761d11 5d35a7a686804160a0ff549213354933
+#: 5e86fe464eba4200a958cd4648d0aea9 664cc4ab03314216a21ba90f87c3a7bc
+#: 8a5a8842bfdf4be3be5048ce1afd1341 8adfd4eb25d04b658bf0e493294a1d22
+#: cb03e30ccbc440049750ce6401e7965e e86e20dc569947f69707616a2cf80a30
+#: fd5d8cacd9894493b58dd7335736df6c
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:72
+#: ee729f3d4adc4ace9b4aff0214f592c8
+msgid "Network configuration."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:74
+#: ../../source/autoapi/fedlab/core/client/index.rst:94
+#: ../../source/autoapi/fedlab/core/client/index.rst:123
+#: 537e71d10c47456f8ab834dab7d0f7de 8b6db05e732c4a84983a7f050fde8676
+#: cf50dcb912be430a8ccec97bc06b7a68
+msgid ""
+"Subclass of :class:`ClientTrainer`. Provides :meth:`train` and "
+":attr:`model`. Define local client training procedure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:79
+#: a50a44e0c6eb445ebabfb71098a92fa7
+msgid "Initialization stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:81
+#: 3e43d901212449578d4e9077ee8c7a6b
+msgid ""
+":class:`ClientManager` reports number of clients simulated by current "
+"client process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:88
+#: ../../source/autoapi/fedlab/core/client/index.rst:117
+#: 53b44162020a4459a6328b3162a72194 7c8355c22b9447678153a0b724cd2f52
+msgid "Bases: :class:`fedlab.core.client.manager.ClientManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:92
+#: ../../source/autoapi/fedlab/core/client/index.rst:121
+#: 510a7a32590c4f30aa29ea4149a0a24b 88d5d81fc5f74508b7a507e22cb61a41
+msgid "network configuration."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:96
+#: ../../source/autoapi/fedlab/core/client/index.rst:125
+#: ../../source/autoapi/fedlab/core/client/index.rst:220
+#: ../../source/autoapi/fedlab/core/client/index.rst:249
+#: ../../source/autoapi/fedlab/core/client/index.rst:307
+#: 48c441b190f54a9992f74bca08b9550b 8cf42a9a82eb452ba500a0281e7cac07
+#: 9b2102a879e0410f958e918f39662d30 dc1aeacee3d14611bfb33b90d93b5d95
+#: e03bb506a2264602a3f2252e6f93dcf0
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:101
+#: f5b37b7c0c3740a592055c32deb475f2
+msgid "Actions to perform on receiving new message, including local training"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:103
+#: af4b201ed94a40e0b52770367912dc49
+msgid "client requests data from server (ACTIVE)"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:104
+#: cd902a97293c42c2a593a996a4baea3c
+msgid "after receiving data, client will train local model"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:105
+#: 2d75b8a95e704acaaf89d756b699756c
+msgid "client will synchronize with server actively"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:110
+#: ../../source/autoapi/fedlab/core/client/index.rst:140
+#: 32aaa878f50a44a1876cbf3ad719b50d 523ea031939a4ad3a6367ba68a13977b
+msgid "Synchronize local model with server"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:130
+#: 8489407a4f3f4a01bb07840d6274327c
+msgid "Actions to perform when receiving a new message, including local training."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:134
+#: 2fc0368beaf7457daf17b282f10c38b7
+msgid "Main procedure of each client:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:133
+#: 8ea56b0290734431a0e50b2834c58d34
+msgid "client waits for data from server (PASSIVELY)."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:134
+#: 3cffe19f4935467d95698e28b88b6788
+msgid "after receiving data, client start local model training procedure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:135
+#: 2e983f177e484bcfa56c7e48614e7f3c
+msgid "client synchronizes with server actively."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:147
+#: 2e6100d7ca044965879cd5401a6e5fb6
+msgid "Bases: :class:`fedlab.core.model_maintainer.ModelMaintainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:151
+#: 29f00a8851604909b19663e031c943b6
+msgid ""
+"In our framework, we define the backend of client trainer show manage its"
+" local model. It should have a function to update its model called "
+":meth:`train`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:154
+#: d0c15c18ca3f4506a50ecf516ce69361
+msgid ""
+"If you use our framework to define the activities of client, please make "
+"sure that your self-defined class should subclass it. All subclasses "
+"should overwrite :meth:`train`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:157
+#: ../../source/autoapi/fedlab/core/client/index.rst:182
+#: 16d43ff7e8fe479c92707c3f554a26a5 26e70724b5194e0db5538ef170704e81
+msgid "PyTorch model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:159
+#: 8ff67f44e12f4e728cfe3acbd86f874d
+msgid "Use GPUs or not."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:165
+#: 7009369156ef41788e4005baa4be925f
+msgid ""
+"Override this method to define the algorithm of training your model. This"
+" function should manipulate :attr:`self._model`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:171
+#: 45f5c35cbb4a4aaa8877805c601ed339
+msgid "Evaluate quality of local model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:178
+#: ../../source/autoapi/fedlab/core/client/index.rst:237
+#: 2fcfc02d524c43a6ab5e7ac65dbd644d bc256d90751c480c9741578c2deb1349
+msgid "Bases: :class:`fedlab.core.client.trainer.ClientTrainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:184
+#: ../../source/autoapi/fedlab/core/client/index.rst:259
+#: ../../source/autoapi/fedlab/core/client/index.rst:337
+#: 8a92ad64aea04920abf6b1086c676085 d44f8ab817fd48d5bc385d6a1cb7d75e
+#: de709eb0802043c08b219adfb15baa47
+msgid ":class:`torch.utils.data.DataLoader` for this client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:186
+#: d89d0a5c72dd46f1b8b6ccdd07a023fc
+msgid "the number of local epoch."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:188
+#: 980fbd2051ea4155b0ff35b25bc26f95
+msgid "optimizer for this client's model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:190
+#: 74b3ba41b87045fa8829f6648bc4f71b
+msgid "loss function used in local training process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:192
+#: 12c180c2de064f7a882e5429405e152e
+msgid "use GPUs or not. Default: ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:194
+#: b077a5f40ddb45b497aed65a34589d60
+msgid ":object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:199
+#: f7abf565d2f94e8295616cdb5f37b719
+msgid "Client trains its local model on local dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:201
+#: ../../source/autoapi/fedlab/core/client/index.rst:273
+#: 3c0e8e06771548139674666f93f7d325 6e21056972ef407d9219a0d5bc10c0fd
+msgid "Serialized model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:209
+#: 62831da15a3a4bf39473fdfbd7835dcb
+msgid "Bases: :class:`fedlab.core.client.manager.ClientPassiveManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:213
+#: f8e18959ef054ec18f421095b57f98c8
+msgid ""
+"We modify the communication agreements to create a mapping from client id"
+" to process rank. Thus, :class:`ScaleClientPassiveManager` is able to "
+"simulate multiple clients in sequence."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:216
+#: 0653971c9b7547e3a090d627a426713f
+msgid "Distributed network to use."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:218
+#: b1a6d5b3002b43f5a0df02570cb71866
+msgid ""
+"Subclass of :class:`ClientTrainer`, providing :meth:`train` and "
+":attr:`model`. For more client simulation with single process, you are "
+"supposed to use :class:`SerialTrainer` here."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:225
+#: ce929b559602459bad94b5829610797f
+msgid "Actions to perform when receiving new message, including local training."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:230
+#: 27e58674adc848ef87412a2dd82db9fb
+msgid "Synchronize local model with server actively"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:241
+#: ../../source/autoapi/fedlab/core/client/index.rst:299
+#: 0a65936556e24f9591bd9a9f974c5a7f bf6019aa0e5b4831879afe2e137699fc
+msgid "Model used in this federation."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:243
+#: 228161833cad4b15b18c345cfdb8ffb6
+msgid "Number of clients in current trainer."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:245
+#: b9cfd7af70084946afe45a7e2365aca8
+msgid "Function to perform aggregation on a list of serialized model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:247
+#: ../../source/autoapi/fedlab/core/client/index.rst:309
+#: 52bb91e7bb02428ab7b5607c2f59f01e 65c7a70a7b5f4f83ac05433636616135
+msgid "Use GPUs or not. Default: ``True``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:255
+#: 95a856822a0a4066b2f7944cd857ab3c
+msgid "Train local model with :attr:`model_parameters` on :attr:`train_loader`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:257
+#: 69e87b2ab572427fa7858021b8f08d6e
+msgid "Serialized model parameters of one model."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:266
+#: a4f2499ad1874698af8719a61d3601c2
+msgid "Get :class:`DataLoader` for ``client_id``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:271
+#: e9b00f44ea524a14aa65cdc2fa3a16f3
+msgid ""
+"Train local model with different dataset according to client id in "
+"``id_list``."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:275
+#: 535d82d4160d4dd09357fabebdd2ee72
+msgid "Client id in this training serial."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:277
+#: 00ba1199334746a3961a3139e8b1025b
+msgid ""
+"Whether to perform partial aggregation on this group of clients' local "
+"models at the end of each local training round."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:282
+#: 1f2d27b3e1ab431abd0fb4c8c4d9b4ea
+msgid ""
+"Normally, aggregation is performed by server, while we provide "
+":attr:`aggregate` option here to perform partial aggregation on current "
+"client group. This partial aggregation can reduce the aggregation "
+"workload of server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst
+#: 77b0630009704800b9d489f9cc941073 e5460371e26341e9b5b2b437aac3810c
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:286
+#: 0c12114f7fff4470807fef8bfd00c1b9
+msgid "Serialized model parameters / list of model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:293
+#: 0ed98845fa724eaf97a383971104f336
+msgid "Bases: :class:`fedlab.core.client.scale.trainer.SerialTrainer`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:297
+#: c246510d59a24e12aaeef0adbf1e819b
+msgid ""
+"Customize :meth:`_get_dataloader` or :meth:`_train_alone` for specific "
+"algorithm design in clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:301
+#: f5aaf90e18444c78a549056ffdaa7cb5
+msgid "Local dataset for this group of clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:303
+#: 68dacf98352b402db61fc9d4222d16a7
+msgid "subset of indices of dataset."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:305
+#: 69d3168a600d4267a1ab0f270aa0fa32
+msgid "Function to perform aggregation on a list of model parameters."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:311
+#: 42e0541a84bc4bd1a8b4165db7f39a0a
+msgid "Uncertain variables."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:315
+#: e926a3e4ecad46c98b77375a8991f392
+msgid ""
+"``len(data_slices) == client_num``, that is, each sub-index of "
+":attr:`dataset` corresponds to a client's local dataset one-by-one."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:319
+#: 8cb334aeffde4d19aa1a7486ac9ba84b
+msgid ""
+"Return a training dataloader used in :meth:`train` for client with "
+":attr:`id`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:321
+#: d88f11134a8649cda85f5756f3ebe017
+msgid ":attr:`client_id` of client to generate dataloader"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:324
+#: d9920e642dea49f9a936232f22f8df05
+msgid ""
+":attr:`client_id` here is not equal to ``client_id`` in global FL "
+"setting. It is the index of client in current :class:`SerialTrainer`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:326
+#: 3c41a0a05b3d4270acc0a82affb713be
+msgid ":class:`DataLoader` for specific client's sub-dataset"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:331
+#: d57d85bba73045cfa81bd166d36ee2f0
+msgid "Single round of local training for one client."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:333
+#: a45fce01c45f43ddad182ba3de1d1005
+msgid "Overwrite this method to customize the PyTorch training pipeline."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/index.rst:335
+#: 4642cb53bf80448e9d4901c9c7607f18
+msgid "serialized model parameters."
+msgstr ""
+

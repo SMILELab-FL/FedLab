@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:2
+#: 34a1b67ca56c44569a2849f6f203564d
+msgid "network_manager"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:8
+#: 358507db4ec24c938d14e23854f1f577
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:18:<autosummary>:1
+#: 87e63f0069f54857a9219ed81db6c237
+msgid ":obj:`NetworkManager <fedlab.core.network_manager.NetworkManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:24
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:18:<autosummary>:1
+#: 7cf14b51b12d45f59f433a895c46a8a3 847a698579e44737a52d585344cf81ae
+msgid "Abstract class"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:22
+#: 61c8d0a85cd14d89ab7ec8d68b7d9bd1
+msgid "Bases: :class:`torch.multiprocessing.Process`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst
+#: 8c5c74502d72430e94f18ba646b3d92e
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:26
+#: d3316b16a5a64525b4a59dca2de67529
+msgid "object to manage torch.distributed network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:31
+#: 5a2bcda992134763a99a085a4ff1db7b
+msgid "Main Process:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:33
+#: 17d86d325ab04c8f89caf81788d6b37f
+msgid "Initialization stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:34
+#: 2e697d7998ff4f658a145f49823d3090
+msgid "FL communication stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:35
+#: 02ed2ef5f1b14247826a7b6415454688
+msgid "Shutdown stage. Close network connection."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:40
+#: db0c97747bec4b8f9aae5f26aa6a3e84
+msgid "Initialize network connection and necessary setups."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:42
+#: 1529b3acb99f4f99a812c5b6c90c7c33
+msgid ""
+"At first, ``self._network.init_network_connection()`` is required to be "
+"called."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:44
+#: 6ba169b4746d452e9eb2d6485e4d01dd
+msgid ""
+"Overwrite this method to implement system setup message communication "
+"procedure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:50
+#: 4734a87739934858b635138ea8f79fc5
+msgid "Define the actions of communication stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:55
+#: b8c344014430470c9bc08cf172ec9955
+msgid "Shutdown stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/network_manager/index.rst:57
+#: 56c31c3202f14e55ad5be404d6181692
+msgid "Close the network connection in the end."
+msgstr ""
+

@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:2
+#: b3d61276963f4018a37cf36353fffd9e
+msgid "message_code"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:8
+#: c592050dbe7445c88964ceb32145781f
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:18:<autosummary>:1
+#: 87ac7213d86a4de0b5a91f4cc3f603f3
+msgid ":obj:`MessageCode <fedlab.utils.message_code.MessageCode>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:23
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:18:<autosummary>:1
+#: 4996494597044be49aa6349c18bcd48d 8c9788452eae42ddad3f0e8698a9e37e
+msgid ""
+"Different types of messages between client and server that we support go "
+"here."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/utils/message_code/index.rst:21
+#: b4bdea53644c46a9874d8a5b95a6c59d
+msgid "Bases: :class:`enum.Enum`"
+msgstr ""
+

@@ -1,0 +1,201 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:2
+#: d5d3fa4e52cf4f0c8ab5612a40431e36
+msgid "hierarchical"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:18
+#: 70f72567386145c7aefe8ab047d6ba2e
+msgid "Package Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: 1cf18a41130d44498797e09b26b3dcc7
+msgid ""
+":obj:`ClientConnector "
+"<fedlab.core.server.scale.hierarchical.ClientConnector>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:36
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: 4abd5f4e233d4e2cbaacfb700dcd39fb aa2fda9ef3724557b32c7c6914ae843d
+msgid "Connect with clients."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: 629083ec6a0240e4b1905c5dbec0cbd7
+msgid ""
+":obj:`ServerConnector "
+"<fedlab.core.server.scale.hierarchical.ServerConnector>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:81
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: 1225378bd009451499465f53eee9f76e 949cfe025c964245b708145ef81aab7b
+msgid "Connect with server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: cd2a2728ac13441eaeebad5926ed3e4b
+msgid ":obj:`Scheduler <fedlab.core.server.scale.hierarchical.Scheduler>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:124
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:30:<autosummary>:1
+#: 6195f58d815643ff980a0f9285deaad5 9edeaf23b08c4b319ba81276d047a818
+msgid "Middle Topology for hierarchical communication pattern"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:34
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:79
+#: 10282eea47024c16bcb453fbe6cbec41 acc77ecdfab1471c9e11f1cc1b1f3a8d
+msgid "Bases: :class:`fedlab.core.server.scale.hierarchical.connector.Connector`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:38
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:83
+#: 5661d845e70549728d50b49095339673 ca44a8ee4aae4cb4b51522668a83ca7e
+msgid ""
+"This class is a part of middle server which used in hierarchical "
+"structure."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst
+#: 0b73da5447934de08275082372ac73f9 26e67bdccf49400b96449ca87b76c251
+#: 42bcd5ff3e764ef68ec2634330eed725 f6a42f3a2eea40bb9c6dcbdd1f6b7751
+#: fe765d46a6d24d8084b2944b9a35eeae
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:40
+#: c0fe5aa1a8a94c47a7555b2ccd6133c5
+msgid "Manage ``torch.distributed`` network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:42
+#: b3d9c682231545f8875a118d233bdc0c
+msgid "Message queue to write."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:44
+#: f1a80b4602d343eb9abc1c950b9d73a3
+msgid "Message queue to read."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:49
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:94
+#: 32d51908977d492ca005f0dc5f203131 c74fd783933e46c1937711a666194619
+msgid "Main Process:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:51
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:96
+#: 5c20f35297fc4516963400b4b49744e6 8da407a6a377484c8f5fa9cc57556244
+msgid "Initialization stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:52
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:97
+#: 0ed4d0aefc3d4b98838f190a5027f935 442622b4f93b4711b9ce230a884aa9d8
+msgid "FL communication stage."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:53
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:98
+#: 287a2b79f05649f8af3878cf95d3066d d878c48d24c34050a2170b34914d49d2
+msgid "Shutdown stage. Close network connection."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:58
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:103
+#: 017eac58dadd4b8d852c95910229f1d9 806ee067598a4ea3b8ad020ac63a1851
+msgid "Define the reaction of receiving message."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:60
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:105
+#: 6e5648f762ba4f7e91fdd61dc7873044 88d3ada093dc4d61be9e3404ec9969ad
+msgid "rank of sender in dist group."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:62
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:107
+#: 2c647f247d50486da4ec9eb919e5256b 627c5eb5de054d119bc058c47fa58572
+msgid "Message code."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:64
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:109
+#: 90b3a6f103cf40799f3e7e0224cfed4a 99d402d906d7429f9d3a2b90eb301c32
+msgid "A list of tensors received from other process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:70
+#: 64b0b3ffaa8548d08ae574eedb6b6577
+msgid "Process message queue"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:72
+#: 76a2c9c8e1bf4bbebfd760fd2884397e
+msgid "Strategy of processing message from server."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:85
+#: e7ce90c0362142239e5d72c1c13f2ac4
+msgid "object to manage torch.distributed network communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:87
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:89
+#: 52497ebc08a94969b6c82ea05410aec6 ba5a219dc22a4b2da0c92fca4b8b6289
+msgid "message queue"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:115
+#: 86a8a0459c6f4eeaa7e636db5dde0841
+msgid "Define the procedure of dealing with message queue."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:122
+#: e6f897f09fee4ab59f4fe5b02753058a
+msgid "Bases: :class:`torch.multiprocessing.Process`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:126
+#: 4bdd9f5570e34389a7f26219c7417f6d
+msgid "Scheduler uses message queues to decouple connector modules"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:128
+#: de4c308525cc46fd9e9d1c63b30a9c2b
+msgid "Distributed network manager of server from upper level."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:130
+#: ae5f353e84494686be786e3cf43eb518
+msgid "Distributed network manager of clients from lower level."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/server/scale/hierarchical/index.rst:135
+#: 1e51669be9ce447aa35f992fb4c9b9cc
+msgid "Method to be run in sub-process; can be overridden in sub-class"
+msgstr ""
+

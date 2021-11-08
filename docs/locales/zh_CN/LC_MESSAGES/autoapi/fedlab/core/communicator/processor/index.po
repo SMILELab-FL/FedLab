@@ -1,0 +1,119 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:2
+#: 5c811a424a9f4e06a8a1e4cdeba79167
+msgid "processor"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:8
+#: 8bd980589d074ac68083342be46c92a3
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:18:<autosummary>:1
+#: c8c08a210ddd4866bf07c570ed65e189
+msgid ""
+":obj:`PackageProcessor "
+"<fedlab.core.communicator.processor.PackageProcessor>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:18:<autosummary>:1
+#: ffa82c35809c469c8e5e90c9a1fd52cd
+msgid "Provide more flexible distributed tensor communication functions based on"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:21
+#: 4bf1259e42024bfbbb22cd7e2f591260
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:23
+#: 4cbecbb958e94963a221717905812e88
+msgid ""
+"Provide more flexible distributed tensor communication functions based on"
+" :func:`torch.distributed.send` and :func:`torch.distributed.recv`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:26
+#: a0fa05a65ef8456392b61fce608748dc
+msgid ""
+":class:`PackageProcessor` defines the details of point-to-point package "
+"communication."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:28
+#: a13c8adf658a4021ac1ccb1e7dc59b29
+msgid "EVERYTHING is :class:`torch.Tensor` in FedLab."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:33
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:52
+#: 932e2c215d5c480f89625d12202ef2a6 d4ad450733624df69c4d4d97e03580b3
+msgid "Three-segment tensor communication pattern based on ``torch.distributed``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:45
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:64
+#: 3943d54db18e46aebd8e2670457b958c c0fbb45cfaf5424087dca83fa3ab9b14
+msgid "Pattern is shown as follows:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:36
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:55
+#: 2090e488fe4b4cb692a396ae154e6076 76c0f55fba3c44c3a8335e67d59faa82
+msgid "1.1 sender: send a header tensor containing ``slice_size`` to receiver"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:38
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:57
+#: 702c32ff1b0542f4bd5c218a0b8c451f b08b0f7cc5a0435d89f437475e5f411f
+msgid ""
+"1.2 receiver: receive the header, and get the value of ``slice_size`` and"
+" create a buffer for incoming slices of content"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:40
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:59
+#: 1b5f707a298149bb99281305b4b9f374 d34ad12b3c9545828bbae1a45e42f188
+msgid ""
+"2.1 sender: send a list of slices indicating the size of every content "
+"size."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:42
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:61
+#: 58810305969f4180adee7fb88e998d6b cadb78b39d314252bafdf2a24972d17b
+msgid "2.2 receiver: receive the slices list."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:44
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:63
+#: 05580f6604334567ac0f95535d9fef73 ac8e857be2524db4ab2f4b8591deef15
+msgid "3.1 sender: send a content tensor composed of a list of tensors."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:46
+#: ../../source/autoapi/fedlab/core/communicator/processor/index.rst:65
+#: 196ae2b6de2143dca1294fdce3a5c030 f272cfd8c96e47f78138c32a4d7c2377
+msgid ""
+"3.2 receiver: receive the content tensor, and parse it to obtain slices "
+"list using parser function"
+msgstr ""
+

@@ -1,0 +1,88 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:2
+#: 31ef142c3a0f483fa61d90ad93780fd6
+msgid "manager"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:8
+#: 97c566ccd2e143feb2be5c94e58eeaac
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:18:<autosummary>:1
+#: b5f5c1e67a4144eda3bc1f770b96ac4d
+msgid ""
+":obj:`ScaleClientPassiveManager "
+"<fedlab.core.client.scale.manager.ScaleClientPassiveManager>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:24
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:18:<autosummary>:1
+#: 301fb36b90f14f8695628a1ffd97fcee add965181abe442cb41fc767811291c5
+msgid "Special client manager for :class:`SerialTrainer`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:22
+#: c01a1d62afcd46e7b2651ae7a7551041
+msgid "Bases: :class:`fedlab.core.client.manager.ClientPassiveManager`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:26
+#: b9a7ac1ba7f94c1e97d5e499cea58398
+msgid ""
+"We modify the communication agreements to create a mapping from client id"
+" to process rank. Thus, :class:`ScaleClientPassiveManager` is able to "
+"simulate multiple clients in sequence."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst
+#: 5af1600a3b7f4fa782c747712c0b8c3a
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:29
+#: 7fc996c7ad2841d2a7165e25601ab88a
+msgid "Distributed network to use."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:31
+#: e7e097bc90874accadaa78ea1e4a2410
+msgid ""
+"Subclass of :class:`ClientTrainer`, providing :meth:`train` and "
+":attr:`model`. For more client simulation with single process, you are "
+"supposed to use :class:`SerialTrainer` here."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:33
+#: 12cb6ca423d644f0aaaf04f08fedf045
+msgid "object of :class:`Logger`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:38
+#: c147afb4a14d44df81051b10aa12aaaa
+msgid "Actions to perform when receiving new message, including local training."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:43
+#: 792d1eee534e4e509116f2d62e4bf074
+msgid "Synchronize local model with server actively"
+msgstr ""
+

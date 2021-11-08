@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/overview.rst:3 02b8cb9253724ee9a60af59a87df7de0
+msgid "Overview of FedLab"
+msgstr ""
+
+#: ../../source/overview.rst:7 d5c2d7be1e1b4f45a58cedba611e932c
+msgid "Introduction"
+msgstr ""
+
+#: ../../source/overview.rst:9 8d82a14756b04aef97cd54b48f21f7fe
+msgid ""
+"Federated learning (FL), proposed by Google at the very beginning, is "
+"recently a burgeoning research area of machine learning, which aims to "
+"protect individual data privacy in distributed machine learning process, "
+"especially in finance, smart healthcare and edge computing. Different "
+"from traditional data-centered distributed machine learning, participants"
+" in FL setting utilize localized data to train local model, then "
+"leverages specific strategies with other participants to acquire the "
+"final model collaboratively, avoiding direct data sharing behavior."
+msgstr ""
+
+#: ../../source/overview.rst:11 f5495670793e47e5a632a5c34564c292
+msgid ""
+"To relieve the burden of researchers in implementing FL algorithms and "
+"emancipate FL scientists from repetitive implementation of basic FL "
+"setting, we introduce highly customizable framework **FedLab** in this "
+"work. **FedLab** provides the necessary modules for FL simulation, "
+"including communication, compression, model optimization, data partition "
+"and other functional modules. **FedLab** users can build FL simulation "
+"environment with custom modules like playing with LEGO bricks. For better"
+" understanding and easy usage, FL algorithm benchmark implemented in "
+"**FedLab** are also presented."
+msgstr ""
+
+#: ../../source/overview.rst:13 a3b9ff024c9b428191506f2573f9a591
+msgid "For more details, please read our `full paper`__."
+msgstr ""
+
+#: ../../source/overview.rst:19 d8653a60b1b74a8bb70276a53725688a
+msgid "Overview"
+msgstr ""
+
+#: ../../source/overview.rst:29 4038530ba91c40e68f50f9fca8de4949
+msgid ""
+"**FedLab** provides two basic roles in FL setting: ``Server`` and "
+"``Client``. Each ``Server``/``Client`` consists of two components called "
+"``NetworkManager`` and ``ParameterHandler``/``Trainer``."
+msgstr ""
+
+#: ../../source/overview.rst:31 defc4a460909462a91c9ebb835b5768b
+msgid ""
+"``NetworkManager`` module manages message process task, which provides "
+"interfaces to customize communication agreements and compression"
+msgstr ""
+
+#: ../../source/overview.rst:33 8e1e9b1c3ab84989b1459ca9133348de
+msgid ""
+"``ParameterHandler`` is responsible for backend computation in "
+"``Server``; and ``Trainer`` is in charge of backend computation in "
+"``Client``"
+msgstr ""
+
+#: ../../source/overview.rst:37 c606a5e07ec346a4adc5bba18ec3ee69
+msgid "Server"
+msgstr ""
+
+#: ../../source/overview.rst:39 8ccad1ce9fbf4d3d9a835c00fbd841b8
+msgid ""
+"The connection between ``NetworkManager`` and ``ParameterServerHandler`` "
+"in ``Server`` is shown as below. ``NetworkManager`` processes message and"
+" calls ``ParameterServerHandler.on_receive()`` method, while "
+"``ParameterServerHandler`` performs training as well as computation "
+"process of server (model aggregation for example), and updates the global"
+" model."
+msgstr ""
+
+#: ../../source/overview.rst:51 87d6d654aa4746f29b2784b3008324b1
+msgid "Client"
+msgstr ""
+
+#: ../../source/overview.rst:53 2e74e90f51324859a25c691c109b4e40
+msgid ""
+"``Client`` shares similar design and structure with ``Server``, with "
+"``NetworkManager`` in charge of message processing as well as network "
+"communication with server, and `Trainer` for client local training "
+"procedure."
+msgstr ""
+
+#: ../../source/overview.rst:64 c1b57ffc0cde4e2b86bb349dcd0de222
+msgid "Communication"
+msgstr ""
+
+#: ../../source/overview.rst:66 f0fec42124d34683a91c0eb7ebc06ffe
+msgid ""
+"**FedLab** furnishes both synchronous and asynchronous communication "
+"patterns, and their corresponding communication logics of "
+"``NetworkManager`` is shown as below."
+msgstr ""
+
+#: ../../source/overview.rst:68 f5a5b3bdec2340ea87c188dced58f619
+msgid ""
+"Synchronous FL: each round is launched by server, that is, server "
+"performs clients sampling first then broadcasts global model parameters."
+msgstr ""
+
+#: ../../source/overview.rst:78 7c1cd97816ea49cc9ef65f86140eebf1
+msgid ""
+"Asynchronous FL :cite:p:`xie2019asynchronous`: each round is launched by "
+"clients, that is, clients request current global model parameters then "
+"perform local training."
+msgstr ""
+
+#: ../../source/overview.rst:91 ac989fb0ca3e40f7882ea1e7b7d14692
+msgid "Experimental Scene"
+msgstr ""
+
+#: ../../source/overview.rst:93 32f469318ea14769ab0ab74796db6361
+msgid ""
+"**FedLab** supports both single machine and  multi-machine FL "
+"simulations, with **standalone** mode for single machine experiments, "
+"while cross-machine mode and **hierarchical** mode for multi-machine "
+"experiments."
+msgstr ""
+
+#: ../../source/overview.rst:96 e44dc587902349aaa66832db60847448
+msgid "Standalone"
+msgstr ""
+
+#: ../../source/overview.rst:98 a6e2f39fdfed402d9b970bbb072d6de4
+msgid ""
+"**FedLab** implements ``SerialTrainer`` for FL simulation in single "
+"system process. ``SerialTrainer`` allows user to simulate a FL system "
+"with multiple clients executing one by one in serial in one "
+"``SerialTrainer``. It is designed for simulation in environment with "
+"limited computation resources."
+msgstr ""
+
+#: ../../source/overview.rst:109 370efd87731840068eee7d23755249b2
+msgid "Cross-Machine"
+msgstr ""
+
+#: ../../source/overview.rst:111 e0b75a2a2d864699a729b2dcd6de5ef2
+msgid ""
+"**FedLab** supports simulation executed on multiple machines with correct"
+" network topology configuration. More flexibly in parallel, "
+"``SerialTrainer`` is able to replace the regular ``Trainer``. In this "
+"way, machine with more computation resources can be assigned with more "
+"workload of simulating."
+msgstr ""
+
+#: ../../source/overview.rst:115 6e08b528bfc34c2d918628fa0bd47f6d
+msgid ""
+"All machines must be in the same network (LAN or WAN) for cross-machine "
+"deployment."
+msgstr ""
+
+#: ../../source/overview.rst:126 fc456e3e0c534d01970714758f0ce80f
+msgid "Hierarchical"
+msgstr ""
+
+#: ../../source/overview.rst:128 c5a6473bbe304b1a88311b9b45917923
+msgid ""
+"**Hierarchical** mode for **FedLab** is designed for situations where "
+"both **standalone** and **cross-machine** are insufficient for "
+"simulation. **FedLab** promotes ``Scheduler`` as middle-server to "
+"organize client groups. Each ``Scheduler`` manages the communication "
+"between server and a client group containing a subset of clients. And "
+"server can communicate with clients in different LAN via corresponding "
+"``Scheduler``."
+msgstr ""
+
+#: ../../source/overview.rst:130 89903575996846118601246d9fb76435
+msgid ""
+"The client group for each scheduler can be either **standalone** or "
+"**cross-machine**."
+msgstr ""
+
+#: ../../source/overview.rst:132 e34818d932854a969686f6097d551124
+msgid "A hierarchical FL system with ``K`` client groups is depicted as below."
+msgstr ""
+
+#: ../../source/overview.rst:143 c1b01b300cf14e6d851fdf9f3b4d2061
+msgid "Benchmarks"
+msgstr ""
+
+#: ../../source/overview.rst:145 c1fd86b939424892a8e4b50adaf5c48e
+msgid ""
+"**FedLab** also contains data partition scripts from LEAF "
+":cite:p:`caldas2018leaf`, and implementations of some FL algorithms, like"
+" FedAvg :cite:p:`mcmahan2017communication`. More benchmarks and FL "
+"algorithms demos are coming."
+msgstr ""
+
+#: ../../source/overview.rst:148 ebb59cf4c074465088b7c7e586e59a4e
+msgid "How to use FedLab?"
+msgstr ""
+
+#: ../../source/overview.rst:150 6dea22d2e30e4248b103927f3d0fa09b
+msgid ":ref:`installation`."
+msgstr ""
+
+#: ../../source/overview.rst:151 91a2a35f226e4ddbafa3c0abfb0a97c7
+msgid ":ref:`tutorial`."
+msgstr ""
+

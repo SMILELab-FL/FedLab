@@ -1,0 +1,174 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, SMILE Lab
+# This file is distributed under the same license as the FedLab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FedLab \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:2
+#: fe2cfa9e3b2c441b9958fba9b0b84085
+msgid "package"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:8
+#: 5ec85875221c4a46973a344bc13c4dd4
+msgid "Module Contents"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:20:<autosummary>:1
+#: 88608c16357e4b4784f18657d42fda11
+msgid ":obj:`Package <fedlab.core.communicator.package.Package>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:36
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:20:<autosummary>:1
+#: 4f514a78bfbb4389976cb2032e26bf89 d7f86f2e625d4940a657ec3919bc03e7
+msgid ""
+"A basic network package data structure used in FedLab. Everything is "
+"Tensor in  FedLab."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:25:<autosummary>:1
+#: e58c352aab2c468cacdd3ef89c8b2f52
+msgid ""
+":obj:`supported_torch_dtypes "
+"<fedlab.core.communicator.package.supported_torch_dtypes>`\\"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:34
+#: d8b1a188ab4f4077a661e28a963c6a49
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:40
+#: 1aa2400c49ad4e8584e96b8ada027603
+msgid ""
+"``slice_size_i = tensor_i.shape[0]``, that is, every element in slices "
+"indicates the size of a sub-Tensor in content."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:46
+#: 00beac062e7e436c8e784eaa5fb96c18
+msgid ":class:`Package` maintains 3 variables:"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:44
+#: e18f45ee3bc24f4abb27513e4e5bdc3a
+msgid ""
+":attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, "
+"message_code, data_type])``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:45
+#: 1983f08f59dc4bb3976ccfea2aba3062
+msgid ":attr:`slices` : ``list[slice_size_1, slice_size_2]``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:46
+#: 16a7b11d20f14788bb710e1017227b10
+msgid ":attr:`content` : ``torch.Tensor([tensor_1, tensor_2, ...])``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst
+#: 0f40ec2f0ecf42199bc265ec16c9b4e1 3dd4861dc2d24e2a95a52f628973563c
+#: 4aec636da00d49b893ae1c8a23b50b76 7558decbbb8c47848d4b20ebbc792711
+#: e980925977df43989208cd93e12b23c1
+msgid "Parameters"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:48
+#: bf57338fd038442db8c215471c96007c
+msgid "Message code"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:50
+#: 2e1071dd8d7745f7977320e1ceb03184
+msgid "Tensors contained in this package."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:55
+#: 81bd403ca3184e979dcd4cd7fc2d7466
+msgid "Append new tensor to :attr:`Package.content`"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:57
+#: 1770b8060e32481d983fd599046033a1
+msgid "Tensor to append in content."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:63
+#: 25b8892699754bada8430e9f1e54dc9d
+msgid "Append a list of tensors to :attr:`Package.content`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:65
+#: eba99b9d6a7c43a3aff1a1a654fa35b1
+msgid "A list of tensors to append to :attr:`Package.content`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:75
+#: cb7ee50b136b48e6b1774a648dbee954
+msgid "Parse package content into a list of tensors"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:77
+#: 335bd189f3da4a6c88fa9cbbfb782a89
+msgid ""
+"A list containing number of elements of each tensor. Each number is used "
+"as offset in parsing process."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:79
+#: 7544c92d77c64549b8ba87ca0947c9bf
+msgid ""
+":attr:`Package.content`, a 1-D tensor composed of several 1-D tensors and"
+" their corresponding offsets. For more details about :class:`Package`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst
+#: 54ba0262d1734f7b8fb0b1acda159acc 631287e8ef414d788d6fd1199efaf22f
+msgid "Returns"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:82
+#: 33c67b6e64ef4599bdcb9bc57f51faf3
+msgid "A list of 1-D tensors parsed from ``content``"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst
+#: 0015a657ec0c4cbfa124c3e111a3794a 2cadb6a25721485495d724b9f77f4e25
+msgid "Return type"
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:89
+#: 3922a103338a4125939dffd63c12f616
+msgid "Parse header to get information of current package."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:91
+#: 512b902992374d769383f1641efa8a37
+msgid ""
+":attr:`Package.header`, a 1-D tensor composed of 4 elements: "
+"``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, "
+"data_type])``. For more details about :class:`Package`."
+msgstr ""
+
+#: ../../source/autoapi/fedlab/core/communicator/package/index.rst:94
+#: 8541400df87249379cd1168f2da36135
+msgid ""
+"A tuple containing 5 elements: ``(sender_rank, recv_rank, slice_size, "
+"message_code, data_type)``."
+msgstr ""
+
