@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/SMILELab-FL/FedLab/master/docs/imgs/FedLab-logo.svg" width=600></p>
+<p align="center"><img src="./docs/imgs/FedLab-logo.svg?raw=True" width=600></p>
 
 # FedLab: A Flexible Federated Learning Framework
 
