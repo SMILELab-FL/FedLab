@@ -208,7 +208,7 @@ msgid ""
 msgstr ""
 "以mnist-cnn作为样例来介绍这一块内容。 在这个demo中， "
 "我们设置world_size=11（1*server，11*clients），每个ClientManager下代理了1个承担10个client的本地训练任务的SerialTrainer。"
-" 数据划分方法与FedAvg论文中一致。 在这个场景下，我们 ** 仅用了11个进程来模拟了一个有100个client的联邦学习系统 ** 。"
+" 数据划分方法与FedAvg论文中一致。 在这个场景下，我们 **仅用了11个进程来模拟了一个有100个client的联邦学习系统** 。"
 
 #: ../../source/examples/quick_start.rst:125 a1ff110456e54a3d83443c6db9b49648
 msgid ""
