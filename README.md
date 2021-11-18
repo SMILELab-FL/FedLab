@@ -44,7 +44,7 @@ You're welcome to contribute to this project through _Pull Request_.
 
 - By contributing, you agree that your contributions will be licensed under [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) 
 - Docstring  and code should follow Google Python Style Guide: [中文版](https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/)|[English](https://google.github.io/styleguide/pyguide.html)
-- The code should provide test cases using `unittest.TestCase
+- The code should provide test cases using `unittest.TestCase`
 
 ## Citation
 

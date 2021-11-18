@@ -214,6 +214,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                 return torch.mul(self.alpha,
                                  1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return (staleness + 1) ** (-self.a)
+            return torch.mul(self.alpha, (staleness + 1) ** (-self.a))
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
