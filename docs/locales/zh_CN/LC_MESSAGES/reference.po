@@ -19,5 +19,5 @@ msgstr ""
 
 #: ../../source/reference.rst:3 4aecf9e9275242a8920ded14f59ee1ef
 msgid "Reference"
-msgstr ""
+msgstr "参考文献"
 
