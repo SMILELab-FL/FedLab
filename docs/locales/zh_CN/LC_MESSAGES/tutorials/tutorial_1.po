@@ -20,10 +20,12 @@ msgstr ""
 #: ../../source/tutorials/tutorial_1.rst:5 d88ab6db2cbb4fdfb4817454b9233ee4
 msgid "Distributed Communication"
 msgstr ""
+"分布式通信"
 
 #: ../../source/tutorials/tutorial_1.rst:9 ddec08f4e4eb4a10a8187908ceba4dd0
 msgid "How to initialize distributed network?"
 msgstr ""
+"如何初始化分布式通信网络？"
 
 #: ../../source/tutorials/tutorial_1.rst:11 f21ddfd73cec4b4f9f717861464a1683
 msgid ""
@@ -40,6 +42,7 @@ msgstr ""
 #: ../../source/tutorials/tutorial_1.rst:15 68a03cc92b1249909db34a21390101ef
 msgid "Check the available ethernet:"
 msgstr ""
+"检查可用的以太网："
 
 #: ../../source/tutorials/tutorial_1.rst:21 92a8b6d0ca974981960bf8b914a18be2
 msgid ""
@@ -54,14 +57,17 @@ msgid ""
 "The ``(server_ip, server_port)`` is the address of server. please be "
 "aware of that the rank of server is 0 as default."
 msgstr ""
+"``(server_ip, server_port)`` 是服务器端的ip地址。服务端的rank默认为0。"
 
 #: ../../source/tutorials/tutorial_1.rst:37 ec5b91f26ece402481b43c1026b8b6d9
 msgid "Make sure ``world_size`` is the same across process."
 msgstr ""
+"保证所有进程上的 :class:`DistNetwork` 的 ``world_size`` 值是一致的。"
 
 #: ../../source/tutorials/tutorial_1.rst:38 7ea32249d41b4c9ab025c13a38d0ad65
 msgid "Rank should be different (from ``0`` to ``world_size-1``)."
 msgstr ""
+"任意两个进程的rank应该不同，可选的rank号应该为 ``0`` 到 ``world_size-1`` 。"
 
 #: ../../source/tutorials/tutorial_1.rst:39 455d919f87634e6a86bb9a5ae3aed7fc
 msgid "world_size = 1 (server) + client number."
@@ -78,10 +84,12 @@ msgid ""
 "The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, "
 "network initialization would fail."
 msgstr ""
+"务必在终端运行指令 ``ifconfig`` 检查可用的以太网接口。否则网络初始化会失败。"
 
 #: ../../source/tutorials/tutorial_1.rst:45 65cfaa609bba4e56bfa79efdab31d684
 msgid "How to create package?"
 msgstr ""
+"如何创建一个FedLab通信包"
 
 #: ../../source/tutorials/tutorial_1.rst:47 32441f7fa86741179ae80abf9652982e
 msgid ""
@@ -89,14 +97,19 @@ msgid ""
 "core.communicator.Package defines the basic data structure of network "
 "package. In our implementation, Package contains Header and Content."
 msgstr ""
+"通信模块相关代码在路径core/communicator下。"
+"core.communicator.Package定义了网络包的基本数据结构。"
+"我们的实现中，网络包主要维护Header和Content两个数据内容不够。"
 
 #: ../../source/tutorials/tutorial_1.rst:55 bf93b39191664015a902a86cd0ab302e
 msgid "Currently, you can create a network package from following methods:"
 msgstr ""
+"目前，用户可以通过以下方式创建一个网络包"
 
 #: ../../source/tutorials/tutorial_1.rst:60 1eb89fce153f41059e65327f945e38b5
 msgid "Currently, following restrictions need to be noticed："
 msgstr ""
+"目前网络通信包有以下限制："
 
 #: ../../source/tutorials/tutorial_1.rst:60 eec2a387905642f2a785a6dd1014924a
 msgid ""
@@ -104,6 +117,8 @@ msgid ""
 " which means that tensors with different shape should be flatterned "
 "before appended into Package (call tensor.view(-1))."
 msgstr ""
+"**Tensor shape:** FedLab目前仅支持被向量化的tensor的传输。"
+"意味着，任何形状的tensor被打包时都会被展平为tensor向量（tensor.view(-1)）。"
 
 #: ../../source/tutorials/tutorial_1.rst:61 6f8c567cef8947d8ad3b05022fa9ea5e
 msgid ""
@@ -113,30 +128,40 @@ msgid ""
 "torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, "
 "torch.float64]** are supported."
 msgstr ""
+"**Data type:** FedLab网络包Package仅支持同一种数据类型的tensor同时打包。"
+"换句话说，FedLab会在打包tensor时强制数据类型转换，并给出warning。"
+"包的数据类型由第一个被打包的tensor类型决定。目前支持如下数据类型： **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, "
+"torch.float64]** 。"
 
 #: ../../source/tutorials/tutorial_1.rst:63 5b9b9297267c4f49900e4246f2fb7836
 msgid "initialize with tensor"
 msgstr ""
+"tensor初始化打包"
 
 #: ../../source/tutorials/tutorial_1.rst:70 87978c8e44124fe2bb1b11137da079ad
 msgid "initialize with tensor list"
 msgstr ""
+"tensor列表初始化打包"
 
 #: ../../source/tutorials/tutorial_1.rst:78 1ab3dd2657fa40018f25788d208b2348
 msgid "append a tensor to exist package"
 msgstr ""
+"向已创建好的网络包添加tensor"
 
 #: ../../source/tutorials/tutorial_1.rst:88 6c7eec79bf14480ebec7f1363756a65b
 msgid "append a tensor list to exist package"
 msgstr ""
+"向已创建好的网络包添加tensor列表"
 
 #: ../../source/tutorials/tutorial_1.rst:98 49a97083b71143e6b0f07c57fff638f5
 msgid "Two static methods are provided by Package to parse header and content:"
 msgstr ""
+"Package提供了两个静态方法来解析header和content"
 
 #: ../../source/tutorials/tutorial_1.rst:107 aab3a9bac1284c3a99bcccb00e725d0d
 msgid "How to send package?"
 msgstr ""
+"如何发送网络包"
 
 #: ../../source/tutorials/tutorial_1.rst:109 a8f3b2c641864521b08322c5ab687b11
 msgid ""
@@ -144,16 +169,19 @@ msgid ""
 "PackageProcessor module. PackageProcessor is a static class to manage "
 "package sending/receiving procedure."
 msgstr ""
+"点对点的网络包通信协议实现在PackageProcessor内。PackageProcessor是一个"
+"静态类实现了网络包send/receive流程。"
 
 #: ../../source/tutorials/tutorial_1.rst:111 2d50619a84114deebed781fba65f8e40
 msgid ""
 "User can send a package to a process with rank=0 (the parameter dst must "
 "be assigned):"
 msgstr ""
+"发送一个包到rank 0进程（参数dst需要指定）"
 
 #: ../../source/tutorials/tutorial_1.rst:118 ef7cc126128a4006af560c4aa9b43e75
 msgid ""
 "or, receive a package from rank=0 (set the parameter src=None to receive "
 "package from any other process):"
 msgstr ""
-
+"或，接收一个来自进程rank 0的网络包（指定参数src=None可以接收来自任意进程的网络包）。"
