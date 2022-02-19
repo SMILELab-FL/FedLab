@@ -27,68 +27,68 @@ msgstr ""
 msgid ""
 "For CIFAR10, we provides 6 pre-defined partition schemes. We partition "
 "CIFAR10 with the following parameters:"
-msgstr ""
+msgstr "我们为CIFAR10提供了6种预定义的数据划分方案。我们根据以下参数来划分CIFAR10："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:10
 #: 2656ccfe5f404b27b7d3f7a69d6209db
 msgid "``targets`` is labels of dataset to partition"
-msgstr ""
+msgstr "``targets`` 是数据集对应的标签"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:11
 #: 1cc7a16551584a9ca3ed4a4a0c0e10dc
 msgid "``num_clients`` specifies number of clients in partition scheme"
-msgstr ""
+msgstr "``num_clients`` 指定划分方案中的client数量"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:12
 #: d7ced54673d0472eade6fa7238ded60b
 msgid ""
 "``balance`` refers to FL scenario that sample numbers for different "
 "clients are the same"
-msgstr ""
+msgstr "``balance`` 指不同client的数据样本数量全部相同的联邦学习场景"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:13
 #: 7d85c3bdd753480bbb1a6b613d467fbf
 msgid "``partition`` specifies partition scheme name"
-msgstr ""
+msgstr "``partition`` 指定划分方法的名字"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:14
 #: 6e853036e7a74395b782d49d780ab75d
 msgid "``unbalance_sgm`` is parameter for unbalance partition"
-msgstr ""
+msgstr "``unbalance_sgm`` 是用于非均衡划分的参数"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:15
 #: 5d71aac3d57c4147bd5aab21f88697ba
 msgid "``num_shards`` is parameter for non-iid partition using shards"
-msgstr ""
+msgstr "``num_shards`` 是基于shards进行non-IID划分需要的参数"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:16
 #: 674e4e0c9ced4caa9a15cf07c65e63d1
 msgid "``dir_alpha`` is parameter for Dirichlet distribution used in partition"
-msgstr ""
+msgstr "``dir_alpha`` 是划分中用到的Dirichlet分布需要的参数"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:17
 #: afdefec2176e47ac99d6f52285f97065
 msgid "``verbose`` controls whether to print intermediate information"
-msgstr ""
+msgstr "``verbose`` 指定是否打印中间执行信息"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:18
 #: 7c2fe863ec38473b84e6d48129db70c1
 msgid "``seed`` sets the random seed"
-msgstr ""
+msgstr "``seed`` 用于设定随机种子"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:20
 #: 368e257e1958409cac8b3e2edfe568e4
 msgid ""
 "Each partition scheme can be applied on CIFAR10 using different "
 "combinations of parameters:"
-msgstr ""
+msgstr "可以通过用不同的参数组合来实现不同的数据划分方案："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:22
 #: 4fbb0b0e79314d38978be3b41150c919
 msgid ""
 "``balance=None``: do not specify sample numbers for each clients in "
 "advance"
-msgstr ""
+msgstr "``balance=None``: 无需提前指定每个client的样本数量"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:24
 #: 61be3f7a3977422495e87d0082190d3e
@@ -96,7 +96,8 @@ msgid ""
 "``partition=\"dirichlet\"``: non-iid partition used in "
 ":cite:t:`yurochkin2019bayesian` and :cite:t:`wang2020federated`. "
 "``dir_alpha`` need to be specified in this partition scheme"
-msgstr ""
+msgstr "``partition=\"dirichlet\"``：:cite:t:`yurochkin2019bayesian` 和"
+" :cite:t:`wang2020federated` 中用的non-IID划分。该划分方法需指定 ``dir_alpha``。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:27
 #: 1736a1d110a745c58b7b7db405531795
@@ -105,7 +106,10 @@ msgid ""
 ":cite:p:`mcmahan2017communication`. Refer to "
 ":func:`fedlab.utils.dataset.functional.shards_partition` for more "
 "information. ``num_shards`` need to be specified here."
-msgstr ""
+msgstr "``partition=\"shards\"``：FedAvg :cite:p:`mcmahan2017communication` 中用到的non-IID方法。"
+"更多细节参考 "
+":func:`fedlab.utils.dataset.functional.shards_partition`。该方法"
+"需指定 ``num_shards``。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:29
 #: d045a18c5b294eedbbc3cf059123f4e5
@@ -114,7 +118,9 @@ msgid ""
 "for different clients are the same. Refer to "
 ":func:`fedlab.utils.dataset.functional.balance_partition` for more "
 "information. This partition scheme is from :cite:t:`acar2020federated`."
-msgstr ""
+msgstr "``balance=True``： \"balance\" 指不同client拥有相同样本数量的联邦学习场景。"
+"更多细节参考 :func:`fedlab.utils.dataset.functional.balance_partition`。该划分方法"
+"出自 :cite:t:`acar2020federated`。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:31
 #: ../../source/tutorials/cifar10_tutorial.rst:37
@@ -122,7 +128,7 @@ msgstr ""
 msgid ""
 "``partition=\"iid\"``: Random select samples from complete dataset given "
 "sample number for each client."
-msgstr ""
+msgstr "``partition=\"iid\"``：给定每个client的样本数量，从完整数据集中均匀随机地选择样本。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:33
 #: 0e941700e2894863a3037a06b45c6c8a
@@ -131,7 +137,9 @@ msgid ""
 ":func:`fedlab.utils.dataset.functional.client_inner_dirichlet_partition` "
 "for more information. ``dir_alpha`` need to be specified in this "
 "partition scheme"
-msgstr ""
+msgstr "``partition=\"dirichlet\"``：更多细节参考 "
+":func:`fedlab.utils.dataset.functional.client_inner_dirichlet_partition`。"
+"在该划分方法中 ``dir_alpha`` 需被指定。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:35
 #: 00297ef79afe44a0a9dfd7570fbccf92
@@ -141,7 +149,9 @@ msgid ""
 " number for each client is drown from Log-Normal distribution with "
 "variance ``unbalanced_sgm``. When ``unbalanced_sgm=0``, partition is "
 "balanced. This partition scheme is from :cite:t:`acar2020federated`."
-msgstr ""
+msgstr "``balance=False``：\"Unbalance\" 指不同client拥有不同样本数量的联邦学习场景。"
+"在非均衡方法中，不同client的样本数量用方差为 ``unbalanced_sgm`` 的Log-Normal分布生成。"
+"当 ``unbalanced_sgm=0`` 时，划分是均衡的。该划分方法源自 :cite:t:`acar2020federated`。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:39
 #: 0c1528f3a02744a197cb39d850a17e1f
@@ -149,12 +159,13 @@ msgid ""
 "``partition=\"dirichlet\"``: Given sample number of each client, use "
 "Dirichlet distribution for each client's class distribution. "
 "``dir_alpha`` need to be specified in this partition scheme"
-msgstr ""
+msgstr "``partition=\"dirichlet\"``：给定每个client的样本数量，从Dirichlet"
+"分布中抽样得到每个类样本的比例。该划分方法需指定 ``dir_alpha``。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:41
 #: f5b10a9767b9496995edd41dd500d411
 msgid "To conclude, 6 pre-defined partition schemes can be summarized as:"
-msgstr ""
+msgstr "六种预定义的划分方案可以总结为："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:43
 #: 18703235e66244d9bb3592e11350949b
@@ -169,39 +180,40 @@ msgstr ""
 #: ../../source/tutorials/cifar10_tutorial.rst:45
 #: af2923653af14cb9a36eb50bdfe718c7
 msgid "Balanced IID (iid)"
-msgstr ""
+msgstr "均衡IID（IID）"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:46
 #: 82d5e1456a64493d9aacad14b1973d55
 msgid "Unbalanced IID (iid)"
-msgstr ""
+msgstr  "非均衡IID（IID）"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:47
 #: 9179e4d43da84a4dbb8dcc5f512000d3
 msgid "Balanced Dirichlet (non-iid)"
-msgstr ""
+msgstr "均衡Dirichlet（non-IID）"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:48
 #: f067c5f36ab2429ba24b3d608d425a0b
 msgid "Unbalanced Dirichlet (non-iid)"
-msgstr ""
+msgstr "非均衡Dirichlet（non-IID）"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:50
 #: f65cbd903d914fb99a19872b87bd4dc9
 msgid ""
 "Now, we introduce how to use these pre-defined partition on CIFAR10 in FL"
 " setting with 100 clients, and provide statistical plots for each scheme."
-msgstr ""
+msgstr "现在来介绍如何在一个拥有100个client的联邦学习场景中，用这些预定义的方案对"
+"CIFAR10进行划分，并给出每种划分方案的统计结果可视化。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:52
 #: 90e5ad49d269478eb6716d2105e45fc4
 msgid "First, import related package and basic setting:"
-msgstr ""
+msgstr "首先，导入相关的包以及基本设定："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:73
 #: 9d9978ede4954b4987385d7342c76ebc
 msgid "Second, we need to load CIFAR10 dataset from ``torchvision``:"
-msgstr ""
+msgstr "第二步，我们从 ``torchvision`` 中加载CIFAR10数据集："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:82
 #: ea502d74eda24ac7b03fedde2ae5e1b3
@@ -218,46 +230,48 @@ msgstr ""
 #: 6d674a1dfdcd499fa7594764066f9e38 b1db2fbfb68a4aaf9983975e1daa9b43
 #: bf477fad7b5449dd94316d044b1174f4 ee51d8e5423844dca63287f52043f303
 msgid "Perform partition:"
-msgstr ""
+msgstr "执行数据划分："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:96
 #: f232c3f381f7478f86c4133b67b8bea1
 msgid "``hetero_dir_part.client_dict`` is a dictionary like this："
-msgstr ""
+msgstr  "``hetero_dir_part.client_dict`` 是一个字典结构："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:106
 #: e36ec5b83cfe413988d211c0d463eeab
 msgid ""
 "For visualization and check partition result, we generate partition "
 "report for current partition, and save it into csv file:"
-msgstr ""
+msgstr "为了可视化以及检查划分结果，我们可以为当前划分生成划分报告，并"
+"将其保存于csv文件："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:115
 #: a2a69a650d254b4c996d8dff51496776
 msgid "Report generated here is like:"
-msgstr ""
+msgstr "这里生成的报告大概为："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:126
 #: 800acba21ce0434eab2340b72d9e16ab
 msgid ""
 "which can be easily parsed by :func:`csv.reader` or "
 ":func:`pandas.read_csv`:"
-msgstr ""
+msgstr "可以用 :func:`csv.reader` 或 :func:`pandas.read_csv` "
+"来解析。"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:136
 #: 7bb34cdf0cff4cfe81e7575d71b3c5a1
 msgid "Now, select the first 10 clients for class distribution bar plot:"
-msgstr ""
+msgstr "现在选出前10个client用于类分布的条形图："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:149
 #: d991dca9977747028a74525c8796e9a5
 msgid "We also can check sample number statistic result for all clients:"
-msgstr ""
+msgstr "我们可以检查一下所有client的样本数量统计结果："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:167
 #: 8752e9bdb2294fa49d62b39d65ac5d91
 msgid "Shards"
-msgstr ""
+msgstr "基于Shards的划分"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:181
 #: ../../source/tutorials/cifar10_tutorial.rst:201
@@ -268,33 +282,33 @@ msgstr ""
 #: 735ced7f4b7e4b5fb7dcfc7ec9aacdaf 884ce97af02f4afaaac44e97f0691cc5
 #: 92f56403a614417db04163c7251a3654
 msgid "Class distribution bar plot:"
-msgstr ""
+msgstr "类分布的条形图："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:189
 #: ff866e6d1a684802ab81ce2ac9b91002
 msgid "Balanced IID"
-msgstr ""
+msgstr "均衡IID划分"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:208
 #: 0d8108d4e87b489a87b7e484298ac1f2
 msgid "Unbalanced IID"
-msgstr ""
+msgstr "非均衡IID划分"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:227
 #: ../../source/tutorials/cifar10_tutorial.rst:275
 #: 22e57b4cfb104186b24a616103b89196 af58a6ca665146eeae6d504945075b79
 msgid "Sample number statistic result for clients:"
-msgstr ""
+msgstr "client上的样本数量统计结果："
 
 #: ../../source/tutorials/cifar10_tutorial.rst:234
 #: 88504ed0a2ae464aa9ea632c92213b48
 msgid "Balanced Dirichlet"
-msgstr ""
+msgstr "均衡Dirichlet划分"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:255
 #: 4d2bf38638774befa52f0abe1e20f69e
 msgid "Unbalanced Dirichlet"
-msgstr ""
+msgstr "非均衡Dirichlet划分"
 
 #: ../../source/tutorials/cifar10_tutorial.rst:283
 #: 7ff5130a1d7249ab9f4b6b7af54479f3
@@ -302,7 +316,9 @@ msgid ""
 "For complete usage example of :class:`CIFAR10Partitioner`, check FedLab "
 "benchmark `datasets part <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/tree/main/fedlab_benchmarks/datasets/cifar10/>`_."
-msgstr ""
+msgstr ":class:`CIFAR10Partitioner` 的完整使用例子，请见FedLab benchmarks的"
+" `数据集部分 <https://github.com/SMILELab-FL/FedLab-"
+"benchmarks/tree/main/fedlab_benchmarks/datasets/cifar10/>`_."
 
 #: ../../source/tutorials/cifar10_tutorial.rst:286
 #: 37168ab3fb364a2986e44622d965a22a
