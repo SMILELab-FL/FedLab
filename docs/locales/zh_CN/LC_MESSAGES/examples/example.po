@@ -19,5 +19,5 @@ msgstr ""
 
 #: ../../source/examples/example.rst:5 5a4d6eb136b8416e9f3711f4b507c66f
 msgid "Examples"
-msgstr ""
+msgstr "示例"
 
