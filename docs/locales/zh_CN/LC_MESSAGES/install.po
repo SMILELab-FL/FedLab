@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: ../../source/install.rst:4 7813d48d1511476d8ee17ae724e2dfa2
+#: ../../source/install.rst:4 18774df59340492196f147260cd75358
 msgid "Installation & Set up"
-msgstr "安装 & 设置"
+msgstr ""
 
-#: ../../source/install.rst:6 f73ef8cc90f9468c947c4a20f133212a
+#: ../../source/install.rst:6 4986e0fa67904006826c2a2f2f80f1e5
 msgid "FedLab can be installed by source code or pip."
-msgstr "可以通过源代码或者pip来安装FedLab。"
+msgstr ""
 
-#: ../../source/install.rst:9 4b1d697b6e0440c6889f582eb4093c78
+#: ../../source/install.rst:9 ac1b42452bca49d9ab19a77a0240ff7d
 msgid "Source Code"
-msgstr "源代码"
+msgstr ""
 
-#: ../../source/install.rst:11 3494c9e7394a4b149c2876f9c5046619
+#: ../../source/install.rst:11 3520cda89ca6422880c1ceb6b50a5bd5
 msgid "Install **lastest version** from GitHub:"
-msgstr "从GitHub上下载FedLab最新版本的源代码："
+msgstr ""
 
-#: ../../source/install.rst:18 99390671a91a4cf2849a4db72026cc7d
+#: ../../source/install.rst:18 bf3d9cd315d645ed8863d1b50a2ed968
 msgid "Install dependencies:"
-msgstr "安装依赖："
+msgstr ""
 
-#: ../../source/install.rst:25 ace4acc85f494caebb15643115af42e8
+#: ../../source/install.rst:25 86ddd41ed4934bc3b9ebab29abe0f4a3
 msgid "Pip"
 msgstr ""
 
-#: ../../source/install.rst:27 d1311635d6554d049cb163b5a81b58a6
+#: ../../source/install.rst:27 726fbb4ab57d441992a8b6a3cebf53e8
 msgid "Install **stable version** with pip:"
-msgstr "用pip安装FedLab的稳定版本："
+msgstr ""
 
-#: ../../source/install.rst:34 3dfd6393534345269fad70ed4623954f
+#: ../../source/install.rst:34 e1579007053548f9bb410acfe27fffeb
 msgid "Dataset Download"
-msgstr "数据集下载"
+msgstr ""
 
-#: ../../source/install.rst:36 cfb99ca1d9574e478f2558d17478aa98
+#: ../../source/install.rst:36 db3f9049bfc640ac90edb998b94f7220
 msgid "FedLab provides common dataset used in FL researches."
-msgstr "FedLab提供了联邦学习研究中常用的数据集。"
+msgstr ""
 
-#: ../../source/install.rst:38 6144f6788a7942be91fac0336a58c85e
+#: ../../source/install.rst:38 2977268a70a6430c962f13d99cbd683e
 msgid ""
 "Download procedure scripts are available in `fedlab_benchmarks/datasets "
 "<https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/tree/main/fedlab_benchmarks/datasets>`_. For details of "
 "dataset, please follow `README.md <https://github.com/SMILELab-FL/FedLab-"
 "benchmarks/tree/main/fedlab_benchmarks/datasets>`_."
-msgstr "数据集的下载脚本可以在 `fedlab_benchmarks/datasets <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/main/fedlab_benchmarks/datasets>`_ "
-"中找到。如需获得数据集的具体细节，请参考 `README.md <https://github.com/SMILELab-FL/FedLab-"
-"benchmarks/tree/main/fedlab_benchmarks/datasets>`_."
+msgstr ""
 

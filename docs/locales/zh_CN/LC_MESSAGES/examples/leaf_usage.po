@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/examples/leaf_usage.rst:5 3ce779582e9545259b1128b8f86286c5
 msgid "PyTorch version of LEAF"
-msgstr "PyTorch版本的LEAF"
+msgstr ""
 
 #: ../../source/examples/leaf_usage.rst:7 cd1cd7b5f5c140f3bdf0eda93833d058
 msgid ""
@@ -28,18 +28,27 @@ msgid ""
 "corresponding dataset. The unified interface is in "
 "``fedlab_benchmarks/leaf/dataloader.py``**"
 msgstr ""
+<<<<<<< HEAD
+=======
 "FedLab将TensorFlow版本的LEAF数据集迁移到了PyTorch框架下，并提供了相应数据集的dataloader的实现脚本，统一的接口在"
 " ``fedlab_benchmarks/leaf/dataloader.py`` 。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:12 b5723b7cb7ba4527a79f5bd3ffe22021
 msgid "This markdown file introduces the process of using LEAF dataset in FedLab."
 msgstr ""
+<<<<<<< HEAD
+=======
 "本文介绍在FedLab中leaf数据集的使用流程。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:16 267250c822904bcaa9a72d6018fc01e6
 msgid "Description of Leaf datasets"
 msgstr ""
+<<<<<<< HEAD
+=======
 "LEAF数据集说明"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:18 ab6f9a874f104cf280c801399ef23186
 msgid ""
@@ -49,20 +58,30 @@ msgid ""
 "introduction the total number of users and the corresponding task "
 "categories of leaf datasets are given below."
 msgstr ""
+<<<<<<< HEAD
+
+=======
 "LEAF benchmark 包含了celeba, femnist, reddit, sent140, shakespeare, "
 "synthetic 六类数据集的联邦设置。参考 `leaf-readme.md "
 "<https://github.com/talwalkarlab/leaf>`__ ，以下给出六类数据集的简介、总用户数和对应任务类别。"
 
 
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:20 e48a244fcdeb4d099be4900ca6aff23b
 msgid "FEMNIST"
 msgstr ""
 
+<<<<<<< HEAD
+#: ../../source/examples/leaf_usage.rst:22 98109401f8674f908a325c5fd1695607
+msgid "**Overview:** Image Dataset."
+msgstr ""
+=======
 
 #: ../../source/examples/leaf_usage.rst:22 98109401f8674f908a325c5fd1695607
 msgid "**Overview:** Image Dataset."
 msgstr ""
 "概述： 图像数据集。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:23 7cae47bf23dd4ce1bb3bbddfbdb7bf9e
 msgid ""
@@ -70,13 +89,19 @@ msgid ""
 "uppercase), images are 28 by 28 pixels (with option to make them all 128 "
 "by 128 pixels), 3500 users."
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 共有62个不同类别（10个数字，26个小写字母，26个大写字母）； 每张图像是 :math:`28 \times 28` 像素（可选择全部处理为"
 " :math:`128 \times 128` 像素）； 共有3500位用户。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:24 efc5aabe94254ea28e84acc68cd85511
 msgid "**Task:** Image Classification."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 图像分类"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:26 d7d61491961843c3a5523d7c3f33d4a4
 msgid "Sentiment140"
@@ -85,17 +110,26 @@ msgstr ""
 #: ../../source/examples/leaf_usage.rst:28 4a4b37f8d63641449b505c1c10cc5f72
 msgid "**Overview:** Text Dataset of Tweets."
 msgstr ""
+<<<<<<< HEAD
+=======
 "概述： 推特推文文本数据集"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:29 7e2135f1051543bf994bc1ee7bd168f5
 msgid "**Details** 660120 users."
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 共660120位用户"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:30 3179ca2eae7b485b961cc87bd639a0ed
 msgid "**Task:** Sentiment Analysis."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 情感分析"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:32 a63f76f8d0a34afea254ebae367cbd25
 msgid "Shakespeare"
@@ -104,19 +138,28 @@ msgstr ""
 #: ../../source/examples/leaf_usage.rst:34 fc63f6b8dbc1491ba492f408cbbe2c58
 msgid "**Overview:** Text Dataset of Shakespeare Dialogues."
 msgstr ""
+<<<<<<< HEAD
+=======
 "概述： 莎士比亚作品集对白文本数据集。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:35 4c1cc90dd5364a98b691f51df205590b
 msgid ""
 "**Details:** 1129 users (reduced to 660 with our choice of sequence "
 "length. See `bug <https://github.com/TalwalkarLab/leaf/issues/19>`__.)"
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 共1129位用户（后续根据序列长度减少到660位，详情查看 `bug <https://github.com/TalwalkarLab/leaf/issues/19>`__ 。 ）"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:36 f3bf8ecaf44f4fe8918a226109885b31
 msgid "**Task:** Next-Character Prediction."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 下一字符预测"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:38 e8a3b6c82dd3418e8f3c65da84386527
 msgid "Celeba"
@@ -127,23 +170,30 @@ msgid ""
 "**Overview:** Image Dataset based on the `Large-scale CelebFaces "
 "Attributes Dataset <http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html>`__."
 msgstr ""
-"概述： 基于大规模名人面孔属性数据集的图像数据集: `Large-scale CelebFacesAttributes Dataset "
-"<http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html>`__ 。"
 
 #: ../../source/examples/leaf_usage.rst:41 ec58dc9bd57a49fba898eac523376c69
 msgid "**Details:** 9343 users (we exclude celebrities with less than 5 images)."
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 共9343位用户（排除了样本数小于等于5的名人）"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:42 2fcbcf0181bf433791b23eb494ea22ed
 msgid "**Task:** Image Classification (Smiling vs. Not smiling)."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 图像识别（微笑检测）"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:44 075f915b4d6a4c6a92e5435c23aab1e7
 msgid "Synthetic Dataset"
 msgstr ""
+<<<<<<< HEAD
+=======
 "合成数据集"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:46 198bdd5ee1494d17b66005b815353ec9
 msgid ""
@@ -152,20 +202,24 @@ msgid ""
 "models are device-dependant. To see a description of the whole generative"
 " process, please refer to the paper."
 msgstr ""
-"概述： 提出了一个生成具有挑战性的合成联合数据集的过程，高级目标是创建真实模型依赖于各设备的设备。可参阅论文 LEAF: A Benchmark "
-"for Federated Settings 查看整个生成过程的描述。"
 
 #: ../../source/examples/leaf_usage.rst:47 5ec4905284fd4e309dcdb197391d058e
 msgid ""
 "**Details:** The user can customize the number of devices, the number of "
 "classes and the number of dimensions, among others."
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 用户可以自定义设备数量、类别数量和维度数量等"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:48 c09a4016edd14a5085ae3f71cb337a23
 msgid "**Task:** Classification."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 分类"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:50 42354744342f4f8ba846233f3216d426
 msgid "Reddit"
@@ -176,23 +230,30 @@ msgid ""
 "**Overview:** We preprocess the Reddit data released by `pushshift.io "
 "<https://files.pushshift.io/reddit/>`__ corresponding to December 2017."
 msgstr ""
-"概述： 对 `pushshift.io <https://files.pushshift.io/reddit/>`__ "
-"发布的2017年12月的Reddit数据进行了预处理"
 
 #: ../../source/examples/leaf_usage.rst:53 f33d17d1f1f64f2daf5652490e188e9b
 msgid "**Details:** 1,660,820 users with a total of 56,587,343 comments."
 msgstr ""
+<<<<<<< HEAD
+=======
 "详情： 共1,660,820位用户，总评论56,587,343条。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:54 22b11e7620a64dac8f9fe5b02edcf112
 msgid "**Task:** Next-word Prediction."
 msgstr ""
+<<<<<<< HEAD
+=======
 "任务： 下一单词预测"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:57 e3479c5c33a740b09067f60ebd896973
 msgid "Download and preprocess data"
 msgstr ""
+<<<<<<< HEAD
+=======
 "使用leaf下载数据集"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:59 6464b3703aa54483bfd39ceef3a5a4af
 msgid ""
@@ -204,34 +265,50 @@ msgid ""
 "types of data sets into ``fedlab_benchmarks/datasets/data``, which stores"
 " the download scripts of various data sets."
 msgstr ""
+<<<<<<< HEAD
+=======
 "为方便用户使用leaf，fedlab将leaf六类数据集的下载、处理脚本整合到 "
 "``fedlab_benchmarks/datasets/data`` 中，该文件夹存储各类数据集的下载脚本。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:61 45e4de3cf0134545a1062a603b3f879e
 msgid "Common structure of leaf dataset folders:"
 msgstr ""
+<<<<<<< HEAD
+=======
 "leaf数据集文件夹内的文件结构："
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:72 5e5b685c5c944be498cf1b0014af3c36
 msgid "``preprocess.sh``: downloads and preprocesses the dataset"
 msgstr ""
+<<<<<<< HEAD
+=======
 "``preprocess.sh``: 对数据集进行下载和处理。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:73 0d5852acd7d14800b2dbc7f37e501e43
 msgid ""
 "``stats.sh``: performs information statistics on all data (stored in "
 "``./data/all_data/all_data.json``) processed by ``preprocess.sh``"
 msgstr ""
+<<<<<<< HEAD
+
+=======
 "对 ``preprocess.sh`` 处理后所有数据（存储于 ``./data/all_data/all_data.json`` ）进行信息统计。"
 
 
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:74 4300ebf04b2e4e4eb7707f80bf4ee62e
 msgid ""
 "``README.md``: gives a detailed description of the process of downloading"
 " and preprocessing the dataset, including parameter descriptions and "
 "precautions."
 msgstr ""
+<<<<<<< HEAD
+=======
 "``README.md``: 对该数据集的下载和处理过程进行了详细说明，包含了参数说明和注意事项。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:76 885a0e9789334c3e9bee384d1e1363ff
 msgid ""
@@ -242,14 +319,20 @@ msgid ""
 "developers can modify the parameters according to application "
 "requirements."
 msgstr ""
+<<<<<<< HEAD
+=======
 "用户可直接运行脚本 ``create_datasets_and_save.sh`` "
 "来下载，处理和存储相关的数据集。划分的数据集会被pickle模块序列化并存储到文件中。这个.sh脚本是preprocess.sh的样例用法。用户可以修改"
 " ``create_datasets_and_save.sh`` 的源码从而自定义划分策略。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:78 bfd1ce05117e435e85068e87dcc66c7d
 msgid "**preprocess.sh Script usage example:**"
 msgstr ""
+<<<<<<< HEAD
+=======
 "**preprocess.sh 使用样例:**"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:99 cea79bf180d54d189488042964333acf
 msgid ""
@@ -258,46 +341,64 @@ msgid ""
 "the example and explanation of script parameters, the common parameters "
 "are:"
 msgstr ""
+<<<<<<< HEAD
+
+=======
 "通过对 ``preprocess.sh`` "
 "设定参数，实现对原始数据的采样、划分等处理，各数据集文件夹下的README.md均提供了脚本参数示例和解释，常见参数有："
 
 
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:101 af96c4659f4e4567a1e3c753fcb75e07
 msgid ""
 "``-s`` := 'iid' to sample in an i.i.d. manner, or 'niid' to sample in a "
 "non-i.i.d. manner; more information on i.i.d. versus non-i.i.d. is "
 "included in the 'Notes' section."
 msgstr ""
+<<<<<<< HEAD
+=======
 "``-s`` 表示采样方式，取值有iid和niid两种选择，表示是否使用i.i.d方式进行采样。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:103 bb33752341784d67a2c63cdeec3b721e
 msgid ""
 "``--sf`` := fraction of data to sample, written as a decimal; default is "
 "0.1."
 msgstr ""
+<<<<<<< HEAD
+=======
 "``--sf`` 表示采样数据比例，取值为小数，默认为0.1。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:105 b2e23c89023742fbb2c4fb229c6e723e
 msgid "``-k`` := minimum number of samples per user"
 msgstr ""
+<<<<<<< HEAD
+=======
 "``-k`` 表示采样时所要求的用户最少样本数目，筛选掉拥有过少样本的用户，若取值为0表示不进行样本数目的筛选。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:107 7f62498a5380407493cfa82acf8209a3
 msgid ""
 "``-t`` := 'user' to partition users into train-test groups, or 'sample' "
 "to partition each user's samples into train-test groups"
 msgstr ""
-"``-t`` "
-"表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中。"
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:109 64717ce518a74405861549dc6377a33a
 msgid ""
 "``--tf`` := fraction of data in training set, written as a decimal; "
 "default is 0.9, representing train set: test set = 9:1."
 msgstr ""
+<<<<<<< HEAD
+
+=======
 "``--tf`` 表示训练集的数据占比，取值为小数，默认为0.9，表示训练集:测试集=9:1。"
  
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:111 98c88c75fd104a3bb7af3beb06fd9abd
 msgid ""
 "At present, FedLab's Leaf experiment need provided training data and test"
@@ -305,8 +406,6 @@ msgid ""
 "splitting parameter for ``preprocess.sh`` to carry out the experiment, "
 "default is 0.9."
 msgstr ""
-"目前FedLab的Leaf实验需要提供训练数据和测试数据，因此需要对 ``preprocess.sh`` 提供相关的数据训练集-测试集划分参数，"
-"默认划分比例为0.9。"
 
 #: ../../source/examples/leaf_usage.rst:113 01335a04c4b6494c9dd3f0e2f0b17341
 msgid ""
@@ -314,12 +413,14 @@ msgid ""
 "folder in the dataset directory before re-running ``preprocess.sh`` to "
 "download and preprocess data."
 msgstr ""
-"若需要重新获取数据或划分数据，需要先删除各数据集下的data文件夹再运行相关脚本进行数据下载和处理。"
 
 #: ../../source/examples/leaf_usage.rst:116 2a1519a752bd4fa0a8dece1ccb07bc63
 msgid "Pickle file stores Dataset."
 msgstr ""
+<<<<<<< HEAD
+=======
 "pickle序列化存储Dataset"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:118 d59f794ee47e4c41a4c04f4308349f99
 msgid ""
@@ -328,20 +429,29 @@ msgid ""
 "Dataset of the corresponding data of each client can be obtained by "
 "reading the pickle file after data processing."
 msgstr ""
+<<<<<<< HEAD
+=======
 "为加速用户读取数据，fedlab提供了将原始数据处理为DataSet并存储为pickle文件的方法。"
 "通过读取数据处理后的pickle文件可获得各客户端对应数据的Dataset。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:120 9cc200afe216432c83290d1386eddbbe
 msgid ""
 "set the parameters and run ``create_pickle_dataset.py``. The usage "
 "example is as follows:"
 msgstr ""
+<<<<<<< HEAD
+=======
 "设定参数并运行 ``create_pickle_dataset.py`` ，使用样例如下："
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:127 208ef403b87c408790720f20af6899cf
 msgid "Parameter Description:"
 msgstr ""
+<<<<<<< HEAD
+=======
 "参数说明："
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:129 aad2fa707f1949f9b4078cafbb54eef2
 msgid ""
@@ -350,11 +460,15 @@ msgid ""
 "provided by fedlab to download leaf data, 'data\\_root' can be set to "
 "this path, a relative address of which is shown in this example."
 msgstr ""
+<<<<<<< HEAD
+
+=======
 "``data_root`` ：存储leaf数据集的root路径，该路径包含leaf各数据集；"
 "若使用fedlab所提供的 ``Fedlab_benchmarks/datasets/`` 下载leaf数据，"
 "则data_root可设置为该路径，示例给出了该路径的相对地址。"
 
 
+>>>>>>> docs-fix-en-version
 #: ../../source/examples/leaf_usage.rst:131 5006d63b167d484aadf3c3ad074e84b9
 msgid ""
 "``save_root``: directory to store the pickle file address of the "
@@ -363,10 +477,13 @@ msgid ""
 "``pickle_dataset`` folder under the current path to store all pickle "
 "dataset files."
 msgstr ""
+<<<<<<< HEAD
+=======
 "``save_root`` ：存储处理后DataSet的pickle文件地址，"
 "各数据集DataSet将另存为 ``{save_root}/{dataset_name}/{train,test}`` ；"
 "示例则在当前路径下创建 ``pickle_dataset`` 文件夹存储所有的pickle dataset文件。"
 
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:133 1a1c61768f0046c994448e2bb2a86a07
 msgid ""
@@ -374,13 +491,19 @@ msgid ""
 "There are six options {femnist, shakespeare, celeba, sent140, synthetic, "
 "reddit}."
 msgstr ""
+<<<<<<< HEAD
+=======
 "``dataset_name`` ：指定要处理的leaf数据集名称，"
 "有{feminist, Shakespeare, celeba, sent140, synthetic, reddit}六种选择。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:136 34892566c6364bdba30b9c288ecabe0a
 msgid "Dataloader loading data set"
 msgstr ""
+<<<<<<< HEAD
+=======
 "Dataloader加载数据集"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:138 5bf04d3c7cf743abaf3d87b042def612
 msgid ""
@@ -388,25 +511,32 @@ msgid ""
 "``fedlab_benchmarks/leaf/dataloader.py``). All returned data types are "
 "pytorch `Dataloader <https://pytorch.org/docs/stable/data.html>`__."
 msgstr ""
-"leaf数据集由 ``dataloader.py`` 加载(位于 ``fedlab_benchmarks/leaf/dataloader.py`` )，"
-"所有返回数据类型均为pytorch `Dataloader <https://pytorch.org/docs/stable/data.html>`__ 。"
 
 #: ../../source/examples/leaf_usage.rst:140 9abcfd0f9b8340c6bb9e75530f08c5dd
 msgid ""
 "By calling this interface and specifying the name of the data set, the "
 "corresponding Dataloader can be obtained."
 msgstr ""
+<<<<<<< HEAD
+=======
 "通过调用该接口并指明数据集名称，即可获得相应的Dataloader。"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:142 fc9e1a38cc0b4eaeb3807e8e1ef05b3e
 msgid "**Example of use:**"
 msgstr ""
+<<<<<<< HEAD
+=======
 "使用样例"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:157 7db41d16575044d3968a4af48890af05
 msgid "Run experiment"
 msgstr ""
+<<<<<<< HEAD
+=======
 "运行实验"
+>>>>>>> docs-fix-en-version
 
 #: ../../source/examples/leaf_usage.rst:159 d8443591854f41989079a7276e9a956a
 msgid ""
@@ -414,12 +544,14 @@ msgid ""
 "process** scenario under FedAvg's Cross machine implement, and the tests "
 "of femnist and Shakespeare data sets have been completed."
 msgstr ""
-"当前LEAF数据集所进行的实验为FedAvg的cross machine场景。"
 
 #: ../../source/examples/leaf_usage.rst:161 29c3f7c3f1784ce685cf66ca29961858
 msgid ""
 "Run \\`fedlab\\_benchmarks/fedavg/cross\\_machine/LEAF\\_test.sh\\` to "
 "quickly execute the simulation experiment of fedavg under leaf data set."
 msgstr ""
+<<<<<<< HEAD
+=======
 "通过运行fedlab_benchmarks/fedavg/cross_machine/LEAF_test.sh可快速执行LEAF数据集下FedAvg的模拟实验。"
+>>>>>>> docs-fix-en-version
 

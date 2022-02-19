@@ -38,12 +38,6 @@ msgid ""
 "``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or"
 " ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``."
 msgstr ""
-"FedLab 基于 `torch.distributed "
-"<https://pytorch.org/docs/stable/distributed.html>`_ 实现了点对点通信模块。 "
-"默认Gloo为分布式通信后端。 FedLab 进程通过TCP网络连接发送/接收数据。 如果自动使用的以太网接口错误，则需要用户设置环境变量 "
-"``GLOO_SOCKET_IFNAME`` 的方式，手动指定正确的以太网口。比如在终端运行 ``export "
-"GLOO_SOCKET_IFNAME=eth0`` 或者在Python代码中 ``os.environ['GLOO_SOCKET_IFNAME']"
-" = \"eth0\"`` 。"
 
 #: ../../source/tutorials/tutorial_1.rst:15 68a03cc92b1249909db34a21390101ef
 msgid "Check the available ethernet:"
@@ -57,8 +51,6 @@ msgid ""
 "is for quickly network configuration, which you can create one as "
 "follows:"
 msgstr ""
-"用户需要正确初始化 :class:`DistNetwork` 来保证 ``torch.distributed`` "
-"的网络通信连接成功。可以通过一下方式来创建一个正确的 :class:`DistNetwork` 。"
 
 #: ../../source/tutorials/tutorial_1.rst:36 07ba4a8b5eb3417786d5358cfbf81334
 msgid ""
@@ -86,9 +78,6 @@ msgid ""
 "The ethernet can be None, torch.distributed will try to find the right "
 "ethernet. If it doesn't work, user need to assign right ethernet name."
 msgstr ""
-" ``ethernet`` 可以设置为None， ``torch.distributed`` "
-"会尝试搜索正确的网络以太网接口。如果默认时，网络初始化失败，可以尝试手动指定 ``ethernet`` 。"
-
 
 #: ../../source/tutorials/tutorial_1.rst:41 219b1cc4351a4985951661a3249ceaeb
 msgid ""
@@ -141,8 +130,7 @@ msgid ""
 msgstr ""
 "**Data type:** FedLab网络包Package仅支持同一种数据类型的tensor同时打包。"
 "换句话说，FedLab会在打包tensor时强制数据类型转换，并给出warning。"
-"包的数据类型由第一个被打包的tensor类型决定。目前支持如下数据类型： "
-**[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, "
+"包的数据类型由第一个被打包的tensor类型决定。目前支持如下数据类型： **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, "
 "torch.float64]** 。"
 
 #: ../../source/tutorials/tutorial_1.rst:63 5b9b9297267c4f49900e4246f2fb7836
