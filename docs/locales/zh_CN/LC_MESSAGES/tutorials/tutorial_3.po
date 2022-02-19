@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/tutorials/tutorial_3.rst:5 70beb32c646d406c97e534b2811848d2
 msgid "Federated Optimization"
-msgstr ""
+msgstr "联邦优化"
 
 #: ../../source/tutorials/tutorial_3.rst:7 a882c68b631f4ec087b5b2da0dcca22f
 msgid ""
@@ -28,6 +28,9 @@ msgid ""
 " customizable in FedLab. You need to define :class:`ClientTrainer` and "
 ":class:`ParameterServerBackendHandler`."
 msgstr ""
+"标准的联邦学习优化包括两步：1. 客户端用本地数据集训练本地模型；2. 服务端全局模型聚合。"
+"FedLab根据这个优化范式定义了 :class:`ClientTrainer` 和 :class:`ParameterServerBackendHandler` "
+"分别作为局部模型训练和全局模型聚合逻辑的自定义模块。"
 
 #: ../../source/tutorials/tutorial_3.rst:9 44fb9b0b15f84b9b988776e3cf1e8565
 msgid ""
@@ -35,22 +38,26 @@ msgid ""
 "are required to manipulate PyTorch Model. They are both inherited from "
 ":class:`ModelMaintainer`."
 msgstr ""
+" :class:`ClientTrainer` 和 :class:`ParameterServerBackendHandler` 都是负责管理Pytorch模型。"
+"代码结构上，这两个类都继承于 :class:`ModelMaintainer` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:50 9dd10d95521344a89c10b5b6d2c1d2e3
 msgid "Client local training"
-msgstr ""
+msgstr "Client本地训练"
 
 #: ../../source/tutorials/tutorial_3.rst:52 7da327fa481648568c81fe8dcb2c4ee3
 msgid ""
 "The basic class of ClientTrainer is shown below, we encourage users "
 "define local training process following our code pattern:"
 msgstr ""
+"客户训练器的基类如下代码块所示，我们建议用户自定义本地模型训练流程应参考我们的代码模式（我们也欢迎更好的实现）。"
 
 #: ../../source/tutorials/tutorial_3.rst:80 932f668d2fa04ed0b337af397ed0c1aa
 msgid ""
 "Overwrite :meth:`ClientTrainer.train()` to define local train procedure. "
 "Typically, you need to implement standard training pipeline of PyTorch."
 msgstr ""
+"重写 :meth:`ClientTrainer.train()` 定义本地训练流程。这里应该是标准的PyTorch模型训练Pipeline。"
 
 #: ../../source/tutorials/tutorial_3.rst:81 2a5934b2c9324224bd575dc87be6f4a4
 msgid ""
@@ -58,16 +65,20 @@ msgid ""
 "``self._model``. Please make sure the function ``train()`` will "
 "manipulate ``self._model``."
 msgstr ""
+"类属性 ``model`` 和 ``model_parameters`` 和 ``self._model`` 相关联， 作为"
+"上层获得模型信息的接口。 用户自定义本地训练时，需要保证 ``train()`` 函数会修改"
+"``self._model`` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:83 232ee20c948b490d95b33738eb067d91
 msgid ""
 "**A standard implementation of this part is in "
 ":class:`ClientSGDTrainer`.**"
 msgstr ""
+"这部分的一个标准实现可以参考 :class:`ClientSGDTrainer`。"
 
 #: ../../source/tutorials/tutorial_3.rst:86 b464a2a08b03428796d541a7e23c22a6
 msgid "Server global aggregation"
-msgstr ""
+msgstr "Server的全局聚合"
 
 #: ../../source/tutorials/tutorial_3.rst:88 c8758235fd3b411ebe8ea9b892ad1369
 msgid ""
@@ -75,33 +86,42 @@ msgid ""
 "part. In **FedLab**, our basic class of Handler is defined in "
 ":class:`ParameterServerBackendHandler`."
 msgstr ""
+"全局聚合的PyTorch相关计算任务用户应该定义在ServerHandler模块里。 **FedLab** 中"
+"ServerHandler的基类定义在 :class:`ParameterServerBackendHandler` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:112 9679566fb388485894dfb2e5ac206dae
 msgid "User can define server aggregation strategy by finish following functions:"
 msgstr ""
+"用户可以通过修改以下函数，自定义模型聚合策略。"
 
 #: ../../source/tutorials/tutorial_3.rst:114 cd147366f068490295e33f5a31e6222f
 msgid ""
 "You can overwrite ``_update_model(model_parameters_list)`` to customize "
 "aggregation procedure. Typically, you can define aggregation functions as"
 " FedLab."
-msgstr ""
+msgstr  "你可以通过重写 ``_update_model(model_parameters_list)`` 来自定义聚合"
+"过程。通常你可以定义聚合函数。"
 
 #: ../../source/tutorials/tutorial_3.rst:116 45a3d48fb8f0492684977c209126495b
 msgid ""
 "``_update_model(model_parameters_list)`` is required to manipulate global"
 " model parameters (self._model)."
 msgstr ""
+"与ClientTrainer类似， ``_update_model(model_parameters_list)`` 作为对上层的接口，需要"
+"该函数会修改模型参数 ``self._model`` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:118 3cea3c59201e49fab9a881204b53d326
 msgid ""
 "implemented in ``fedlab.utils.aggregator`` which used in FedLab standard "
 "implementations."
 msgstr ""
+"参数聚合的方法实现可以参考 ``fedlab.utils.aggregator`` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:120 20ca8b6b19cd47ad93b35b95c9c497ec
 msgid ""
 "**A standard implementation of this part is in "
 "SyncParameterServerHandler.**"
 msgstr ""
+" **标准的ParameterServerHandler实现方法可以参考 "
+"SyncParameterServerHandler** 。"
 
