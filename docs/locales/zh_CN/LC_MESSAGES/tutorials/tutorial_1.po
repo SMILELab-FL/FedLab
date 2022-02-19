@@ -38,6 +38,11 @@ msgid ""
 "``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or"
 " ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``."
 msgstr ""
+"FedLab使用 `torch.distributed "
+"<https://pytorch.org/docs/stable/distributed.html>`_ 作为端到端通信包裹。"
+"通信后端默认为GLOO。FedLab通过TCP网络连接来处理数据的发送/接收。若自动检测到的接口不正确，"
+"则需要手动选择GLOO的网络接口：设置环境变量 ``GLOO_SOCKET_IFNAME``，比如 ``export GLOO_SOCKET_IFNAME=eth0``"
+" 或 ``os.environ['GLOO_SOCKET_IFNAME'] = \"eth0\"``。"
 
 #: ../../source/tutorials/tutorial_1.rst:15 68a03cc92b1249909db34a21390101ef
 msgid "Check the available ethernet:"
@@ -51,6 +56,8 @@ msgid ""
 "is for quickly network configuration, which you can create one as "
 "follows:"
 msgstr ""
+"需要给 :class:`DistNetwork` 指定正确的以太网来确保 ``torch.distributed`` 网络的"
+"正确初始化。 :class:`DistNetwork` 用于快速网络设置，可以通过以下方式创建："
 
 #: ../../source/tutorials/tutorial_1.rst:36 07ba4a8b5eb3417786d5358cfbf81334
 msgid ""
@@ -78,6 +85,8 @@ msgid ""
 "The ethernet can be None, torch.distributed will try to find the right "
 "ethernet. If it doesn't work, user need to assign right ethernet name."
 msgstr ""
+"若以太网设置为 ``None``，则 ``torch.distributed`` 会试图找到正确的以太网。"
+"如果这个方法不起效，用户需要自己指定正确的以太网名字。"
 
 #: ../../source/tutorials/tutorial_1.rst:41 219b1cc4351a4985951661a3249ceaeb
 msgid ""
