@@ -122,6 +122,5 @@ msgid ""
 "**A standard implementation of this part is in "
 "SyncParameterServerHandler.**"
 msgstr ""
-" **标准的ParameterServerHandler实现方法可以参考 "
-"SyncParameterServerHandler** 。"
+" **标准的ParameterServerHandler实现方法可以参考SyncParameterServerHandler** 。"
 
