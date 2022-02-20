@@ -38,7 +38,7 @@ msgid ""
 "are required to manipulate PyTorch Model. They are both inherited from "
 ":class:`ModelMaintainer`."
 msgstr ""
-" :class:`ClientTrainer` 和 :class:`ParameterServerBackendHandler` 都是负责管理Pytorch模型。"
+":class:`ClientTrainer` 和 :class:`ParameterServerBackendHandler` 都是负责管理Pytorch模型。"
 "代码结构上，这两个类都继承于 :class:`ModelMaintainer` 。"
 
 #: ../../source/tutorials/tutorial_3.rst:50 9dd10d95521344a89c10b5b6d2c1d2e3
@@ -108,7 +108,7 @@ msgid ""
 " model parameters (self._model)."
 msgstr ""
 "与ClientTrainer类似， ``_update_model(model_parameters_list)`` 作为对上层的接口，需要"
-"该函数会修改模型参数 ``self._model`` 。"
+"该函数会修改模型参数 ``self._model``。"
 
 #: ../../source/tutorials/tutorial_3.rst:118 3cea3c59201e49fab9a881204b53d326
 msgid ""
@@ -121,5 +121,5 @@ msgstr ""
 msgid ""
 "**A standard implementation of this part is in "
 "SyncParameterServerHandler.**"
-msgstr "**标准的 :class:`ParameterServerHandler` 实现方法可以参考 :class:`SyncParameterServerHandler`** 。"
+msgstr "**标准的ParameterServerHandler实现方法可以参考SyncParameterServerHandler** 。"
 
