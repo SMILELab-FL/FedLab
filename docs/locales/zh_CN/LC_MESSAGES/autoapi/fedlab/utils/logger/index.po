@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,53 +18,53 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:2
-#: 043aa7f01f6c46a3b6d74cf741fc68da
+#: b8df575544da4451bb8e1752d5ffd60a
 msgid "logger"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:8
-#: 9b9bc7b69b0a44b49f075c083f3b61b3
+#: 427c1af3c390447fa1ba620ad1430ff7
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:18:<autosummary>:1
-#: 67e69f7418c648e9b3eb9fdf3d68f20c
+#: 93b6ca2373d746a692f4226d89a1790c
 msgid ":obj:`Logger <fedlab.utils.logger.Logger>`\\"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:24
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:18:<autosummary>:1
-#: 4905900368514085908f9fa31e81baab 70918a106fb24bc0b71d1f656bcf6dbc
+#: 0fafcc3004cd458189ea0755618266dd 8965e9c1ff4e45b3af0ab8d777e90662
 msgid "record cmd info to file and print it to cmd at the same time"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:22
-#: 6d19c5aaac694ce4b2936ea836ab18cd
+#: 69f8ddb5a1f14ae2bc4bdbb2d5e12965
 msgid "Bases: :class:`object`"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst
-#: ffaa4440dd41460292960375c69459be
+#: 84382b2bacb848ceb3d99ba66e6d2d62
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:26
-#: 3f9a953f932f4d45b7ecc03fac1c0edf
+#: c6b6b86629e549c18b0fbe24a85a9469
 msgid "log name for output."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:28
-#: 7a9184a411484a868e0722926d50345d
+#: dcd820c3c6d14a43a64592ba6431011d
 msgid "a file path of log file."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:33
-#: 93f64c0377c847ec989fdeaae305e5d3
+#: b7d16d74808d4cea8c0cd785e73d2dd8
 msgid "Print information to logger"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/logger/index.rst:38
-#: 6921823e18e14ca2864ae09be3add44c
+#: b95f8b9effde433792133b1344d215d0
 msgid "Print warning to logger"
 msgstr ""
 

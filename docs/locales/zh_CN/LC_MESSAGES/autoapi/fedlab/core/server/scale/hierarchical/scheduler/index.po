@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,17 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:2
-#: 87699ae820ff4277a3b683b1b7aef775
+#: fe89cbb276d84561942c9e79e5cfcd4a
 msgid "scheduler"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:8
-#: 17e004623b5649fd8952f87a78fe75c6
+#: aed357b181a148b4ac0b2f9026c518ba
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:18:<autosummary>:1
-#: 3f8432dfcb3048069b753b203d436c19
+#: 81b6252de6e9485180e692f4bcd83193
 msgid ""
 ":obj:`Scheduler "
 "<fedlab.core.server.scale.hierarchical.scheduler.Scheduler>`\\"
@@ -36,37 +36,37 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:24
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:18:<autosummary>:1
-#: 9cec7906734a43a89492ab62e705a3bb a8c46f2bdae04d9091351a2fae8cb2c9
+#: 95b9bff9c81c4103814988b794bce8e6 9d557ab2a30344e4a95746f461c5e416
 msgid "Middle Topology for hierarchical communication pattern"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:22
-#: 83d95af8b44c47a0b18091f19fd2689b
+#: a4429342e9fc4582ab708db5f6ca4028
 msgid "Bases: :class:`torch.multiprocessing.Process`"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:26
-#: f3e7cd232cd64a679a575e71b974f9fa
+#: 1ceb650806a74a2588a26348c389d384
 msgid "Scheduler uses message queues to decouple connector modules"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst
-#: e2f50fce81aa4d39a6888f571ee47fe0
+#: 140fab499abc41aeab457041d763f393
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:28
-#: 61705c2e654f4b8eaa6b7c153c70612a
+#: eb4f38f34d1a4efd8e77d3658314ddd8
 msgid "Distributed network manager of server from upper level."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:30
-#: ca24aa2c419547ae86f4635bf8763994
+#: c2b9666b3e21480aaa4ba78627a5d4f4
 msgid "Distributed network manager of clients from lower level."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/server/scale/hierarchical/scheduler/index.rst:35
-#: 62e5dcdcedf14e91a99451e5e21a23dc
+#: 6cb1463b334549cc8d6d961af685276b
 msgid "Method to be run in sub-process; can be overridden in sub-class"
 msgstr ""
 

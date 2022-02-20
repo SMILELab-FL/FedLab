@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,70 +18,70 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:2
-#: 3705a8a163574ff6b3db2b8907d99496
+#: e67b24f1048b4953856eb330b000e4d7
 msgid "network"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:8
-#: 1abdb92ee3a74221aa81e4f159612582
+#: 1c00eff3d9df400eb50f7e69463378ff
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:18:<autosummary>:1
-#: 268c55802ff44d3a9232cc3d398ac4a6
+#: e1fe306281ee462fb2a17b118ee56566
 msgid ":obj:`DistNetwork <fedlab.core.network.DistNetwork>`\\"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:24
 #: ../../source/autoapi/fedlab/core/network/index.rst:18:<autosummary>:1
-#: a13c9d89d54c474bb6f8c667b78dc45f eee90da40402482ebcdbeab4223c2b3e
+#: 0fbe0205856348b586fd67d42fc54051 8c94ad1bae6d479eb88e3ee12d98e1bb
 msgid "Manage ``torch.distributed`` network."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:22
-#: f64cca00591545a299c349d475e65a7a
+#: 89ef7679f22648f794beae1783e65c15
 msgid "Bases: :class:`object`"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst
-#: 3ec15d30daa54dc5a4875f0602124fae
+#: 663a82796dca4672920fda6a73f15165
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:26
-#: 92f39206913942a6a0a10f690fe98b1f
+#: eb314146a6eb432eac58adaa66bacf9d
 msgid "Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:28
-#: 7ff8229031f44e10a4c0311b7430cdac
+#: 56baf25ec1b24d6a8ffcdb6982c956ae
 msgid "the size of this distributed group (including server)."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:30
-#: a2a66321bace4cf3902e91f4fedf602f
+#: 3697efb044a942588dd386fa52a51979
 msgid "the rank of process in distributed group."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:34
-#: 81a8820498244043ae8303cfe1f6e1cb
+#: 1e375f539d5040878828d40ebeba7c66
 msgid ""
 ":attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, "
 "``gloo``, and ``nccl``. Default: ``\"gloo\"``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:39
-#: 9fd363842b2d4ded96d4bab6085fd05b
+#: 8721daf957fa492a9aefc79cd1215271
 msgid "Initialize ``torch.distributed`` communication group"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:44
-#: 99e2675fcbbd4100ae175bbff5f29df5
+#: 0a92b89a6e5445b48510e6a21a851d30
 msgid "Destroy current ``torch.distributed`` process group"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/network/index.rst:49
-#: 56d1374688f0473887b5b7df90234d00
+#: 239259048d6d4120a7d5141b360b6696
 msgid "Return str(self)."
 msgstr ""
 

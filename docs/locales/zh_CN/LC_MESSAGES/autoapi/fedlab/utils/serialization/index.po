@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,49 +18,49 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/utils/serialization/index.rst:2
-#: efc93732f4b3479393e7da30a80156c8
+#: 214128471f48458c8b4c58c760d8c2c7
 msgid "serialization"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/serialization/index.rst:8
-#: 8a95033919194574b574c98b78728430
+#: 6f4b855018bd48a5ae8fa0bdc848aaab
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/serialization/index.rst:18:<autosummary>:1
-#: 4c129cebbf9a4a3c9f42387649c529dc
+#: 006e8c2aab0e484eb07410e51c86e06e
 msgid ":obj:`SerializationTool <fedlab.utils.serialization.SerializationTool>`\\"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/serialization/index.rst:21
-#: ff63e9508fda4fdca85f4e48e340708c
+#: 2fa32f8bfb6949c9bc733a52a0ae7618
 msgid "Bases: :class:`object`"
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:26
-#: 22f270c1690b4181a171681e316d8103
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:30
+#: 9e563bc83cd847fd917c17aab46afc29
 msgid "Unfold model parameters"
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:28
-#: 3c63bbcc879b45849e1c599bd9de880f
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:32
+#: c2da372f68ea4d97b20640f9761a005b
 msgid ""
 "Unfold every layer of model, concate all of tensors into one. Return a "
 "`torch.Tensor` with shape (size, )."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/serialization/index.rst
-#: 58bef293752c437fb73b45ca9c2d8f22 a9f1c691c0d4491798e9d3935e085ab1
+#: e8e0f6fe68e342439f9b485261fa9de5 f1691ac82a1846b494fec9be9d8d367c
 msgid "Parameters"
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:31
-#: a652587460134442856ae0b9cc1e7916
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:35
+#: d17c4bf76348414e883e0e6dd358d59d
 msgid "model to serialize."
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:38
-#: 4b12dabcea484e8db09c750962dd2636
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:42
+#: 23829f8c4421408eb34aa5cf8c34ada3
 msgid ""
 "Assigns serialized parameters to model.parameters. This is done by "
 "iterating through ``model.parameters()`` and assigning the relevant "
@@ -68,18 +68,18 @@ msgid ""
 "``model.parameters``."
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:42
-#: 1b85f32f3efe47db868a81746a3a2902
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:46
+#: 38ab414ef71d4af48f16225cbce515bf
 msgid "model to deserialize."
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:44
-#: 2ac56f488a234998b7ec9277d46758cb
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:48
+#: 8440c724cb7b4a31b424a65393d13f63
 msgid "serialized model parameters."
 msgstr ""
 
-#: ../../source/autoapi/fedlab/utils/serialization/index.rst:46
-#: d98c057bdf8f4bedb774df8bb06d586f
+#: ../../source/autoapi/fedlab/utils/serialization/index.rst:50
+#: 97eb2fbf3aaf43de955be19eda3cb846
 msgid "deserialize mode. \"copy\" or \"add\"."
 msgstr ""
 

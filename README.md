@@ -26,6 +26,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [x] FedAvg: [Communication-Efficient Learning of Deep Networks from Decentralized Data](http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf)
 - [x] FedAsync: [Asynchronous Federated Optimization](http://arxiv.org/abs/1903.03934)
 - [x] FedProx: [Federated Optimization in Heterogeneous Networks](https://arxiv.org/abs/1812.06127)
+- [x] FedDyn: [Federated Learning based on Dynamic Regularization](https://openreview.net/pdf?id=B7v4QMR6Z9w)
 
 2. Compression Algorithms
 - [x] DGC: [Deep Gradient Compression: Reducing the Communication Bandwidth for Distributed Training](https://arxiv.org/abs/1712.01887)

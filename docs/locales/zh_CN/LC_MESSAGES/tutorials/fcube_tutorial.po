@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: ../../source/tutorials/fcube_tutorial.rst:5 5ccfefca57cf407c88597f1dafb4b1ab
+#: ../../source/tutorials/fcube_tutorial.rst:5 4b36b69c2baa4e39bf53c3cde24c523c
 msgid "FCUBE"
 msgstr ""
 
-#: ../../source/tutorials/fcube_tutorial.rst:7 90d7aa6696174405bfca2996d5741424
+#: ../../source/tutorials/fcube_tutorial.rst:7 d35f2f8930454335aa55988a26a202b2
 msgid ""
 "FCUBE :cite:p:`li2021federated` is a synthetic dataset for research in "
 "non-IID scenario with feature imbalance. This dataset is proposed in "
@@ -31,7 +31,7 @@ msgstr "FCUBE :cite:p:`li2021federated` 是为non-IID场景设计的合成数据
 "特征不均衡。该数据集由 `Federated Learning on Non-IID Data Silos: An Experimental Study "
 "<https://arxiv.org/abs/2102.02079>`_ 提出。"
 
-#: ../../source/tutorials/fcube_tutorial.rst:9 0e3cc4a1bcbf4f97b23e60963b7c1b8e
+#: ../../source/tutorials/fcube_tutorial.rst:9 634e965ce6fc4c81a59a63efefd47c2f
 msgid ""
 "Data points of FCUBE conain 3 features, that is, "
 ":math:`\\mathcal{D}_{\\text{FCUBE}} = \\{ (\\mathbf{x}, y) \\}`, where "
@@ -47,12 +47,12 @@ msgstr "FCUBE的数据点包含3个特征，即 :math:`\\mathcal{D}_{\\text{FCUB
 "在测试集中包含1000个数据点。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:12
-#: cc1cc14b6cfb44f9a36dce6e302c0afd
+#: 762b2be31ae541ac9456bfbbfa55bdaa
 msgid "For more details, please refer to Section (IV-B-b) of original paper."
 msgstr "更多细节请参考原论文的章节(IV-B-b)。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:14
-#: 8d92217041b44ff885ebce220051377b
+#: d940450df57a4da586032c1cf182bd28
 msgid ""
 "Dataset ``FCUBE`` will generate local ``.npy`` file if ``generate=True``."
 " And it also accepts common arguments for dataset: ``transform`` and "
@@ -62,81 +62,81 @@ msgstr "若 ``generate=True``，数据集 ``FCUBE`` 会在本地生成 ``.npy`` 
 "``target_transform``。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:16
-#: 4210286ba2824165bf70b06484437a04
+#: 9b6ec2bcb8664d8db7949f8bbd5bed60
 msgid "Import related package and basic setting:"
 msgstr "导入相关的包以及基本设定："
 
 #: ../../source/tutorials/fcube_tutorial.rst:40
-#: c31c875ff33b4c45add0c3a2a943dd49
+#: 739f3ef0db4344be92dab810e9840c89
 msgid "Dataset"
 msgstr ""
 
 #: ../../source/tutorials/fcube_tutorial.rst:43
-#: 4939a1160c894eb9ad2f8f526c9354da
+#: 83359af801614fbd8b6d605a4c2ac0cb
 msgid "Generation"
 msgstr "生成"
 
 #: ../../source/tutorials/fcube_tutorial.rst:45
-#: 4e11116584f24d0b88cd1817f7efbcfe
+#: f65991030b32488190b5567838d705e4
 msgid "Generate trainset:"
 msgstr "生成训练集："
 
 #: ../../source/tutorials/fcube_tutorial.rst:60
-#: 686c0efe5b464a51a1442b0f7cef5700
+#: 4af50ebb49b341ffa8be0a8be2acaeaf
 msgid "Generate testset:"
 msgstr "生成测试集："
 
 #: ../../source/tutorials/fcube_tutorial.rst:77
-#: 911caaf1ee7a4101b062ce775a41f304
+#: 0141956495d94fec83f3fbe577a1ffec
 msgid "Visualization"
 msgstr "可视化"
 
 #: ../../source/tutorials/fcube_tutorial.rst:79
-#: f1c4d275a3994bd3aa85c8cb7871e76f
+#: 3f875f7cbb504df2a41b53cc4ae9d904
 msgid "For visualization, we first construct  ``DataFrame`` for dataset:"
 msgstr "为了可视化，我们先将数据集构造成 ``DataFrame``："
 
 #: ../../source/tutorials/fcube_tutorial.rst:96
-#: 8c19bf4df4d14656b9a851e4c5965d59
+#: 71113789f34e4c019e56d0566a069dee
 msgid ""
 "The class distribution in FCUBE is balanced. Visualization of class "
 "distribution in trainset/testset:"
 msgstr "FCUBE的类分布是均衡的。训练集/测试集中类分布的可视化："
 
 #: ../../source/tutorials/fcube_tutorial.rst:107
-#: 56b456b411ee44b797d54586eddd8899
+#: 770345acc57d4c5cbc1ba5cc848b88b9
 msgid "Data points distribution for trainset:"
 msgstr "训练集的数据点分布："
 
 #: ../../source/tutorials/fcube_tutorial.rst:133
-#: 3d1ddf23f4d24057b7765db5a7d8f754
+#: 63f3dfb9956d4862811302b5ac702d34
 msgid "Data points distribution for testset:"
 msgstr "测试集的数据点分布："
 
 #: ../../source/tutorials/fcube_tutorial.rst:161
-#: 27e9f42807034558a4dfab88b35e52ab
+#: e36407795b2745958591d47ffb740e4d
 msgid "Data Partition"
 msgstr "数据划分"
 
 #: ../../source/tutorials/fcube_tutorial.rst:163
-#: 0ac43972a7ec47e2bbf06f1c4485fb0b
+#: 1e867da9d3e843ee8fe0922721d6df77
 msgid ""
 "FCUBE only supports 2 partition methods: - feature distribution skew: "
 "synthetic - IID"
 msgstr "FCUBE只支持2种划分方法：- 特征分布倾斜：合成 - IID"
 
 #: ../../source/tutorials/fcube_tutorial.rst:167
-#: 26452a8230e84cf38862539b20cac0d5
+#: b888711bc13c4eeba5224b3a7220e5a4
 msgid "Limited by synthetic partition, client number for FCUBE can only be 4."
 msgstr "受限于模拟划分方案，FCUBE划分的client数量只能为4。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:177
-#: b3619dd1bdc84ba0a0ad9596bb8987f7
+#: 22d03797fd8a49109dec1b7f49499c88
 msgid "Synthetic partition"
 msgstr "模拟划分"
 
 #: ../../source/tutorials/fcube_tutorial.rst:179
-#: 8a3ef3bbcc1e41d39e8a6f3823cdcf46
+#: 1bd54ccf752d4f029b7bc5cb45b7f052
 msgid ""
 "From dataset visualization, we can see that the distribution of FCUBE "
 "data points is in a cube with :math:`-1 < x_1 < 1`, :math:`-1 < x_2 < 1`,"
@@ -145,7 +145,7 @@ msgstr "从数据集可视化中我们可以看出FCUBE数据点的分布在一�
 " :math:`-1 < x_3 < 1` 的立方体中。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:181
-#: 099f77c805eb4dac936bd8587c419492
+#: 46afa3cd7d3b474e91235ab5d4bc85c1
 msgid ""
 "In ``'synthetic'`` partition, the cube is divided into 8 parts by plane "
 ":math:`x_1=0`, :math:`x_2=0`, and :math:`x_3=0`. Then, each pair of parts"
@@ -158,23 +158,23 @@ msgstr "在模拟划分中，数据立方体被坐标平面划分成8个部分�
 "依旧保持均衡。"
 
 #: ../../source/tutorials/fcube_tutorial.rst:183
-#: bbe6b0aa530d4da491955de2b15952ee
+#: 379a6fd24ba3497caf56031de23b4176
 msgid "Visualization from original paper:"
 msgstr "原论文中的可视化："
 
 #: ../../source/tutorials/fcube_tutorial.rst:222
 #: ../../source/tutorials/fcube_tutorial.rst:290
-#: 4ed2132345f64e609840c8aa35ad976b 9b677aea0d094648b01be4c225c9a076
+#: a515afd5d38647eb89c9bf995ffdba8f e35eefdb4a8d46cab15cc630856003cc
 msgid "Visualization of data points for each client:"
 msgstr "每个client拥有的数据点的可视化："
 
 #: ../../source/tutorials/fcube_tutorial.rst:261
-#: 5e3b712572a74c699dae84526f27c5e3
+#: 992b5c85202942e6babaeaa43ee965f9
 msgid "IID partition"
 msgstr "IID划分"
 
 #: ../../source/tutorials/fcube_tutorial.rst:330
-#: a95d9814673f4c39a4ecf46ba2cc42b5
+#: 75f1a358e05340c5a664a0a35237bbf5
 msgid ""
 "Complete code for FCUBE tutorial is `here <https://github.com/SMILELab-FL"
 "/FedLab-"

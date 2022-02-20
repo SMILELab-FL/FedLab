@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,145 +18,145 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/core/index.rst:2
-#: 160037a1addb40e0b788a3b49262774a
+#: b15d43641a9349aca7b4fcc575225e4b
 msgid "core"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:31
-#: ed220dc409a1425d9aecc90d1d67deb4
+#: 06066cf5b91b4d4aa1859c9e73252806
 msgid "Package Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:42:<autosummary>:1
-#: 712eb6c8530544e4a3f2884aa4fafea4
+#: 73b2ca8863704ffc822cb53f338aa7f3
 msgid ":obj:`DistNetwork <fedlab.core.DistNetwork>`\\"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:48
 #: ../../source/autoapi/fedlab/core/index.rst:42:<autosummary>:1
-#: 013a1707356f4bd482873d57e1910118 f24d4baa83fd4f47bbea884fd3cc0b15
+#: 69ca6afbbfba4f748baba256669ca77a a77142d3e53249fda755aac6ae8a5ecd
 msgid "Manage ``torch.distributed`` network."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:42:<autosummary>:1
-#: 006279f789604bf59ec0b3fc7f7dc871
+#: 0c7ff417b6ad4e90a3e11d94e801fb09
 msgid ":obj:`NetworkManager <fedlab.core.NetworkManager>`\\"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:82
 #: ../../source/autoapi/fedlab/core/index.rst:42:<autosummary>:1
-#: 5b92bca663bf488d8508fe95b892ee47 b7a4b5172f894d62ae16f57995302f61
+#: 43b9ea4d8885494baec01793b0f4bce9 64066563dfdb4984bba8a17c6fc22b26
 msgid "Abstract class"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:46
-#: c3c0b54baa0b440491dc54360ef1a0a6
+#: 0db306e551b942e7bf80a9d327a0d752
 msgid "Bases: :class:`object`"
 msgstr ""
 
-#: ../../source/autoapi/fedlab/core/index.rst 2b7a834c5ae142dc900de9d7f3879dd4
-#: a30b3bed7c8a49daa732d20b9fc16f21
+#: ../../source/autoapi/fedlab/core/index.rst a79fdcaf71cf4a41a2526d906e666c2c
+#: eab68e61603541e1b6da0f03aad5cf12
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:50
-#: 27d25397c709449fb86c0ea64c49669f
+#: 068a95d6e90744689cb410a2fe672df1
 msgid "Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:52
-#: 5f6ffd60a5964396a64c1a6eae32b916
+#: eef5ad94bbe14f1c9f9794a5c396733e
 msgid "the size of this distributed group (including server)."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:54
-#: b767a71ba28d4968bf9d369e693f8771
+#: af2604f1e45c454d84de9866b4a5fdee
 msgid "the rank of process in distributed group."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:58
-#: f0bed50410ba4c42a8e495addd7017b6
+#: 8080ad42952b44a38b6f4c625f2af0b3
 msgid ""
 ":attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, "
 "``gloo``, and ``nccl``. Default: ``\"gloo\"``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:63
-#: ec44e780229f4734b965dccaedcb44a2
+#: bc96e48bad7d4c86890c53185cbfb919
 msgid "Initialize ``torch.distributed`` communication group"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:68
-#: 2f562fc316834923afa2fada019af46e
+#: d10aaae4c3ef46eeabeddb85a817c4d4
 msgid "Destroy current ``torch.distributed`` process group"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:73
-#: 127ac1a3991a4e20bf229c99225aa542
+#: d7f0453b9d7145529e5bbadf705c85fe
 msgid "Return str(self)."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:80
-#: 9e805a3122c047eba9f4bdbc43b2d84a
+#: 1d47466fb5cb45d59bcce77f063cdd7f
 msgid "Bases: :class:`torch.multiprocessing.Process`"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:84
-#: 85edc4a3f054447d880182f560009d76
+#: 84cab41a724049a1af2d6113ae119434
 msgid "object to manage torch.distributed network communication."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:89
-#: fe6b3036d34f453dbc7efda634e29553
+#: 77176d3af5fa42eca70cb95f0af81d97
 msgid "Main Process:"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:91
-#: a3110c21603f48a8aae11970293c74c6
+#: 5dc7e448c7764e56b794237a9d173683
 msgid "Initialization stage."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:92
-#: 2efe66ac7f9046cb9b5f0c60e6309ccf
+#: edd8ddb45cf8420b9a2ea836a22fa21e
 msgid "FL communication stage."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:93
-#: 84f70448a9a64d16911dc3c6ef23cbdb
+#: 860ce3da36c74f02a2aaaeda240f82b4
 msgid "Shutdown stage. Close network connection."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:98
-#: 8c4598f3ac1c476cb1975224bc717ff3
+#: 175677081a9d44aca4ef9b38bcadec73
 msgid "Initialize network connection and necessary setups."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:100
-#: 276ebc3e44614fefbbb7752bf56bfed5
+#: bce8894003184810b0637007470b8728
 msgid ""
 "At first, ``self._network.init_network_connection()`` is required to be "
 "called."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:102
-#: d509d33cf2a04077822b97f084563e0a
+#: fef91a6142b146d09e6185d2417ea319
 msgid ""
 "Overwrite this method to implement system setup message communication "
 "procedure."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:108
-#: fc8aa95505b14688bd89f875b9bb848c
+#: 9fc319b41d7a435fa7166d47bfbab587
 msgid "Define the actions of communication stage."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:113
-#: d3cd73750e294c43ae96d6aa20ba033a
+#: 6f4e742ee89d4771abe74efba3c1d943
 msgid "Shutdown stage."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/index.rst:115
-#: 38a1dedcfe1d455daaf1038da318b2b7
+#: 8dce69c7848b42b5a3519d14917df01a
 msgid "Close the network connection in the end."
 msgstr ""
 

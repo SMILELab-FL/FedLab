@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: ../../source/tutorials/tutorial.rst:5 9ba6dc9afa69413ca59186e09cc95899
+#: ../../source/tutorials/tutorial.rst:5 023b66ded0f34b6abe37d4587c3d7c19
 msgid "Tutorials"
 msgstr "使用指南"
 
-#: ../../source/tutorials/tutorial.rst:7 6e429ee6c8b44230a37f2d5663609586
+#: ../../source/tutorials/tutorial.rst:7 fb257f3f22a84a1fbf677d8178178918
 msgid ""
 "**FedLab** standardizes FL simulation procedure, including synchronous "
 "algorithm, asynchronous algorithm :cite:p:`xie2019asynchronous` and "
@@ -31,21 +31,21 @@ msgstr "**FedLab** 标准化了联邦学习模拟的过程，包括同步算法�
 "通信压缩 :cite:p:`lin2017deep`。**FedLab** 提供了模块化工具以及联邦学习的标准化"
 "实现来简化联邦学习研究。"
 
-#: ../../source/tutorials/tutorial.rst:25 0f3a201d163140189de181df571a26f6
+#: ../../source/tutorials/tutorial.rst:23 4d84f1d7b0424d00b2bf4b331a88ea0b
 msgid "Step-by-step guide on distributed network setup and package transmission."
 msgstr "分布式网络设置以及包传输的分步指南"
 
-#: ../../source/tutorials/tutorial.rst:32 12b694f73e2c403ab0c6800f2ab4fc2a
+#: ../../source/tutorials/tutorial.rst:30 7121d8f63ed643c8824c518ec66ac6c5
 msgid ""
 "Use :class:`NetworkManager` to customize communication strategies, "
 "including synchronous and asynchronous communication."
 msgstr "用 :class:`NetworkManager` 来自定义通信策略，包括同步和异步通信"
 
-#: ../../source/tutorials/tutorial.rst:40 a3b77880c97b47099e078d36412ef630
+#: ../../source/tutorials/tutorial.rst:38 2d99a79926d741d6a0a5beb34cd6716f
 msgid "Define your own model optimization process for both server and client."
 msgstr "在server和client上定义你自己的模型优化过程"
 
-#: ../../source/tutorials/tutorial.rst:48 5fc5855e000e48419f483f5272653964
+#: ../../source/tutorials/tutorial.rst:46 bf50ee22e8c6480bb8ade3498ff120d6
 msgid "Get federated datasets and data partition for IID and non-IID setting."
 msgstr "根据IID和non-IID设定获得联邦化的数据集和数据划分"
 
