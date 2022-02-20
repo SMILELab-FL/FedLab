@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,17 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:2
-#: 8a7620320dd347e6b5bf7ea6179ed0d0
+#: 31ef142c3a0f483fa61d90ad93780fd6
 msgid "manager"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:8
-#: 2f50ae73a1964c4ab6ae1e0b73b801fa
+#: 97c566ccd2e143feb2be5c94e58eeaac
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:18:<autosummary>:1
-#: 45b9eeeadf9547d3b138cf2dce3e1b1c
+#: b5f5c1e67a4144eda3bc1f770b96ac4d
 msgid ""
 ":obj:`ScaleClientPassiveManager "
 "<fedlab.core.client.scale.manager.ScaleClientPassiveManager>`\\"
@@ -36,17 +36,17 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:24
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:18:<autosummary>:1
-#: 00bd62c55c8640fdb813143bcda88534 e1e39db6517f4e8e949f82896f491d20
+#: 301fb36b90f14f8695628a1ffd97fcee add965181abe442cb41fc767811291c5
 msgid "Special client manager for :class:`SerialTrainer`."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:22
-#: 75a60fc13ec34cd8ac8125a2a558ebbc
+#: c01a1d62afcd46e7b2651ae7a7551041
 msgid "Bases: :class:`fedlab.core.client.manager.ClientPassiveManager`"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:26
-#: d8cb24f95f4946d78a5415e47381c3c7
+#: b9a7ac1ba7f94c1e97d5e499cea58398
 msgid ""
 "We modify the communication agreements to create a mapping from client id"
 " to process rank. Thus, :class:`ScaleClientPassiveManager` is able to "
@@ -54,17 +54,17 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst
-#: 1dba816c96f447788257a3eb9365fd6d
+#: 5af1600a3b7f4fa782c747712c0b8c3a
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:29
-#: cc4f96f1a7994cfca35f59ef52ea4485
+#: 7fc996c7ad2841d2a7165e25601ab88a
 msgid "Distributed network to use."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:31
-#: 79c6a89564294008b41b151f8deffd9c
+#: e7e097bc90874accadaa78ea1e4a2410
 msgid ""
 "Subclass of :class:`ClientTrainer`, providing :meth:`train` and "
 ":attr:`model`. For more client simulation with single process, you are "
@@ -72,17 +72,17 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:33
-#: 8cb82be8065b41f6ac08af78c0bde10b
+#: 12cb6ca423d644f0aaaf04f08fedf045
 msgid "object of :class:`Logger`."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:38
-#: 93b66c9eb6b34ca1984860821296fe35
+#: c147afb4a14d44df81051b10aa12aaaa
 msgid "Actions to perform when receiving new message, including local training."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/core/client/scale/manager/index.rst:43
-#: e61b6951c42247f798f094e4cf513232
+#: 792d1eee534e4e509116f2d62e4bf074
 msgid "Synchronize local model with server actively"
 msgstr ""
 

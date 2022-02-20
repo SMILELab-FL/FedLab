@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../source/examples/leaf_usage.rst:5 3ce779582e9545259b1128b8f86286c5
 msgid "PyTorch version of LEAF"
-msgstr "PyTorch版本的LEAF"
+msgstr "LEAF的PyTorch版本"
 
 #: ../../source/examples/leaf_usage.rst:7 cd1cd7b5f5c140f3bdf0eda93833d058
 msgid ""
@@ -57,7 +57,6 @@ msgstr ""
 #: ../../source/examples/leaf_usage.rst:20 e48a244fcdeb4d099be4900ca6aff23b
 msgid "FEMNIST"
 msgstr ""
-
 
 #: ../../source/examples/leaf_usage.rst:22 98109401f8674f908a325c5fd1695607
 msgid "**Overview:** Image Dataset."
@@ -152,8 +151,8 @@ msgid ""
 "models are device-dependant. To see a description of the whole generative"
 " process, please refer to the paper."
 msgstr ""
-"概述： 提出了一个生成具有挑战性的合成联合数据集的过程，高级目标是创建真实模型依赖于各设备的设备。可参阅论文 LEAF: A Benchmark "
-"for Federated Settings 查看整个生成过程的描述。"
+"概述： 提出了一个生成具有挑战性的合成联合数据集的过程，高级目标是创建真实模型依赖于各设备的设备。"
+"可参阅论文 LEAF: A Benchmark for Federated Settings 查看整个生成过程的描述。"
 
 #: ../../source/examples/leaf_usage.rst:47 5ec4905284fd4e309dcdb197391d058e
 msgid ""
@@ -177,7 +176,7 @@ msgid ""
 "<https://files.pushshift.io/reddit/>`__ corresponding to December 2017."
 msgstr ""
 "概述： 对 `pushshift.io <https://files.pushshift.io/reddit/>`__ "
-"发布的2017年12月的Reddit数据进行了预处理"
+"发布的2017年12月的Reddit数据进行了预处理。"
 
 #: ../../source/examples/leaf_usage.rst:53 f33d17d1f1f64f2daf5652490e188e9b
 msgid "**Details:** 1,660,820 users with a total of 56,587,343 comments."
@@ -222,8 +221,7 @@ msgid ""
 "``stats.sh``: performs information statistics on all data (stored in "
 "``./data/all_data/all_data.json``) processed by ``preprocess.sh``"
 msgstr ""
-"对 ``preprocess.sh`` 处理后所有数据（存储于 ``./data/all_data/all_data.json`` ）进行信息统计。"
-
+"``stats.sh``: 对 ``preprocess.sh`` 处理后所有数据（存储于 ``./data/all_data/all_data.json`` ）进行信息统计。"
 
 #: ../../source/examples/leaf_usage.rst:74 4300ebf04b2e4e4eb7707f80bf4ee62e
 msgid ""
@@ -288,8 +286,8 @@ msgid ""
 "to partition each user's samples into train-test groups"
 msgstr ""
 "``-t`` "
-"表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据到训练-测试集合中。"
-
+"表示划分训练集测试集的方式，取值为'user'则划分用户到训练-测试集合，取值为'sample'则划分每个用户的数据"
+"到训练-测试集合中。"
 
 #: ../../source/examples/leaf_usage.rst:109 64717ce518a74405861549dc6377a33a
 msgid ""
@@ -297,7 +295,7 @@ msgid ""
 "default is 0.9, representing train set: test set = 9:1."
 msgstr ""
 "``--tf`` 表示训练集的数据占比，取值为小数，默认为0.9，表示训练集:测试集=9:1。"
- 
+
 #: ../../source/examples/leaf_usage.rst:111 98c88c75fd104a3bb7af3beb06fd9abd
 msgid ""
 "At present, FedLab's Leaf experiment need provided training data and test"
@@ -354,7 +352,6 @@ msgstr ""
 "若使用fedlab所提供的 ``Fedlab_benchmarks/datasets/`` 下载leaf数据，"
 "则data_root可设置为该路径，示例给出了该路径的相对地址。"
 
-
 #: ../../source/examples/leaf_usage.rst:131 5006d63b167d484aadf3c3ad074e84b9
 msgid ""
 "``save_root``: directory to store the pickle file address of the "
@@ -366,7 +363,6 @@ msgstr ""
 "``save_root`` ：存储处理后DataSet的pickle文件地址，"
 "各数据集DataSet将另存为 ``{save_root}/{dataset_name}/{train,test}`` ；"
 "示例则在当前路径下创建 ``pickle_dataset`` 文件夹存储所有的pickle dataset文件。"
-
 
 #: ../../source/examples/leaf_usage.rst:133 1a1c61768f0046c994448e2bb2a86a07
 msgid ""
@@ -413,8 +409,7 @@ msgid ""
 "The current experiment of LEAF data set is the **single-machine multi-"
 "process** scenario under FedAvg's Cross machine implement, and the tests "
 "of femnist and Shakespeare data sets have been completed."
-msgstr ""
-"当前LEAF数据集所进行的实验为FedAvg的cross machine场景。"
+msgstr "当前LEAF数据集所进行的实验为FedAvg的cross machine场景下的单机多进程设置。"
 
 #: ../../source/examples/leaf_usage.rst:161 29c3f7c3f1784ce685cf66ca29961858
 msgid ""

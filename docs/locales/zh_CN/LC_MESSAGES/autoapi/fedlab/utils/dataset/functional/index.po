@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,24 +18,24 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:2
-#: 74e5e4e2d97941eab94db72121a86959
+#: 8754ff3c6387466090fc99b33cd24cb0
 msgid "functional"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:8
-#: 7ce6e065bed3408e8e7e875739f3aa65
+#: 1e2cf51a5cad441a8aaadc258eea173a
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 2aa9eec5033f42e5bfbd2dfa384bad0b
+#: 69c06956f1b84b589abc543317cbdc2c
 msgid ""
 ":obj:`split_indices <fedlab.utils.dataset.functional.split_indices>`\\ "
 "\\(num\\_cumsum\\, rand\\_perm\\)"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 88a642b520504abc9af7d59b2196cf37
+#: 83c893abacfa40edaca5915fef62fed4
 msgid ""
 ":obj:`balance_split <fedlab.utils.dataset.functional.balance_split>`\\ "
 "\\(num\\_clients\\, num\\_samples\\)"
@@ -43,12 +43,12 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:34
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 115e51ce8d4143dabe4e3a67fcef917b 2dba166b62564a3fb32a5fa8e89b720a
+#: ca8af594f85243e489dbea2c1811efd5 e1a03ab5ad6940a589ffe78cb8103615
 msgid "Assign same sample sample for each client."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: cd62d7acae044b0f85afa951f7ce37fc
+#: b190b3fec25047d4a58621ec0eada930
 msgid ""
 ":obj:`lognormal_unbalance_split "
 "<fedlab.utils.dataset.functional.lognormal_unbalance_split>`\\ "
@@ -58,15 +58,15 @@ msgstr ""
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:47
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:64
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 54ff3cc1a4414cacaa3b55143f8c4ad0 5f3a42cdcb7b47d2b010f785735dffb5
-#: 92009b9ca94e426fbeb18192850b8482 b677aeda09d14def98747e4b24dd7b48
+#: 45970a1b001d447db933421fe137abf3 4afc4370af5d46639c9085f2b12e4fe3
+#: c58b59dfa1774fcf832f55ab14edcda0 df771a8390be462b87a4b8c14a259fee
 msgid ""
 "Assign different sample number for each client using Log-Normal "
 "distribution."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 9ab8420be9a74a1e8b2a710a419fc14b
+#: 36886431f19b44088c8fd7bc27356bb8
 msgid ""
 ":obj:`dirichlet_unbalance_split "
 "<fedlab.utils.dataset.functional.dirichlet_unbalance_split>`\\ "
@@ -74,7 +74,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 8e0e53f062004222ac6207ec56566949
+#: 0c1f8a3fad0a4d28ae5575bf80fd04f7
 msgid ""
 ":obj:`homo_partition <fedlab.utils.dataset.functional.homo_partition>`\\ "
 "\\(client\\_sample\\_nums\\, num\\_samples\\)"
@@ -82,12 +82,12 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:81
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 37bb14f127e9432eb5649e22dfe67234 d98491d267e94f4aab2f2b545c136905
+#: bc94cf1e9a33427e8cbe09f689c82f07 fffb7150e70a4628b8b6fc75e7a3e525
 msgid "Partition data indices in IID way given sample numbers for each clients."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 48d427ce09d147b4a1146b79881056cb
+#: 864fc34d4e20472cb195d0f0c3b5ccd8
 msgid ""
 ":obj:`hetero_dir_partition "
 "<fedlab.utils.dataset.functional.hetero_dir_partition>`\\ \\(targets\\, "
@@ -96,14 +96,14 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 2103f996681640c8b51098ff30ae1d80
+#: 7fbb4dda74264b0db92a2c12a36eaf51
 msgid ""
 "Non-iid partition based on Dirichlet distribution. The method is from "
 "\"hetero-dir\" partition of"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 61957a28f9164ad79c21649cbd520b59
+#: 6dacc2b62a914fd38f7b055036c713b7
 msgid ""
 ":obj:`shards_partition "
 "<fedlab.utils.dataset.functional.shards_partition>`\\ \\(targets\\, "
@@ -112,14 +112,14 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:122
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 38a8f5c82ff94ee897b798cd9b90dc0e a5de3daf4aeb4330b175d02a03198bf2
+#: 43dc890df74f4bb88c3a37d3dd89f865 5629e45f697f407e945d5793ced9293d
 msgid ""
 "Non-iid partition used in FedAvg `paper "
 "<https://arxiv.org/abs/1602.05629>`_."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: ec7f56d00e954815854066fbc4da81b0
+#: e6fe035f9fed465d8c9bd6c8564b1698
 msgid ""
 ":obj:`client_inner_dirichlet_partition "
 "<fedlab.utils.dataset.functional.client_inner_dirichlet_partition>`\\ "
@@ -129,12 +129,12 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:137
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 106ae6ad3d00481daa78f7d828a064cb e2c1e992b4aa4d2faa040577ba585ca7
+#: 3dc9acf1c5624018beab7c52b30c566a 85b7f5c96f094d1fb6fdd48f108b0915
 msgid "Non-iid Dirichlet partition."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 21656e8dfce744fe9a62e25bd87eaa6d
+#: e23b24c384864b87ab854cf8cde53241
 msgid ""
 ":obj:`label_skew_quantity_based_partition "
 "<fedlab.utils.dataset.functional.label_skew_quantity_based_partition>`\\ "
@@ -142,18 +142,18 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>
-#: 5ac8da6740a24022a01743bd83fc36b5
+#: ae6898fa1b5f49458b1f18fcaeafad27
 msgid "param targets"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:162
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 6a88363ffc994f1ba223ddc22c041cc1 db8bda2e06e54b9289e0109e5f9a3e7e
+#: 3e2267d35f174c2c8c07f47f87ba0fb3 b90931c0320143f380809d5934a2b04a
 msgid "Labels od dataset."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 2c6778359c7547318c8d161e1f105bae
+#: 5fd4486ab7ae4a5981a5ab3070a02be1
 msgid ""
 ":obj:`fcube_synthetic_partition "
 "<fedlab.utils.dataset.functional.fcube_synthetic_partition>`\\ \\(data\\)"
@@ -161,12 +161,12 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:177
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: 5124939ddc7e49ca9816eee3a6b640b1 6221b9b93ea643e1b51a1e0fc4550a98
+#: 2694958dd37b43ea8fa99a5da7e737ac 77c511c7582f4cf0a15b293967278a0c
 msgid "Feature-distribution-skew:synthetic partition."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:28:<autosummary>:1
-#: c9419e59e78d4dedb8d340c33b46bf98
+#: d6c0e77793254b09b7544259ac31b2d9
 msgid ""
 ":obj:`samples_num_count "
 "<fedlab.utils.dataset.functional.samples_num_count>`\\ "
@@ -174,11 +174,11 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst
-#: 1684f7a514ac43ec8eb085af5f8b85ca 23b65e9db4be49b3b5fdf9a949679def
-#: 3a7e7ddd90b74a74bee9204eed55fa22 49621088f87e4ea587a5a2c96e02f95d
-#: 601a352afdec4b53b2f6084e2b73eaac 861b1ec11c334297bf05070cdfdebd4f
-#: a9955130aeb545c7a9f8ce8bdb2010b9 cdac39f2003f42dd96d6667fb91b1569
-#: deb269ff8d4549bcb9c9d6a03d74ef1f
+#: 364caa119aef4f379b4110ca2d3f8941 59cfb9a67fe44a24856255ba9318183a
+#: 83a5114f81254519a3589d60e1e6d2a1 993735f49b1e49bf97d76db72834c439
+#: b5f9d5babdee4a71ac68b5527fb0b205 b7ee23f1dfe1466c9d43b678e68d1292
+#: bd6ea4d0e7f244b3944cb3f3a41779ad d5ad2978147141499d59732b5a9c0628
+#: ed546232134044c4825dfbe42a3a06c3
 msgid "Parameters"
 msgstr ""
 
@@ -188,26 +188,26 @@ msgstr ""
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:107
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:126
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:145
-#: 0dfda04a3af04b78ad6e1bb0d0e95236 12cc0fd1e3fc49b49b22c208c42daad5
-#: 4030cf69f026475db89f0294210ce7f9 a3f4768c6bb841fdb9de927a4c5a4cbd
-#: b19ee9ffdfe24c8bbec77a002558a603 fc1753c5603449b9aea41205744d66d6
+#: 4050cce7b9fe45bf8154de177267a5be 4f11a3adbbe54130b03a74ae91f67429
+#: 7350a4a591c0427fa0eed731b5d9dfb4 b124c61177ac48c8936dacb72a114f7d
+#: c5db17878c6649c8bcdfc7cccb02cca3 d17313523e4a4d31b0471c43f17098b0
 msgid "Number of clients for partition."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:38
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:53
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:70
-#: ae9a3387e9a14ad5b89be798aa808623 bbda26de53e84d6c98ca4c2637445209
-#: f8e73e3b2c814485a35a42b9cc2faa30
+#: 04dcda2e32184ad9a3823c5fa21ba1cf 4bbf6f24a72b4d05a3af5ebc712de521
+#: d6d487a5b69149b2947df99e739a4734
 msgid "Total number of samples."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst
-#: 0a53cd850d4d43d596cb99b7d826e372 32bb159ab41d4510b1c8d46bfb210aee
-#: 4f783c1d3ded4aea86c9c4918e2f1c74 4f8a730bbdcc4112bfbf79624aa1ffef
-#: 559a4011a50043efa471877b8002144d 6c2d9f2cf90347fd8695a38b6a688aec
-#: 75e6d06063c54fdfaefe08afda48bfe6 a831579eb9564f39ba95044b88b9fbd8
-#: cfc0b14a9ae443c59393e6e42a8cfd58
+#: 041058cc58a142628ee33527e79d0dbe 4fc30a23230346cd842ceff24a044316
+#: 5eaa7e50acdc4be3b9c5ef3ceee77c10 6a8219689754488a8843147394fe8666
+#: 70ef8b2dc922479791ca6b96b625f82a dffda9dbba2d4457bbce8db1b636f1a8
+#: e38b71c907e44d07973e2854df86f138 ee5f7d2f125f4d059d64411934c56ca9
+#: eec13fb4462644e1bda592610e524e85
 msgid "Returns"
 msgstr ""
 
@@ -215,47 +215,47 @@ msgstr ""
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:58
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:75
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:151
-#: 26c0bd49de4f49ffa12cb48497925f8c 3fbbcf0b65e749168a089dc73180867c
-#: 7b066092cac144dcb1e5c8f05ff47cb6 c509253917304368b5166990a878d71d
+#: 36c42decb07b4451a4144c3b03165490 8e965a0956eb44afada18ed162bb6d70
+#: a95e314ff013427fb17478943a38d13d bf5d383b5f7e4d88ae9cd5533a166b3f
 msgid ""
 "A numpy array consisting ``num_clients`` integer elements, each "
 "represents sample number of corresponding clients."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst
-#: 111ac6cc638d4b5e99521496fc303c6c 1ab7b43bd78f42b7831a3e5f778f5f23
-#: 38f7bbc302cd45b1bbb312e5983183b3 7654bdd4717e4e3b88f6b826a84a56f7
-#: ac0861612cd74cee88f9eb43d77d8225 c4fc0bfac98e460088230b069ef53fd8
-#: c7f11bec157a4a63a10ce38a259fd592 d9792343d300433ca82cbc58442c3e03
-#: e78073392c6748679754b41f00dead06
+#: 0c7f57b24d884934a383eb0487cb7b0f 117793fdca544ea48d62346086733a9f
+#: 2b6c4fd8709c4070b684064094c2938c 42f8ded9c81c44729025d120d8ee6792
+#: 51563f66747342209443539b63b95178 924ec89c763e41d3863648919bd843ac
+#: aad8a5aeef654fba89870b3d4902be9f ad93c7c79a6f468c82f2a8bba6a868ed
+#: e939d56cf8bc417d900c4ef33cafa5da
 msgid "Return type"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:49
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:66
-#: 187555adc3754256b321f3e27f968697 be3e30d04e784cb1851ec7faf74f2c11
+#: 3edd49d306c649409a99153c49906d8d f0bddb7a79e74113951374afdac6b239
 msgid "Sample numbers for clients are drawn from Log-Normal distribution."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:55
-#: 4b7f37475a9540f0bceae3373d297997
+#: bbd8a239808f411aa3fd680f5121a329
 msgid ""
 "Log-normal variance. When equals to ``0``, the partition is equal to "
 ":func:`balance_partition`."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:72
-#: c8a53be80bbe4e2ab4fda158fc87e37d
+#: 126c2228f6bb4518bb4ebfbdcee216ee
 msgid "Dirichlet concentration parameter"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:83
-#: 619977415d44486c89fb9f9616a0637e
+#: 89d718acd1ef460996a7a0a2ca84cfbd
 msgid "Sample numbers for each clients."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:85
-#: fc8e28090ba244d0b2c2a53d46cc291d
+#: 84c71b36ff7e486c87783c9713f33317
 msgid "Number of samples."
 msgstr ""
 
@@ -265,14 +265,14 @@ msgstr ""
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:156
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:171
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:184
-#: 17755d0cbfe24add8982fe06462a22f3 2d5cb66f99954ee5b5f5c7b182ed3a97
-#: 5d3bdbfcf6ab49fd97e84f898a261917 66bb031798404068a1d039185044ebab
-#: 7e2607c4dffb49afa52cdc384cea36c2 fe1ce3cb01994d8585e4b9b36b201683
+#: 006a8a9b762c48fc811a50f751b227f7 07240cd0c23343b79844934d7a6915c1
+#: 50254e24826549bea5c2ebd91b5d8bb5 54685df4f2ce42f18d28b444696681d4
+#: 6179d2b390174203a3bb305eb4e66185 b9dcf64555ad41f4a2e7a719cfd011fc
 msgid "``{ client_id: indices}``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:94
-#: fae10f1eb44842f4bd593e740df6ac40
+#: b50c00a49147475fb6075716f2d1cb77
 msgid ""
 "Non-iid partition based on Dirichlet distribution. The method is from "
 "\"hetero-dir\" partition of `Bayesian Nonparametric Federated Learning of"
@@ -281,7 +281,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:98
-#: 645b1e6fc26a4a30893f0dc7206c4ca2
+#: b2c96a809f8643a2a87c02572168304a
 msgid ""
 "This method simulates heterogeneous partition for which number of data "
 "points and class proportions are unbalanced. Samples will be partitioned "
@@ -291,42 +291,42 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:103
-#: d4818931a1d7492592961fc03b2d7cba
+#: 85eafaace8484dde8d84d5b4d37d9a1f
 msgid "Sample number for each client is decided in this function."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:105
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:124
-#: 64def8f96c5c46039c412292c661a985 85b55c31ea5844bf8c41779ed10a5b7f
+#: 73b37fb18b434f7e84ac9065286d559a b774e0a033d349bcb2e085159f12fbf8
 msgid "Sample targets. Unshuffled preferred."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:109
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:147
-#: 0cdc82355d3544e49ce1b67ccb5a699f c9ec706c4dcc4841bf137b70bd117cb8
+#: 2e4dbd64988e447daa7d617e4ea91081 e19e8b4433d340bf80a1ee8e1f62bde1
 msgid "Number of classes in samples."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:111
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:149
-#: 1c3828d82d4045c9a6a90a1f890e0646 8190acd4d51e49388f229bc09e34ad71
+#: 208f6e688c48442fa9c2ae7511077d74 bda520f4176a4f57b51fb1ad64d96338
 msgid "Parameter alpha for Dirichlet distribution."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:113
-#: cefa7aabda394ea4a1b0ef01fac883e7
+#: 05fbee1a948342d497e6116eee9dce47
 msgid ""
 "Minimum required sample number for each client. If set to ``None``, then "
 "equals to ``num_classes``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:128
-#: f51353398c1d47f7b77ed3e534f2143c
+#: 37acf5a7b1b44dda928e1e5de36ba705
 msgid "Number of shards in partition."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:139
-#: 0c3acd12d5b242508a121dd13910f8fb
+#: 1f14aef31f8445b2b7accf95781f1cc8
 msgid ""
 "The method is from The method is from paper `Federated Learning Based on "
 "Dynamic Regularization <https://openreview.net/forum?id=B7v4QMR6Z9w>`_. "
@@ -336,32 +336,32 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:143
-#: a06d5110d6604487b00935d0bd31de9e
+#: 0b92c27074f44234b1e26e7daa203242
 msgid "Sample targets."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:153
-#: 4e13262c9d944852abe03e1d529cf950
+#: 98c1c80a010b42b4a61e55c95e4a9c7e
 msgid "Whether to print partition process. Default as ``True``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:164
-#: 44d520ae398a4f06819921d42c674ba1
+#: ae5182e8823d4ac1b2618fd62ed58b77
 msgid "Number of clients."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:166
-#: 78b28d1a4e0b4f91858e51dacfaf6b04
+#: 692546729f644eea940666d1c05cb24e
 msgid "Number of unique classes."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:168
-#: 3bcc349b01864f8c95c478a769d25b94
+#: a701e835019648ac81f8d3e2d97cbd0f
 msgid "Number of classes for each client, should be less then ``num_classes``."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:179
-#: 0db2485cb5ab40e296e013962cdeca3c
+#: d45dbcfd05fe473c962a370ca8e6963d
 msgid ""
 "Synthetic partition for FCUBE dataset. This partition is from `Federated "
 "Learning on Non-IID Data Silos: An Experimental Study "
@@ -369,7 +369,7 @@ msgid ""
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/functional/index.rst:181
-#: b7f0931b86c249198f11c29066b576e1
+#: 0b445bc6ca444b5a94f68bbf82a4d07a
 msgid "Data of dataset :class:`FCUBE`."
 msgstr ""
 

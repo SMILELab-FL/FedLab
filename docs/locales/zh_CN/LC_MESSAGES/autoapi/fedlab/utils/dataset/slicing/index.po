@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FedLab \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 17:11+0800\n"
+"POT-Creation-Date: 2021-11-08 20:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,22 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:2
-#: 3d06797b683b495db215249efe957d73
+#: f0be4653a17d45d4895f0a9530e1d03f
 msgid "slicing"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:8
-#: cee14eb98537472cb3017c5672f9e929
+#: 110c8cb16e1746af9355395fcfcb0142
 msgid "functions associated with data and dataset slicing"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:13
-#: c4f20bbf1e804d07b8daac5b23db22af
+#: 3c1b6b8397454cf0aaf00fc508828012
 msgid "Module Contents"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
-#: 488127af973a425093332d95ebad86bf
+#: 8dad7acd7d3b4afeb2ec6192596efd2e
 msgid ""
 ":obj:`noniid_slicing <fedlab.utils.dataset.slicing.noniid_slicing>`\\ "
 "\\(dataset\\, num\\_clients\\, num\\_shards\\)"
@@ -41,12 +41,12 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:27
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
-#: 3d7d63873f7443fb9740f3a10524ee62 af233911500946f3a5ae5fbe64eac817
+#: 64c4d6f4bba74175b1dd6bdcbb92c134 6eeb8998b5b64846a3a5f00b0e4742b0
 msgid "Slice a dataset for non-IID."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
-#: d4018ccba2d94de6a8eacf7b70bd6d0a
+#: a70170fce10d4d478efccdd13a6e2f0c
 msgid ""
 ":obj:`random_slicing <fedlab.utils.dataset.slicing.random_slicing>`\\ "
 "\\(dataset\\, num\\_clients\\)"
@@ -54,37 +54,37 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:47
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:24:<autosummary>:1
-#: 26cabce53ccd4154871680ce5b821b30 bb1ac7d46c3e424ab186c394493c5157
+#: 87b1f9e3d7ad4ea7867e7dc88f80b7dd f7d51460d7e44ddd852fdd5c6f36be1d
 msgid "Slice a dataset randomly and equally for IID."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst
-#: 415cef3602f9486299628def6c78241c
+#: 59814894329441269b5fbf611abec05c
 msgid "Parameters"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:29
-#: 7d95688471bc4f2180b40b2d6d10f19d
+#: c5d31783ebc14923b4b18821a0958d32
 msgid "Dataset to slice."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:31
-#: 2fe8e689ad2c482f8488361706014b55
+#: adee65eb67c84dc38589ad3d5d0e2acb
 msgid "Number of client."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:33
-#: 132bcf7778234e26ae5e7f1978b29c39
+#: 7ac2659b056d401ab24f004b84f4307b
 msgid "Number of shards."
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:37
-#: 9f070c6675e44bc2997501e7721d1a7d
+#: c166e18ccc884138a2e86f24f474eae9
 msgid "Notes"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:38
-#: 504332425bc2475e9d8d0d0c0260bc7d
+#: 2713d385e2bb43df90d4271eed28a756
 msgid ""
 "The size of a shard equals to ``int(len(dataset)/num_shards)``. Each "
 "client will get ``int(num_shards/num_clients)`` shards."
@@ -92,25 +92,25 @@ msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:41
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:53
-#: 2700b5fd520d41018de1408efe4bbac0 858b1b15d6a147ad8138998ff7044cea
+#: 7cc24e88fc2842f7af4db8ff5e2529dd ea2865f40c6b46579cfd6f420956024f
 msgid "Returns："
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:42
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:54
-#: 9be18c3839504b83b6429f02ce85cf11 d431c35dd83543f289e56e7fe8b460b3
+#: 10595f1a131f4185bdeaf0fc4633e0eb b0d13fe08937458f847bc16fe37789c4
 msgid ""
 "dict: ``{ 0: indices of dataset, 1: indices of dataset, ..., k: indices "
 "of dataset }``"
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:51
-#: e571ddf164e6434a83fb9f03a652ff74
+#: 4d601c3e42e84589a238900ca5ebb570
 msgid "Args："
 msgstr ""
 
 #: ../../source/autoapi/fedlab/utils/dataset/slicing/index.rst:50
-#: 90f3c02d71f84a55b93091f97923f994
+#: a970988b7c644e62af41375af11c0f60
 msgid ""
 "dataset (torch.utils.data.Dataset): a dataset for slicing. num_clients "
 "(int):  the number of client."
