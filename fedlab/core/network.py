@@ -15,6 +15,9 @@
 import os
 import torch.distributed as dist
 
+from .communicator.processor import Package, PackageProcessor
+
+
 class DistNetwork(object):
     """Manage ``torch.distributed`` network.
 
@@ -25,7 +28,6 @@ class DistNetwork(object):
         ethernet (str)
         dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
     """
-
     def __init__(self,
                  address,
                  world_size,
@@ -58,8 +60,19 @@ class DistNetwork(object):
         if dist.is_initialized():
             dist.destroy_process_group()
 
+    def send(self, content=None, message_code=None, dst=0):
+        """Send tensor to process rank=dst"""
+        pack = Package(message_code=message_code, content=content)
+        PackageProcessor.send_package(pack, dst=dst)
+
+    def recv(self, src=None):
+        """Receive tensor from process rank=src"""
+        sender_rank, message_code, content = PackageProcessor.recv_package(
+            src=src)
+        return sender_rank, message_code, content
+
     def __str__(self):
-        info_str = "torch.distributed connection is initializing with server ip address {}:{}, rank {}, world size: {}, backend {}, ethernet {}.".format(
+        info_str = "torch.distributed connection is initializing with ip address {}:{}, rank {}, world size: {}, backend {}, ethernet {}.".format(
             self.address[0],
             self.address[1],
             self.rank,

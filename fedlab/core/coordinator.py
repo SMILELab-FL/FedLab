@@ -14,7 +14,7 @@
 
 
 class Coordinator(object):
-    """Deal with the mapping relation between client id in FL system and process rank in communication.
+    """Deal with the mapping relation between client id and process rank in FL system.
 
     Note
         Server Manager creates a Coordinator following:
