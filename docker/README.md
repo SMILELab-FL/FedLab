@@ -18,3 +18,5 @@ Build the images for your own platform by running command below.
 - Note
   
 If you are not in China area, it is ok to remove line 11,12 and "-i https://pypi.mirrors.ustc.edu.cn/simple/" in line 19.
+
+**Run docker images with "--gpus all" to enable cuda for container and "--network=host" to enable the network communication.
