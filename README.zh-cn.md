@@ -66,8 +66,14 @@ _其他语言版本：[English](README.md), [简体中文](README.zh-cn.md)._
 
 ## 联系方式
 
-请通过GitHub issues或邮件联系**FedLab**开发团队：
+项目负责人：[徐增林教授](https://scholar.google.com/citations?user=gF0H9nEAAAAJ&hl=en)（xuzenglin@hit.edu.cn）。
+
+技术细节以及开发问题，请通过GitHub issues或邮件联系**FedLab**开发团队：
 
 - Dun Zeng: zengdun@foxmail.com
 - Siqi Liang: zszxlsq@gmail.com
+
+
+
+
 

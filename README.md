@@ -36,8 +36,28 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [x] LEAF: [A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097)
 - [x] NIID-Bench: [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079)
 
-
  More FedLab version of FL algorithms are coming soon. For more information, please star our [FedLab Benchmark repository](https://github.com/SMILELab-FL/FedLab-benchmarks).
+
+
+
+## Awesomes
+
+### Frameworks
+
+- [FedLab](https://github.com/SMILELab-FL/FedLab): [FedLab-benchmarks](https://github.com/SMILELab-FL/FedLab-benchmarks), [Document](https://fedlab.readthedocs.io/)
+- [TensorFlow Federated (TFF)](https://www.tensorflow.org/federated)
+- [Flower](https://github.com/adap/flower): [Document](https://flower.dev/docs/index.html)
+- 
+
+
+
+
+
+
+
+
+
+
 
 ## Contribution
 
@@ -62,7 +82,9 @@ Please cite __FedLab__ in your publications if it helps your research:
 
 ## Contact
 
-Contact the __FedLab__ development team through Github issues or email: 
+Project Investigator: [Prof. Zenglin Xu](https://scholar.google.com/citations?user=gF0H9nEAAAAJ&hl=en) (xuzenglin@hit.edu.cn).
+
+For technical issues reated to __FedLab__ development, please contact our development team through Github issues or email:
 
 - Dun Zeng: zengdun@foxmail.com
 - Siqi Liang: zszxlsq@gmail.com
