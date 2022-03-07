@@ -99,6 +99,11 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 
 
+### FL + HPC
+
+- [arXiv 2022] Sky Computing: Accelerating Geo-distributed Computing in Federated Learning [[Paper]](https://arxiv.org/abs/2202.11836) [[Code]](https://github.com/hpcaitech/SkyComputing) 
+- [ACM HPDC 2020] TiFL: A Tier-based Federated Learning System [[Paper]](https://arxiv.org/abs/2001.09249) [[Video]](https://www.youtube.com/watch?v=y8GZKn2zyNk)
+
 
 
 ### Awesome List
