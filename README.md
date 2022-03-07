@@ -42,6 +42,12 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 ## Awesomes
 
+### Tutorials
+
+- [NeurIPS 2020] Federated Learning Tutorial [[Web]](https://sites.google.com/view/fl-tutorial/) [[Slides]](https://drive.google.com/file/d/1QGY2Zytp9XRSu95fX2lCld8DwfEdcHCG/view) [[Video]](https://slideslive.com/38935813/federated-learning-tutorial)
+
+
+
 ### Survey
 
 - [ICLR-DPML 2021] FedGraphNN: A Federated Learning System and Benchmark for Graph Neural Networks [[Paper]](https://arxiv.org/abs/2104.07145) [[Code]](https://github.com/FedML-AI/FedGraphNN)
@@ -92,6 +98,17 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [arXiv 2020] Benchmarking Semi-supervised Federated Learning [[Paper]](https://www.researchgate.net/profile/Yujun-Yan/publication/343903563_Benchmarking_Semi-supervised_Federated_Learning/links/5f571cb8299bf13a31aaff33/Benchmarking-Semi-supervised-Federated-Learning.pdf)] [[Code]](https://github.com/jhcknzzm/SSFL-Benchmarking-Semi-supervised-Federated-Learning)
 
 
+
+
+
+### Awesome List
+
+- [chaoyanghe/Awesome-Federated-Learning](https://github.com/chaoyanghe/Awesome-Federated-Learning)
+- [weimingwill/awesome-federated-learning](https://github.com/weimingwill/awesome-federated-learning)
+- [tushar-semwal/awesome-federated-computing](https://github.com/tushar-semwal/awesome-federated-computing)
+- [ZeroWangZY/federated-learning](https://github.com/ZeroWangZY/federated-learning)
+- [innovation-cat/Awesome-Federated-Machine-Learning](https://github.com/innovation-cat/Awesome-Federated-Machine-Learning)
+- [huweibo/Awesome-Federated-Learning-on-Graph-and-GNN-papers](https://github.com/huweibo/Awesome-Federated-Learning-on-Graph-and-GNN-papers)
 
 
 
