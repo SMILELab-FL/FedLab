@@ -37,17 +37,11 @@ class ScaleSynchronousManager(ServerSynchronousManager):
         self._LOGGER.info("Client Activation Procedure")
         for rank, values in rank_dict.items():
             self._LOGGER.info("rank {}, client ids {}".format(rank, values))
-
             # Send parameters
-            param_pack = Package(message_code=MessageCode.ParameterUpdate,
-                                 content=self._handler.model_parameters)
-            PackageProcessor.send_package(package=param_pack, dst=rank)
-
+            self._network.send(content=self._handler.model_parameters, message_code=MessageCode.ParameterUpdate, dst=rank)
             # Send activate id list
             id_list = torch.Tensor(values).to(torch.int32)
-            act_pack = Package(message_code=MessageCode.ParameterUpdate,
-                               content=id_list)
-            PackageProcessor.send_package(package=act_pack, dst=rank)
+            self._network.send(content=id_list, message_code=MessageCode.ParameterUpdate, dst=rank)
 
     def main_loop(self):
         while self._handler.stop_condition() is not True:

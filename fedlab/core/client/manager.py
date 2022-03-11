@@ -16,8 +16,6 @@ import torch
 
 from ...utils import Logger
 from ...utils.message_code import MessageCode
-
-from ..communicator.processor import Package, PackageProcessor
 from ..network_manager import NetworkManager
 
 
@@ -40,11 +38,8 @@ class ClientManager(NetworkManager):
         :class:`ClientManager` reports number of clients simulated by current client process.
         """
         super().setup()
-        content = torch.Tensor([self._trainer.client_num]).int()
-        setup_pack = Package(message_code=MessageCode.SetUp,
-                             content=content)
-        PackageProcessor.send_package(setup_pack, dst=0)
-
+        tensor = torch.Tensor([self._trainer.client_num]).int()
+        self._network.send(content=tensor, message_code=MessageCode.SetUp, dst=0)
 
 class ClientPassiveManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL pattern.
@@ -67,7 +62,8 @@ class ClientPassiveManager(ClientManager):
             3. client synchronizes with server actively.
         """
         while True:
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            sender_rank, message_code, payload = self._network.recv(src=0)
+
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
@@ -75,15 +71,17 @@ class ClientPassiveManager(ClientManager):
                 self._trainer.train(model_parameters=model_parameters)
                 self.synchronize()
             else:
-                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
-        
+                raise ValueError(
+                    "Invalid MessageCode {}. Please see MessageCode Enum".
+                    format(message_code))
+
     def synchronize(self):
         """Synchronize local model with server"""
         self._LOGGER.info("synchronize model parameters with server")
         model_parameters = self._trainer.model_parameters
-        pack = Package(message_code=MessageCode.ParameterUpdate,
-                       content=model_parameters)
-        PackageProcessor.send_package(pack, dst=0)
+        self._network.send(content=model_parameters,
+                           message_code=MessageCode.ParameterUpdate,
+                           dst=0)
 
 
 class ClientActiveManager(ClientManager):
@@ -110,31 +108,30 @@ class ClientActiveManager(ClientManager):
         while True:
             # request model actively
             self._LOGGER.info("request parameter procedure")
-            pack = Package(message_code=MessageCode.ParameterRequest)
-            PackageProcessor.send_package(pack, dst=0)
-            
+
             # waits for data from
-            sender_rank, message_code, payload = PackageProcessor.recv_package(
-                src=0)
-            
+            sender_rank, message_code, payload = self._network.recv(src=0)
+            #sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
                     "Recv {}, Process exiting".format(message_code))
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                self._LOGGER.info("Package received from {}, message code {}".format(
-                    sender_rank, message_code))
+                self._LOGGER.info(
+                    "Package received from {}, message code {}".format(
+                        sender_rank, message_code))
                 model_parameters, self.model_time = payload[0], payload[1]
                 # move loading model params to the start of training
                 self._trainer.train(model_parameters=model_parameters)
                 self.synchronize()
             else:
-                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
-            
+                raise ValueError(
+                    "Invalid MessageCode {}. Please see MessageCode Enum".
+                    format(message_code))
+
     def synchronize(self):
         """Synchronize local model with server"""
         self._LOGGER.info("synchronize procedure")
         model_parameters = self._trainer.model_parameters
-        pack = Package(message_code=MessageCode.ParameterUpdate)
-        pack.append_tensor_list([model_parameters, self.model_time + 1])
-        PackageProcessor.send_package(pack, dst=0)
+        self._network.send(content=[model_parameters, self.model_time + 1], message_code=MessageCode.ParameterUpdate, dst=0)

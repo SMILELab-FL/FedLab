@@ -17,7 +17,6 @@ import torch
 from torch.multiprocessing import Queue
 
 from ..network_manager import NetworkManager
-from ..communicator.processor import Package, PackageProcessor
 from ..coordinator import Coordinator
 
 from ...utils.message_code import MessageCode
@@ -33,7 +32,6 @@ class ServerManager(NetworkManager):
         network (DistNetwork): network configuration.
         handler (ParameterServerBackendHandler): performe global server aggregation procedure.
     """
-
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
@@ -49,7 +47,7 @@ class ServerManager(NetworkManager):
         rank_client_id_map = {}
 
         for rank in range(1, self._network.world_size):
-            _, _, content = PackageProcessor.recv_package(src=rank)
+            _, _, content = self._network.recv(src=rank)
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map)
         if self._handler is not None:
@@ -98,7 +96,7 @@ class ServerSynchronousManager(ServerManager):
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
             while True:
-                sender, message_code, payload = PackageProcessor.recv_package()
+                sender, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
                     model_parameters = payload[0]
                     if self._handler.add_model(sender, model_parameters):
@@ -121,9 +119,9 @@ class ServerSynchronousManager(ServerManager):
             rank = client_id + 1
 
             model_parameters = self._handler.model_parameters  # serialized model params
-            pack = Package(message_code=MessageCode.ParameterUpdate,
-                           content=model_parameters)
-            PackageProcessor.send_package(pack, dst=rank)
+            self._network.send(content=model_parameters,
+                               message_code=MessageCode.ParameterUpdate,
+                               dst=rank)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -135,8 +133,7 @@ class ServerSynchronousManager(ServerManager):
             for exiting information.
         """
         for rank in range(1, self._network.world_size):
-            pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=rank)
+            self._network.send(message_code=MessageCode.Exit, dst=rank)
 
 
 class ServerAsynchronousManager(ServerManager):
@@ -173,19 +170,20 @@ class ServerAsynchronousManager(ServerManager):
         watching.start()
 
         while self._handler.stop_condition() is not True:
-            sender, message_code, payload = PackageProcessor.recv_package()
+            sender, message_code, payload = self._network.recv()
 
             if message_code == MessageCode.ParameterRequest:
-                pack = Package(message_code=MessageCode.ParameterUpdate)
                 model_parameters = self._handler.model_parameters
-                pack.append_tensor_list([
+                content = [
                     model_parameters,
                     torch.Tensor(self._handler.server_time)
-                ])
+                ]
                 self._LOGGER.info(
                     "Send model to rank {}, current server model time is {}".
-                        format(sender, self._handler.server_time))
-                PackageProcessor.send_package(pack, dst=sender)
+                    format(sender, self._handler.server_time))
+                self._network.send(content=content,
+                                   message_code=MessageCode.ParameterUpdate,
+                                   dst=sender)
 
             elif message_code == MessageCode.ParameterUpdate:
                 self.message_queue.put((sender, message_code, payload))
@@ -208,9 +206,9 @@ class ServerAsynchronousManager(ServerManager):
         Send package to clients with ``MessageCode.Exit``.
         """
         for rank in range(1, self._network.world_size):
-            _, message_code, _ = PackageProcessor.recv_package(src=rank)
+            _, message_code, _ = self._network.recv(src=rank)
             if message_code == MessageCode.ParameterUpdate:
-                PackageProcessor.recv_package(
-                    src=rank)  # the next package is model request
-            pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=rank)
+                self._network.recv(
+                    src=rank
+                )  # the next package is model request, which is ignored in shutdown stage.
+            self._network.send(message_code=MessageCode.Exit, dst=rank)
