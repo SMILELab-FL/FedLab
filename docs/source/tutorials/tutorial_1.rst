@@ -8,15 +8,7 @@ Distributed Communication
 How to initialize distributed network?
 ======================================
 
-FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication package. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. If the automatically detected interface is not correct, you need to choose the network interface to use for Gloo, by setting the environment variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
-
-.. note::
-
-    Check the available ethernet:
-
-    .. code-block:: shell-session
-
-        $ ifconfig
+FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication tools. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. Here is the details of how to initialize the distributed network. 
 
 You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed`` network initialization works. :class:`DistNetwork` is for quickly network configuration, which you can create one as follows:
 
@@ -25,7 +17,7 @@ You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.d
     from fedlab.core.network import DistNetwork
     world_size = 10
     rank = 0  # 0 for server, other rank for clients
-    ethernet = 'eth0'
+    ethernet = None
     server_ip = '127.0.0.1'
     server_port = 1234
     network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
@@ -37,20 +29,29 @@ You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.d
 - Make sure ``world_size`` is the same across process.
 - Rank should be different (from ``0`` to ``world_size-1``).
 - world_size = 1 (server) + client number.
-- The ethernet can be None, torch.distributed will try to find the right ethernet. If it doesn't work, user need to assign right ethernet name.
+- The ethernet is None as default. torch.distributed will try finding the right ethernet automatically. 
 - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would fail.
 
+If the automatically detected interface does not work, users are required to assign a right network interface for Gloo, by assigning in code or setting the environment variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
+
+.. note::
+
+    Check the available ethernet:
+
+    .. code-block:: shell-session
+
+        $ ifconfig
 
 How to create package?
 ======================
 
-The communication module of FedLab is in core/communicator. core.communicator.Package defines the basic data structure of network package. In our implementation, Package contains Header and Content. 
+The basic communication unit in FedLab is called package. The communication module of FedLab is in fedlab/core/communicator. :class:`Package` defines the basic data structure of network package. It contains header and content. 
 
 .. code-block:: python
 
     p = Package()
-    p.header   # A tensor which size = (5,).
-    p.content  # A tensor which size = (x,).
+    p.header   # A tensor with size = (5,).
+    p.content  # A tensor with size = (x,).
 
 Currently, you can create a network package from following methods:
 
@@ -120,3 +121,22 @@ or, receive a package from rank=0 (set the parameter src=None to receive package
 .. code-block:: python
 
     sender_rank, message_code, content = PackageProcessor.recv_package(src=0)
+
+
+Point-to-point communication
+=============================
+
+In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`.
+
+.. code-block:: python
+
+    def send(self, content=None, message_code=None, dst=0):
+        """Send tensor to process rank=dst"""
+        pack = Package(message_code=message_code, content=content)
+        PackageProcessor.send_package(pack, dst=dst)
+
+    def recv(self, src=None):
+        """Receive tensor from process rank=src"""
+        sender_rank, message_code, content = PackageProcessor.recv_package(
+            src=src)
+        return sender_rank, message_code, content
