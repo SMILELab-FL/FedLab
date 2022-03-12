@@ -17,9 +17,6 @@ import torch
 from ...client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...client.manager import ClientPassiveManager
 
-from ...communicator.package import Package
-from ...communicator.processor import PackageProcessor
-
 from ....utils.message_code import MessageCode
 from ....utils import Logger
 
@@ -40,13 +37,13 @@ class ScaleClientPassiveManager(ClientPassiveManager):
     def main_loop(self):
         """Actions to perform when receiving new message, including local training."""
         while True:
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            sender_rank, message_code, payload = self._network.recv(src=0)
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
                 model_parameters = payload[0]
 
-                _, message_code, payload = PackageProcessor.recv_package(src=0)
+                sender_rank, message_code, payload = self._network.recv(src=0)
 
                 id_list = payload[0].tolist()
 
@@ -65,6 +62,4 @@ class ScaleClientPassiveManager(ClientPassiveManager):
 
     def synchronize(self):
         """Synchronize local model with server actively"""
-        pack = Package(message_code=MessageCode.ParameterUpdate,
-                       content=self.model_parameters_list)
-        PackageProcessor.send_package(package=pack, dst=0)
+        self._network.send(content=self.model_parameters_list, message_code=MessageCode.ParameterUpdate, dst=0)
