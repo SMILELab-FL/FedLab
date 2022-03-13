@@ -4,7 +4,7 @@
 Communication Strategy
 **********************
 
-Communication strategy is implemented by ClientManager and ServerManager together.
+Communication strategy is implemented by ClientManager and ServerManager collaboratively.
 
 The prototype of :class:`NetworkManager` is defined in ``fedlab.core.network_manager``, which is also a subclass of ``torch.multiprocessing.process``.
 
@@ -138,7 +138,7 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
             3. client synchronizes with server actively.
         """
         while True:
-            sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            sender_rank, message_code, payload = self._network.recv(src=0)
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
@@ -176,7 +176,7 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
             while True:
-                sender, message_code, payload = PackageProcessor.recv_package()
+                sender, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
                     model_parameters = payload[0]
                     if self._handler.add_model(sender, model_parameters):
@@ -209,11 +209,9 @@ Codes below is the actions of :class:`ServerSynchronousManager` in shutdown stag
         """
         for rank in range(1, self._network.world_size):
             print("stopping clients rank:", rank)
-            pack = Package(message_code=MessageCode.Exit)
-            PackageProcessor.send_package(pack, dst=rank)
+            self._network.send(message_code=MessageCode.Exit, dst=rank)
 
-Example
-===========
+.. note::
 
-In fact, the scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/manager.py (It it really simple. We did nothing but add a map function from rank to client id).
+    The scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/manager.py (It it really simple. We did nothing but add a map function from rank to client id).
 
