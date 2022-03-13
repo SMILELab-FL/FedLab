@@ -16,14 +16,14 @@ Tutorials
 
 
 .. card:: Learn Distributed Network Basics
-    :link: tutorial1
+    :link: distributed-communication
     :link-type: ref
     :class-card: sd-rounded-2 sd-border-1
 
     Step-by-step guide on distributed network setup and package transmission.
 
 .. card:: How to Customize Communication Strategy?
-    :link: tutorial2
+    :link: communication-strategy
     :link-type: ref
     :class-card: sd-rounded-2 sd-border-1
 
@@ -31,7 +31,7 @@ Tutorials
     strategies, including synchronous and asynchronous communication.
 
 .. card:: How to Customize Federated Optimization?
-    :link: tutorial3
+    :link: federated-optimization
     :link-type: ref
     :class-card: sd-rounded-2 sd-border-1
 
