@@ -13,6 +13,7 @@ Tutorials
    communication_strategy
    federated_optimization
    dataset_partition
+   docker_deployment
 
 
 .. card:: Learn Distributed Network Basics
