@@ -1,4 +1,4 @@
-.. _tutorial3:
+.. _federated-optimization:
 
 **********************
 Federated Optimization

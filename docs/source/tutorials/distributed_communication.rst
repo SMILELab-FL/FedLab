@@ -1,4 +1,4 @@
-.. _tutorial1:
+.. _distributed-communication:
 
 *************************
 Distributed Communication

@@ -9,9 +9,9 @@ Tutorials
 .. toctree::
    :hidden:
 
-   tutorial_1
-   tutorial_2
-   tutorial_3
+   distributed_communication
+   communication_strategy
+   federated_optimization
    dataset_partition
 
 
