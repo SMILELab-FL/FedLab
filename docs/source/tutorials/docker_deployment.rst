@@ -42,7 +42,7 @@ Dockerfile:
 Matters needing attention
 ==========================
 
-Following is the steps of modifying Dockerfile for different platform:
+The steps of modifying Dockerfile for different platform:
 
 - Step 1
 
