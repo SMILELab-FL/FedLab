@@ -17,9 +17,9 @@ import threading
 import torch
 torch.multiprocessing.set_sharing_strategy("file_system")
 
-from ....network_manager import NetworkManager
-from ....communicator.processor import PackageProcessor
-from ....communicator.package import Package
+from ...network_manager import NetworkManager
+from ...communicator.processor import PackageProcessor
+from ...communicator.package import Package
 
 
 
