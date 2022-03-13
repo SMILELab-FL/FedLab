@@ -1,4 +1,4 @@
-.. _tutorial2:
+.. _communication-strategy:
 
 **********************
 Communication Strategy
