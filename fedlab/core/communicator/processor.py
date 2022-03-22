@@ -49,7 +49,6 @@ class PackageProcessor(object):
         """
         def send_header(header, dst):
             header[HEADER_RECEIVER_RANK_IDX] = dst
-            
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
@@ -71,7 +70,6 @@ class PackageProcessor(object):
         if package.header[HEADER_SLICE_SIZE_IDX] > 0:
             send_slices(slices=package.slices, dst=dst)
             send_content(content=package.content, dst=dst)
-
 
     @staticmethod
     def recv_package(src=None):

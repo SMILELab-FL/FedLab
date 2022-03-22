@@ -26,6 +26,7 @@ from ...utils.message_code import MessageCode
 
 supported_torch_dtypes = [torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]
 
+
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
 
@@ -146,7 +147,8 @@ class Package(object):
         """Parse header to get information of current package.
 
         Args:
-            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``. For more details about :class:`Package`.
+            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``.
+            For more details about :class:`Package`.
 
         Returns:
             tuple: A tuple containing 5 elements: ``(sender_rank, recv_rank, slice_size, message_code, data_type)``.
