@@ -15,10 +15,10 @@
 import random
 import torch
 
+from ..model_maintainer import ModelMaintainer
 from ...utils.serialization import SerializationTool
 from ...utils.aggregator import Aggregators
 from ...utils import Logger
-from ..model_maintainer import ModelMaintainer
 
 
 class ParameterServerBackendHandler(ModelMaintainer):

@@ -20,7 +20,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [Contribute Guideline](https://fedlab.readthedocs.io/en/master/contributing.html)
 - [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
-## Benchmarks
+## [FedLab Benchmarks](https://github.com/SMILELab-FL/FedLab-benchmarks)
 
 1. Optimization Algorithms
 - [x] FedAvg: [Communication-Efficient Learning of Deep Networks from Decentralized Data](http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf)
