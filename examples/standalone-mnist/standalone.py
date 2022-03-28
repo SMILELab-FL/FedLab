@@ -28,6 +28,7 @@ parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--epochs", type=int)
 parser.add_argument("--lr", type=float, default=0.02)
+parser.add_argument("--cuda", type=bool, default=False)
 
 args = parser.parse_args()
 
@@ -67,9 +68,12 @@ test_loader = torch.utils.data.DataLoader(testset,
 # setup
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
-gpu = get_best_gpu()
-model = MLP().cuda(gpu)
-
+if args.cuda:
+    gpu = get_best_gpu()
+    model = MLP().cuda(gpu)
+else:
+    model = MLP()
+    
 # FL settings
 num_per_round = int(args.total_client * args.sample_ratio)
 aggregator = Aggregators.fedavg_aggregate
