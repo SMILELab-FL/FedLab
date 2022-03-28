@@ -83,7 +83,7 @@ Run command above to start a single process simulating FedAvg algorithm with 100
 
 
 
-2. Cross-Machine
+2. Cross-process
 -----------------
 
 Start a FL simulation with 1 server and 2 clients.
