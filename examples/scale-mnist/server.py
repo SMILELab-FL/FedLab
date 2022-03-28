@@ -36,10 +36,10 @@ parser = argparse.ArgumentParser(description='FL server example')
 parser.add_argument('--ip', type=str, default="127.0.0.1")
 parser.add_argument('--port', type=str, default="3002")
 parser.add_argument('--world_size', type=int)
+parser.add_argument('--ethernet', type=str, default=None)
 
 parser.add_argument('--round', type=int)
 parser.add_argument('--sample', type=float, default=1)
-parser.add_argument('--ethernet', type=str, default=None)
 
 args = parser.parse_args()
 

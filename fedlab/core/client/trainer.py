@@ -56,7 +56,7 @@ class ClientSGDTrainer(ClientTrainer):
         epochs (int): the number of local epoch.
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
         criterion (torch.nn.Loss, optional): loss function used in local training process.
-        cuda (bool, optional): use GPUs or not. Default: ``True``.
+        cuda (bool, optional): use GPUs or not. Default: ``False``.
         logger (Logger, optional): :object of :class:`Logger`.
     """
 
@@ -66,7 +66,7 @@ class ClientSGDTrainer(ClientTrainer):
                  epochs,
                  optimizer,
                  criterion,
-                 cuda=True,
+                 cuda=False,
                  logger=Logger()):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 

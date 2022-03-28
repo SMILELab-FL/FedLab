@@ -42,6 +42,11 @@ parser.add_argument("--world_size", type=int)
 parser.add_argument("--rank", type=int)
 parser.add_argument("--ethernet", type=str, default=None)
 
+parser.add_argument("--lr", type=float, default=0.01)
+parser.add_argument("--epoch", type=int, default=2)
+parser.add_argument("--batch_size", type=int, default=100)
+parser.add_argument("--cuda", type=bool, default=False)
+
 args = parser.parse_args()
 
 trainset = torchvision.datasets.MNIST(root='../../tests/data/mnist/',
@@ -77,9 +82,9 @@ trainer = SubsetSerialTrainer(model=model,
                               data_slices=sub_data_indices,
                               aggregator=aggregator,
                               args={
-                                  "batch_size": 100,
-                                  "lr": 0.02,
-                                  "epochs": 5
+                                  "batch_size": args.batch_size,
+                                  "lr": args.lr,
+                                  "epochs": args.epoch
                               })
 
 manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
