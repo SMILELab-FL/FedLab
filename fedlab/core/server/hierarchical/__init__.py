@@ -13,5 +13,5 @@
 # limitations under the License.
 
 
-from connector import ClientConnector, ServerConnector
-from scheduler import Scheduler
+from .connector import ClientConnector, ServerConnector
+from .scheduler import Scheduler
