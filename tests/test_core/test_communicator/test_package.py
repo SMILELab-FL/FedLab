@@ -23,11 +23,12 @@ from fedlab.core.communicator.package import Package
 from fedlab.utils.message_code import MessageCode
 from fedlab.core.communicator.package import (
     HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
-    HEADER_MESSAGE_CODE_IDX, DEFAULT_SLICE_SIZE,
-    DEFAULT_MESSAGE_CODE_VALUE, HEADER_SIZE, HEADER_DATA_TYPE_IDX)
+    HEADER_MESSAGE_CODE_IDX, DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE,
+    HEADER_SIZE, HEADER_DATA_TYPE_IDX)
 
 
 class PackageTestCase(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.sender_rank = 0
@@ -77,25 +78,18 @@ class PackageTestCase(unittest.TestCase):
         # init with tensor list content
         p2 = Package(content=self.tensor_list)
         self._assert_tensor_eq(p2.content, self.content)
-        self.assertEqual(int(p2.header[HEADER_SLICE_SIZE_IDX]),
-                         self.slice_size)
-
 
     def test_add_tensor(self):
         p = Package()
         p.append_tensor(self.tensor_list[0])
 
         assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
-        assert len(p.slices) == 1
-        assert sum(p.slices) == p.content.shape[0]
 
     def test_add_tensor_list(self):
         p = Package()
         p.append_tensor_list(self.tensor_list)
 
         assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
-        assert len(p.slices) == len(self.tensor_list)
-        assert sum(p.slices) == p.content.shape[0]
 
     def test_parse_content(self):
         p = Package()
@@ -107,12 +101,13 @@ class PackageTestCase(unittest.TestCase):
 
         for t, p_t in zip(self.tensor_list, parsed_content):
             self._assert_tensor_eq(t, p_t)
-        
+
     def test_parse_header(self):
         p = Package()
         p.append_tensor_list(self.tensor_list)
 
-        sender_rank, receiver_rank, slice_size, message_code, data_type = Package.parse_header(p.header)
+        sender_rank, receiver_rank, slice_size, message_code, data_type = Package.parse_header(
+            p.header)
 
         assert sender_rank == p.header[HEADER_SENDER_RANK_IDX]
         assert receiver_rank == p.header[HEADER_RECEIVER_RANK_IDX]
