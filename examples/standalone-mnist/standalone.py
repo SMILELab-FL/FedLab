@@ -18,7 +18,6 @@ from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
 from fedlab.utils.functional import get_best_gpu, load_dict
 
-
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
@@ -28,11 +27,14 @@ parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--epochs", type=int)
 parser.add_argument("--lr", type=float, default=0.02)
+parser.add_argument("--cuda", type=bool, default=False)
 
 args = parser.parse_args()
 
+
 # torch model
 class MLP(nn.Module):
+
     def __init__(self, input_size=784, output_size=10):
         super(MLP, self).__init__()
         self.fc1 = nn.Linear(input_size, 200)
@@ -46,6 +48,7 @@ class MLP(nn.Module):
         x = self.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
 
 # get mnist dataset
 root = "../../tests/data/mnist/"
@@ -67,8 +70,11 @@ test_loader = torch.utils.data.DataLoader(testset,
 # setup
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
-gpu = get_best_gpu()
-model = MLP().cuda(gpu)
+if args.cuda:
+    gpu = get_best_gpu()
+    model = MLP().cuda(gpu)
+else:
+    model = MLP()
 
 # FL settings
 num_per_round = int(args.total_client * args.sample_ratio)

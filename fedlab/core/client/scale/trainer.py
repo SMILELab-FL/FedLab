@@ -28,7 +28,7 @@ class SerialTrainer(ClientTrainer):
         model (torch.nn.Module): Model used in this federation.
         client_num (int): Number of clients in current trainer.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
-        cuda (bool): Use GPUs or not. Default: ``True``.
+        cuda (bool): Use GPUs or not. Default: ``False``.
         logger (Logger, optional): object of :class:`Logger`.
     """
 
@@ -36,7 +36,7 @@ class SerialTrainer(ClientTrainer):
                  model,
                  client_num,
                  aggregator=None,
-                 cuda=True,
+                 cuda=False,
                  logger=Logger()):
         super().__init__(model, cuda)
         self.client_num = client_num
@@ -104,7 +104,7 @@ class SubsetSerialTrainer(SerialTrainer):
         data_slices (list[list]): subset of indices of dataset.
         aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
         logger (Logger, optional): object of :class:`Logger`.
-        cuda (bool): Use GPUs or not. Default: ``True``.
+        cuda (bool): Use GPUs or not. Default: ``False``.
         args (dict, optional): Uncertain variables.
 
     .. note::
@@ -117,7 +117,7 @@ class SubsetSerialTrainer(SerialTrainer):
                  data_slices,
                  aggregator=None,
                  logger=Logger(),
-                 cuda=True,
+                 cuda=False,
                  args=None) -> None:
 
         super(SubsetSerialTrainer, self).__init__(model=model,
@@ -174,7 +174,6 @@ class SubsetSerialTrainer(SerialTrainer):
                     target = target.cuda(self.gpu)
 
                 output = self.model(data)
-
                 loss = criterion(output, target)
 
                 optimizer.zero_grad()

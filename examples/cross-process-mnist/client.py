@@ -21,14 +21,12 @@ parser.add_argument("--ip", type=str)
 parser.add_argument("--port", type=str)
 parser.add_argument("--world_size", type=int)
 parser.add_argument("--rank", type=int)
+parser.add_argument("--ethernet", type=str, default=None)
 
 parser.add_argument("--lr", type=float, default=0.01)
 parser.add_argument("--epoch", type=int, default=2)
-parser.add_argument("--dataset", type=str)
 parser.add_argument("--batch_size", type=int, default=100)
-
-parser.add_argument("--ethernet", type=str, default=None)
-parser.add_argument("--cuda", type=bool, default=True)
+parser.add_argument("--cuda", type=bool, default=False)
 args = parser.parse_args()
 
 # get mnist dataset
@@ -64,7 +62,7 @@ class MLP(nn.Module):
         x = self.fc3(x)
         return x
 
-model = MLP().cuda()
+model = MLP()
 
 optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 criterion = nn.CrossEntropyLoss()
