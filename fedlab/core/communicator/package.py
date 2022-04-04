@@ -92,7 +92,8 @@ class Package(object):
 
         shape = list(tensor.shape)
         slice = [tensor.numel(), len(shape)] + shape
-
+        
+        tensor = tensor.view(-1)
         if self.content is None:
             self.content = deepcopy(tensor)
             self.dtype = tensor.dtype
