@@ -69,10 +69,8 @@ class ServerSynchronousManager(ServerManager):
         super(ServerSynchronousManager, self).__init__(network, handler)
         self._LOGGER = logger
 
-    def shutdown(self):
-        """Shutdown stage."""
-        self.shutdown_clients()
-        super().shutdown()
+    def setup(self):
+        return super().setup()
 
     def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
@@ -105,6 +103,11 @@ class ServerSynchronousManager(ServerManager):
                     raise Exception(
                         "Unexpected message code {}".format(message_code))
 
+    def shutdown(self):
+        """Shutdown stage."""
+        self.shutdown_clients()
+        super().shutdown()
+
     def activate_clients(self):
         """Activate subset of clients to join in one FL round
 
@@ -115,10 +118,9 @@ class ServerSynchronousManager(ServerManager):
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
 
+        model_parameters = self._handler.model_parameters  # serialized model params
         for client_id in clients_this_round:
             rank = client_id + 1
-
-            model_parameters = self._handler.model_parameters  # serialized model params
             self._network.send(content=model_parameters,
                                message_code=MessageCode.ParameterUpdate,
                                dst=rank)
@@ -153,9 +155,8 @@ class ServerAsynchronousManager(ServerManager):
 
         self.message_queue = Queue()
 
-    def shutdown(self):
-        self.shutdown_clients()
-        super().shutdown()
+    def setup(self):
+        return super().setup()
 
     def main_loop(self):
         """Communication agreements of asynchronous FL.
@@ -191,6 +192,10 @@ class ServerAsynchronousManager(ServerManager):
             else:
                 raise ValueError(
                     "Unexpected message code {}".format(message_code))
+
+    def shutdown(self):
+        self.shutdown_clients()
+        super().shutdown()
 
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""

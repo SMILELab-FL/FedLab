@@ -100,4 +100,3 @@ class ClientSGDTrainer(ClientTrainer):
                 loss.backward()
                 self.optimizer.step()
         self._LOGGER.info("Local train procedure is finished")
-        return self.model_parameters

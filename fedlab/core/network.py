@@ -13,9 +13,20 @@
 # limitations under the License.
 
 import os
+import torch
 import torch.distributed as dist
 
 from .communicator.processor import Package, PackageProcessor
+
+type2byte = {
+    torch.int8: 1,
+    torch.int16: 2,
+    torch.int32: 4,
+    torch.int64: 8,
+    torch.float16: 2,
+    torch.float32: 4,
+    torch.float64: 8
+}
 
 
 class DistNetwork(object):
@@ -28,6 +39,7 @@ class DistNetwork(object):
         ethernet (str)
         dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
     """
+
     def __init__(self,
                  address,
                  world_size,
@@ -40,6 +52,9 @@ class DistNetwork(object):
         self.world_size = world_size
         self.dist_backend = dist_backend
         self.ethernet = ethernet
+
+        self.send_volume_intotal = 0  # byte
+        self.recv_volume_intotal = 0  # byte
 
     def init_network_connection(self):
         """Initialize ``torch.distributed`` communication group"""
@@ -57,6 +72,9 @@ class DistNetwork(object):
 
     def close_network_connection(self):
         """Destroy current ``torch.distributed`` process group"""
+        print(
+            "Rank {}, overall communication volume: sent {} bytes, received {} bytes.".
+            format(self.rank, self.send_volume_intotal, self.recv_volume_intotal))
         if dist.is_initialized():
             dist.destroy_process_group()
 
@@ -64,11 +82,16 @@ class DistNetwork(object):
         """Send tensor to process rank=dst"""
         pack = Package(message_code=message_code, content=content)
         PackageProcessor.send_package(pack, dst=dst)
+        if pack.content is not None:
+            self.send_volume_intotal += pack.content.numel() * type2byte[pack.dtype]
 
     def recv(self, src=None):
         """Receive tensor from process rank=src"""
         sender_rank, message_code, content = PackageProcessor.recv_package(
             src=src)
+        if content is not None:
+            volumn = sum([data.numel() for data in content])
+            self.recv_volume_intotal += volumn * type2byte[content[0].dtype]
         return sender_rank, message_code, content
 
     def __str__(self):

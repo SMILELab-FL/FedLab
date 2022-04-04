@@ -52,11 +52,10 @@ class PackageProcessor(object):
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
-            # TODO:update
             np_slices = np.array(slices, dtype=np.int32)
             tensor_slices = torch.from_numpy(np_slices)
             dist.send(tensor_slices, dst=dst)
-        
+
         def send_content(content, dst):
             dist.send(content, dst=dst)
 
