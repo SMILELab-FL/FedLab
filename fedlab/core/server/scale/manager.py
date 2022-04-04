@@ -21,6 +21,7 @@ from ...communicator.package import Package
 from ....utils.message_code import MessageCode
 from ....utils import Logger
 
+
 class ScaleSynchronousManager(ServerSynchronousManager):
     """ServerManager used in scale scenario."""
     def __init__(self, network, handler, logger=Logger()):

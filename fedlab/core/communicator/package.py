@@ -36,7 +36,6 @@ class Package(object):
     Note:
         ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
         of a sub-Tensor in content.
-        
 
     :class:`Package` maintains 3 variables:
         - :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
@@ -89,9 +88,7 @@ class Package(object):
             tensor (torch.Tensor): Tensor to append in content.
         """
         if not isinstance(tensor, torch.Tensor):
-            raise ValueError("Invalid content type")
-        if tensor.shape != tensor.view(-1).shape:
-            raise ValueError("Invalid shape")
+            raise ValueError("Invalid content type, expecting torch.Tensor but get {}".format(type(tensor)))
 
         shape = list(tensor.shape)
         slice = [tensor.numel(), len(shape)] + shape
@@ -102,7 +99,7 @@ class Package(object):
         else:
             if tensor.dtype is not self.dtype:
                 warnings.warn(
-                    "The dtype of current tensor is {}. But package dtype is {}. The current data type will be coerced to {} and we do not guarantee lossless conversion."
+                    "The dtype of current tensor is {}. But package dtype is {}. The current data type will be casted to {} and fedlab do not guarantee lossless conversion."
                     .format(tensor.dtype, self.dtype, self.dtype))
             tensor = tensor.to(self.dtype)
             self.content = torch.cat((self.content, tensor))
@@ -125,7 +122,7 @@ class Package(object):
             self.content.to(self.dtype)
         else:
             warnings.warn(
-                "Currently FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
+                "FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
             )
 
     @staticmethod

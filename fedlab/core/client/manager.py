@@ -28,6 +28,7 @@ class ClientManager(NetworkManager):
         network (DistNetwork): Network configuration.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
     """
+
     def __init__(self, network, trainer):
         super().__init__(network)
         self._trainer = trainer
@@ -39,7 +40,10 @@ class ClientManager(NetworkManager):
         """
         super().setup()
         tensor = torch.Tensor([self._trainer.client_num]).int()
-        self._network.send(content=tensor, message_code=MessageCode.SetUp, dst=0)
+        self._network.send(content=tensor,
+                           message_code=MessageCode.SetUp,
+                           dst=0)
+
 
 class ClientPassiveManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL pattern.
@@ -49,6 +53,7 @@ class ClientPassiveManager(ClientManager):
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
         logger (Logger): object of :class:`Logger`.
     """
+
     def __init__(self, network, trainer, logger=Logger()):
         super().__init__(network, trainer)
         self._LOGGER = logger
@@ -72,7 +77,7 @@ class ClientPassiveManager(ClientManager):
                 self.synchronize()
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please see MessageCode Enum".
+                    "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
     def synchronize(self):
@@ -92,6 +97,7 @@ class ClientActiveManager(ClientManager):
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self, network, trainer, logger=Logger()):
         super().__init__(network, trainer)
         self._LOGGER = logger
@@ -111,11 +117,11 @@ class ClientActiveManager(ClientManager):
 
             # waits for data from
             sender_rank, message_code, payload = self._network.recv(src=0)
-            #sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
+            # sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
 
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "Recv {}, Process exiting".format(message_code))
+                    "Recv {}, process exiting.".format(message_code))
                 break
             elif message_code == MessageCode.ParameterUpdate:
                 self._LOGGER.info(
@@ -127,11 +133,13 @@ class ClientActiveManager(ClientManager):
                 self.synchronize()
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please see MessageCode Enum".
+                    "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
     def synchronize(self):
         """Synchronize local model with server"""
         self._LOGGER.info("synchronize procedure")
         model_parameters = self._trainer.model_parameters
-        self._network.send(content=[model_parameters, self.model_time + 1], message_code=MessageCode.ParameterUpdate, dst=0)
+        self._network.send(content=[model_parameters, self.model_time + 1],
+                           message_code=MessageCode.ParameterUpdate,
+                           dst=0)
