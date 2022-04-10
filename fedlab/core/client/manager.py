@@ -114,7 +114,8 @@ class ClientActiveManager(ClientManager):
         while True:
             # request model actively
             self._LOGGER.info("request parameter procedure")
-
+            self._network.send(message_code=MessageCode.ParameterRequest, src=0)
+            
             # waits for data from
             sender_rank, message_code, payload = self._network.recv(src=0)
             # sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
