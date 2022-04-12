@@ -32,6 +32,7 @@ class ServerManager(NetworkManager):
         network (DistNetwork): network configuration.
         handler (ParameterServerBackendHandler): performe global server aggregation procedure.
     """
+
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
@@ -53,6 +54,13 @@ class ServerManager(NetworkManager):
         if self._handler is not None:
             self._handler.client_num_in_total = self.coordinator.total
 
+    def broadcast(self, rank_list, message_code, content):
+        """broadcast content to client processes"""
+        for rank in rank_list:
+            self._network.send(content=content,
+                               message_code=message_code,
+                               dst=rank)
+
 
 class ServerSynchronousManager(ServerManager):
     """Synchronous communication
@@ -65,6 +73,7 @@ class ServerSynchronousManager(ServerManager):
         handler (ParameterServerBackendHandler): Backend calculation handler for parameter server.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self, network, handler, logger=Logger()):
         super(ServerSynchronousManager, self).__init__(network, handler)
         self._LOGGER = logger
@@ -117,13 +126,11 @@ class ServerSynchronousManager(ServerManager):
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
-
         model_parameters = self._handler.model_parameters  # serialized model params
-        for client_id in clients_this_round:
-            rank = client_id + 1
-            self._network.send(content=model_parameters,
-                               message_code=MessageCode.ParameterUpdate,
-                               dst=rank)
+
+        rank_list = [client_id + 1 for client_id in clients_this_round]
+        self.broadcast(rank_list, MessageCode.ParameterUpdate,
+                       model_parameters)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -134,8 +141,8 @@ class ServerSynchronousManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        for rank in range(1, self._network.world_size):
-            self._network.send(message_code=MessageCode.Exit, dst=rank)
+        rank_list = range(1, self._network.world_size)
+        self.broadcast(rank_list, MessageCode.Exit, None)
 
 
 class ServerAsynchronousManager(ServerManager):
@@ -149,6 +156,7 @@ class ServerAsynchronousManager(ServerManager):
         handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
         logger (Logger, optional): object of :class:`Logger`.
     """
+
     def __init__(self, network, handler, logger=Logger()):
         super(ServerAsynchronousManager, self).__init__(network, handler)
         self._LOGGER = logger
@@ -174,9 +182,8 @@ class ServerAsynchronousManager(ServerManager):
             sender, message_code, payload = self._network.recv()
 
             if message_code == MessageCode.ParameterRequest:
-                model_parameters = self._handler.model_parameters
                 content = [
-                    model_parameters,
+                    self._handler.model_parameters,
                     torch.Tensor(self._handler.server_time)
                 ]
                 self._LOGGER.info(

@@ -41,7 +41,7 @@ class ClientTrainer(ModelMaintainer):
     def local_process(self, payload):
         """Manager of the upper layer will call this function with accepted payload"""
         raise NotImplementedError()
-
+        
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
@@ -80,9 +80,12 @@ class ClientSGDTrainer(ClientTrainer):
         self.criterion = criterion
         self._LOGGER = logger
 
+        self.model_time = 0
+
     def local_process(self, payload):
         model_parameters = payload[0]
         self.train(model_parameters)
+        return self.model_parameters
 
     def train(self, model_parameters) -> None:
         """Client trains its local model on local dataset.
@@ -95,8 +98,7 @@ class ClientSGDTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is running")
         for ep in range(self.epochs):
             self._model.train()
-            for inputs, labels in tqdm(self._data_loader,
-                                       desc="{}, Epoch {}".format(self._LOGGER.name, ep)):
+            for inputs, labels in self._data_loader:
                 if self.cuda:
                     inputs, labels = inputs.cuda(self.gpu), labels.cuda(
                         self.gpu)
