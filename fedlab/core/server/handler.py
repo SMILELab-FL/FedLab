@@ -33,14 +33,14 @@ class ParameterServerBackendHandler(ModelMaintainer):
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
-    def _update_model(self, model_parameters_list):
-        """Override this function for global model aggregation strategy.
-
-        Args:
-            model_parameters_list (list[torch.Tensor]): A list of serialized model parameters collected from different clients.
-        """
+    def local_process(self, payload, *args, **kwargs):
+        """Manager of the upper layer will call this function with accepted payload. """
         raise NotImplementedError()
 
+    def _update_model(self, *args, **kwargs):
+        """Override this function for global model aggregation strategy."""
+        raise NotImplementedError()
+        
 
 class SyncParameterServerHandler(ParameterServerBackendHandler):
     """Synchronous Parameter Server Handler.

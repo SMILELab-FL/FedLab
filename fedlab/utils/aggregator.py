@@ -15,6 +15,16 @@
 import torch
 
 
+class Decorators(object):
+    """As you can see, decorateors!!!"""
+
+    def excute_time():
+        pass
+
+    def current_state():
+        pass
+
+
 class Aggregators(object):
     """Define the algorithm of parameters aggregation"""
 
@@ -39,8 +49,8 @@ class Aggregators(object):
 
         weights = weights / torch.sum(weights)
         assert torch.all(weights >= 0), "weights should be non-negative values"
-        serialized_parameters = torch.sum(torch.stack(serialized_params_list, dim=-1) * weights,
-                                          dim=-1)
+        serialized_parameters = torch.sum(
+            torch.stack(serialized_params_list, dim=-1) * weights, dim=-1)
 
         return serialized_parameters
 

@@ -72,8 +72,9 @@ class ClientPassiveManager(ClientManager):
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                model_parameters = payload[0]
-                self._trainer.train(model_parameters=model_parameters)
+                # model_parameters = payload[0]
+                # self._trainer.train(model_parameters=model_parameters)
+                self._trainer.local_process(payload)
                 self.synchronize()
             else:
                 raise ValueError(
@@ -128,9 +129,11 @@ class ClientActiveManager(ClientManager):
                 self._LOGGER.info(
                     "Package received from {}, message code {}".format(
                         sender_rank, message_code))
-                model_parameters, self.model_time = payload[0], payload[1]
+                #model_parameters, self.model_time = payload[0], payload[1]
                 # move loading model params to the start of training
-                self._trainer.train(model_parameters=model_parameters)
+                #self._trainer.train(model_parameters=model_parameters)
+                self.model_time = payload[1]
+                self._trainer.local_process(payload)
                 self.synchronize()
             else:
                 raise ValueError(

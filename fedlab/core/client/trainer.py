@@ -38,6 +38,10 @@ class ClientTrainer(ModelMaintainer):
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
 
+    def local_process(self, payload):
+        """Manager of the upper layer will call this function with accepted payload"""
+        raise NotImplementedError()
+
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
@@ -75,6 +79,10 @@ class ClientSGDTrainer(ClientTrainer):
         self.optimizer = optimizer
         self.criterion = criterion
         self._LOGGER = logger
+
+    def local_process(self, payload):
+        model_parameters = payload[0]
+        self.train(model_parameters)
 
     def train(self, model_parameters) -> None:
         """Client trains its local model on local dataset.
