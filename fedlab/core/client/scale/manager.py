@@ -20,6 +20,7 @@ from ...client.manager import ClientPassiveManager
 from ....utils.message_code import MessageCode
 from ....utils import Logger
 
+
 class ScaleClientPassiveManager(ClientPassiveManager):
     """Special client manager for :class:`SerialTrainer`.
         
@@ -28,24 +29,24 @@ class ScaleClientPassiveManager(ClientPassiveManager):
 
     Args:
         network (DistNetwork): Distributed network to use.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`. For more client simulation with single process, you are supposed to use :class:`SerialTrainer` here.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`, providing :meth:`train` and :attr:`model`. 
+            For more client simulation with single process, you are supposed to use :class:`SerialTrainer` here.
         logger (Logger): object of :class:`Logger`.
     """
-    def __init__(self, network, trainer, logger=Logger()):
+
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer, logger)
 
     def main_loop(self):
         """Actions to perform when receiving new message, including local training."""
         while True:
             sender_rank, message_code, payload = self._network.recv(src=0)
+
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                model_parameters = payload[0]
-
-                sender_rank, message_code, payload = self._network.recv(src=0)
-
-                id_list = payload[0].tolist()
+                model_parameters, id_list = payload[0], payload[1].to(
+                    torch.int32).tolist()
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:
@@ -58,8 +59,12 @@ class ScaleClientPassiveManager(ClientPassiveManager):
                         model_parameters=model_parameters)
                 self.synchronize()
             else:
-                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+                raise ValueError(
+                    "Invalid MessageCode {}. Please see MessageCode Enum".
+                    format(message_code))
 
     def synchronize(self):
         """Synchronize local model with server actively"""
-        self._network.send(content=self.model_parameters_list, message_code=MessageCode.ParameterUpdate, dst=0)
+        self._network.send(content=self.model_parameters_list,
+                           message_code=MessageCode.ParameterUpdate,
+                           dst=0)

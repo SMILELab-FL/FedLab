@@ -74,9 +74,9 @@ class ServerSynchronousManager(ServerManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, network, handler, logger=Logger()):
+    def __init__(self, network, handler, logger=None):
         super(ServerSynchronousManager, self).__init__(network, handler)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def setup(self):
         return super().setup()
@@ -157,9 +157,9 @@ class ServerAsynchronousManager(ServerManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, network, handler, logger=Logger()):
+    def __init__(self, network, handler, logger=None):
         super(ServerAsynchronousManager, self).__init__(network, handler)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
         self.message_queue = Queue()
 

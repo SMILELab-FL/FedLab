@@ -71,14 +71,14 @@ class ClientSGDTrainer(ClientTrainer):
                  optimizer,
                  criterion,
                  cuda=False,
-                 logger=Logger()):
+                 logger=None):
         super(ClientSGDTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
         self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
         self.model_time = 0
 

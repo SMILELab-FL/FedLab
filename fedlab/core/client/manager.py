@@ -54,9 +54,9 @@ class ClientPassiveManager(ClientManager):
         logger (Logger): object of :class:`Logger`.
     """
 
-    def __init__(self, network, trainer, logger=Logger()):
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def main_loop(self):
         """Actions to perform when receiving a new message, including local training.
@@ -95,9 +95,9 @@ class ClientActiveManager(ClientManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, network, trainer, logger=Logger()):
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def main_loop(self):
         """Actions to perform on receiving new message, including local training

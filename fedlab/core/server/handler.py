@@ -65,10 +65,10 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                  global_round=5,
                  cuda=False,
                  sample_ratio=1.0,
-                 logger=Logger()):
+                 logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
         if sample_ratio < 0.0 or sample_ratio > 1.0:
             raise ValueError("Invalid select ratio: {}".format(sample_ratio))
@@ -169,9 +169,9 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                  total_time=5,
                  strategy="constant",
                  cuda=False,
-                 logger=Logger()):
+                 logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
         self.client_num_in_total = 0
 

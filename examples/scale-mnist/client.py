@@ -45,7 +45,7 @@ parser.add_argument("--ethernet", type=str, default=None)
 parser.add_argument("--lr", type=float, default=0.01)
 parser.add_argument("--epoch", type=int, default=2)
 parser.add_argument("--batch_size", type=int, default=100)
-parser.add_argument("--cuda", type=bool, default=False)
+parser.add_argument("--cuda", type=bool, default=True)
 
 args = parser.parse_args()
 

@@ -24,7 +24,8 @@ from ....utils import Logger
 
 class ScaleSynchronousManager(ServerSynchronousManager):
     """ServerManager used in scale scenario."""
-    def __init__(self, network, handler, logger=Logger()):
+
+    def __init__(self, network, handler, logger=None):
         super().__init__(network, handler, logger)
 
     def activate_clients(self):
@@ -38,11 +39,12 @@ class ScaleSynchronousManager(ServerSynchronousManager):
         self._LOGGER.info("Client Activation Procedure")
         for rank, values in rank_dict.items():
             self._LOGGER.info("rank {}, client ids {}".format(rank, values))
-            # Send parameters
-            self._network.send(content=self._handler.model_parameters, message_code=MessageCode.ParameterUpdate, dst=rank)
-            # Send activate id list
             id_list = torch.Tensor(values).to(torch.int32)
-            self._network.send(content=id_list, message_code=MessageCode.ParameterUpdate, dst=rank)
+
+            self._network.send(
+                content=[self._handler.model_parameters, id_list],
+                message_code=MessageCode.ParameterUpdate,
+                dst=rank)
 
     def main_loop(self):
         while self._handler.stop_condition() is not True:
@@ -53,8 +55,9 @@ class ScaleSynchronousManager(ServerSynchronousManager):
                 sender, message_code, payload = PackageProcessor.recv_package()
                 if message_code == MessageCode.ParameterUpdate:
                     for model_parameters in payload:
-                        updated = self._handler.add_model(sender, model_parameters)
-                
+                        updated = self._handler.add_model(
+                            sender, model_parameters)
+
                     if updated:
                         break
                 else:

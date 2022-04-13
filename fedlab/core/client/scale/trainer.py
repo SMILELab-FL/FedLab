@@ -37,12 +37,12 @@ class SerialTrainer(ClientTrainer):
                  client_num,
                  aggregator=None,
                  cuda=False,
-                 logger=Logger()):
+                 logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
         self.aggregator = aggregator
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def _train_alone(self, model_parameters, train_loader):
         """Train local model with :attr:`model_parameters` on :attr:`train_loader`.
@@ -116,7 +116,7 @@ class SubsetSerialTrainer(SerialTrainer):
                  dataset,
                  data_slices,
                  aggregator=None,
-                 logger=Logger(),
+                 logger=None,
                  cuda=False,
                  args=None) -> None:
 
