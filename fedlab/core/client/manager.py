@@ -71,17 +71,17 @@ class ClientPassiveManager(ClientManager):
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                return_content = self._trainer.local_process(payload)
-                self.synchronize(return_content)
+                self._trainer.local_process(payload)
+                self.synchronize()
             else:
                 raise ValueError(
                     "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
-    def synchronize(self, return_content):
+    def synchronize(self):
         """Synchronize with server"""
         self._LOGGER.info("Uploading information to server")
-        self._network.send(content=return_content,
+        self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)
 
@@ -119,16 +119,16 @@ class ClientActiveManager(ClientManager):
                     "Recv {}, process exiting.".format(message_code))
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                return_content = self._trainer.local_process(payload)
-                self.synchronize(return_content)
+                self._trainer.local_process(payload)
+                self.synchronize(self._trainer.uplink_package)
             else:
                 raise ValueError(
                     "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
-    def synchronize(self, return_content):
+    def synchronize(self, uplink_content):
         """Synchronize with server"""
         self._LOGGER.info("Uploading information to server")
-        self._network.send(content=return_content,
+        self._network.send(content=uplink_content,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)

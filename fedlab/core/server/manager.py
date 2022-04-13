@@ -99,14 +99,14 @@ class ServerSynchronousManager(ServerManager):
         Raises:
             Exception: Unexpected :class:`MessageCode`.
         """
-        while self._handler.stop_condition() is not True:
+        while self._handler.if_stop is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
             while True:
-                sender, message_code, payload = self._network.recv()
+                sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    model_parameters = payload[0]
-                    if self._handler.add_model(sender, model_parameters):
+                    if self._handler._iterate_global_model(
+                            sender_rank, payload):
                         break
                 else:
                     raise Exception(
@@ -126,11 +126,11 @@ class ServerSynchronousManager(ServerManager):
         clients_this_round = self._handler.sample_clients()
         self._LOGGER.info(
             "client id list for this FL round: {}".format(clients_this_round))
-        model_parameters = self._handler.model_parameters  # serialized model params
+        # model_parameters = self._handler.model_parameters  # serialized model params
 
         rank_list = [client_id + 1 for client_id in clients_this_round]
         self.broadcast(rank_list, MessageCode.ParameterUpdate,
-                       model_parameters)
+                       self._handler.downlink_package)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -178,18 +178,11 @@ class ServerAsynchronousManager(ServerManager):
         watching = threading.Thread(target=self.watching_queue)
         watching.start()
 
-        while self._handler.stop_condition() is not True:
+        while self._handler.if_stop is not True:
             sender, message_code, payload = self._network.recv()
 
             if message_code == MessageCode.ParameterRequest:
-                content = [
-                    self._handler.model_parameters,
-                    torch.Tensor(self._handler.server_time)
-                ]
-                self._LOGGER.info(
-                    "Send model to rank {}, current server model time is {}".
-                    format(sender, self._handler.server_time))
-                self._network.send(content=content,
+                self._network.send(content=self._handler.downlink_package,
                                    message_code=MessageCode.ParameterUpdate,
                                    dst=sender)
 
@@ -206,11 +199,9 @@ class ServerAsynchronousManager(ServerManager):
 
     def watching_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""
-        while self._handler.stop_condition() is not True:
-            _, _, payload = self.message_queue.get()
-            model_parameters = payload[0]
-            model_time = payload[1]
-            self._handler._update_model(model_parameters, model_time)
+        while self._handler.if_stop is not True:
+            sender_rank, _, payload = self.message_queue.get()
+            self._handler._iterate_global_model(sender_rank, payload)
 
     def shutdown_clients(self):
         """Shutdown all clients.

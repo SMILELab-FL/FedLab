@@ -50,6 +50,10 @@ class ClientTrainer(ModelMaintainer):
         """Evaluate quality of local model."""
         raise NotImplementedError()
 
+    @property
+    def uplink_package(self):
+        return [self.model_parameters]
+
 
 class ClientSGDTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
@@ -85,7 +89,6 @@ class ClientSGDTrainer(ClientTrainer):
     def local_process(self, payload):
         model_parameters = payload[0]
         self.train(model_parameters)
-        return self.model_parameters
 
     def train(self, model_parameters) -> None:
         """Client trains its local model on local dataset.

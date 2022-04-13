@@ -47,19 +47,21 @@ class ScaleSynchronousManager(ServerSynchronousManager):
                 dst=rank)
 
     def main_loop(self):
-        while self._handler.stop_condition() is not True:
+        while self._handler.if_stop is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
 
             while True:
-                sender, message_code, payload = PackageProcessor.recv_package()
+                sender_rank, message_code, payload = PackageProcessor.recv_package(
+                )
                 if message_code == MessageCode.ParameterUpdate:
-                    for model_parameters in payload:
-                        updated = self._handler.add_model(
-                            sender, model_parameters)
-
-                    if updated:
+                    if sum([
+                            self._handler._iterate_global_model(
+                                sender_rank, [model_parameters])
+                            for model_parameters in payload
+                    ]) > 0:
                         break
+
                 else:
                     raise Exception(
                         "Unexpected message code {}".format(message_code))
