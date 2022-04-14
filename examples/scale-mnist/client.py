@@ -8,8 +8,8 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.core.client.scale.trainer import SubsetSerialTrainer
-from fedlab.core.client.scale.manager import ScaleClientPassiveManager
+from fedlab.core.client.serial_trainer import SubsetSerialTrainer
+from fedlab.core.client import ClientPassiveManager
 from fedlab.core.network import DistNetwork
 
 from fedlab.utils.logger import Logger
@@ -81,12 +81,13 @@ trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=sub_data_indices,
                               aggregator=aggregator,
+                              cuda=torch.cuda.is_available(),
                               args={
                                   "batch_size": args.batch_size,
                                   "lr": args.lr,
                                   "epochs": args.epoch
                               })
 
-manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
-
+# manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
+manager_ = ClientPassiveManager(trainer=trainer, network=network)
 manager_.run()

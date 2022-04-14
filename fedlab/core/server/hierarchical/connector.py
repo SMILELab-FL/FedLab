@@ -17,7 +17,7 @@ import torch
 
 from ...network_manager import NetworkManager
 from ...communicator.processor import PackageProcessor
-from ...communicator.package import Package
+from ...coordinator import Coordinator
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -42,8 +42,14 @@ class Connector(NetworkManager):
         self.mq_read = read_queue
         self.mq_write = write_queue
 
-    def run(self):
-        raise NotImplementedError()
+    def main_loop(self, *args, **kwargs):
+        return super().main_loop(*args, **kwargs)
+
+    def setup(self, *args, **kwargs):
+        return super().setup(*args, **kwargs)
+
+    def shutdown(self, *args, **kwargs):
+        return super().shutdown(*args, **kwargs)
 
     def on_receive(self, sender, message_code, payload):
         """Define the reaction of receiving message.
@@ -76,21 +82,33 @@ class ClientConnector(Connector):
         self.mq_read = read_queue
         self.mq_write = write_queue
 
-    def run(self):
+        self.coordinator = None
+
+    def setup(self, *args, **kwargs):
+        rank_client_id_map = {}
+
+        for rank in range(1, self._network.world_size):
+            _, _, content = self._network.recv(src=rank)
+            rank_client_id_map[rank] = content[0].item()
+        self.coordinator = Coordinator(rank_client_id_map)
+        if self._handler is not None:
+            self._handler.client_num_in_total = self.coordinator.total
+
+    def main_loop(self):
         self.setup()
         # start a thread to watch message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package(
-            )  # package from clients
+            sender, message_code, payload = self._network.recv() # package from clients
+
             print("ClientConnector: recv data from {}, message code {}".format(
                 sender, message_code))
-            self.on_receive(sender, message_code, payload)
+            self.mq_write.put((sender, message_code, payload))
 
-    def on_receive(self, sender, message_code, payload):
-        self.mq_write.put((sender, message_code, payload))
+    def shutdown(self, *args, **kwargs):
+        return super().shutdown(*args, **kwargs)
 
     def deal_queue(self):
         """Process message queue
@@ -99,16 +117,25 @@ class ClientConnector(Connector):
         """
         while True:
             sender, message_code, payload = self.mq_read.get()
+
+            id_list, payload = payload[0], payload[1:]
+            rank_dict = self.coordinator.map_id_list(id_list)
+
             print("Watching Queue: data from {}, message code {}".format(
                 sender, message_code))
-            pack = Package(message_code=message_code, content=payload)
-            PackageProcessor.send_package(pack, dst=1)
+
+            for rank, id in rank_dict.items():
+                self._network.send(content=payload, message_code=message_code, dst=rank)
+            # pack = Package(message_code=message_code, content=payload)
+            # PackageProcessor.send_package(pack, dst=1)
 
 
 class ServerConnector(Connector):
     """Connect with server.
 
-    This class is a part of middle server which used in hierarchical structure.
+        this process will act like a client.
+
+        This class is a part of middle server which used in hierarchical structure.
 
     Args:
         network (DistNetwork): object to manage torch.distributed network communication.
@@ -120,16 +147,22 @@ class ServerConnector(Connector):
 
         self.mq_write = write_queue
         self.mq_read = read_queue
+    
+    def setup(self, *args, **kwargs):
+        return super().setup(*args, **kwargs)
 
-    def run(self):
-        self.setup()
+    def main_loop(self, *args, **kwargs):
         # start a thread watching message queue
         watching_queue = threading.Thread(target=self.deal_queue)
         watching_queue.start()
 
         while True:
             sender, message_code, payload = PackageProcessor.recv_package()
-            self.on_receive(sender, message_code, payload)
+
+            self.mq_write.put((sender, message_code, payload))
+
+    def shutdown(self, *args, **kwargs):
+        return super().shutdown(*args, **kwargs)
 
     def on_receive(self, sender, message_code, payload):
         self.mq_write.put((sender, message_code, payload))
@@ -137,7 +170,7 @@ class ServerConnector(Connector):
     def deal_queue(self):
         while True:
             sender, message_code, payload = self.mq_read.get()
-            print("data from {}, message code {}".format(sender, message_code))
-
-            pack = Package(message_code=message_code, content=payload)
-            PackageProcessor.send_package(pack, dst=0)
+            print("Received data from {}, message code {}".format(sender, message_code))
+            self._network.send(content=payload, message_code=message_code, dst=0)
+            # pack = Package(message_code=message_code, content=payload)
+            # PackageProcessor.send_package(pack, dst=0)

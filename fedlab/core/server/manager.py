@@ -39,10 +39,10 @@ class ServerManager(NetworkManager):
         self.coordinator = None
 
     def setup(self):
-        """Initialization Stage. 
-            
+        """Initialization Stage.
+
         - Server accept local client num report from client manager.
-        - Init a coordinator for client_id mapping.
+        - Init a coordinator for client_id -> rank mapping.
         """
         super().setup()
         rank_client_id_map = {}
@@ -102,6 +102,7 @@ class ServerSynchronousManager(ServerManager):
         while self._handler.if_stop is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
+            
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
@@ -123,14 +124,19 @@ class ServerSynchronousManager(ServerManager):
         Manager will start a new thread to send activation package to chosen clients' process rank.
         The ranks of clients are obtained from :meth:`handler.sample_clients`.
         """
+        self._LOGGER.info("Client activation procedure")
         clients_this_round = self._handler.sample_clients()
+        rank_dict = self.coordinator.map_id_list(clients_this_round)
+        
         self._LOGGER.info(
-            "client id list for this FL round: {}".format(clients_this_round))
-        # model_parameters = self._handler.model_parameters  # serialized model params
+            "Client id list: {}".format(clients_this_round))
 
-        rank_list = [client_id + 1 for client_id in clients_this_round]
-        self.broadcast(rank_list, MessageCode.ParameterUpdate,
-                       self._handler.downlink_package)
+        for rank, values in rank_dict.items():
+            id_list = torch.Tensor(values).to(torch.int32)
+            self._network.send(
+                content=[id_list] + self._handler.downlink_package,
+                message_code=MessageCode.ParameterUpdate,
+                dst=rank)
 
     def shutdown_clients(self):
         """Shutdown all clients.

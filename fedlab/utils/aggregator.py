@@ -15,16 +15,6 @@
 import torch
 
 
-class Decorators(object):
-    """As you can see, decorateors!!!"""
-
-    def excute_time():
-        pass
-
-    def current_state():
-        pass
-
-
 class Aggregators(object):
     """Define the algorithm of parameters aggregation"""
 

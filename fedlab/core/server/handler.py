@@ -120,9 +120,17 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             sender_rank (int): Rank of sender client in ``torch.distributed`` group.
             payload (list[torch.Tensor]): A list of tensors passed by manager layer.
         """
-        self.client_buffer_cache.append(payload[0].clone())
-        self.cache_cnt += 1
+        assert len(payload) > 0
 
+        if len(payload) == 1 :
+            self.client_buffer_cache.append(payload[0].clone())
+            self.cache_cnt += 1
+        else:
+            self.client_buffer_cache += payload
+            self.cache_cnt += len(payload)
+
+        assert self.cache_cnt <= self.client_num_per_round
+        
         if self.cache_cnt == self.client_num_per_round:
             model_parameters_list = self.client_buffer_cache
             # use aggregator
