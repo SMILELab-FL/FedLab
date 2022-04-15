@@ -101,6 +101,12 @@ class DistNetwork(object):
 
         if content is not None:
             volumn = sum([data.numel() for data in content])
+
+            # content from server to client, the first content is id_list.
+            # remove the size of id_list in the count.
+            if self.rank != 0: 
+                volumn -= content[0].numel()
+
             self.recv_volume_intotal += volumn * type2byte[content[0].dtype]
 
         self._LOGGER.info(

@@ -147,8 +147,18 @@ class ServerSynchronousManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        rank_list = range(1, self._network.world_size)
-        self.broadcast(rank_list, MessageCode.Exit, None)
+        client_list = range(self._handler.client_num_in_total)
+        rank_dict = self.coordinator.map_id_list(client_list)
+
+        for rank, values in rank_dict.items():
+            id_list = torch.Tensor(values).to(torch.int32)
+            self._network.send(
+                content=[id_list] + self._handler.downlink_package,
+                message_code=MessageCode.Exit,
+                dst=rank)
+
+        # rank_list = range(1, self._network.world_size)
+        # self.broadcast(rank_list, MessageCode.Exit, None)
 
 
 class ServerAsynchronousManager(ServerManager):
