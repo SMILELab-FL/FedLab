@@ -37,7 +37,7 @@ class Scheduler():
         self.net_upper = net_upper
         self.logger_upper = Logger(
             log_name="Scheduler{}-ServerConnector".format(self.net_upper.rank))
-        
+
         self.net_lower = net_lower
         self.logger_lower = Logger(
             log_name="Scheduler{}-ClientConnector".format(self.net_upper.rank))
@@ -55,7 +55,12 @@ class Scheduler():
 
         connect_server.start()
         connect_client.start()
-        
-        # connect_server.join()
+
+        # This is a tiny bug.
+        # The process with connect_client.join() is always blocked somehow in the shutdown stage.
+        # You are will come to solve this. (I think it's some process synchronization problems)
+        connect_server.join()
         # connect_client.join()
-        
+        connect_client.kill()
+
+        print("Scheduler Exit.")

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from asyncore import ExitNow
 import threading
 import torch
 from torch.multiprocessing import Queue
@@ -157,8 +158,8 @@ class ServerSynchronousManager(ServerManager):
                 message_code=MessageCode.Exit,
                 dst=rank)
 
-        # rank_list = range(1, self._network.world_size)
-        # self.broadcast(rank_list, MessageCode.Exit, None)
+        _, message_code, _ = self._network.recv(src=self._network.world_size-1)
+        assert message_code == MessageCode.Exit
 
 
 class ServerAsynchronousManager(ServerManager):

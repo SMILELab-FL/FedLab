@@ -72,7 +72,8 @@ class ClientPassiveManager(ClientManager):
             sender_rank, message_code, payload = self._network.recv(src=0)
 
             if message_code == MessageCode.Exit:
-                # self._network.send(message_code=MessageCode.Exit, dst=0)
+                if self._network.rank == self._network.world_size-1:
+                    self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
 
             elif message_code == MessageCode.ParameterUpdate:

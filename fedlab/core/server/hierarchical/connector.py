@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import wait
 import threading
 from time import sleep
-from tkinter import E
 import torch
 
 from ...network_manager import NetworkManager
@@ -74,8 +72,21 @@ class ServerConnector(Connector):
         self.group_client_num = 0
         self._LOGGER = logger
 
+    def run(self):
+        """
+        Main Process:
+
+          1. Initialization stage.
+          2. FL communication stage.
+          3. Shutdown stage. Close network connection.
+        """
+        self.setup()
+        self.main_loop()
+        self.shutdown()
+
     def setup(self, *args, **kwargs):
         super().setup()
+
         _, message_code, payload = self.mq_read.get()
         assert message_code == MessageCode.SetUp
 
@@ -93,11 +104,15 @@ class ServerConnector(Connector):
         while True:
             # server -> client
             sender, message_code, payload = PackageProcessor.recv_package()
-            self.mq_write.put((sender, message_code, payload))
+            self.mq_write.put_nowait((sender, message_code, payload))
 
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "the main loop exit.")
+                if self._network.rank == self._network.world_size - 1:
+                    self._network.send(message_code=MessageCode.Exit, dst=0)
+
+                self._LOGGER.info("the main loop exit.")
+
+                watching_queue.join()
                 break
 
     def process_meessage_queue(self):
@@ -109,6 +124,12 @@ class ServerConnector(Connector):
             self._LOGGER.info(
                 "[Queue-Thread: client -> server] recv data from rank {}, message code {}."
                 .format(sender, message_code))
+
+            if message_code == MessageCode.Exit:
+                self._LOGGER.info(
+                    "[Queue-Thread] process_meessage_queue thread exit.")
+                return 0
+
             self._network.send(content=payload,
                                message_code=message_code,
                                dst=0)
@@ -136,6 +157,20 @@ class ClientConnector(Connector):
 
         self._LOGGER = logger
 
+    def run(self):
+        """
+        Main Process:
+
+          1. Initialization stage.
+          2. FL communication stage.
+          3. Shutdown stage. Close network connection.
+        """
+        self.setup()
+        self.main_loop()
+        print("client connector test main_loop")
+        self.shutdown()
+        print("client connector test error")
+
     def setup(self, *args, **kwargs):
         super().setup()
         rank_client_id_map = {}
@@ -147,12 +182,12 @@ class ClientConnector(Connector):
 
         self.group_client_num = self.coordinator.total
 
-        self.mq_write.put((self._network.rank, MessageCode.SetUp,
-                           torch.Tensor([self.group_client_num]).int()))
+        self.mq_write.put_nowait((self._network.rank, MessageCode.SetUp,
+                                  torch.Tensor([self.group_client_num]).int()))
 
         # wait for server connector
-        while self.mq_write.empty() is not True:
-            sleep(2)
+        #while self.mq_write.empty() is not True:
+        #    sleep(2)
 
     def main_loop(self):
         # start a thread to watch message queue
@@ -161,16 +196,20 @@ class ClientConnector(Connector):
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = self._network.recv()  # unexpected poll. TODO: fix this.
+            sender, message_code, payload = self._network.recv(
+            )  # unexpected poll. TODO: fix this.
+
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "[Queue] main loop exit."
-                )
+                self._LOGGER.info("main loop exit.")
+                self.mq_write.put_nowait((None, MessageCode.Exit, None))
+                
+                watching_queue.join()
                 break
+
             self._LOGGER.info(
-                "[client -> server] recv data from rank {}, message code {}."
-                .format(sender, message_code))
-            self.mq_write.put((sender, message_code, payload))
+                "[client -> server] recv data from rank {}, message code {}.".
+                format(sender, message_code))
+            self.mq_write.put_nowait((sender, message_code, payload))
 
     def process_meessage_queue(self):
         """Process message queue
@@ -196,8 +235,7 @@ class ClientConnector(Connector):
                                    dst=rank)
 
             if message_code == MessageCode.Exit:
+                sleep(5)
                 self._LOGGER.info(
-                    "[Queue-Thread] additional thread exit."
-                )
+                    "[Queue-Thread] process_meessage_queue thread exit.")
                 break
-
