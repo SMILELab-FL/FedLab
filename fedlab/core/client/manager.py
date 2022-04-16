@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from email import message
 import torch
 
 from . import ORDINARY_TRAINER, SERIAL_TRAINER
@@ -71,6 +72,7 @@ class ClientPassiveManager(ClientManager):
             sender_rank, message_code, payload = self._network.recv(src=0)
 
             if message_code == MessageCode.Exit:
+                # self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
 
             elif message_code == MessageCode.ParameterUpdate:

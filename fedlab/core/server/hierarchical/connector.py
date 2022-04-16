@@ -72,7 +72,6 @@ class ServerConnector(Connector):
         self.mq_read = read_queue
 
         self.group_client_num = 0
-
         self._LOGGER = logger
 
     def setup(self, *args, **kwargs):
@@ -98,7 +97,7 @@ class ServerConnector(Connector):
 
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "[MiddleServer-ServerConnector-Queue] the main loop exit.")
+                    "the main loop exit.")
                 break
 
     def process_meessage_queue(self):
@@ -108,7 +107,7 @@ class ServerConnector(Connector):
         while True:
             sender, message_code, payload = self.mq_read.get()
             self._LOGGER.info(
-                "[MiddleServer-ServerConnector-Queue] [client -> server] recv data from rank {}, message code {}."
+                "[Queue-Thread: client -> server] recv data from rank {}, message code {}."
                 .format(sender, message_code))
             self._network.send(content=payload,
                                message_code=message_code,
@@ -165,11 +164,11 @@ class ClientConnector(Connector):
             sender, message_code, payload = self._network.recv()  # unexpected poll. TODO: fix this.
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "[MiddleServer-ClientConnector-Queue] main loop exit."
+                    "[Queue] main loop exit."
                 )
                 break
             self._LOGGER.info(
-                "[MiddleServer-ClientConnector] [client -> server] recv data from rank {}, message code {}."
+                "[client -> server] recv data from rank {}, message code {}."
                 .format(sender, message_code))
             self.mq_write.put((sender, message_code, payload))
 
@@ -183,7 +182,7 @@ class ClientConnector(Connector):
             # server -> client
             sender, message_code, payload = self.mq_read.get()
             self._LOGGER.info(
-                "[MiddleServer-ClientConnector-Queue] [server -> client] recv data from rank {}, message code {}."
+                "[Queue-Thread: server -> client] recv data from rank {}, message code {}."
                 .format(sender, message_code))
 
             # broadcast message
@@ -198,7 +197,7 @@ class ClientConnector(Connector):
 
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
-                    "[MiddleServer-ClientConnector-Queue] additional thread exit."
+                    "[Queue-Thread] additional thread exit."
                 )
                 break
 

@@ -21,7 +21,7 @@ from ....utils import Logger
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 
-class Scheduler(Process):
+class Scheduler():
     """Middle Topology for hierarchical communication pattern
     
     Scheduler uses message queues to decouple connector modules
@@ -35,25 +35,27 @@ class Scheduler(Process):
         super(Scheduler, self).__init__()
         self.__MQs = [Queue(), Queue()]
         self.net_upper = net_upper
+        self.logger_upper = Logger(
+            log_name="Scheduler{}-ServerConnector".format(self.net_upper.rank))
+        
         self.net_lower = net_lower
-
-        self._LOGGER = Logger(
-            log_name="scheduler {}".format(self.net_upper.rank))
+        self.logger_lower = Logger(
+            log_name="Scheduler{}-ClientConnector".format(self.net_upper.rank))
 
     def run(self):
-        connect_client = ClientConnector(self.net_lower,
-                                         write_queue=self.__MQs[0],
-                                         read_queue=self.__MQs[1],
-                                         logger=self._LOGGER)
-
         connect_server = ServerConnector(self.net_upper,
                                          write_queue=self.__MQs[1],
                                          read_queue=self.__MQs[0],
-                                         logger=self._LOGGER)
+                                         logger=self.logger_upper)
+
+        connect_client = ClientConnector(self.net_lower,
+                                         write_queue=self.__MQs[0],
+                                         read_queue=self.__MQs[1],
+                                         logger=self.logger_lower)
 
         connect_server.start()
         connect_client.start()
         
-        connect_server.join()
-        connect_client.join()
+        # connect_server.join()
+        # connect_client.join()
         
