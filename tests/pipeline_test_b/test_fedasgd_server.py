@@ -18,9 +18,9 @@ import sys
 sys.path.append("../")
 from copy import deepcopy
 
-from fedlab.core.client.manager import ClientActiveManager
+from fedlab.core.client.manager import ActiveClientManager
 from fedlab.core.server.handler import AsyncParameterServerHandler
-from fedlab.core.server.manager import ServerAsynchronousManager
+from fedlab.core.server.manager import AsynchronousServerManager
 from fedlab.core.network import DistNetwork
 
 from tests.test_core.task_setting_for_test import (
@@ -37,7 +37,7 @@ class FedAsgdServerTestCase(unittest.TestCase):
 
         hanlder = AsyncParameterServerHandler(deepcopy(model))
 
-        self.server = ServerAsynchronousManager(
+        self.server = AsynchronousServerManager(
             handler=hanlder,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
@@ -48,7 +48,7 @@ class FedAsgdServerTestCase(unittest.TestCase):
             model,
             cuda=False,
         )
-        self.client = ClientActiveManager(
+        self.client = ActiveClientManager(
             trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,

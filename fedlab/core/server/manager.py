@@ -22,6 +22,7 @@ from ..coordinator import Coordinator
 
 from ...utils.message_code import MessageCode
 from ...utils import Logger
+from fedlab.utils import message_code
 
 DEFAULT_SERVER_RANK = 0
 
@@ -56,7 +57,7 @@ class ServerManager(NetworkManager):
             self._handler.client_num_in_total = self.coordinator.total
 
 
-class ServerSynchronousManager(ServerManager):
+class SynchronousServerManager(ServerManager):
     """Synchronous communication
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -69,7 +70,7 @@ class ServerSynchronousManager(ServerManager):
     """
 
     def __init__(self, network, handler, logger=None):
-        super(ServerSynchronousManager, self).__init__(network, handler)
+        super(SynchronousServerManager, self).__init__(network, handler)
         self._LOGGER = Logger() if logger is None else logger
 
     def setup(self):
@@ -96,7 +97,7 @@ class ServerSynchronousManager(ServerManager):
         while self._handler.if_stop is not True:
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
-            
+
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
@@ -120,16 +121,15 @@ class ServerSynchronousManager(ServerManager):
         self._LOGGER.info("Client activation procedure")
         clients_this_round = self._handler.sample_clients()
         rank_dict = self.coordinator.map_id_list(clients_this_round)
-        
-        self._LOGGER.info(
-            "Client id list: {}".format(clients_this_round))
+
+        self._LOGGER.info("Client id list: {}".format(clients_this_round))
 
         for rank, values in rank_dict.items():
             id_list = torch.Tensor(values).to(torch.int32)
-            self._network.send(
-                content=[id_list] + self._handler.downlink_package,
-                message_code=MessageCode.ParameterUpdate,
-                dst=rank)
+            self._network.send(content=[id_list] +
+                               self._handler.downlink_package,
+                               message_code=MessageCode.ParameterUpdate,
+                               dst=rank)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -145,17 +145,18 @@ class ServerSynchronousManager(ServerManager):
 
         for rank, values in rank_dict.items():
             id_list = torch.Tensor(values).to(torch.int32)
-            self._network.send(
-                content=[id_list] + self._handler.downlink_package,
-                message_code=MessageCode.Exit,
-                dst=rank)
+            self._network.send(content=[id_list] +
+                               self._handler.downlink_package,
+                               message_code=MessageCode.Exit,
+                               dst=rank)
 
         # wait for client exit feedback
-        _, message_code, _ = self._network.recv(src=self._network.world_size-1)
+        _, message_code, _ = self._network.recv(src=self._network.world_size -
+                                                1)
         assert message_code == MessageCode.Exit
 
 
-class ServerAsynchronousManager(ServerManager):
+class AsynchronousServerManager(ServerManager):
     """Asynchronous communication network manager for server
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
@@ -168,7 +169,7 @@ class ServerAsynchronousManager(ServerManager):
     """
 
     def __init__(self, network, handler, logger=None):
-        super(ServerAsynchronousManager, self).__init__(network, handler)
+        super(AsynchronousServerManager, self).__init__(network, handler)
         self._LOGGER = Logger() if logger is None else logger
 
         self.message_queue = Queue()
@@ -185,8 +186,8 @@ class ServerAsynchronousManager(ServerManager):
         Raises:
             ValueError: invalid message code.
         """
-        watching = threading.Thread(target=self.watching_queue, daemon=True)
-        watching.start()
+        # watching = threading.Thread(target=self.watching_queue, daemon=True)
+        # watching.start()
 
         while self._handler.if_stop is not True:
             sender, message_code, payload = self._network.recv()
@@ -197,7 +198,11 @@ class ServerAsynchronousManager(ServerManager):
                                    dst=sender)
 
             elif message_code == MessageCode.ParameterUpdate:
-                self.message_queue.put((sender, message_code, payload))
+                self._handler._iterate_global_model(payload)
+
+                # self.message_queue.put((sender, message_code, payload))
+                # processing = threading.Thread(target=self.process_message_queue, daemon=True)
+                # processing.strat()
 
             else:
                 raise ValueError(
@@ -207,11 +212,12 @@ class ServerAsynchronousManager(ServerManager):
         self.shutdown_clients()
         super().shutdown()
 
-    def watching_queue(self):
+    def process_message_queue(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""
-        while self._handler.if_stop is not True:
-            sender_rank, _, payload = self.message_queue.get()
-            self._handler._iterate_global_model(sender_rank, payload)
+        while self.message_queue.empty() is not True:
+            _, message_code, payload = self.message_queue.get()
+            assert message_code == MessageCode.ParameterUpdate
+            self._handler._iterate_global_model(payload)
 
     def shutdown_clients(self):
         """Shutdown all clients.
@@ -219,9 +225,14 @@ class ServerAsynchronousManager(ServerManager):
         Send package to clients with ``MessageCode.Exit``.
         """
         for rank in range(1, self._network.world_size):
-            _, message_code, _ = self._network.recv(src=rank)
+            _, message_code, _ = self._network.recv(src=rank)  # client request
             if message_code == MessageCode.ParameterUpdate:
                 self._network.recv(
                     src=rank
                 )  # the next package is model request, which is ignored in shutdown stage.
             self._network.send(message_code=MessageCode.Exit, dst=rank)
+
+        # wait for client exit feedback
+        _, message_code, _ = self._network.recv(src=self._network.world_size -
+                                                1)
+        assert message_code == MessageCode.Exit

@@ -16,7 +16,7 @@ import unittest
 
 import sys
 sys.path.append("../../../")
-from fedlab.core.client.manager import ClientActiveManager, ClientPassiveManager
+from fedlab.core.client.manager import ActiveClientManager, PassiveClientManager
 from fedlab.core.client.trainer import ClientTrainer
 from fedlab.core.network import DistNetwork
 
@@ -43,6 +43,6 @@ class ClientManagerTestCase(unittest.TestCase):
             address=("127.0.0.1", "3002"), world_size=1, rank=0, ethernet=None
         )
 
-        cam = ClientActiveManager(trainer=trainer, network=network)
+        cam = ActiveClientManager(trainer=trainer, network=network)
 
-        cpm = ClientPassiveManager(trainer=trainer, network=network)
+        cpm = PassiveClientManager(trainer=trainer, network=network)

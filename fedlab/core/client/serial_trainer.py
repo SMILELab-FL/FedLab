@@ -31,11 +31,7 @@ class SerialTrainer(ClientTrainer):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self,
-                 model,
-                 client_num,
-                 cuda=False,
-                 logger=None):
+    def __init__(self, model, client_num, cuda=False, logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
@@ -88,6 +84,7 @@ class SerialTrainer(ClientTrainer):
                               train_loader=data_loader)
             self.param_list.append(self.model_parameters)
         return self.param_list
+
 
 class SubsetSerialTrainer(SerialTrainer):
     """Train multiple clients in a single process.

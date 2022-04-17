@@ -5,7 +5,7 @@ from torch import nn
 sys.path.append("../../")
 from fedlab.utils.logger import Logger
 from fedlab.core.server.handler import SyncParameterServerHandler
-from fedlab.core.server.manager import ServerSynchronousManager
+from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
 
 
@@ -49,7 +49,7 @@ network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
                       rank=0,
                       ethernet=args.ethernet)
-manager_ = ServerSynchronousManager(handler=handler,
+manager_ = SynchronousServerManager(handler=handler,
                                     network=network,
                                     logger=LOGGER)
 manager_.run()

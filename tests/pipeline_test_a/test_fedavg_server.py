@@ -18,9 +18,9 @@ import sys
 sys.path.append("../")
 from copy import deepcopy
 
-from fedlab.core.client.manager import ClientPassiveManager
+from fedlab.core.client.manager import PassiveClientManager
 from fedlab.core.server.handler import SyncParameterServerHandler
-from fedlab.core.server.manager import ServerSynchronousManager
+from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
 
 from tests.test_core.task_setting_for_test import model, TestTrainer
@@ -33,7 +33,7 @@ class FedAvgServerTestCase(unittest.TestCase):
         world_size = 2
 
         ps = SyncParameterServerHandler(deepcopy(model))
-        self.server = ServerSynchronousManager(
+        self.server = SynchronousServerManager(
             handler=ps,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
@@ -44,7 +44,7 @@ class FedAvgServerTestCase(unittest.TestCase):
             model,
             cuda=False,
         )
-        self.client = ClientPassiveManager(
+        self.client = PassiveClientManager(
             trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,

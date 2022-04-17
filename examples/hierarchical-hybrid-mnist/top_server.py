@@ -8,7 +8,7 @@ import torchvision
 from torchvision import transforms
 
 from fedlab.core.server.handler import SyncParameterServerHandler
-from fedlab.core.server.manager import ServerSynchronousManager
+from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.utils.functional import AverageMeter, evaluate
@@ -54,6 +54,6 @@ network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
                       rank=0)
 
-manager_ = ServerSynchronousManager(network=network, handler=handler)
+manager_ = SynchronousServerManager(network=network, handler=handler)
 
 manager_.run()

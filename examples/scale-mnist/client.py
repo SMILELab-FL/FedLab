@@ -9,7 +9,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 from fedlab.core.client.serial_trainer import SubsetSerialTrainer
-from fedlab.core.client import ClientPassiveManager
+from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
 from fedlab.utils.logger import Logger
@@ -85,6 +85,6 @@ trainer = SubsetSerialTrainer(model=model,
                                   "epochs": args.epoch
                               })
 
-# manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
-manager_ = ClientPassiveManager(trainer=trainer, network=network)
+# manager_ = ScalePassiveClientManager(trainer=trainer, network=network)
+manager_ = PassiveClientManager(trainer=trainer, network=network)
 manager_.run()

@@ -1,11 +1,6 @@
 import sys
 import argparse
 
-import torch
-import torchvision
-from torchvision import transforms
-from torchvision.transforms.transforms import Scale
-
 sys.path.append("../../")
 
 from fedlab.core.server.handler import SyncParameterServerHandler

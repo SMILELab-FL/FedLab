@@ -47,7 +47,7 @@ class ClientManager(NetworkManager):
                            dst=0)
 
 
-class ClientPassiveManager(ClientManager):
+class PassiveClientManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL pattern.
 
     Args:
@@ -105,7 +105,7 @@ class ClientPassiveManager(ClientManager):
                            dst=0)
 
 
-class ClientActiveManager(ClientManager):
+class ActiveClientManager(ClientManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL pattern.
 
     Args:
@@ -130,8 +130,12 @@ class ClientActiveManager(ClientManager):
             self.request()
 
             # waits for data from server
-            sender_rank, message_code, payload = self._network.recv(src=0)
+            _, message_code, payload = self._network.recv(src=0)
+            
             if message_code == MessageCode.Exit:
+                # client exit feedback
+                if self._network.rank == self._network.world_size - 1:
+                    self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
 
             elif message_code == MessageCode.ParameterUpdate:
@@ -144,6 +148,7 @@ class ClientActiveManager(ClientManager):
                     format(message_code))
 
     def request(self):
+        """Client request"""
         self._LOGGER.info("request parameter procedure")
         self._network.send(message_code=MessageCode.ParameterRequest, dst=0)
 

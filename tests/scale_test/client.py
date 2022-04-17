@@ -6,7 +6,7 @@ import os
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.core.client.manager import ClientPassiveManager
+from fedlab.core.client.manager import PassiveClientManager
 
 sys.path.append("../../")
 
@@ -113,6 +113,6 @@ if __name__ == "__main__":
                            data_indices=data_indices,
                            dataset=trainset)
 
-    manager_ = ClientPassiveManager(trainer=trainer, network=network)
+    manager_ = PassiveClientManager(trainer=trainer, network=network)
 
     manager_.run()
