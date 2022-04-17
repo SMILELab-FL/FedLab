@@ -28,7 +28,7 @@ Install **stable version** with pip:
 
 .. code-block:: shell-session
 
-   $ pip install fedlab==version
+   $ pip install fedlab==$version$
 
 Dataset Download
 ^^^^^^^^^^^^^^^^

@@ -182,5 +182,5 @@ Run scripts seperately:
     # Scheduler1 + Ordinary trainer with 1 client + Serial trainer with 10 clients in terminal 2:
     bash launch_cgroup1_eg.sh
 
-    # Scheduler2 + Ordinary trainer with 1 client + Serial trainer with 10 clients (terminal 3):
+    # Scheduler2 + Ordinary trainer with 1 client + Serial trainer with 10 clients in terminal 3:
     $ bash launch_cgroup2_eg.sh

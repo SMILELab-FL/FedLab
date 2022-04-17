@@ -48,14 +48,18 @@ Point-to-point communication
 In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`. These APIs suppor flexible pytorch tensor communication.
 
 **Sender process**:
+
 .. code-block:: python
+
     network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
     network.init_network_connection()
     network.send(content, message_code, dst)
     network.close_network_connection()
 
 **Receiver process**:
+
 .. code-block:: python
+
     network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
     network.init_network_connection()
     sender_rank, message_code, content = network.recv(src)
