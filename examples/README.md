@@ -35,10 +35,10 @@ $ bash launch_topserver_eg.sh
 
 Scheduler1 + Ordinary trainer with 1 client + Serial trainer with 10 clients (terminal 2):
 ```
-$ bash lauch_cgroup1_eg.sh
+$ bash launch_cgroup1_eg.sh
 ```
 
 Scheduler2 + Ordinary trainer with 1 client + Serial trainer with 10 clients (terminal 3):
 ```
-$ bash lauch_cgroup1_eg.sh
+$ bash launch_cgroup2_eg.sh
 ```

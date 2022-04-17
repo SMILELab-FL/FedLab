@@ -23,10 +23,10 @@ class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
 
     In our framework, we define the backend of client trainer show manage its local model.
-    It should have a function to update its model called :meth:`train`.
+    It should have a function to update its model called :meth:`local_process`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
-    should subclass it. All subclasses should overwrite :meth:`train`.
+    should subclass it. All subclasses should overwrite :meth:`local_process`.
 
     Args:
         model (torch.nn.Module): PyTorch model.

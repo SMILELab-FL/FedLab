@@ -73,7 +73,7 @@ class ClientPassiveManager(ClientManager):
 
             if message_code == MessageCode.Exit:
                 # client exit feedback
-                if self._network.rank == self._network.world_size-1:
+                if self._network.rank == self._network.world_size - 1:
                     self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
 
@@ -83,12 +83,13 @@ class ClientPassiveManager(ClientManager):
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:
-                    self._trainer.local_process(id_list=id_list, payload=payload)
+                    self._trainer.local_process(id_list=id_list,
+                                                payload=payload)
 
                 elif self._trainer.type == ORDINARY_TRAINER:
                     assert len(id_list) == 1
                     self._trainer.local_process(payload=payload)
-                
+
                 self.synchronize()
 
             else:
@@ -126,27 +127,29 @@ class ClientActiveManager(ClientManager):
         """
         while True:
             # request model actively
-            self._LOGGER.info("request parameter procedure")
-            self._network.send(message_code=MessageCode.ParameterRequest,
-                               dst=0)
+            self.request()
 
-            # waits for data from
+            # waits for data from server
             sender_rank, message_code, payload = self._network.recv(src=0)
             if message_code == MessageCode.Exit:
                 break
 
             elif message_code == MessageCode.ParameterUpdate:
                 self._trainer.local_process(payload)
-                self.synchronize(self._trainer.uplink_package)
-                
+                self.synchronize()
+
             else:
                 raise ValueError(
                     "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
-    def synchronize(self, uplink_content):
+    def request(self):
+        self._LOGGER.info("request parameter procedure")
+        self._network.send(message_code=MessageCode.ParameterRequest, dst=0)
+
+    def synchronize(self):
         """Synchronize with server"""
         self._LOGGER.info("Uploading information to server")
-        self._network.send(content=uplink_content,
+        self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)

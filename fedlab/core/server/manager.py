@@ -100,8 +100,7 @@ class ServerSynchronousManager(ServerManager):
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    if self._handler._iterate_global_model(
-                            sender_rank, payload):
+                    if self._handler._iterate_global_model(payload):
                         break
                 else:
                     raise Exception(
