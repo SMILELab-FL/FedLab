@@ -62,5 +62,3 @@ class Scheduler():
         connect_server.join()
         # connect_client.join()
         connect_client.kill()
-
-        print("Scheduler Exit.")

@@ -10,10 +10,9 @@ import torchvision
 import torchvision.transforms as transforms
 
 from fedlab.core.client.serial_trainer import SubsetSerialTrainer
-from fedlab.core.client import ClientPassiveManager
+from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
-from fedlab.utils.logger import Logger
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
@@ -72,8 +71,6 @@ sub_data_indices = {
 
 model = MLP()
 
-aggregator = Aggregators.fedavg_aggregate
-
 network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
                       rank=args.rank,
@@ -82,7 +79,6 @@ network = DistNetwork(address=(args.ip, args.port),
 trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=sub_data_indices,
-                              aggregator=aggregator,
                               cuda=torch.cuda.is_available(),
                               args={
                                   "batch_size": args.batch_size,
@@ -90,5 +86,5 @@ trainer = SubsetSerialTrainer(model=model,
                                   "epochs": args.epoch
                               })
 
-manager_ = ClientPassiveManager(trainer=trainer, network=network)
+manager_ = PassiveClientManager(trainer=trainer, network=network)
 manager_.run()

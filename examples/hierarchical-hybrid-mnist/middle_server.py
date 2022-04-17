@@ -1,23 +1,15 @@
-import torch
 import argparse
 import sys
 
 sys.path.append("../../")
 
-import os
-from torch import nn
-
-import torchvision
-import torchvision.transforms as transforms
-
-from fedlab.core.client.serial_trainer import SubsetSerialTrainer
-from fedlab.core.client import ClientPassiveManager
 from fedlab.core.network import DistNetwork
 from fedlab.core.server.hierarchical import Scheduler
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='FedLab scheduler (middle server) example')
+    parser = argparse.ArgumentParser(
+        description='FedLab scheduler (middle server) example')
 
     # server connector
     parser.add_argument('--ip_u', type=str, default="127.0.0.1")

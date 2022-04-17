@@ -60,7 +60,7 @@ class ClientTrainer(ModelMaintainer):
         raise NotImplementedError()
 
 
-class ClientSGDTrainer(ClientTrainer):
+class SGDClientTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
@@ -81,7 +81,7 @@ class ClientSGDTrainer(ClientTrainer):
                  criterion,
                  cuda=False,
                  logger=None):
-        super(ClientSGDTrainer, self).__init__(model, cuda)
+        super(SGDClientTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
         self.epochs = epochs

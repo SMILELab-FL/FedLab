@@ -14,5 +14,4 @@
 
 
 from .handler import SyncParameterServerHandler, AsyncParameterServerHandler
-from .manager import ServerSynchronousManager, ServerAsynchronousManager
-
+from .manager import SynchronousServerManager, AsynchronousServerManager

@@ -9,8 +9,8 @@ import torchvision.transforms as transforms
 
 sys.path.append("../../")
 from torch import nn
-from fedlab.core.client.manager import ClientPassiveManager
-from fedlab.core.client.trainer import ClientSGDTrainer
+from fedlab.core.client.manager import PassiveClientManager
+from fedlab.core.client.trainer import SGDClientTrainer
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.utils.dataset import slicing
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     LOGGER = Logger(log_name="client " + str(args.rank))
 
-    trainer = ClientSGDTrainer(
+    trainer = SGDClientTrainer(
         model,
         trainloader,
         epochs=args.epoch,
@@ -78,5 +78,5 @@ if __name__ == "__main__":
         logger=LOGGER,
     )
 
-    manager_ = ClientPassiveManager(trainer=trainer, network=network)
+    manager_ = PassiveClientManager(trainer=trainer, network=network)
     manager_.run()

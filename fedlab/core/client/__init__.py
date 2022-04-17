@@ -15,8 +15,5 @@
 ORDINARY_TRAINER = 0
 SERIAL_TRAINER = 1
 
-from .manager import ClientManager, ClientActiveManager, ClientPassiveManager
-from .trainer import ClientTrainer, ClientSGDTrainer
-
-from .scale.manager import ScaleClientPassiveManager
-from .scale.trainer import SerialTrainer, SubsetSerialTrainer
+from .manager import ClientManager, ActiveClientManager, PassiveClientManager
+from .trainer import ClientTrainer, SGDClientTrainer
