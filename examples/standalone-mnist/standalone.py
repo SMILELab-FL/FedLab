@@ -21,7 +21,7 @@ from fedlab.utils.functional import get_best_gpu, load_dict
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=100)
-parser.add_argument("--com_round", type=int, default=10)
+parser.add_argument("--com_round", type=int)
 
 parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
@@ -84,12 +84,9 @@ total_client_num = args.total_client  # client总数
 data_indices = load_dict("mnist_partition.pkl")
 
 # fedlab setup
-local_model = deepcopy(model)
-
-trainer = SubsetSerialTrainer(model=local_model,
+trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=data_indices,
-                              aggregator=aggregator,
                               args={
                                   "batch_size": args.batch_size,
                                   "epochs": args.epochs,
@@ -101,11 +98,10 @@ to_select = [i for i in range(total_client_num)]
 for round in range(args.com_round):
     model_parameters = SerializationTool.serialize_model(model)
     selection = random.sample(to_select, num_per_round)
-    aggregated_parameters = trainer.train(model_parameters=model_parameters,
-                                          id_list=selection,
-                                          aggregate=True)
+    parameters_list = trainer.local_process(payload=[model_parameters],
+                                            id_list=selection)
 
-    SerializationTool.deserialize_model(model, aggregated_parameters)
+    SerializationTool.deserialize_model(model, aggregator(parameters_list))
 
     criterion = nn.CrossEntropyLoss()
     loss, acc = evaluate(model, criterion, test_loader)
