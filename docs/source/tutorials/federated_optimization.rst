@@ -97,7 +97,7 @@ The basic class of ClientTrainer is shown below, we encourage users define local
 - Overwrite :meth:`ClientTrainer.local_process()` to define local procedure. Typically, you need to implement standard training pipeline of PyTorch.
 - Attributes ``model`` and ``model_parameters`` is is associated with ``self._model``. Please make sure the function ``local_process()`` will manipulate ``self._model``.
 
-**A standard implementation of this part is in :class:`ClientSGDTrainer`.**
+**A standard implementation of this part is in :class:`SGDClientTrainer`.**
 
 Server global aggregation
 ==========================

@@ -70,7 +70,7 @@ Importantly, ServerManager and ClientManager should be defined and used as a pai
 Synchronous mode
 =================
 
-Synchronous communication involves :class:`ServerSynchronousManager` and :class:`ClientPassiveManager`. Communication procedure is shown as follows.
+Synchronous communication involves :class:`SynchronousServerManager` and :class:`PassiveClientManager`. Communication procedure is shown as follows.
 
 .. image:: ../../imgs/fedlab-synchronous.svg
     :align: center
@@ -107,9 +107,9 @@ User can customize initialization procedure as follows(use ClientManager as exam
 
 .. code-block:: python
 
-    from fedlab.core.client.manager import ClientPassiveManager
+    from fedlab.core.client.manager import PassiveClientManager
 
-    class CustomizeClientManager(ClientPassiveManager):
+    class CustomizeClientManager(PassiveClientManager):
 
         def __init__(self, trainer, network):
             super().__init__(trainer, network)
@@ -126,7 +126,7 @@ Communication stage
 ---------------------
 
 After Initialization Stage, user can define :meth:`main_loop()` to define main process for server and client. To standardize
-**FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for example.
+**FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`PassiveClientManager`: and :class:`SynchronousServerManager` for example.
 
 
 **Client part**:
@@ -195,7 +195,7 @@ Shutdown stage
 Typically in our implementation, shutdown stage is started by server. It will send a message with ``MessageCode.Exit`` to
 inform client to stop its main loop.
 
-Codes below is the actions of :class:`ServerSynchronousManager` in shutdown stage.
+Codes below is the actions of :class:`SynchronousServerManager` in shutdown stage.
 
 .. code-block:: python
 
