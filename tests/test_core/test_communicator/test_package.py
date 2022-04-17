@@ -45,7 +45,7 @@ class PackageTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         os.environ["MASTER_ADDR"] = "localhost"
-        os.environ["MASTER_PORT"] = "12355"
+        os.environ["MASTER_PORT"] = "12356"
         # initialize the process group
         # GitHub Actions only support CPU, so only backend "gloo" for CPU can be used for test initialization
         world_size = 1

@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 import random
 
 from fedlab.utils.functional import get_best_gpu
-from fedlab.core.client.scale.trainer import SubsetSerialTrainer
+from fedlab.core.client.serial_trainer import SubsetSerialTrainer
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
@@ -62,10 +62,9 @@ class TrainerTestCase(unittest.TestCase):
         to_select = [i for i in range(self.total_client)]
         model_parameters = SerializationTool.serialize_model(model)
         selection = random.sample(to_select, self.num_per_round)
-        aggregated_parameters = trainer.train(
-            model_parameters=model_parameters,
-            id_list=selection,
-            aggregate=True)
+        aggregated_parameters = trainer.local_process(
+            payload=[model_parameters],
+            id_list=selection)
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_serial_train_noniid(self):
@@ -89,7 +88,6 @@ class TrainerTestCase(unittest.TestCase):
         to_select = [i for i in range(self.total_client)]
         model_parameters = SerializationTool.serialize_model(model)
         selection = random.sample(to_select, self.num_per_round)
-        aggregated_parameters = trainer.train(
-            model_parameters=model_parameters,
-            id_list=selection,
-            aggregate=True)
+        aggregated_parameters = trainer.local_process(
+            payload=[model_parameters],
+            id_list=selection)

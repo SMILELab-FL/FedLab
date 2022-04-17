@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from email import message
 import torch
 
+from . import ORDINARY_TRAINER, SERIAL_TRAINER
 from ...utils import Logger
 from ...utils.message_code import MessageCode
 from ..network_manager import NetworkManager
@@ -54,9 +56,9 @@ class ClientPassiveManager(ClientManager):
         logger (Logger): object of :class:`Logger`.
     """
 
-    def __init__(self, network, trainer, logger=Logger()):
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def main_loop(self):
         """Actions to perform when receiving a new message, including local training.
@@ -70,21 +72,34 @@ class ClientPassiveManager(ClientManager):
             sender_rank, message_code, payload = self._network.recv(src=0)
 
             if message_code == MessageCode.Exit:
+                # client exit feedback
+                if self._network.rank == self._network.world_size-1:
+                    self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
+
             elif message_code == MessageCode.ParameterUpdate:
-                model_parameters = payload[0]
-                self._trainer.train(model_parameters=model_parameters)
+                id_list, payload = payload[0].to(
+                    torch.int32).tolist(), payload[1:]
+
+                # check the trainer type
+                if self._trainer.type == SERIAL_TRAINER:
+                    self._trainer.local_process(id_list=id_list, payload=payload)
+
+                elif self._trainer.type == ORDINARY_TRAINER:
+                    assert len(id_list) == 1
+                    self._trainer.local_process(payload=payload)
+                
                 self.synchronize()
+
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please check MessageCode Enum".
+                    "Invalid MessageCode {}. Please check MessageCode list".
                     format(message_code))
 
     def synchronize(self):
-        """Synchronize local model with server"""
-        self._LOGGER.info("synchronize model parameters with server")
-        model_parameters = self._trainer.model_parameters
-        self._network.send(content=model_parameters,
+        """Synchronize with server"""
+        self._LOGGER.info("Uploading information to server")
+        self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)
 
@@ -98,11 +113,9 @@ class ClientActiveManager(ClientManager):
         logger (Logger, optional): object of :class:`Logger`.
     """
 
-    def __init__(self, network, trainer, logger=Logger()):
+    def __init__(self, network, trainer, logger=None):
         super().__init__(network, trainer)
-        self._LOGGER = logger
-
-        self.model_time = None
+        self._LOGGER = Logger() if logger is None else logger
 
     def main_loop(self):
         """Actions to perform on receiving new message, including local training
@@ -114,33 +127,26 @@ class ClientActiveManager(ClientManager):
         while True:
             # request model actively
             self._LOGGER.info("request parameter procedure")
-            self._network.send(message_code=MessageCode.ParameterRequest, dst=0)
+            self._network.send(message_code=MessageCode.ParameterRequest,
+                               dst=0)
 
             # waits for data from
             sender_rank, message_code, payload = self._network.recv(src=0)
-            # sender_rank, message_code, payload = PackageProcessor.recv_package(src=0)
-
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Recv {}, process exiting.".format(message_code))
                 break
+
             elif message_code == MessageCode.ParameterUpdate:
-                self._LOGGER.info(
-                    "Package received from {}, message code {}".format(
-                        sender_rank, message_code))
-                model_parameters, self.model_time = payload[0], payload[1]
-                # move loading model params to the start of training
-                self._trainer.train(model_parameters=model_parameters)
-                self.synchronize()
+                self._trainer.local_process(payload)
+                self.synchronize(self._trainer.uplink_package)
+                
             else:
                 raise ValueError(
                     "Invalid MessageCode {}. Please check MessageCode Enum".
                     format(message_code))
 
-    def synchronize(self):
-        """Synchronize local model with server"""
-        self._LOGGER.info("synchronize procedure")
-        model_parameters = self._trainer.model_parameters
-        self._network.send(content=[model_parameters, self.model_time + 1],
+    def synchronize(self, uplink_content):
+        """Synchronize with server"""
+        self._LOGGER.info("Uploading information to server")
+        self._network.send(content=uplink_content,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)

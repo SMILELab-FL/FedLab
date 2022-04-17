@@ -13,11 +13,13 @@
 # limitations under the License.
 
 import threading
+from time import sleep
 import torch
 
 from ...network_manager import NetworkManager
 from ...communicator.processor import PackageProcessor
-from ...communicator.package import Package
+from ...coordinator import Coordinator
+from ....utils import MessageCode
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -36,28 +38,103 @@ class Connector(NetworkManager):
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
+
     def __init__(self, network, write_queue, read_queue):
         super(Connector, self).__init__(network)
 
+        # bidirectional message queues
         self.mq_read = read_queue
         self.mq_write = write_queue
 
-    def run(self):
-        raise NotImplementedError()
-
-    def on_receive(self, sender, message_code, payload):
-        """Define the reaction of receiving message.
-
-        Args:
-            sender (int): rank of sender in dist group.
-            message_code (MessageCode): Message code.
-            payload (list(torch.Tensor)): A list of tensors received from other process.
-        """
-        raise NotImplementedError()
-
-    def deal_queue(self):
+    def process_meessage_queue(self):
         """Define the procedure of dealing with message queue."""
         raise NotImplementedError()
+
+
+class ServerConnector(Connector):
+    """Connect with server.
+
+        this process will act like a client.
+
+        This class is a part of middle server which used in hierarchical structure.
+
+    Args:
+        network (DistNetwork): object to manage torch.distributed network communication.
+        write_queue (torch.multiprocessing.Queue): message queue
+        read_queue (torch.multiprocessing.Queue):  message queue
+    """
+
+    def __init__(self, network, write_queue, read_queue, logger):
+        super(ServerConnector, self).__init__(network, write_queue, read_queue)
+
+        self.mq_write = write_queue
+        self.mq_read = read_queue
+
+        self.group_client_num = 0
+        self._LOGGER = logger
+
+    def run(self):
+        """
+        Main Process:
+
+          1. Initialization stage.
+          2. FL communication stage.
+          3. Shutdown stage. Close network connection.
+        """
+        self.setup()
+        self.main_loop()
+        self.shutdown()
+
+    def setup(self, *args, **kwargs):
+        super().setup()
+
+        _, message_code, payload = self.mq_read.get()
+        assert message_code == MessageCode.SetUp
+
+        self.group_client_num = payload[0].item()
+        self._network.send(content=torch.Tensor([self.group_client_num]).int(),
+                           message_code=message_code,
+                           dst=0)
+
+    def main_loop(self, *args, **kwargs):
+        # start a thread watching message queue
+        watching_queue = threading.Thread(target=self.process_meessage_queue,
+                                          daemon=True)
+        watching_queue.start()
+
+        while True:
+            # server -> client
+            sender, message_code, payload = PackageProcessor.recv_package()
+            self.mq_write.put_nowait((sender, message_code, payload))
+
+            if message_code == MessageCode.Exit:
+                # client exit feedback
+                if self._network.rank == self._network.world_size - 1:
+                    self._network.send(message_code=MessageCode.Exit, dst=0)
+
+                self._LOGGER.info("the main loop exit.")
+
+                watching_queue.join()
+                break
+
+    def process_meessage_queue(self):
+        """ client -> server
+            directly transport.
+        """
+        while True:
+            sender, message_code, payload = self.mq_read.get()
+            self._LOGGER.info(
+                "[Queue-Thread: client -> server] recv data from rank {}, message code {}."
+                .format(sender, message_code))
+
+            if message_code == MessageCode.Exit:
+                self._LOGGER.info(
+                    "[Queue-Thread] process_meessage_queue thread exit.")
+                break
+
+            self._network.send(content=payload,
+                               message_code=message_code,
+                               dst=0)
 
 
 class ClientConnector(Connector):
@@ -70,74 +147,92 @@ class ClientConnector(Connector):
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
-    def __init__(self, network, write_queue, read_queue):
+
+    def __init__(self, network, write_queue, read_queue, logger):
         super(ClientConnector, self).__init__(network, write_queue, read_queue)
 
         self.mq_read = read_queue
         self.mq_write = write_queue
 
+        self.coordinator = None
+        self.group_client_num = 0
+
+        self._LOGGER = logger
+
     def run(self):
+        """
+        Main Process:
+
+          1. Initialization stage.
+          2. FL communication stage.
+          3. Shutdown stage. Close network connection.
+        """
         self.setup()
+        self.main_loop()
+        self.shutdown(
+        )  # There is a bug. ClientConnector process will be blocked here. TODO:unsolved.
+
+    def setup(self, *args, **kwargs):
+        super().setup()
+        rank_client_id_map = {}
+
+        for rank in range(1, self._network.world_size):
+            _, _, content = self._network.recv(src=rank)
+            rank_client_id_map[rank] = content[0].item()
+        self.coordinator = Coordinator(rank_client_id_map)
+
+        self.group_client_num = self.coordinator.total
+
+        self.mq_write.put_nowait((self._network.rank, MessageCode.SetUp,
+                                  torch.Tensor([self.group_client_num]).int()))
+
+    def main_loop(self):
         # start a thread to watch message queue
-        watching_queue = threading.Thread(target=self.deal_queue)
+        watching_queue = threading.Thread(target=self.process_meessage_queue,
+                                          daemon=True)
         watching_queue.start()
 
         while True:
-            sender, message_code, payload = PackageProcessor.recv_package(
-            )  # package from clients
-            print("ClientConnector: recv data from {}, message code {}".format(
-                sender, message_code))
-            self.on_receive(sender, message_code, payload)
+            sender, message_code, payload = self._network.recv(
+            )  # unexpected block. TODO: fix this.
 
-    def on_receive(self, sender, message_code, payload):
-        self.mq_write.put((sender, message_code, payload))
+            if message_code == MessageCode.Exit:
+                self._LOGGER.info("main loop exit.")
+                self.mq_write.put_nowait((None, MessageCode.Exit, None))
 
-    def deal_queue(self):
+                watching_queue.join()
+                break
+
+            self._LOGGER.info(
+                "[client -> server] recv data from rank {}, message code {}.".
+                format(sender, message_code))
+            self.mq_write.put_nowait((sender, message_code, payload))
+
+    def process_meessage_queue(self):
         """Process message queue
 
         Strategy of processing message from server.
+
         """
         while True:
+            # server -> client
             sender, message_code, payload = self.mq_read.get()
-            print("Watching Queue: data from {}, message code {}".format(
-                sender, message_code))
-            pack = Package(message_code=message_code, content=payload)
-            PackageProcessor.send_package(pack, dst=1)
+            self._LOGGER.info(
+                "[Queue-Thread: server -> client] recv data from rank {}, message code {}."
+                .format(sender, message_code))
 
+            # broadcast message
+            id_list, payload = payload[0].to(torch.int32).tolist(), payload[1:]
+            rank_dict = self.coordinator.map_id_list(id_list)
 
-class ServerConnector(Connector):
-    """Connect with server.
+            for rank, values in rank_dict.items():
+                id_list = torch.Tensor(values).to(torch.int32)
+                self._network.send(content=[id_list] + payload,
+                                   message_code=message_code,
+                                   dst=rank)
 
-    This class is a part of middle server which used in hierarchical structure.
-
-    Args:
-        network (DistNetwork): object to manage torch.distributed network communication.
-        write_queue (torch.multiprocessing.Queue): message queue
-        read_queue (torch.multiprocessing.Queue):  message queue
-    """
-    def __init__(self, network, write_queue, read_queue):
-        super(ServerConnector, self).__init__(network, write_queue, read_queue)
-
-        self.mq_write = write_queue
-        self.mq_read = read_queue
-
-    def run(self):
-        self.setup()
-        # start a thread watching message queue
-        watching_queue = threading.Thread(target=self.deal_queue)
-        watching_queue.start()
-
-        while True:
-            sender, message_code, payload = PackageProcessor.recv_package()
-            self.on_receive(sender, message_code, payload)
-
-    def on_receive(self, sender, message_code, payload):
-        self.mq_write.put((sender, message_code, payload))
-
-    def deal_queue(self):
-        while True:
-            sender, message_code, payload = self.mq_read.get()
-            print("data from {}, message code {}".format(sender, message_code))
-
-            pack = Package(message_code=message_code, content=payload)
-            PackageProcessor.send_package(pack, dst=0)
+            if message_code == MessageCode.Exit:
+                sleep(5)
+                self._LOGGER.info(
+                    "[Queue-Thread] process_meessage_queue thread exit.")
+                break

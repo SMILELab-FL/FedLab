@@ -12,7 +12,7 @@ import torch
 sys.path.append("../../")
 torch.manual_seed(0)
 
-from fedlab.core.client.scale.trainer import SubsetSerialTrainer
+from fedlab.core.client.serial_trainer import SubsetSerialTrainer
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate

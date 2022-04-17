@@ -1,6 +1,7 @@
 import torch
 import argparse
 import sys
+
 sys.path.append("../../")
 import os
 from torch import nn
@@ -13,11 +14,13 @@ from fedlab.core.client import ClientPassiveManager
 from fedlab.core.network import DistNetwork
 
 from fedlab.utils.logger import Logger
+from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
 
 # torch model
 class MLP(nn.Module):
+
     def __init__(self, input_size=784, output_size=10):
         super(MLP, self).__init__()
         self.fc1 = nn.Linear(input_size, 200)
@@ -69,6 +72,7 @@ sub_data_indices = {
 
 model = MLP()
 
+aggregator = Aggregators.fedavg_aggregate
 
 network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
@@ -78,6 +82,7 @@ network = DistNetwork(address=(args.ip, args.port),
 trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=sub_data_indices,
+                              aggregator=aggregator,
                               cuda=torch.cuda.is_available(),
                               args={
                                   "batch_size": args.batch_size,
@@ -85,6 +90,5 @@ trainer = SubsetSerialTrainer(model=model,
                                   "epochs": args.epoch
                               })
 
-# manager_ = ScaleClientPassiveManager(trainer=trainer, network=network)
 manager_ = ClientPassiveManager(trainer=trainer, network=network)
 manager_.run()

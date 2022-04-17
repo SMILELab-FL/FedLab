@@ -14,11 +14,11 @@
 
 import torch
 
-from ...client import SERIAL_TRAINER
-from ..trainer import ClientTrainer
-from ....utils.serialization import SerializationTool
-from ....utils.dataset.sampler import SubsetSampler
-from ....utils import Logger
+from ..client import SERIAL_TRAINER
+from .trainer import ClientTrainer
+from ...utils.serialization import SerializationTool
+from ...utils.dataset.sampler import SubsetSampler
+from ...utils import Logger
 
 
 class SerialTrainer(ClientTrainer):
@@ -27,7 +27,6 @@ class SerialTrainer(ClientTrainer):
     Args:
         model (torch.nn.Module): Model used in this federation.
         client_num (int): Number of clients in current trainer.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
         cuda (bool): Use GPUs or not. Default: ``False``.
         logger (Logger, optional): object of :class:`Logger`.
     """
@@ -35,14 +34,17 @@ class SerialTrainer(ClientTrainer):
     def __init__(self,
                  model,
                  client_num,
-                 aggregator=None,
                  cuda=False,
-                 logger=Logger()):
+                 logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
-        self.aggregator = aggregator
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
+        self.param_list = []
+
+    @property
+    def uplink_package(self):
+        return self.param_list
 
     def _train_alone(self, model_parameters, train_loader):
         """Train local model with :attr:`model_parameters` on :attr:`train_loader`.
@@ -57,12 +59,12 @@ class SerialTrainer(ClientTrainer):
         """Get :class:`DataLoader` for ``client_id``."""
         raise NotImplementedError()
 
-    def train(self, model_parameters, id_list, aggregate=False):
+    def local_process(self, id_list, payload):
         """Train local model with different dataset according to client id in ``id_list``.
 
         Args:
-            model_parameters (torch.Tensor): Serialized model parameters.
             id_list (list[int]): Client id in this training serial.
+            payload (list[torch.Tensor]): Serialized model parameters.
             aggregate (bool): Whether to perform partial aggregation on this group of clients' local models at the end of each local training round.
 
         Note:
@@ -73,7 +75,8 @@ class SerialTrainer(ClientTrainer):
         Returns:
             Serialized model parameters / list of model parameters.
         """
-        param_list = []
+        self.param_list = []
+        model_parameters = payload[0]
         self._LOGGER.info(
             "Local training with client id list: {}".format(id_list))
         for idx in id_list:
@@ -83,14 +86,7 @@ class SerialTrainer(ClientTrainer):
             data_loader = self._get_dataloader(client_id=idx)
             self._train_alone(model_parameters=model_parameters,
                               train_loader=data_loader)
-            param_list.append(self.model_parameters)
-
-        if aggregate is True and self.aggregator is not None:
-            # aggregate model parameters of this client group
-            aggregated_parameters = self.aggregator(param_list)
-            return aggregated_parameters
-        else:
-            return param_list
+            self.param_list.append(self.model_parameters)
 
 
 class SubsetSerialTrainer(SerialTrainer):
@@ -102,7 +98,6 @@ class SubsetSerialTrainer(SerialTrainer):
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
         data_slices (list[list]): subset of indices of dataset.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
         logger (Logger, optional): object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``False``.
         args (dict, optional): Uncertain variables.
@@ -115,15 +110,13 @@ class SubsetSerialTrainer(SerialTrainer):
                  model,
                  dataset,
                  data_slices,
-                 aggregator=None,
-                 logger=Logger(),
+                 logger=None,
                  cuda=False,
                  args=None) -> None:
 
         super(SubsetSerialTrainer, self).__init__(model=model,
                                                   client_num=len(data_slices),
                                                   cuda=cuda,
-                                                  aggregator=aggregator,
                                                   logger=logger)
 
         self.dataset = dataset
