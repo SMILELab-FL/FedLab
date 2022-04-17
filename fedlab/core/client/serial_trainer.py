@@ -87,7 +87,7 @@ class SerialTrainer(ClientTrainer):
             self._train_alone(model_parameters=model_parameters,
                               train_loader=data_loader)
             self.param_list.append(self.model_parameters)
-
+        return self.param_list
 
 class SubsetSerialTrainer(SerialTrainer):
     """Train multiple clients in a single process.
