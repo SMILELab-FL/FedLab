@@ -27,7 +27,6 @@ class SerialTrainer(ClientTrainer):
     Args:
         model (torch.nn.Module): Model used in this federation.
         client_num (int): Number of clients in current trainer.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of serialized model parameters.
         cuda (bool): Use GPUs or not. Default: ``False``.
         logger (Logger, optional): object of :class:`Logger`.
     """
@@ -35,13 +34,11 @@ class SerialTrainer(ClientTrainer):
     def __init__(self,
                  model,
                  client_num,
-                 aggregator=None,
                  cuda=False,
                  logger=None):
         super().__init__(model, cuda)
         self.client_num = client_num
         self.type = SERIAL_TRAINER  # represent serial trainer
-        self.aggregator = aggregator
         self._LOGGER = Logger() if logger is None else logger
         self.param_list = []
 
@@ -101,7 +98,6 @@ class SubsetSerialTrainer(SerialTrainer):
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
         data_slices (list[list]): subset of indices of dataset.
-        aggregator (Aggregators, callable, optional): Function to perform aggregation on a list of model parameters.
         logger (Logger, optional): object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``False``.
         args (dict, optional): Uncertain variables.
@@ -114,7 +110,6 @@ class SubsetSerialTrainer(SerialTrainer):
                  model,
                  dataset,
                  data_slices,
-                 aggregator=None,
                  logger=None,
                  cuda=False,
                  args=None) -> None:
@@ -122,7 +117,6 @@ class SubsetSerialTrainer(SerialTrainer):
         super(SubsetSerialTrainer, self).__init__(model=model,
                                                   client_num=len(data_slices),
                                                   cuda=cuda,
-                                                  aggregator=aggregator,
                                                   logger=logger)
 
         self.dataset = dataset

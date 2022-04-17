@@ -13,7 +13,6 @@ from fedlab.core.client import ClientPassiveManager
 from fedlab.core.network import DistNetwork
 
 from fedlab.utils.logger import Logger
-from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.functional import load_dict
 
 
@@ -70,7 +69,6 @@ sub_data_indices = {
 
 model = MLP()
 
-aggregator = Aggregators.fedavg_aggregate
 
 network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
@@ -80,7 +78,6 @@ network = DistNetwork(address=(args.ip, args.port),
 trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=sub_data_indices,
-                              aggregator=aggregator,
                               cuda=torch.cuda.is_available(),
                               args={
                                   "batch_size": args.batch_size,

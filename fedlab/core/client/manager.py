@@ -72,6 +72,7 @@ class ClientPassiveManager(ClientManager):
             sender_rank, message_code, payload = self._network.recv(src=0)
 
             if message_code == MessageCode.Exit:
+                # client exit feedback
                 if self._network.rank == self._network.world_size-1:
                     self._network.send(message_code=MessageCode.Exit, dst=0)
                 break
@@ -92,7 +93,7 @@ class ClientPassiveManager(ClientManager):
 
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please check MessageCode Enum".
+                    "Invalid MessageCode {}. Please check MessageCode list".
                     format(message_code))
 
     def synchronize(self):
@@ -132,12 +133,12 @@ class ClientActiveManager(ClientManager):
             # waits for data from
             sender_rank, message_code, payload = self._network.recv(src=0)
             if message_code == MessageCode.Exit:
-                self._LOGGER.info(
-                    "Recv {}, process exiting.".format(message_code))
                 break
+
             elif message_code == MessageCode.ParameterUpdate:
                 self._trainer.local_process(payload)
                 self.synchronize(self._trainer.uplink_package)
+                
             else:
                 raise ValueError(
                     "Invalid MessageCode {}. Please check MessageCode Enum".

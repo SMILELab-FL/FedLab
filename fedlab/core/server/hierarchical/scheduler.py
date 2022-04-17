@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import torch
-from torch.multiprocessing import Process, Queue
+from torch.multiprocessing import Queue
 
 from .connector import ClientConnector, ServerConnector
 from ....utils import Logger

@@ -81,11 +81,11 @@ class DistNetwork(object):
         if dist.is_initialized():
             dist.destroy_process_group()
 
-    def send(self, content=None, message_code=None, dst=0):
+    def send(self, content=None, message_code=None, dst=0, count=True):
         """Send tensor to process rank=dst"""
         pack = Package(message_code=message_code, content=content)
         PackageProcessor.send_package(pack, dst=dst)
-        if pack.content is not None:
+        if pack.content is not None and count is True:
             self.send_volume_intotal += pack.content.numel() * type2byte[
                 pack.dtype]
 
@@ -94,17 +94,17 @@ class DistNetwork(object):
             .format(dst, message_code,
                     0 if pack.content is None else pack.content.numel()))
 
-    def recv(self, src=None):
+    def recv(self, src=None, count=True):
         """Receive tensor from process rank=src"""
         sender_rank, message_code, content = PackageProcessor.recv_package(
             src=src)
 
-        if content is not None:
+        if content is not None and count is True:
             volumn = sum([data.numel() for data in content])
 
             # content from server to client, the first content is id_list.
             # remove the size of id_list in the count.
-            if self.rank != 0: 
+            if self.rank != 0:
                 volumn -= content[0].numel()
 
             self.recv_volume_intotal += volumn * type2byte[content[0].dtype]

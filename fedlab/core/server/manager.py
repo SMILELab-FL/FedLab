@@ -55,13 +55,6 @@ class ServerManager(NetworkManager):
         if self._handler is not None:
             self._handler.client_num_in_total = self.coordinator.total
 
-    def broadcast(self, rank_list, message_code, content):
-        """broadcast content to client processes"""
-        for rank in rank_list:
-            self._network.send(content=content,
-                               message_code=message_code,
-                               dst=rank)
-
 
 class ServerSynchronousManager(ServerManager):
     """Synchronous communication
@@ -142,7 +135,7 @@ class ServerSynchronousManager(ServerManager):
     def shutdown_clients(self):
         """Shutdown all clients.
 
-        Send package to each client with :attr:`MessageCode.Exit` to ask client to exit.
+        Send package to each client with :attr:`MessageCode.Exit`.
 
         Note:
             Communication agreements related: User can overwrite this function to define package
@@ -158,6 +151,7 @@ class ServerSynchronousManager(ServerManager):
                 message_code=MessageCode.Exit,
                 dst=rank)
 
+        # wait for client exit feedback
         _, message_code, _ = self._network.recv(src=self._network.world_size-1)
         assert message_code == MessageCode.Exit
 
@@ -192,7 +186,7 @@ class ServerAsynchronousManager(ServerManager):
         Raises:
             ValueError: invalid message code.
         """
-        watching = threading.Thread(target=self.watching_queue)
+        watching = threading.Thread(target=self.watching_queue, daemon=True)
         watching.start()
 
         while self._handler.if_stop is not True:

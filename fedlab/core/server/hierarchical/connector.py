@@ -42,6 +42,7 @@ class Connector(NetworkManager):
     def __init__(self, network, write_queue, read_queue):
         super(Connector, self).__init__(network)
 
+        # bidirectional message queues
         self.mq_read = read_queue
         self.mq_write = write_queue
 
@@ -107,6 +108,7 @@ class ServerConnector(Connector):
             self.mq_write.put_nowait((sender, message_code, payload))
 
             if message_code == MessageCode.Exit:
+                # client exit feedback
                 if self._network.rank == self._network.world_size - 1:
                     self._network.send(message_code=MessageCode.Exit, dst=0)
 
@@ -128,7 +130,7 @@ class ServerConnector(Connector):
             if message_code == MessageCode.Exit:
                 self._LOGGER.info(
                     "[Queue-Thread] process_meessage_queue thread exit.")
-                return 0
+                break
 
             self._network.send(content=payload,
                                message_code=message_code,
@@ -167,9 +169,8 @@ class ClientConnector(Connector):
         """
         self.setup()
         self.main_loop()
-        print("client connector test main_loop")
-        self.shutdown()
-        print("client connector test error")
+        self.shutdown(
+        )  # There is a bug. ClientConnector process will be blocked here. TODO:unsolved.
 
     def setup(self, *args, **kwargs):
         super().setup()
@@ -185,10 +186,6 @@ class ClientConnector(Connector):
         self.mq_write.put_nowait((self._network.rank, MessageCode.SetUp,
                                   torch.Tensor([self.group_client_num]).int()))
 
-        # wait for server connector
-        #while self.mq_write.empty() is not True:
-        #    sleep(2)
-
     def main_loop(self):
         # start a thread to watch message queue
         watching_queue = threading.Thread(target=self.process_meessage_queue,
@@ -197,12 +194,12 @@ class ClientConnector(Connector):
 
         while True:
             sender, message_code, payload = self._network.recv(
-            )  # unexpected poll. TODO: fix this.
+            )  # unexpected block. TODO: fix this.
 
             if message_code == MessageCode.Exit:
                 self._LOGGER.info("main loop exit.")
                 self.mq_write.put_nowait((None, MessageCode.Exit, None))
-                
+
                 watching_queue.join()
                 break
 

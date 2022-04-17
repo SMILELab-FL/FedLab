@@ -33,19 +33,19 @@ class ParameterServerBackendHandler(ModelMaintainer):
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
-    def _iterate_global_model(self, *args, **kwargs):
-        """Override this function for global model aggregation strategy."""
-        raise NotImplementedError()
-
     @property
     def downlink_package(self):
-        """Property for manager layer. ServerManager will call this property when activates clients."""
+        """Property for manager layer. Server manager will call this property when activates clients."""
         return [self.model_parameters]
 
     @property
     def if_stop(self):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
+
+    def _iterate_global_model(self, *args, **kwargs):
+        """Override this function for iterating global model (aggregation or optimization)."""
+        raise NotImplementedError()
 
 
 class SyncParameterServerHandler(ParameterServerBackendHandler):
@@ -68,16 +68,15 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
     def __init__(self,
                  model,
-                 global_round=5,
-                 sample_ratio=1.0,
+                 global_round,
+                 sample_ratio,
                  cuda=False,
                  logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
         self._LOGGER = Logger() if logger is None else logger
 
-        if sample_ratio < 0.0 or sample_ratio > 1.0:
-            raise ValueError("Invalid select ratio: {}".format(sample_ratio))
+        assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
         self.client_num_in_total = 0
@@ -122,7 +121,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         """
         assert len(payload) > 0
 
-        if len(payload) == 1 :
+        if len(payload) == 1:
             self.client_buffer_cache.append(payload[0].clone())
             self.cache_cnt += 1
         else:
@@ -165,8 +164,8 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     def __init__(self,
                  model,
-                 alpha=0.5,
-                 total_time=5,
+                 alpha,
+                 total_time,
                  strategy="constant",
                  cuda=False,
                  logger=None):

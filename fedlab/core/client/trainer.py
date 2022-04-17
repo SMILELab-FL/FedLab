@@ -38,6 +38,15 @@ class ClientTrainer(ModelMaintainer):
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
 
+    @property
+    def uplink_package(self):
+        """Return a tensor list for uploading to server.
+
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        return [self.model_parameters]
+
     def local_process(self, payload):
         """Manager of the upper layer will call this function with accepted payload"""
         raise NotImplementedError()
@@ -49,10 +58,6 @@ class ClientTrainer(ModelMaintainer):
     def evaluate(self):
         """Evaluate quality of local model."""
         raise NotImplementedError()
-
-    @property
-    def uplink_package(self):
-        return [self.model_parameters]
 
 
 class ClientSGDTrainer(ClientTrainer):
