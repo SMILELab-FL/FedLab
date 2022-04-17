@@ -5,7 +5,7 @@ Distributed Communication
 *************************
 
 
-How to initialize distributed network?
+Initialize distributed network
 ======================================
 
 FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication tools. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. Here is the details of how to initialize the distributed network. 
@@ -42,8 +42,57 @@ If the automatically detected interface does not work, users are required to ass
 
         $ ifconfig
 
-How to create package?
-======================
+Point-to-point communication
+=============================
+
+In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`. These APIs suppor flexible pytorch tensor communication.
+
+**Sender process**:
+.. code-block:: python
+    network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
+    network.init_network_connection()
+    network.send(content, message_code, dst)
+    network.close_network_connection()
+
+**Receiver process**:
+.. code-block:: python
+    network = DistNetwork(address=(server_ip, server_port), world_size, rank, ethernet)
+    network.init_network_connection()
+    sender_rank, message_code, content = network.recv(src)
+    #################################
+    #                               #
+    #  local process with content.  #
+    #                               #
+    #################################
+    network.close_network_connection()
+
+.. note::
+
+    Currently, following restrictions need to be noticed：
+        1. **Tensor list:** :meth:`send()` accepts a python list with tensors.
+        2. **Data type:** :meth:`send()` doesn't accept tensors of different data type. In other words, **FedLab** force all appended tensors to be the same data type as the first appended tensor. Torch data types like **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]** are supported.
+
+
+Further understanding of FedLab communication
+================================================
+
+FedLab pack content into a pre-defined package data structure. :meth:`send()` and :meth:`recv()` are implemented like:
+
+.. code-block:: python
+
+    def send(self, content=None, message_code=None, dst=0):
+        """Send tensor to process rank=dst"""
+        pack = Package(message_code=message_code, content=content)
+        PackageProcessor.send_package(pack, dst=dst)
+
+    def recv(self, src=None):
+        """Receive tensor from process rank=src"""
+        sender_rank, message_code, content = PackageProcessor.recv_package(
+            src=src)
+        return sender_rank, message_code, content
+
+Create package
+---------------
 
 The basic communication unit in FedLab is called package. The communication module of FedLab is in fedlab/core/communicator. :class:`Package` defines the basic data structure of network package. It contains header and content. 
 
@@ -54,12 +103,6 @@ The basic communication unit in FedLab is called package. The communication modu
     p.content  # A tensor with size = (x,).
 
 Currently, you can create a network package from following methods:
-
-.. note::
-
-    Currently, following restrictions need to be noticed：
-        1. **Tensor shape:** **FedLab** only supports vectorized tensors as content, which means that tensors with different shape should be flatterned before appended into Package (call tensor.view(-1)).
-        2. **Data type:** Package doesn't accept tensors of different data type. In other words, **FedLab** force all appended tensors to be the same data type as the first appended tensor. Torch data types like **[torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]** are supported.
 
 1. initialize with tensor
 
@@ -104,8 +147,8 @@ Two static methods are provided by Package to parse header and content:
     Package.parse_header(p.header)  # necessary information to describe the package
     Package.parse_content(p.slices, p.content) # tensor list associated with the tensor sequence appended into.
 
-How to send package?
-====================================
+Send package
+--------------------
 
 The point-to-point communicating agreements is implemented in PackageProcessor module. PackageProcessor is a static class to manage package sending/receiving procedure. 
 
@@ -122,21 +165,3 @@ or, receive a package from rank=0 (set the parameter src=None to receive package
 
     sender_rank, message_code, content = PackageProcessor.recv_package(src=0)
 
-
-Point-to-point communication
-=============================
-
-In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`.
-
-.. code-block:: python
-
-    def send(self, content=None, message_code=None, dst=0):
-        """Send tensor to process rank=dst"""
-        pack = Package(message_code=message_code, content=content)
-        PackageProcessor.send_package(pack, dst=dst)
-
-    def recv(self, src=None):
-        """Receive tensor from process rank=src"""
-        sender_rank, message_code, content = PackageProcessor.recv_package(
-            src=src)
-        return sender_rank, message_code, content

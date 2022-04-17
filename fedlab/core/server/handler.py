@@ -106,7 +106,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                                   self.client_num_per_round)
         return selection
 
-    def _iterate_global_model(self, sender_rank, payload):
+    def _iterate_global_model(self, payload):
         """Update global model with collected parameters from clients.
 
         Note:
@@ -116,7 +116,6 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             aggregation into :attr:`self._model`.
 
         Args:
-            sender_rank (int): Rank of sender client in ``torch.distributed`` group.
             payload (list[torch.Tensor]): A list of tensors passed by manager layer.
         """
         assert len(payload) > 0
@@ -196,7 +195,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     def downlink_package(self):
         return [self.model_parameters, self.server_time]
 
-    def _iterate_global_model(self, sender_rank, payload):
+    def _iterate_global_model(self, payload):
         client_model_parameters, model_time = payload[0], payload[1]
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)

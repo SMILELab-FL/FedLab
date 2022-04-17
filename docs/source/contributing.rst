@@ -50,15 +50,12 @@ Pull Request Checklist
 
         fedlab
             ├── core 
-            │   ├── communicator            # communication module of FedLab 
+            │   ├── communicator            # communication module
             │   ├── client                  # client related implementations
-            │   │   └── scale               # scale manager and serial trainer
             │   └── server                  # server related implementations
-            │       └── scale               # scale manager
-            │           └── hierarchical    # hierarchical communication pattern modules
+            │       └── hierarchical        # hierarchical communication pattern modules
             └── utils                       # functional modules
-                ├── compressor              # compressor modules
-                └── dataset                 # functional modules associated with dataset
+                └── dataset                 # functional modules about dataset
 
 - The code should provide test cases using `unittest.TestCase`. And ensure all local tests passed:
 

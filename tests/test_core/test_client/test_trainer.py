@@ -55,7 +55,6 @@ class TrainerTestCase(unittest.TestCase):
             model=model,
             dataset=trainset,
             data_slices=data_indices,
-            aggregator=self.aggregator,
             args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
 
@@ -82,7 +81,6 @@ class TrainerTestCase(unittest.TestCase):
             model=model,
             dataset=trainset,
             data_slices=data_indices,
-            aggregator=self.aggregator,
             args={"batch_size": 100, "epochs": 1, "lr": 0.1},
         )
         to_select = [i for i in range(self.total_client)]
