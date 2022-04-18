@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from asyncore import ExitNow
 import threading
 import torch
 from torch.multiprocessing import Queue
@@ -22,7 +21,6 @@ from ..coordinator import Coordinator
 
 from ...utils.message_code import MessageCode
 from ...utils import Logger
-from fedlab.utils import message_code
 
 DEFAULT_SERVER_RANK = 0
 

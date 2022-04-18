@@ -14,10 +14,8 @@
 
 from tqdm import tqdm
 from ..client import ORDINARY_TRAINER
-from ...utils import Logger
-from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
-
+from ...utils import Logger, SerializationTool
 
 class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
