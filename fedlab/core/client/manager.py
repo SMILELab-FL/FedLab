@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from email import message
 import torch
 
 from . import ORDINARY_TRAINER, SERIAL_TRAINER

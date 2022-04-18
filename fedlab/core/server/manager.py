@@ -99,7 +99,7 @@ class SynchronousServerManager(ServerManager):
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    if self._handler._iterate_global_model(payload):
+                    if self._handler._update_global_model(payload):
                         break
                 else:
                     raise Exception(
@@ -196,7 +196,7 @@ class AsynchronousServerManager(ServerManager):
                                    dst=sender)
 
             elif message_code == MessageCode.ParameterUpdate:
-                self._handler._iterate_global_model(payload)
+                self._handler._update_global_model(payload)
 
                 # self.message_queue.put((sender, message_code, payload))
                 # processing = threading.Thread(target=self.process_message_queue, daemon=True)
@@ -215,7 +215,7 @@ class AsynchronousServerManager(ServerManager):
         while self.message_queue.empty() is not True:
             _, message_code, payload = self.message_queue.get()
             assert message_code == MessageCode.ParameterUpdate
-            self._handler._iterate_global_model(payload)
+            self._handler._update_global_model(payload)
 
     def shutdown_clients(self):
         """Shutdown all clients.

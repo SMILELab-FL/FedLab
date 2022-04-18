@@ -43,7 +43,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
 
-    def _iterate_global_model(self, *args, **kwargs):
+    def _update_global_model(self, *args, **kwargs):
         """Override this function for iterating global model (aggregation or optimization)."""
         raise NotImplementedError()
 
@@ -106,7 +106,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                                   self.client_num_per_round)
         return selection
 
-    def _iterate_global_model(self, payload):
+    def _update_global_model(self, payload):
         """Update global model with collected parameters from clients.
 
         Note:
@@ -195,7 +195,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     def downlink_package(self):
         return [self.model_parameters, self.server_time]
 
-    def _iterate_global_model(self, payload):
+    def _update_global_model(self, payload):
         client_model_parameters, model_time = payload[0], payload[1]
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
