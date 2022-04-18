@@ -43,14 +43,14 @@ class HandlerTestCase(unittest.TestCase):
         coming_model = CNN_Mnist()
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
-        self.AsyncHandler._iterate_global_model(payload=[coming_parameters,
+        self.AsyncHandler._update_global_model(payload=[coming_parameters,
                                         random.randint(1, 10)])
 
         parameter_list = []
         for id in range(self.SyncHandler.client_num_per_round):
             tensors = torch.Tensor(size=coming_parameters.shape)
             parameter_list.append(tensors)
-            flag = self.SyncHandler._iterate_global_model(payload=[tensors])
+            flag = self.SyncHandler._update_global_model(payload=[tensors])
         assert flag
 
     def test_sample(self):
