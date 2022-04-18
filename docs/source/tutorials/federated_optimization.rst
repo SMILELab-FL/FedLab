@@ -128,15 +128,15 @@ Calculation tasks related with PyTorch should be define in ServerHandler part. I
             """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
             return False
 
-        def _iterate_global_model(self, *args, **kwargs):
+        def _update_global_model(self, *args, **kwargs):
             """Override this function for iterating global model (aggregation or optimization)."""
             raise NotImplementedError()
 
 User can define server aggregation strategy by finish following functions:
 
-- You can overwrite ``_iterate_global_model()`` to customize global procedure.
+- You can overwrite ``_update_global_model()`` to customize global procedure.
 
-- ``_iterate_global_model()`` is required to manipulate global model parameters (self._model).
+- ``_update_global_model()`` is required to manipulate global model parameters (self._model).
 
 - Summarised FL aggregation strategies are implemented in ``fedlab.utils.aggregator``.
 
