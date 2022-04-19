@@ -28,7 +28,7 @@ class SerialTrainer(ClientTrainer):
         model (torch.nn.Module): Model used in this federation.
         client_num (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
-        logger (Logger, optional): object of :class:`Logger`.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
 
     def __init__(self, model, client_num, cuda=False, logger=None):
@@ -61,15 +61,6 @@ class SerialTrainer(ClientTrainer):
         Args:
             id_list (list[int]): Client id in this training serial.
             payload (list[torch.Tensor]): Serialized model parameters.
-            aggregate (bool): Whether to perform partial aggregation on this group of clients' local models at the end of each local training round.
-
-        Note:
-            Normally, aggregation is performed by server, while we provide :attr:`aggregate` option here to perform
-            partial aggregation on current client group. This partial aggregation can reduce the aggregation workload
-            of server.
-
-        Returns:
-            Serialized model parameters / list of model parameters.
         """
         self.param_list = []
         model_parameters = payload[0]
@@ -94,8 +85,8 @@ class SubsetSerialTrainer(SerialTrainer):
     Args:
         model (torch.nn.Module): Model used in this federation.
         dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
-        data_slices (list[list]): subset of indices of dataset.
-        logger (Logger, optional): object of :class:`Logger`.
+        data_slices (list[list]): Subset of indices of dataset.
+        logger (Logger, optional): Object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``False``.
         args (dict, optional): Uncertain variables.
 
@@ -139,6 +130,7 @@ class SubsetSerialTrainer(SerialTrainer):
             sampler=SubsetSampler(indices=self.data_slices[client_id],
                                   shuffle=True),
             batch_size=batch_size)
+
         return train_loader
 
     def _train_alone(self, model_parameters, train_loader):

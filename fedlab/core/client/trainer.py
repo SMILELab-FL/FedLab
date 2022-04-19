@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import abstractclassmethod, abstractproperty
 from tqdm import tqdm
+import torch
 from ..client import ORDINARY_TRAINER
 from ..model_maintainer import ModelMaintainer
 from ...utils import Logger, SerializationTool
+
 
 class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
@@ -36,19 +39,23 @@ class ClientTrainer(ModelMaintainer):
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
 
-    @property
-    def uplink_package(self):
+    @abstractproperty
+    def uplink_package(self) -> list[torch.Tensor]:
         """Return a tensor list for uploading to server.
 
             This attribute will be called by client manager.
             Customize it for new algorithms.
         """
-        return [self.model_parameters]
-
-    def local_process(self, payload):
-        """Manager of the upper layer will call this function with accepted payload"""
         raise NotImplementedError()
+
+    @abstractclassmethod
+    def local_process(self, payload) -> bool:
+        """Manager of the upper layer will call this function with accepted payload
         
+            In synchronous mode, return True to end current FL round.
+        """
+        raise NotImplementedError()
+
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
@@ -88,6 +95,15 @@ class SGDClientTrainer(ClientTrainer):
         self._LOGGER = Logger() if logger is None else logger
 
         self.model_time = 0
+
+    @property
+    def uplink_package(self):
+        """Return a tensor list for uploading to server.
+
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        return [self.model_parameters]
 
     def local_process(self, payload):
         model_parameters = payload[0]

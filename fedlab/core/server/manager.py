@@ -29,8 +29,8 @@ class ServerManager(NetworkManager):
     """Base class of ServerManager.
 
     Args:
-        network (DistNetwork): network configuration.
-        handler (ParameterServerBackendHandler): performe global server aggregation procedure.
+        network (DistNetwork): Network configuration and interfaces.
+        handler (ParameterServerBackendHandler): Performe global server aggregation procedure.
     """
 
     def __init__(self, network, handler):
@@ -62,9 +62,9 @@ class SynchronousServerManager(ServerManager):
     Synchronously communicate with clients following agreements defined in :meth:`main_loop`.
 
     Args:
-        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        network (DistNetwork): Network configuration and interfaces.
         handler (ParameterServerBackendHandler): Backend calculation handler for parameter server.
-        logger (Logger, optional): object of :class:`Logger`.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
 
     def __init__(self, network, handler, logger=None):
@@ -161,9 +161,9 @@ class AsynchronousServerManager(ServerManager):
     Asynchronously communicate with clients following agreements defined in :meth:`run`.
 
     Args:
-        network (DistNetwork): Manage ``torch.distributed`` network communication.
-        handler (ParameterServerBackendHandler, optional): Backend computation handler for parameter server.
-        logger (Logger, optional): object of :class:`Logger`.
+        network (DistNetwork): Network configuration and interfaces.
+        handler (ParameterServerBackendHandler): Backend computation handler for parameter server.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
 
     def __init__(self, network, handler, logger=None):
@@ -204,7 +204,7 @@ class AsynchronousServerManager(ServerManager):
 
             else:
                 raise ValueError(
-                    "Unexpected message code {}".format(message_code))
+                    "Unexpected message code {}.".format(message_code))
 
     def shutdown(self):
         self.shutdown_clients()

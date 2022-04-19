@@ -26,8 +26,8 @@ class ClientManager(NetworkManager):
     :class:`ClientManager` defines client activation for different communication stages.
 
     Args:
-        network (DistNetwork): Network configuration.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
+        network (DistNetwork): Network configuration and interfaces.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
     """
 
     def __init__(self, network, trainer):
@@ -50,9 +50,9 @@ class PassiveClientManager(ClientManager):
     """Passive communication :class:`NetworkManager` for client in synchronous FL pattern.
 
     Args:
-        network (DistNetwork): network configuration.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
-        logger (Logger): object of :class:`Logger`.
+        network (DistNetwork): Network configuration and interfaces.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
 
     def __init__(self, network, trainer, logger=None):
@@ -93,12 +93,12 @@ class PassiveClientManager(ClientManager):
 
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please check MessageCode list".
+                    "Invalid MessageCode {}. Please check MessageCode list.".
                     format(message_code))
 
     def synchronize(self):
         """Synchronize with server"""
-        self._LOGGER.info("Uploading information to server")
+        self._LOGGER.info("Uploading information to server.")
         self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)
@@ -108,9 +108,9 @@ class ActiveClientManager(ClientManager):
     """Active communication :class:`NetworkManager` for client in asynchronous FL pattern.
 
     Args:
-        network (DistNetwork): network configuration.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`train` and :attr:`model`. Define local client training procedure.
-        logger (Logger, optional): object of :class:`Logger`.
+        network (DistNetwork): Network configuration and interfaces.
+        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
 
     def __init__(self, network, trainer, logger=None):
@@ -143,17 +143,17 @@ class ActiveClientManager(ClientManager):
 
             else:
                 raise ValueError(
-                    "Invalid MessageCode {}. Please check MessageCode Enum".
+                    "Invalid MessageCode {}. Please check MessageCode Enum.".
                     format(message_code))
 
     def request(self):
         """Client request"""
-        self._LOGGER.info("request parameter procedure")
+        self._LOGGER.info("request parameter procedure.")
         self._network.send(message_code=MessageCode.ParameterRequest, dst=0)
 
     def synchronize(self):
         """Synchronize with server"""
-        self._LOGGER.info("Uploading information to server")
+        self._LOGGER.info("Uploading information to server.")
         self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,
                            dst=0)
