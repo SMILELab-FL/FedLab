@@ -17,3 +17,4 @@ SERIAL_TRAINER = 1
 
 from .manager import ClientManager, ActiveClientManager, PassiveClientManager
 from .trainer import ClientTrainer, SGDClientTrainer
+from .serial_trainer import SerialTrainer, SubsetSerialTrainer

@@ -59,9 +59,9 @@ class ServerConnector(Connector):
         This class is a part of middle server which used in hierarchical structure.
 
     Args:
-        network (DistNetwork): object to manage torch.distributed network communication.
-        write_queue (torch.multiprocessing.Queue): message queue
-        read_queue (torch.multiprocessing.Queue):  message queue
+        network (DistNetwork): Network configuration and interfaces.
+        write_queue (torch.multiprocessing.Queue): Message queue to write.
+        read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
 
     def __init__(self, network, write_queue, read_queue, logger):
@@ -143,7 +143,7 @@ class ClientConnector(Connector):
     This class is a part of middle server which used in hierarchical structure.
 
     Args:
-        network (DistNetwork): Manage ``torch.distributed`` network communication.
+        network (DistNetwork): Network configuration and interfaces.
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """

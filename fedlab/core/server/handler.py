@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import abstractproperty
 import random
 import torch
 
@@ -33,12 +34,12 @@ class ParameterServerBackendHandler(ModelMaintainer):
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
-    @property
+    @abstractproperty
     def downlink_package(self):
         """Property for manager layer. Server manager will call this property when activates clients."""
-        return [self.model_parameters]
+        raise NotImplementedError()
 
-    @property
+    @abstractproperty
     def if_stop(self):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
@@ -84,11 +85,15 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         # client buffer
         self.client_buffer_cache = []
-        self.cache_cnt = 0
 
         # stop condition
         self.global_round = global_round
         self.round = 0
+
+    @property
+    def downlink_package(self):
+        """Property for manager layer. Server manager will call this property when activates clients."""
+        return [self.model_parameters]
 
     @property
     def if_stop(self):
@@ -122,14 +127,12 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         if len(payload) == 1:
             self.client_buffer_cache.append(payload[0].clone())
-            self.cache_cnt += 1
         else:
-            self.client_buffer_cache += payload
-            self.cache_cnt += len(payload)
+            self.client_buffer_cache += payload  # serial trainer
 
-        assert self.cache_cnt <= self.client_num_per_round
+        assert len(self.client_buffer_cache) <= self.client_num_per_round
         
-        if self.cache_cnt == self.client_num_per_round:
+        if len(self.client_buffer_cache) == self.client_num_per_round:
             model_parameters_list = self.client_buffer_cache
             # use aggregator
             serialized_parameters = Aggregators.fedavg_aggregate(
@@ -138,10 +141,9 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             self.round += 1
 
             # reset cache cnt
-            self.cache_cnt = 0
             self.client_buffer_cache = []
 
-            return True
+            return True  # return True to end this round.
         else:
             return False
 
@@ -154,13 +156,12 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     Args:
         model (torch.nn.Module): Global model in server
-        alpha (float): weight used in async aggregation.
-        total_time (int): stop condition. Shut down FL system when total_time is reached.
-        strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
+        alpha (float): Weight used in async aggregation.
+        total_time (int): Stop condition. Shut down FL system when total_time is reached.
+        strategy (str): Adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
-        logger (Logger, optional): object of :class:`Logger`.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
-
     def __init__(self,
                  model,
                  alpha,
