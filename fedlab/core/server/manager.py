@@ -123,9 +123,9 @@ class SynchronousServerManager(ServerManager):
         self._LOGGER.info("Client id list: {}".format(clients_this_round))
 
         for rank, values in rank_dict.items():
-            id_list = torch.Tensor(values).to(torch.int32)
-            self._network.send(content=[id_list] +
-                               self._handler.downlink_package,
+            downlink_package = self._handler.downlink_package
+            id_list = torch.Tensor(values).to(downlink_package[0].dtype)
+            self._network.send(content=[id_list] + downlink_package,
                                message_code=MessageCode.ParameterUpdate,
                                dst=rank)
 
@@ -142,10 +142,10 @@ class SynchronousServerManager(ServerManager):
         rank_dict = self.coordinator.map_id_list(client_list)
 
         for rank, values in rank_dict.items():
-            id_list = torch.Tensor(values).to(torch.int32)
-            self._network.send(content=[id_list] +
-                               self._handler.downlink_package,
-                               message_code=MessageCode.Exit,
+            downlink_package = self._handler.downlink_package
+            id_list = torch.Tensor(values).to(downlink_package[0].dtype)
+            self._network.send(content=[id_list] + downlink_package,
+                               message_code=MessageCode.ParameterUpdate,
                                dst=rank)
 
         # wait for client exit feedback

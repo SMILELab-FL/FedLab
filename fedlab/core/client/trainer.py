@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from abc import abstractclassmethod, abstractproperty
-from tqdm import tqdm
 import torch
 from ..client import ORDINARY_TRAINER
 from ..model_maintainer import ModelMaintainer
