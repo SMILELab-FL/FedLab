@@ -145,7 +145,7 @@ class SynchronousServerManager(ServerManager):
             downlink_package = self._handler.downlink_package
             id_list = torch.Tensor(values).to(downlink_package[0].dtype)
             self._network.send(content=[id_list] + downlink_package,
-                               message_code=MessageCode.ParameterUpdate,
+                               message_code=MessageCode.Exit,
                                dst=rank)
 
         # wait for client exit feedback
@@ -184,8 +184,8 @@ class AsynchronousServerManager(ServerManager):
         Raises:
             ValueError: invalid message code.
         """
-        # watching = threading.Thread(target=self.watching_queue, daemon=True)
-        # watching.start()
+        updater = threading.Thread(target=self.updater_thread, daemon=True)
+        updater.start()
 
         while self._handler.if_stop is not True:
             sender, message_code, payload = self._network.recv()
@@ -196,11 +196,7 @@ class AsynchronousServerManager(ServerManager):
                                    dst=sender)
 
             elif message_code == MessageCode.ParameterUpdate:
-                self._handler._update_global_model(payload)
-
-                # self.message_queue.put((sender, message_code, payload))
-                # processing = threading.Thread(target=self.process_message_queue, daemon=True)
-                # processing.strat()
+                self.message_queue.put((sender, message_code, payload))
 
             else:
                 raise ValueError(
@@ -210,12 +206,13 @@ class AsynchronousServerManager(ServerManager):
         self.shutdown_clients()
         super().shutdown()
 
-    def process_message_queue(self):
+    def updater_thread(self):
         """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""
-        while self.message_queue.empty() is not True:
+        while self._handler.if_stop is not True:
             _, message_code, payload = self.message_queue.get()
-            assert message_code == MessageCode.ParameterUpdate
             self._handler._update_global_model(payload)
+
+            assert message_code == MessageCode.ParameterUpdate
 
     def shutdown_clients(self):
         """Shutdown all clients.

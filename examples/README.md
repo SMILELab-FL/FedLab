@@ -42,3 +42,12 @@ Scheduler2 + Ordinary trainer with 1 client + Serial trainer with 10 clients (te
 ```
 $ bash launch_cgroup2_eg.sh
 ```
+
+## Asynchronous mode
+
+### Cross process
+
+```
+$ cd asynchronous-cross-process-mnist
+$ bash launch_eg.sh
+```

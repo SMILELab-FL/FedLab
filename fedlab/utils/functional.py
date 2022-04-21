@@ -239,7 +239,6 @@ def partition_report(targets,
         fh.write("\n".join(reports))
         fh.close()
 
-
 def accuracy(output, target, topk=(1, )):
     """Computes the top-k accuracy for the specified values of k, in range of [0, 1]"""
     maxk = max(topk)

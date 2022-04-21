@@ -174,41 +174,37 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
         self.client_num_in_total = 0
 
-        self.current_time = 1
+        self.time = 1
         self.total_time = total_time
 
         # async aggregation params
         self.alpha = alpha
         self.strategy = strategy  # "constant", "hinge", "polynomial"
-        self.a = None
-        self.b = None
-
-    @property
-    def server_time(self):
-        return self.current_time
+        self.a = 10
+        self.b = 4
 
     @property
     def if_stop(self):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= self.total_time
+        return self.time >= self.total_time
 
     @property
     def downlink_package(self):
-        return [self.model_parameters, self.server_time]
+        return [self.model_parameters, torch.Tensor([self.time])]
 
     def _update_global_model(self, payload):
-        client_model_parameters, model_time = payload[0], payload[1]
+        client_model_parameters, model_time = payload[0], payload[1].item()
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
-        self.current_time += 1
+        self.time += 1
 
     def _adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
-        staleness = self.current_time - receive_model_time
+        staleness = self.time - receive_model_time
         if self.strategy == "constant":
             return torch.mul(self.alpha, 1)
         elif self.strategy == "hinge" and self.b is not None and self.a is not None:
