@@ -33,16 +33,16 @@ class ParameterServerBackendHandler(ModelMaintainer):
         super().__init__(model, cuda)
 
     @abstractproperty
-    def downlink_package(self):
+    def downlink_package(self) -> list[torch.Tensor]:
         """Property for manager layer. Server manager will call this property when activates clients."""
         raise NotImplementedError()
 
     @abstractproperty
-    def if_stop(self):
+    def if_stop(self) -> bool:
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
 
-    def _update_global_model(self, *args, **kwargs):
+    def _update_global_model(self, payload):
         """Override this function for iterating global model (aggregation or optimization)."""
         raise NotImplementedError()
 
