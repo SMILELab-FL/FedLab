@@ -88,11 +88,13 @@ class Package(object):
             tensor (torch.Tensor): Tensor to append in content.
         """
         if not isinstance(tensor, torch.Tensor):
-            raise ValueError("Invalid content type, expecting torch.Tensor but get {}".format(type(tensor)))
+            raise ValueError(
+                "Invalid content type, expecting torch.Tensor but get {}".
+                format(type(tensor)))
 
         shape = list(tensor.shape)
         slice = [tensor.numel(), len(shape)] + shape
-        
+
         tensor = tensor.view(-1)
         if self.content is None:
             self.content = deepcopy(tensor)

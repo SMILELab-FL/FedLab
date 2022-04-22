@@ -15,9 +15,8 @@
 import torch
 
 from . import ORDINARY_TRAINER, SERIAL_TRAINER
-from ...utils import Logger
-from ...utils.message_code import MessageCode
 from ..network_manager import NetworkManager
+from ...utils import Logger, MessageCode
 
 
 class ClientManager(NetworkManager):
@@ -130,7 +129,7 @@ class ActiveClientManager(ClientManager):
 
             # waits for data from server
             _, message_code, payload = self._network.recv(src=0)
-            
+
             if message_code == MessageCode.Exit:
                 # client exit feedback
                 if self._network.rank == self._network.world_size - 1:

@@ -14,6 +14,7 @@
 
 from abc import abstractclassmethod, abstractproperty
 import torch
+
 from ..client import ORDINARY_TRAINER
 from ..model_maintainer import ModelMaintainer
 from ...utils import Logger, SerializationTool

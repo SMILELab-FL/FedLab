@@ -16,8 +16,8 @@ import os
 import torch
 import torch.distributed as dist
 
-from ..utils.logger import Logger
 from .communicator.processor import Package, PackageProcessor
+from ..utils import Logger
 
 type2byte = {
     torch.int8: 1,

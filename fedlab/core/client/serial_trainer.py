@@ -16,9 +16,8 @@ import torch
 
 from .trainer import ClientTrainer
 from ..client import SERIAL_TRAINER
-from ...utils.serialization import SerializationTool
+from ...utils import Logger, SerializationTool
 from ...utils.dataset.sampler import SubsetSampler
-from ...utils import Logger
 
 
 class SerialTrainer(ClientTrainer):

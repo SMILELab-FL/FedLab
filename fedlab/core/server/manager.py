@@ -18,9 +18,7 @@ from torch.multiprocessing import Queue
 
 from ..network_manager import NetworkManager
 from ..coordinator import Coordinator
-
-from ...utils.message_code import MessageCode
-from ...utils import Logger
+from ...utils import Logger, MessageCode
 
 DEFAULT_SERVER_RANK = 0
 
