@@ -24,7 +24,11 @@ from . import DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE
 from . import HEADER_SIZE
 from ...utils.message_code import MessageCode
 
-supported_torch_dtypes = [torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64]
+supported_torch_dtypes = [
+    torch.int8, torch.int16, torch.int32, torch.int64, torch.float16,
+    torch.float32, torch.float64
+]
+
 
 class Package(object):
     """A basic network package data structure used in FedLab. Everything is Tensor in  FedLab.
@@ -32,7 +36,6 @@ class Package(object):
     Note:
         ``slice_size_i = tensor_i.shape[0]``, that is, every element in slices indicates the size
         of a sub-Tensor in content.
-        
 
     :class:`Package` maintains 3 variables:
         - :attr:`header` : ``torch.Tensor([sender_rank, recv_rank, content_size, message_code, data_type])``
@@ -57,7 +60,7 @@ class Package(object):
             type(message_code))
 
         # initialize header. The dtype of header is set as torch.int32 as default.
-        self.header = torch.zeros(size=(HEADER_SIZE,), dtype=torch.int32)
+        self.header = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int32)
 
         if dist.is_initialized():
             self.header[HEADER_SENDER_RANK_IDX] = dist.get_rank()
@@ -85,23 +88,26 @@ class Package(object):
             tensor (torch.Tensor): Tensor to append in content.
         """
         if not isinstance(tensor, torch.Tensor):
-            raise ValueError("Invalid content type")
-        if tensor.shape != tensor.view(-1).shape:
-            raise ValueError("Invalid shape")
+            raise ValueError(
+                "Invalid content type, expecting torch.Tensor but get {}".
+                format(type(tensor)))
 
-        size = tensor.shape[0]
+        shape = list(tensor.shape)
+        slice = [tensor.numel(), len(shape)] + shape
+
+        tensor = tensor.view(-1)
         if self.content is None:
             self.content = deepcopy(tensor)
             self.dtype = tensor.dtype
         else:
             if tensor.dtype is not self.dtype:
                 warnings.warn(
-                    "The dtype of current tensor is {}. But package dtype is {}. The current data type will be coerced to {} and we do not guarantee lossless conversion."
-                        .format(tensor.dtype, self.dtype, self.dtype))
+                    "The dtype of current tensor is {}. But package dtype is {}. The current data type will be casted to {} and fedlab do not guarantee lossless conversion."
+                    .format(tensor.dtype, self.dtype, self.dtype))
             tensor = tensor.to(self.dtype)
             self.content = torch.cat((self.content, tensor))
 
-        self.slices.append(size)
+        self.slices += slice
         self.header[HEADER_SLICE_SIZE_IDX] = len(self.slices)
 
     def append_tensor_list(self, tensor_list):
@@ -119,7 +125,7 @@ class Package(object):
             self.content.to(self.dtype)
         else:
             warnings.warn(
-                "Currently FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
+                "FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
             )
 
     @staticmethod
@@ -133,12 +139,22 @@ class Package(object):
         Returns:
             list[torch.Tensor]: A list of 1-D tensors parsed from ``content``
         """
-        index = 0
+        index = 0  # parse variable for content
+        iter = 0  # parse variable for slices
         parse_result = []
-        for offset in slices:
+        while iter < len(slices):
+            offset = slices[iter]  # offset of content
+            shape_len = slices[iter + 1]  # offset of shape tuple
+            shape = tuple(slices[iter + 2:iter + 2 +
+                                 shape_len])  # obtain shape tuple
+
             seg_tensor = content[index:index + offset]
-            parse_result.append(seg_tensor)
+            reshape_tensor = seg_tensor.view(size=shape)  # reshape
+
+            parse_result.append(reshape_tensor)
             index += offset
+            iter += shape_len + 2
+
         return parse_result
 
     @staticmethod
@@ -146,7 +162,8 @@ class Package(object):
         """Parse header to get information of current package.
 
         Args:
-            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``. For more details about :class:`Package`.
+            header (torch.Tensor): :attr:`Package.header`, a 1-D tensor composed of 4 elements: ``torch.Tensor([sender_rank, recv_rank, slice_size, message_code, data_type])``.
+            For more details about :class:`Package`.
 
         Returns:
             tuple: A tuple containing 5 elements: ``(sender_rank, recv_rank, slice_size, message_code, data_type)``.

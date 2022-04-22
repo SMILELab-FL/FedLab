@@ -47,9 +47,9 @@ class PackageProcessor(object):
 
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
+
         def send_header(header, dst):
             header[HEADER_RECEIVER_RANK_IDX] = dst
-            
             dist.send(header, dst=dst)
 
         def send_slices(slices, dst):
@@ -62,7 +62,8 @@ class PackageProcessor(object):
 
         # body
         if package.dtype is not None:
-            package.header[HEADER_DATA_TYPE_IDX] = dtype_torch2flab(package.dtype)
+            package.header[HEADER_DATA_TYPE_IDX] = dtype_torch2flab(
+                package.dtype)
 
         # sender header firstly
         send_header(header=package.header, dst=dst)
@@ -71,7 +72,6 @@ class PackageProcessor(object):
         if package.header[HEADER_SLICE_SIZE_IDX] > 0:
             send_slices(slices=package.slices, dst=dst)
             send_content(content=package.content, dst=dst)
-
 
     @staticmethod
     def recv_package(src=None):
@@ -90,6 +90,7 @@ class PackageProcessor(object):
 
             3.2 receiver: receive the content tensor, and parse it to obtain slices list using parser function
         """
+
         def recv_header(src=src, parse=True):
             buffer = torch.zeros(size=(HEADER_SIZE, ), dtype=torch.int32)
             dist.recv(buffer, src=src)

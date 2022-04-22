@@ -18,7 +18,8 @@ import sys
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S')
 
 logging.getLogger().setLevel(logging.INFO)
 

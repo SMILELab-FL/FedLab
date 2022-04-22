@@ -4,7 +4,7 @@
 Communication Strategy
 **********************
 
-Communication strategy is implemented by ClientManager and ServerManager collaboratively.
+Communication strategy is implemented by (ClientManager,ServerManager) pair collaboratively.
 
 The prototype of :class:`NetworkManager` is defined in ``fedlab.core.network_manager``, which is also a subclass of ``torch.multiprocessing.process``.
 
@@ -55,9 +55,9 @@ Base class definition shows below:
             """Shut down stage"""
             self._network.close_network_connection()
 
-FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. You can customize process flow by: 1. create a new class inherited from corresponding class in our standard implementations; 2. overwrite the functions in target stage.
+FedLab provides 2 standard communication pattern implementations: synchronous and asynchronous. And we encourage users create new FL communication pattern for their own algorithms.
 
-To sum up, communication strategy can be customized by overwriting as the note below mentioned.
+You can customize process flow by: 1. create a new class inherited from corresponding class in our standard implementations; 2. overwrite the functions in target stage. To sum up, communication strategy can be customized by overwriting as the note below mentioned.
 
 .. note::
 
@@ -67,10 +67,10 @@ To sum up, communication strategy can be customized by overwriting as the note b
 
 Importantly, ServerManager and ClientManager should be defined and used as a pair. The control flow and information agreements should be compatible. FedLab provides standard implementation for typical synchronous and asynchronous, as depicted below.
 
-Synchronous
-============
+Synchronous mode
+=================
 
-Synchronous communication involves :class:`ServerSynchronousManager` and :class:`ClientPassiveManager`. Communication procedure is shown as follows.
+Synchronous communication involves :class:`SynchronousServerManager` and :class:`PassiveClientManager`. Communication procedure is shown as follows.
 
 .. image:: ../../imgs/fedlab-synchronous.svg
     :align: center
@@ -80,8 +80,8 @@ Synchronous communication involves :class:`ServerSynchronousManager` and :class:
     :align: center
     :class: only-dark
 
-Asynchronous
-=============
+Asynchronous mode
+==================
 
 Asynchronous is given by :class:`ServerAsynchronousManager` and :class:`ClientActiveManager`. Communication
 procedure is shown as follows.
@@ -94,8 +94,12 @@ procedure is shown as follows.
     :align: center
     :class: only-dark
 
+
+Customization
+================
+
 Initialization stage
-====================
+---------------------
 
 Initialization stage is represented by :meth:`manager.setup()` function.
 
@@ -103,9 +107,9 @@ User can customize initialization procedure as follows(use ClientManager as exam
 
 .. code-block:: python
 
-    from fedlab.core.client.manager import ClientPassiveManager
+    from fedlab.core.client.manager import PassiveClientManager
 
-    class CustomizeClientManager(ClientPassiveManager):
+    class CustomizeClientManager(PassiveClientManager):
 
         def __init__(self, trainer, network):
             super().__init__(trainer, network)
@@ -119,10 +123,10 @@ User can customize initialization procedure as follows(use ClientManager as exam
             *****************************
     
 Communication stage
-===================
+---------------------
 
 After Initialization Stage, user can define :meth:`main_loop()` to define main process for server and client. To standardize
-**FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`ClientPassiveManager`: and :class:`ServerSynchronousManager` for example.
+**FedLab**'s implementation, here we give the :meth:`main_loop()` of :class:`PassiveClientManager`: and :class:`SynchronousServerManager` for example.
 
 
 **Client part**:
@@ -142,11 +146,10 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
             if message_code == MessageCode.Exit:
                 break
             elif message_code == MessageCode.ParameterUpdate:
-                model_parameters = payload[0]
-                self._trainer.train(model_parameters=model_parameters)
+                self._trainer.local_process(payload=payload)
                 self.synchronize()
             else:
-                raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+                raise ValueError("Invalid MessageCode {}.".format(message_code))
 
 
 **Server Part**:
@@ -176,25 +179,23 @@ After Initialization Stage, user can define :meth:`main_loop()` to define main p
             activate = threading.Thread(target=self.activate_clients)
             activate.start()
             while True:
-                sender, message_code, payload = self._network.recv()
+                sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    model_parameters = payload[0]
-                    if self._handler.add_model(sender, model_parameters):
+                    if self._handler.iterate_global_model(sender_rank, payload=paylaod):
                         break
                 else:
                     raise Exception(
-                        raise ValueError("Invalid MessageCode {}. Please see MessageCode Enum".format(message_code))
+                        raise ValueError("Invalid MessageCode {}.".format(message_code))
 
 Shutdown stage
-=================
+---------------------
 
 :meth:`shutdown()` will be called when :meth:`main_loop()` finished. You can define the actions for client and server seperately.
 
-Typically in our implementation, shutdown stage is started by server. It will send a package with ``MessageCode.Exit`` to
+Typically in our implementation, shutdown stage is started by server. It will send a message with ``MessageCode.Exit`` to
 inform client to stop its main loop.
 
-
-Codes below is the actions of :class:`ServerSynchronousManager` in shutdown stage.
+Codes below is the actions of :class:`SynchronousServerManager` in shutdown stage.
 
 .. code-block:: python
 
@@ -210,8 +211,4 @@ Codes below is the actions of :class:`ServerSynchronousManager` in shutdown stag
         for rank in range(1, self._network.world_size):
             print("stopping clients rank:", rank)
             self._network.send(message_code=MessageCode.Exit, dst=rank)
-
-.. note::
-
-    The scale module of **FedLab** is a communication strategy re-definition to both ClientManager and ServerManager. Please see the source code in fedlab/core/{client or server}/scale/manager.py (It it really simple. We did nothing but add a map function from rank to client id).
 

@@ -140,12 +140,4 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
 Benchmarks
 ==========
 
-**FedLab** also contains data partition scripts from LEAF :cite:p:`caldas2018leaf`, and implementations of some FL algorithms, like FedAvg :cite:p:`mcmahan2017communication`. More benchmarks and FL algorithms demos are coming.
-
-How to use FedLab?
-==================
-
-- :ref:`installation`.
-- :ref:`tutorial`.
-
-
+**FedLab** also contains data partition settings :cite:p:`caldas2018leaf`, and implementations of FL algorithms :cite:p:`mcmahan2017communication`. For more information please see our `FedLab-benchmarks repo <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.  More benchmarks and FL algorithms demos are coming.

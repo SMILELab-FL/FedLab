@@ -14,6 +14,7 @@
 
 import torch
 
+import os
 import json
 import pynvml
 import numpy as np
@@ -107,10 +108,20 @@ def read_config_from_json(json_file: str, user_name: str):
 
 def get_best_gpu():
     """Return gpu (:class:`torch.device`) with largest free memory."""
+    assert torch.cuda.is_available()
     pynvml.nvmlInit()
     deviceCount = pynvml.nvmlDeviceGetCount()
+
+    if "CUDA_VISIBLE_DEVICES" in os.environ.keys() is not None:
+        cuda_devices = [
+            int(device) for device in os.environ["CUDA_VISIBLE_DEVICES"].split(',')
+        ]
+    else:
+        cuda_devices = range(deviceCount)
+    
+    assert max(cuda_devices) < deviceCount
     deviceMemory = []
-    for i in range(deviceCount):
+    for i in cuda_devices:
         handle = pynvml.nvmlDeviceGetHandleByIndex(i)
         mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         deviceMemory.append(mem_info.free)
@@ -129,7 +140,11 @@ def load_dict(path):
         return pickle.load(f)
 
 
-def partition_report(targets, data_indices, class_num=None, verbose=True, file=None):
+def partition_report(targets,
+                     data_indices,
+                     class_num=None,
+                     verbose=True,
+                     file=None):
     """Generate data partition report for clients in ``data_indices``.
 
     Generate data partition report for each client according to ``data_indices``, including
@@ -186,10 +201,12 @@ def partition_report(targets, data_indices, class_num=None, verbose=True, file=N
     if not class_num:
         class_num = max(targets) + 1
 
-    sorted_cid = sorted(data_indices.keys())  # sort client id in ascending order
+    sorted_cid = sorted(
+        data_indices.keys())  # sort client id in ascending order
 
     header_line = "Class frequencies:"
-    col_name = "client," + ','.join([f"class{i}" for i in range(class_num)]) + ",Amount"
+    col_name = "client," + ','.join([f"class{i}"
+                                     for i in range(class_num)]) + ",Amount"
 
     if verbose:
         print(header_line)
@@ -202,8 +219,10 @@ def partition_report(targets, data_indices, class_num=None, verbose=True, file=N
     for client_id in sorted_cid:
         indices = data_indices[client_id]
         client_targets = targets[indices]
-        client_sample_num = len(indices)  # total number of samples of current client
-        client_target_cnt = Counter(client_targets)  # { cls1: num1, cls2: num2, ... }
+        client_sample_num = len(
+            indices)  # total number of samples of current client
+        client_target_cnt = Counter(
+            client_targets)  # { cls1: num1, cls2: num2, ... }
 
         report_line = f"Client {client_id:3d}," + \
                       ','.join([
@@ -220,8 +239,7 @@ def partition_report(targets, data_indices, class_num=None, verbose=True, file=N
         fh.write("\n".join(reports))
         fh.close()
 
-
-def accuracy(output, target, topk=(1,)):
+def accuracy(output, target, topk=(1, )):
     """Computes the top-k accuracy for the specified values of k, in range of [0, 1]"""
     maxk = max(topk)
     batch_size = target.size(0)

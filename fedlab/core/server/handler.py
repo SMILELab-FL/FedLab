@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from abc import abstractproperty
 import random
 import torch
 
 from ..model_maintainer import ModelMaintainer
-from ...utils.serialization import SerializationTool
-from ...utils.aggregator import Aggregators
-from ...utils import Logger
+from ...utils import Logger, Aggregators, SerializationTool
 
 
 class ParameterServerBackendHandler(ModelMaintainer):
@@ -33,12 +32,18 @@ class ParameterServerBackendHandler(ModelMaintainer):
     def __init__(self, model, cuda=False):
         super().__init__(model, cuda)
 
-    def _update_model(self, model_parameters_list):
-        """Override this function for global model aggregation strategy.
+    @abstractproperty
+    def downlink_package(self) -> list[torch.Tensor]:
+        """Property for manager layer. Server manager will call this property when activates clients."""
+        raise NotImplementedError()
 
-        Args:
-            model_parameters_list (list[torch.Tensor]): A list of serialized model parameters collected from different clients.
-        """
+    @abstractproperty
+    def if_stop(self) -> bool:
+        """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
+        return False
+
+    def _update_global_model(self, payload):
+        """Override this function for iterating global model (aggregation or optimization)."""
         raise NotImplementedError()
 
 
@@ -62,16 +67,15 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
     def __init__(self,
                  model,
-                 global_round=5,
+                 global_round,
+                 sample_ratio,
                  cuda=False,
-                 sample_ratio=1.0,
-                 logger=Logger()):
+                 logger=None):
         super(SyncParameterServerHandler, self).__init__(model, cuda)
 
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
-        if sample_ratio < 0.0 or sample_ratio > 1.0:
-            raise ValueError("Invalid select ratio: {}".format(sample_ratio))
+        assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
         self.client_num_in_total = 0
@@ -79,15 +83,24 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
         # client buffer
         self.client_buffer_cache = []
-        self.cache_cnt = 0
 
         # stop condition
         self.global_round = global_round
         self.round = 0
 
-    def stop_condition(self) -> bool:
-        """:class:`NetworkManager` keeps monitoring the return of this method, and it will stop all related processes and threads when ``True`` returned."""
+    @property
+    def downlink_package(self):
+        """Property for manager layer. Server manager will call this property when activates clients."""
+        return [self.model_parameters]
+
+    @property
+    def if_stop(self):
+        """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return self.round >= self.global_round
+
+    @property
+    def client_num_per_round(self):
+        return max(1, int(self.sample_ratio * self.client_num_in_total))
 
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
@@ -96,29 +109,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                                   self.client_num_per_round)
         return selection
 
-    def add_model(self, sender_rank, model_parameters):
-        """Deal with incoming model parameters from one client.
-
-        Note:
-            Return True when self._update_model is called.
-
-        Args:
-            sender_rank (int): Rank of sender client in ``torch.distributed`` group.
-            model_parameters (torch.Tensor): Serialized model parameters from one client.
-        """
-
-        self.client_buffer_cache.append(model_parameters.clone())
-        self.cache_cnt += 1
-
-        # cache is full
-        if self.cache_cnt == self.client_num_per_round:
-            self._update_model(self.client_buffer_cache)
-            self.round += 1
-            return True
-        else:
-            return False
-
-    def _update_model(self, model_parameters_list):
+    def _update_global_model(self, payload):
         """Update global model with collected parameters from clients.
 
         Note:
@@ -128,24 +119,31 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             aggregation into :attr:`self._model`.
 
         Args:
-            model_parameters_list (list[torch.Tensor]): A list of parameters.aq
+            payload (list[torch.Tensor]): A list of tensors passed by manager layer.
         """
-        self._LOGGER.info(
-            "Model parameters aggregation, number of aggregation elements {}".
-                format(len(model_parameters_list)))
-        # use aggregator
-        serialized_parameters = Aggregators.fedavg_aggregate(
-            model_parameters_list)
-        SerializationTool.deserialize_model(self._model, serialized_parameters)
+        assert len(payload) > 0
 
-        # reset cache cnt
-        self.cache_cnt = 0
-        self.client_buffer_cache = []
-        self.train_flag = False
+        if len(payload) == 1:
+            self.client_buffer_cache.append(payload[0].clone())
+        else:
+            self.client_buffer_cache += payload  # serial trainer
 
-    @property
-    def client_num_per_round(self):
-        return max(1, int(self.sample_ratio * self.client_num_in_total))
+        assert len(self.client_buffer_cache) <= self.client_num_per_round
+        
+        if len(self.client_buffer_cache) == self.client_num_per_round:
+            model_parameters_list = self.client_buffer_cache
+            # use aggregator
+            serialized_parameters = Aggregators.fedavg_aggregate(
+                model_parameters_list)
+            SerializationTool.deserialize_model(self._model, serialized_parameters)
+            self.round += 1
+
+            # reset cache cnt
+            self.client_buffer_cache = []
+
+            return True  # return True to end this round.
+        else:
+            return False
 
 
 class AsyncParameterServerHandler(ParameterServerBackendHandler):
@@ -156,55 +154,55 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
 
     Args:
         model (torch.nn.Module): Global model in server
-        alpha (float): weight used in async aggregation.
-        total_time (int): stop condition. Shut down FL system when total_time is reached.
-        strategy (str): adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
+        alpha (float): Weight used in async aggregation.
+        total_time (int): Stop condition. Shut down FL system when total_time is reached.
+        strategy (str): Adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
-        logger (Logger, optional): object of :class:`Logger`.
+        logger (Logger, optional): Object of :class:`Logger`.
     """
-
     def __init__(self,
                  model,
-                 alpha=0.5,
-                 total_time=5,
+                 alpha,
+                 total_time,
                  strategy="constant",
                  cuda=False,
-                 logger=Logger()):
+                 logger=None):
         super(AsyncParameterServerHandler, self).__init__(model, cuda)
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
         self.client_num_in_total = 0
 
-        self.current_time = 1
+        self.time = 1
         self.total_time = total_time
 
         # async aggregation params
         self.alpha = alpha
         self.strategy = strategy  # "constant", "hinge", "polynomial"
-        self.a = None
-        self.b = None
+        self.a = 10
+        self.b = 4
 
     @property
-    def server_time(self):
-        return self.current_time
+    def if_stop(self):
+        """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
+        return self.time >= self.total_time
 
-    def stop_condition(self) -> bool:
-        """:class:`NetworkManager` keeps monitoring the return of this method,
-        and it will stop all related processes and threads when ``True`` returned."""
-        return self.current_time >= self.total_time
+    @property
+    def downlink_package(self):
+        return [self.model_parameters, torch.Tensor([self.time])]
 
-    def _update_model(self, client_model_parameters, model_time):
+    def _update_global_model(self, payload):
+        client_model_parameters, model_time = payload[0], payload[1].item()
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
-        self.current_time += 1
+        self.time += 1
 
     def _adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
-        staleness = self.current_time - receive_model_time
+        staleness = self.time - receive_model_time
         if self.strategy == "constant":
             return torch.mul(self.alpha, 1)
         elif self.strategy == "hinge" and self.b is not None and self.a is not None:
@@ -214,6 +212,6 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
                 return torch.mul(self.alpha,
                                  1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return torch.mul(self.alpha, (staleness + 1) ** (-self.a))
+            return torch.mul(self.alpha, (staleness + 1)**(-self.a))
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))

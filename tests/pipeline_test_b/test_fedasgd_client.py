@@ -20,10 +20,10 @@ from torch.utils.data import dataloader
 sys.path.append("../")
 from copy import deepcopy
 
-from fedlab.core.client.trainer import ClientSGDTrainer
-from fedlab.core.client.manager import ClientActiveManager
+from fedlab.core.client.trainer import SGDClientTrainer
+from fedlab.core.client.manager import ActiveClientManager
 from fedlab.core.server.handler import AsyncParameterServerHandler
-from fedlab.core.server.manager import ServerAsynchronousManager
+from fedlab.core.server.manager import AsynchronousServerManager
 from fedlab.core.network import DistNetwork
 
 from tests.test_core.task_setting_for_test import (
@@ -42,7 +42,7 @@ class FedAsgdClientTestCase(unittest.TestCase):
         world_size = 2
 
         handler = AsyncParameterServerHandler(deepcopy(model))
-        self.server = ServerAsynchronousManager(
+        self.server = AsynchronousServerManager(
             handler=handler,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,
@@ -52,7 +52,7 @@ class FedAsgdClientTestCase(unittest.TestCase):
         self.server.start()
 
         dataloader = unittest_dataloader()
-        trainer = ClientSGDTrainer(
+        trainer = SGDClientTrainer(
             deepcopy(model),
             dataloader,
             epochs=1,
@@ -61,7 +61,7 @@ class FedAsgdClientTestCase(unittest.TestCase):
             cuda=False,
         )
 
-        self.client = ClientActiveManager(
+        self.client = ActiveClientManager(
             trainer=trainer,
             network=DistNetwork(address=(ip, port),
                                 world_size=world_size,

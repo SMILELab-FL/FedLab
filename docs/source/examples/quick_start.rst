@@ -4,11 +4,9 @@
 Quick Start
 ***********
 
-In this page, we introduce how to build a FL simulation system with FedLab in cross machine or
-cross process scenario. We implement FedAvg algorithm with CNN and partitioned MNIST dataset across
-clients.
+In this page, we introduce the provided quick start demos. And the start scripts for FL simulation system with FedLab in different scenario. We implement FedAvg algorithm with MLP network and partitioned MNIST dataset across clients.
 
-Source code of this page can be seen in `fedlab-benchmarks/fedavg/cross_machine <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.
+Source code  can be seen in `fedlab/examples/ <https://github.com/SMILELab-FL/FedLab/tree/master/examples>`_.
 
 
 Download dataset
@@ -17,7 +15,7 @@ Download dataset
 FedLab provides scripts for common dataset download and partition process. Besides, FL dataset baseline
 LEAF :cite:p:`caldas2018leaf` is also implemented and compatible with PyTorch interfaces.
 
-Codes related to dataset download process are available at ``fedlab_benchamrks/datasets/data/{dataset name}``.
+Codes related to dataset download process are available at ``fedlab_benchamrks/datasets/{dataset name}``.
 
 1. Download MNIST/CIFAR10
 
@@ -70,55 +68,65 @@ Run FedLab demos
 1. Standalone
 -------------
 
-Main process is under
-`fedlab_benchamrks/algorithm/fedavg/standalone <https://github.com/SMILELab-FL/FedLab/tree/v1.0/fedlab_benchmarks/algorithm/fedavg/standalone>`_.
+Source code is under
+`fedlab/examples/standalone-mnist <https://github.com/SMILELab-FL/FedLab/tree/master/examples/standalone-mnist>`_.
 This is a standard usage of :class:`SerialTrainer` which allows users to simulate a group of
 clients with a single process.
 
 .. code-block:: shell-session
 
-    $ python standalone.py --total_client 100 --com_round 10 --sample_ratio 0.1 --batch_size 10 --epochs 5 --lr 0.02 --partition iid
+    $ python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
 
-Run command above to start a single process simulating FedAvg algorithm with 100 clients with 10 communication round in total, with 10 clients joining each round randomly.
+or
+
+.. code-block:: shell-session
+
+    $ bash launch_eg.sh
+
+Run command above to start a single process simulating FedAvg algorithm with 100 clients with 10 communication round in total, with 10 clients sampled randomly at each round .
 
 
-
-2. Cross-Machine
+2. Cross-process
 -----------------
+
+Source code is under `fedlab/examples/cross-process-mnist <https://github.com/SMILELab-FL/FedLab/tree/master/examples/cross-process-mnist>`_ 
 
 Start a FL simulation with 1 server and 2 clients.
 
 .. code-block:: shell-session
 
-    $ cd fedlab_benchamrks/algorithm/fedavg/cross_machine
-    $ bash quick_start.sh
+    $ bash launch_eg.sh
 
-The content of ``quick_start.sh`` is:
+The content of ``launch_eg.sh`` is:
 
 .. code-block:: shell-session
 
-    python server.py --ip 127.0.0.1 --port 3002 --world_size 3 --dataset mnist --round 3 &
-    python client.py --ip 127.0.0.1 --port 3002 --world_size 3 --rank 1 --dataset mnist &
-    python client.py --ip 127.0.0.1 --port 3002 --world_size 3 --rank 2 --dataset mnist &
+    python server.py --ip 127.0.0.1 --port 3001 --world_size 3 --round 3 &
 
-Cross Machine scenario allows users deploy their FL system in computer cluster. In this case, we
+    python client.py --ip 127.0.0.1 --port 3001 --world_size 3 --rank 1 &
+
+    python client.py --ip 127.0.0.1 --port 3001 --world_size 3 --rank 2  &
+
+    wait
+
+Cross-process scenario allows users deploy their FL system in computer cluster. Although in this case, we
 set the address of server as localhost. Then three process will communicate with each other
 following standard FL procedure.
 
 .. note::
 
-    Due to the rank of torch.distributed is unique for every process. Therefore, we use rank represent client id for this scenario.
+    Due to the rank of torch.distributed is unique for every process. Therefore, we use rank represent client id in this scenario.
 
 
-3. Scale
-----------
+3. Cross-process with SerialTrainer
+------------------------------------
 
-:class:`SerialTrainer` uses less computer resources (single process) to simulate multiple clients. Cross Machine is suit for computer cluster deployment, simulating data-center FL system. In our experiment, the world size of ``torch.distributed`` can't more than 50 (Denpends on clusters), otherwise, the socket will crash, which limited the client number of FL simulation.
+:class:`SerialTrainer` uses less computer resources (single process) to simulate multiple clients. Cross-pross is suit for computer cluster deployment, simulating data-center FL system. In our experiment, the world size of ``torch.distributed`` can't more than 50 (Denpends on clusters), otherwise, the socket will crash, which limited the client number of FL simulation.
 
 To improve scalability, FedLab provides scale standard implementation to combine
 :class:`SerialTrainer` and :class:`ClientManager`, which allows a single process simulate multiple clients.
 
-Source codes are available in fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name}.
+Source codes are available in `fedlab_benchamrks/algorithm/fedavg/scale/{experiment setting name} <https://github.com/SMILELab-FL/FedLab-benchmarks/tree/master/fedlab_benchmarks/fedavg/scale>`_.
 
 Here, we take mnist-cnn as example to introduce this demo. In this demo, we set world_size=11 (1 ServerManager, 10 ClientManagers), and each ClientManager represents 10 local client dataset partition. Our data partition strategy follows the experimental setting of fedavg as well. In this way, **we only use 11 processes to simulate a FL system with 100 clients.**
 
@@ -149,3 +157,30 @@ The content of ``start_clt.sh``:
     }
     done
     wait
+
+
+4. Hierachical
+------------------------------------
+
+**Hierarchical** mode for **FedLab** is designed for situation tasks on multiple computer clusters (in different LAN) or the real-world scenes. To enable the inter-connection for different computer clusters, **FedLab** develops ``Scheduler`` as middle-server process to connect client groups. Each ``Scheduler`` manages the communication between the global server and clients in a client group. And server can communicate with clients in different LAN via corresponding ``Scheduler``. The computation mode of a client group for each scheduler can be either **standalone** or **cross-process**.
+
+The demo of Hierachical with hybrid client (standalone and serial trainer) is given in `fedlab/examples/hierarchical-hybrid-mnist <https://github.com/SMILELab-FL/FedLab/tree/master/examples/hierarchical-hybrid-mnist>`_.
+
+Run all scripts together:
+
+.. code-block:: shell-session
+
+    $ bash launch_eg.sh
+
+Run scripts seperately:
+
+.. code-block:: shell-session
+
+    # Top server in terminal 1
+    $ bash launch_topserver_eg.sh
+
+    # Scheduler1 + Ordinary trainer with 1 client + Serial trainer with 10 clients in terminal 2:
+    bash launch_cgroup1_eg.sh
+
+    # Scheduler2 + Ordinary trainer with 1 client + Serial trainer with 10 clients in terminal 3:
+    $ bash launch_cgroup2_eg.sh

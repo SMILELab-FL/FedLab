@@ -12,21 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tqdm import tqdm
+from abc import abstractclassmethod, abstractproperty
+import torch
+
 from ..client import ORDINARY_TRAINER
-from ...utils import Logger
-from ...utils.serialization import SerializationTool
 from ..model_maintainer import ModelMaintainer
+from ...utils import Logger, SerializationTool
 
 
 class ClientTrainer(ModelMaintainer):
     """An abstract class representing a client backend trainer.
 
     In our framework, we define the backend of client trainer show manage its local model.
-    It should have a function to update its model called :meth:`train`.
+    It should have a function to update its model called :meth:`local_process`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
-    should subclass it. All subclasses should overwrite :meth:`train`.
+    should subclass it. All subclasses should overwrite :meth:`local_process`.
 
     Args:
         model (torch.nn.Module): PyTorch model.
@@ -38,6 +39,23 @@ class ClientTrainer(ModelMaintainer):
         self.client_num = 1  # default is 1.
         self.type = ORDINARY_TRAINER
 
+    @abstractproperty
+    def uplink_package(self) -> list[torch.Tensor]:
+        """Return a tensor list for uploading to server.
+
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        raise NotImplementedError()
+
+    @abstractclassmethod
+    def local_process(self, payload) -> bool:
+        """Manager of the upper layer will call this function with accepted payload
+        
+            In synchronous mode, return True to end current FL round.
+        """
+        raise NotImplementedError()
+
     def train(self):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
@@ -47,7 +65,7 @@ class ClientTrainer(ModelMaintainer):
         raise NotImplementedError()
 
 
-class ClientSGDTrainer(ClientTrainer):
+class SGDClientTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
@@ -56,7 +74,7 @@ class ClientSGDTrainer(ClientTrainer):
         epochs (int): the number of local epoch.
         optimizer (torch.optim.Optimizer, optional): optimizer for this client's model.
         criterion (torch.nn.Loss, optional): loss function used in local training process.
-        cuda (bool, optional): use GPUs or not. Default: ``True``.
+        cuda (bool, optional): use GPUs or not. Default: ``False``.
         logger (Logger, optional): :object of :class:`Logger`.
     """
 
@@ -66,15 +84,30 @@ class ClientSGDTrainer(ClientTrainer):
                  epochs,
                  optimizer,
                  criterion,
-                 cuda=True,
-                 logger=Logger()):
-        super(ClientSGDTrainer, self).__init__(model, cuda)
+                 cuda=False,
+                 logger=None):
+        super(SGDClientTrainer, self).__init__(model, cuda)
 
         self._data_loader = data_loader
         self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
+
+        self.model_time = 0
+
+    @property
+    def uplink_package(self):
+        """Return a tensor list for uploading to server.
+
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        return [self.model_parameters]
+
+    def local_process(self, payload):
+        model_parameters = payload[0]
+        self.train(model_parameters)
 
     def train(self, model_parameters) -> None:
         """Client trains its local model on local dataset.
@@ -87,8 +120,7 @@ class ClientSGDTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is running")
         for ep in range(self.epochs):
             self._model.train()
-            for inputs, labels in tqdm(self._data_loader,
-                                       desc="{}, Epoch {}".format(self._LOGGER.name, ep)):
+            for inputs, labels in self._data_loader:
                 if self.cuda:
                     inputs, labels = inputs.cuda(self.gpu), labels.cuda(
                         self.gpu)
@@ -100,4 +132,3 @@ class ClientSGDTrainer(ClientTrainer):
                 loss.backward()
                 self.optimizer.step()
         self._LOGGER.info("Local train procedure is finished")
-        return self.model_parameters
