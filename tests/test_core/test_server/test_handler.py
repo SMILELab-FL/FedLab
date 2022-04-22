@@ -44,7 +44,7 @@ class HandlerTestCase(unittest.TestCase):
         coming_parameters = SerializationTool.serialize_model(coming_model)
 
         self.AsyncHandler._update_global_model(payload=[coming_parameters,
-                                        random.randint(1, 10)])
+                                        torch.Tensor([random.randint(1, 10)])])
 
         parameter_list = []
         for id in range(self.SyncHandler.client_num_per_round):
