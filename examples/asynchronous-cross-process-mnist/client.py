@@ -32,7 +32,7 @@ class MLP(nn.Module):
         return x
 
 
-class AsyncTrainer(SGDClientTrainer):
+class AsyncClientTrainer(SGDClientTrainer):
 
     def __init__(self,
                  model,
@@ -89,12 +89,12 @@ if __name__ == "__main__":
     model = MLP()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
-    handler = AsyncTrainer(model,
-                           trainloader,
-                           epochs=args.epoch,
-                           optimizer=optimizer,
-                           criterion=criterion,
-                           cuda=args.cuda)
+    handler = AsyncClientTrainer(model,
+                                 trainloader,
+                                 epochs=args.epoch,
+                                 optimizer=optimizer,
+                                 criterion=criterion,
+                                 cuda=args.cuda)
 
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,
