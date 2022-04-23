@@ -43,7 +43,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
         return False
 
     def _update_global_model(self, payload):
-        """Override this function for iterating global model (aggregation or optimization)."""
+        """Override this function to define how to update global model (aggregation or optimization)."""
         raise NotImplementedError()
 
 
@@ -60,8 +60,8 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
     Args:
         model (torch.nn.Module): Model used in this federation.
         global_round (int): stop condition. Shut down FL system when global round is reached.
-        cuda (bool): Use GPUs or not. Default: ``False``
-        sample_ratio (float): ``sample_ratio * client_num`` is the number of clients to join in every FL round. Default: ``1.0``.
+        sample_ratio (float): The result of ``sample_ratio * client_num`` is the number of clients for every FL round.
+        cuda (bool): Use GPUs or not. Default: ``False``.
         logger (Logger, optional): object of :class:`Logger`.
     """
 

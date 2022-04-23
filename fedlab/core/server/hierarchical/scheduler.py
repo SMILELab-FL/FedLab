@@ -22,9 +22,9 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 class Scheduler():
-    """Middle Topology for hierarchical communication pattern
+    """Middle Topology for hierarchical communication pattern.
     
-    Scheduler uses message queues to decouple connector modules
+    Scheduler uses message queues to decouple connector modules.
 
     Args:
         net_upper (DistNetwork): Distributed network manager of server from upper level.

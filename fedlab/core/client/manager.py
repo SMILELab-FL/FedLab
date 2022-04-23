@@ -22,7 +22,7 @@ from ...utils import Logger, MessageCode
 class ClientManager(NetworkManager):
     """Base class for ClientManager.
 
-    :class:`ClientManager` defines client activation for different communication stages.
+    :class:`ClientManager` defines client activation in different communication stages.
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
@@ -119,9 +119,9 @@ class ActiveClientManager(ClientManager):
     def main_loop(self):
         """Actions to perform on receiving new message, including local training
 
-            1. client requests data from server (ACTIVE)
-            2. after receiving data, client will train local model
-            3. client will synchronize with server actively
+            1. client requests data from server (ACTIVELY).
+            2. after receiving data, client will train local model.
+            3. client will synchronize with server actively.
         """
         while True:
             # request model actively
