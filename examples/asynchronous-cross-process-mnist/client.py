@@ -55,50 +55,51 @@ class AsyncClientTrainer(SGDClientTrainer):
         return [self.model_parameters, torch.Tensor([self.time])]
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Distbelief training example')
-    parser.add_argument('--ip', type=str, default='127.0.0.1')
-    parser.add_argument('--port', type=str, default='3002')
-    parser.add_argument('--world_size', type=int)
-    parser.add_argument('--rank', type=int)
+parser = argparse.ArgumentParser(description='Distbelief training example')
+parser.add_argument('--ip', type=str, default='127.0.0.1')
+parser.add_argument('--port', type=str, default='3002')
+parser.add_argument('--world_size', type=int)
+parser.add_argument('--rank', type=int)
 
-    parser.add_argument("--epoch", type=int, default=2)
-    parser.add_argument("--lr", type=float, default=0.1)
-    parser.add_argument("--batch_size", type=int, default=100)
-    parser.add_argument("--cuda", type=bool, default=True)
-    args = parser.parse_args()
-    args.root = '../../datasets/mnist/'
+parser.add_argument("--epoch", type=int, default=2)
+parser.add_argument("--lr", type=float, default=0.1)
+parser.add_argument("--batch_size", type=int, default=100)
+args = parser.parse_args()
+
+if torch.cuda.is_available():
     args.cuda = True
+else:
+    args.cuda = False
 
-    # get mnist dataset
-    root = "../../tests/data/mnist/"
-    trainset = torchvision.datasets.MNIST(root=root,
-                                          train=True,
-                                          download=True,
-                                          transform=transforms.ToTensor())
+# get mnist dataset
+root = "../../tests/data/mnist/"
+trainset = torchvision.datasets.MNIST(root=root,
+                                      train=True,
+                                      download=True,
+                                      transform=transforms.ToTensor())
 
-    trainloader = torch.utils.data.DataLoader(
-        trainset,
-        sampler=RawPartitionSampler(trainset,
-                                    client_id=args.rank,
-                                    num_replicas=args.world_size - 1),
-        batch_size=args.batch_size,
-        drop_last=True,
-        num_workers=args.world_size)
+trainloader = torch.utils.data.DataLoader(
+    trainset,
+    sampler=RawPartitionSampler(trainset,
+                                client_id=args.rank,
+                                num_replicas=args.world_size - 1),
+    batch_size=args.batch_size,
+    drop_last=True,
+    num_workers=args.world_size)
 
-    model = MLP()
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
-    criterion = nn.CrossEntropyLoss()
-    handler = AsyncClientTrainer(model,
-                                 trainloader,
-                                 epochs=args.epoch,
-                                 optimizer=optimizer,
-                                 criterion=criterion,
-                                 cuda=args.cuda)
+model = MLP()
+optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+criterion = nn.CrossEntropyLoss()
+handler = AsyncClientTrainer(model,
+                             trainloader,
+                             epochs=args.epoch,
+                             optimizer=optimizer,
+                             criterion=criterion,
+                             cuda=args.cuda)
 
-    network = DistNetwork(address=(args.ip, args.port),
-                          world_size=args.world_size,
-                          rank=args.rank)
+network = DistNetwork(address=(args.ip, args.port),
+                      world_size=args.world_size,
+                      rank=args.rank)
 
-    Manager = ActiveClientManager(trainer=handler, network=network)
-    Manager.run()
+Manager = ActiveClientManager(trainer=handler, network=network)
+Manager.run()

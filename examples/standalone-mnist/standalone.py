@@ -18,19 +18,6 @@ from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate
 from fedlab.utils.functional import get_best_gpu, load_dict
 
-# configuration
-parser = argparse.ArgumentParser(description="Standalone training example")
-parser.add_argument("--total_client", type=int, default=100)
-parser.add_argument("--com_round", type=int)
-
-parser.add_argument("--sample_ratio", type=float)
-parser.add_argument("--batch_size", type=int)
-parser.add_argument("--epochs", type=int)
-parser.add_argument("--lr", type=float, default=0.02)
-parser.add_argument("--cuda", type=bool, default=False)
-
-args = parser.parse_args()
-
 
 # torch model
 class MLP(nn.Module):
@@ -49,6 +36,23 @@ class MLP(nn.Module):
         x = self.fc3(x)
         return x
 
+
+# configuration
+parser = argparse.ArgumentParser(description="Standalone training example")
+parser.add_argument("--total_client", type=int, default=100)
+parser.add_argument("--com_round", type=int)
+
+parser.add_argument("--sample_ratio", type=float)
+parser.add_argument("--batch_size", type=int)
+parser.add_argument("--epochs", type=int)
+parser.add_argument("--lr", type=float, default=0.02)
+
+args = parser.parse_args()
+
+if torch.cuda.is_available():
+    args.cuda = True
+else:
+    args.cuda = False
 
 # get mnist dataset
 root = "../../tests/data/mnist/"

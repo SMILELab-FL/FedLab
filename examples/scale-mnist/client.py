@@ -44,9 +44,13 @@ parser.add_argument("--ethernet", type=str, default=None)
 parser.add_argument("--lr", type=float, default=0.01)
 parser.add_argument("--epoch", type=int, default=2)
 parser.add_argument("--batch_size", type=int, default=100)
-parser.add_argument("--cuda", type=bool, default=True)
 
 args = parser.parse_args()
+
+if torch.cuda.is_available():
+    args.cuda = True
+else:
+    args.cuda = False
 
 trainset = torchvision.datasets.MNIST(root='../../tests/data/mnist/',
                                       train=True,
@@ -78,13 +82,12 @@ network = DistNetwork(address=(args.ip, args.port),
 trainer = SubsetSerialTrainer(model=model,
                               dataset=trainset,
                               data_slices=sub_data_indices,
-                              cuda=torch.cuda.is_available(),
+                              cuda=args.cuda,
                               args={
                                   "batch_size": args.batch_size,
                                   "lr": args.lr,
                                   "epochs": args.epoch
                               })
 
-# manager_ = ScalePassiveClientManager(trainer=trainer, network=network)
 manager_ = PassiveClientManager(trainer=trainer, network=network)
 manager_.run()
