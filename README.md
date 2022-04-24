@@ -46,17 +46,20 @@ Thanks to our contributors, algorithms and benchmarks are provided in our [FedLa
 - [x] LEAF: [A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097)
 - [x] NIID-Bench: [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079)
 
-## Awesome paper lists
+## Dive into FL
 
-- [NeurIPS 2020] Federated Learning Tutorial [[Web]](https://sites.google.com/view/fl-tutorial/) [[Slides]](https://drive.google.com/file/d/1QGY2Zytp9XRSu95fX2lCld8DwfEdcHCG/view) [[Video]](https://slideslive.com/38935813/federated-learning-tutorial)
-- [chaoyanghe/Awesome-Federated-Learning](https://github.com/chaoyanghe/Awesome-Federated-Learning)
-- [weimingwill/awesome-federated-learning](https://github.com/weimingwill/awesome-federated-learning)
-- [tushar-semwal/awesome-federated-computing](https://github.com/tushar-semwal/awesome-federated-computing)
-- [ZeroWangZY/federated-learning](https://github.com/ZeroWangZY/federated-learning)
-- [innovation-cat/Awesome-Federated-Machine-Learning](https://github.com/innovation-cat/Awesome-Federated-Machine-Learning)
-- [huweibo/Awesome-Federated-Learning-on-Graph-and-GNN-papers](https://github.com/huweibo/Awesome-Federated-Learning-on-Graph-and-GNN-papers)
+We provide a repo for FL beginners and researchers to have better FL learning resource: [Dive-into-Federated-Learning](https://github.com/SMILELab-FL/Dive-into-Federated-Learning).
 
+__Main contents:__
 
+- Tutorials
+- Survey
+- Frameworks
+- Benchmarks
+- FL + Semi-supervised Learning
+- FL + HPC
+- Blogs
+- Awesome List
 
 ## Contribution
 
