@@ -13,6 +13,8 @@
 # limitations under the License.
 
 from abc import abstractclassmethod, abstractproperty
+from typing import List
+
 import torch
 
 from ..client import ORDINARY_TRAINER
@@ -40,7 +42,7 @@ class ClientTrainer(ModelMaintainer):
         self.type = ORDINARY_TRAINER
 
     @abstractproperty
-    def uplink_package(self) -> list[torch.Tensor]:
+    def uplink_package(self) -> List[torch.Tensor]:
         """Return a tensor list for uploading to server.
 
             This attribute will be called by client manager.

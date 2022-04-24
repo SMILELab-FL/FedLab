@@ -13,6 +13,8 @@
 # limitations under the License.
 
 from abc import abstractproperty
+from typing import List
+
 import random
 import torch
 
@@ -33,7 +35,7 @@ class ParameterServerBackendHandler(ModelMaintainer):
         super().__init__(model, cuda)
 
     @abstractproperty
-    def downlink_package(self) -> list[torch.Tensor]:
+    def downlink_package(self) -> List[torch.Tensor]:
         """Property for manager layer. Server manager will call this property when activates clients."""
         raise NotImplementedError()
 
