@@ -1,13 +1,13 @@
 .. _docker-deployment:
 
 ********************************************
-Deploy FedLab process in a docker container
+Deploy FedLab Process in a Docker Container
 ********************************************
 
-Why need docker?
+Why docker?
 ============================
 
-The communication APIs of FedLab is builded on `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_. In cross-process scene, when multi FedLab processes are deployed on the same machine, GPU memory buckets will be created automatically however which are not used in our framework. We can start the fedlab processes in different docker containers to avoid triggering GPU memory buckets (save GPU memory).
+The communication APIs of **FedLab** is built on `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_. In cross-process scene, when multiple **FedLab** processes are deployed on the same machine, GPU memory buckets will be created automatically however which are not used in our framework. We can start the **FedLab** processes in different docker containers to avoid triggering GPU memory buckets (to save GPU memory).
 
 Setup docker environment
 ==========================
