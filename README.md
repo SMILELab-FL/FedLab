@@ -22,11 +22,11 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
 
-## [Quick start with demos](./examples/README.md)
+## Quick start with demos
 
-New FedLab (v1.2.0) provides fully finished communication pattern. We futher simplified the APIs of NetworkManager part and re-organised the APIs of trainer. Currently, three basic scenes (Standalone, Cross-process and Hierachical) are supported by choosing different client trainer. Please see our [demos](./examples/README.md).
+New FedLab (v1.2.1) provides fully finished communication pattern. We futher simplified the APIs of NetworkManager part and re-organised the APIs of trainer. Currently, three basic scenes (Standalone, Cross-process and Hierachical) are supported by choosing different client trainer. Please see our [demos](./examples/README.md).
 
-## [FedLab Benchmarks](https://github.com/SMILELab-FL/FedLab-benchmarks)
+## FedLab Benchmarks
 
 Thanks to our contributors, algorithms and benchmarks are provided in our [FedLab-Benchmarks repo](https://github.com/SMILELab-FL/FedLab-benchmarks). More FedLab version of FL algorithms are coming.
 
