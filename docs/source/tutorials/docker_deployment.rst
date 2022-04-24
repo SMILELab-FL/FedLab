@@ -39,10 +39,11 @@ Dockerfile:
     RUN TMPDIR=/root/tmp/ pip install -i https://pypi.mirrors.ustc.edu.cn/simple/ fedlab
 
 
-Matters need to attention
-==========================
 
-The steps of modifying Dockerfile for different platform:
+Dockerfile for different platforms
+==================================
+
+The steps of modifying Dockerfile for different platforms:
 
 - **Step 1:** Find an appropriate base pytorch image for your platform from dockerhub https://hub.docker.com/r/pytorch/pytorch/tags. Then, replace the value of `TORCH_CONTAINER` in demo dockerfile.
 
