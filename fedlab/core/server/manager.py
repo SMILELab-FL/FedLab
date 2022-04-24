@@ -28,13 +28,13 @@ class ServerManager(NetworkManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        handler (ParameterServerBackendHandler): Performe global server aggregation procedure.
+        handler (ParameterServerBackendHandler): Performe global model update procedure.
     """
 
     def __init__(self, network, handler):
         super().__init__(network)
         self._handler = handler
-        self.coordinator = None
+        self.coordinator = None  # initialized in setup stage.
 
     def setup(self):
         """Initialization Stage.
@@ -112,7 +112,7 @@ class SynchronousServerManager(ServerManager):
         """Activate subset of clients to join in one FL round
 
         Manager will start a new thread to send activation package to chosen clients' process rank.
-        The ranks of clients are obtained from :meth:`handler.sample_clients`.
+        The id of clients are obtained from :meth:`handler.sample_clients`. And their communication ranks are are obtained via coordinator.
         """
         self._LOGGER.info("Client activation procedure")
         clients_this_round = self._handler.sample_clients()
@@ -156,7 +156,7 @@ class AsynchronousServerManager(ServerManager):
     """Asynchronous communication network manager for server
 
     This is the top class in our framework which is mainly responsible for network communication of SERVER!.
-    Asynchronously communicate with clients following agreements defined in :meth:`run`.
+    Asynchronously communicate with clients following agreements defined in :meth:`mail_loop`.
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
@@ -205,7 +205,7 @@ class AsynchronousServerManager(ServerManager):
         super().shutdown()
 
     def updater_thread(self):
-        """Asynchronous communication maintain a message queue. A new thread will be started to run this function."""
+        """Asynchronous communication maintain a message queue. A new thread will be started to keep monitoring message queue."""
         while self._handler.if_stop is not True:
             _, message_code, payload = self.message_queue.get()
             self._handler._update_global_model(payload)

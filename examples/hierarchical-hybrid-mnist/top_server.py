@@ -47,8 +47,7 @@ model = MLP()
 
 handler = SyncParameterServerHandler(model,
                                      global_round=args.round,
-                                     sample_ratio=args.sample,
-                                     cuda=True)
+                                     sample_ratio=args.sample)
 
 network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,

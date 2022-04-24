@@ -62,6 +62,7 @@ class ServerConnector(Connector):
         network (DistNetwork): Network configuration and interfaces.
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
+        logger (Logger, optional): object of :class:`Logger`.
     """
 
     def __init__(self, network, write_queue, read_queue, logger):

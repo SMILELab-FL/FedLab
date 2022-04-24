@@ -21,7 +21,7 @@ from ...utils.dataset.sampler import SubsetSampler
 
 
 class SerialTrainer(ClientTrainer):
-    """Base class. Train multiple clients in sequence with a single process.
+    """Base class. Simulate multiple clients in sequence in a single process.
 
     Args:
         model (torch.nn.Module): Model used in this federation.
@@ -59,7 +59,7 @@ class SerialTrainer(ClientTrainer):
 
         Args:
             id_list (list[int]): Client id in this training serial.
-            payload (list[torch.Tensor]): Serialized model parameters.
+            payload (list[torch.Tensor]): communication payload from server.
         """
         self.param_list = []
         model_parameters = payload[0]
@@ -87,7 +87,7 @@ class SubsetSerialTrainer(SerialTrainer):
         data_slices (list[list]): Subset of indices of dataset.
         logger (Logger, optional): Object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``False``.
-        args (dict, optional): Uncertain variables.
+        args (dict): Uncertain variables. Default: ``{"epochs": 5, "batch_size": 100, "lr": 0.1}``
 
     .. note::
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
@@ -99,7 +99,11 @@ class SubsetSerialTrainer(SerialTrainer):
                  data_slices,
                  logger=None,
                  cuda=False,
-                 args=None) -> None:
+                 args={
+                     "epochs": 5,
+                     "batch_size": 100,
+                     "lr": 0.1
+                 }) -> None:
 
         super(SubsetSerialTrainer, self).__init__(model=model,
                                                   client_num=len(data_slices),
