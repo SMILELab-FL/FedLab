@@ -12,16 +12,16 @@ The communication APIs of **FedLab** is built on `torch.distributed <https://pyt
 Setup docker environment
 ==========================
 
-In this section, we introduce how to setup a docker image for FedLab program. Here we provide the Dockerfile for buiding a FedLab image. Our FedLab environment is based on pytorch. Therefore, we just need install the FedLab on the provided pytorch image.
+In this section, we introduce how to setup a docker image for **FedLab** program. Here we provide the Dockerfile for building a FedLab image. Our FedLab environment is based on PytTorch. Therefore, we just need install **FedLab** on the provided PytTorch image.
 
 Dockerfile:
 
 .. code-block:: shell-session
 
-    # This is a example of fedlab installation via Dockerfile
+    # This is an example of fedlab installation via Dockerfile
 
     # replace the value of TORCH_CONTAINER with pytorch image that satisfies your cuda version
-    # you can finde it in https://hub.docker.com/r/pytorch/pytorch/tags
+    # you can find it in https://hub.docker.com/r/pytorch/pytorch/tags
     ARG TORCH_CONTAINER=1.5-cuda10.1-cudnn7-runtime
 
     FROM pytorch/pytorch:${TORCH_CONTAINER}
@@ -39,37 +39,29 @@ Dockerfile:
     RUN TMPDIR=/root/tmp/ pip install -i https://pypi.mirrors.ustc.edu.cn/simple/ fedlab
 
 
-Matters needing attention
+Matters need to attention
 ==========================
 
 The steps of modifying Dockerfile for different platform:
 
-- Step 1
+- **Step 1:** Find an appropriate base pytorch image for your platform from dockerhub https://hub.docker.com/r/pytorch/pytorch/tags. Then, replace the value of `TORCH_CONTAINER` in demo dockerfile.
 
-Find an appropriate base pytorch image for your platform from dockerhub https://hub.docker.com/r/pytorch/pytorch/tags. Then, replace the value of TORCH_CONTAINER in demo dockerfile.
+- **Step 2:** To install specific PyTorch version, you need to choose a correct install command, which can be find in https://pytorch.org/get-started/previous-versions/. Then, modify the 16-th command in demo dockerfile.
 
-- Step 2
+- **Step 3:** Build the images for your own platform by running the command below in the dir of Dockerfile.
 
-To install specific pytorch version, you need to choose a correct install command, which can be find in https://pytorch.org/get-started/previous-versions/. Then, modify the 16-th command in demo dockerfile.
+  .. code-block:: shell-session
 
-- Step 3
+      $ docker build -t image_name .
 
-Build the images for your own platform by running the command below in the dir of Dockerfile.
-
-.. code-block:: shell-session
-
-    $ docker build -t image_name .
-
-- Warning
+.. warning::
   
-Using "--gpus all" and "--network=host" when start a docker contrainer:
+    Using "--gpus all" and "--network=host" when start a docker container:
 
-.. code-block:: shell-session
+    .. code-block:: shell-session
 
-    $ docker run -itd --gpus all --network=host b23a9c46cd04(image name) /bin/bash
+        $ docker run -itd --gpus all --network=host b23a9c46cd04(image name) /bin/bash
 
-If you are not in China area, it is ok to remove line 11,12 and "-i https://pypi.mirrors.ustc.edu.cn/simple/" in line 19.
+    If you are not in China area, it is ok to remove line 11,12 and "-i https://pypi.mirrors.ustc.edu.cn/simple/" in line 19.
 
-- Finally
-
-Run your FedLab process in the different started containers.
+- **Finally:** Run your FedLab process in the different started containers.
