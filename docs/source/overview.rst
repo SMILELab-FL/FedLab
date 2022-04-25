@@ -1,10 +1,10 @@
-******************
+
 Overview of FedLab
-******************
+==================
 
 
 Introduction
-============
+------------
 
 Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning research area of machine learning, which aims to protect individual data privacy in distributed machine learning process, especially in finance, smart healthcare and edge computing. Different from traditional data-centered distributed machine learning, participants in FL setting utilize localized data to train local model, then leverages specific strategies with other participants to acquire the final model collaboratively, avoiding direct data sharing behavior.
 
@@ -16,7 +16,7 @@ For more details, please read our `full paper`__.
 
 
 Overview
-========
+--------
 
 .. image:: ../imgs/fedlab-overview.pdf
    :align: center
@@ -30,7 +30,7 @@ Overview
 
 
 Server
-------
+^^^^^^
 
 The connection between ``NetworkManager`` and ``ParameterServerHandler`` in ``Server`` is shown as below. ``NetworkManager`` processes message and calls ``ParameterServerHandler.on_receive()`` method, while ``ParameterServerHandler`` performs training as well as computation process of server (model aggregation for example), and updates the global model.
 
@@ -39,7 +39,7 @@ The connection between ``NetworkManager`` and ``ParameterServerHandler`` in ``Se
 
 
 Client
-------
+^^^^^^
 
 ``Client`` shares similar design and structure with ``Server``, with ``NetworkManager`` in charge of message processing as well as network communication with server, and `Trainer` for client local training procedure.
 
@@ -48,7 +48,7 @@ Client
 
 
 Communication
--------------
+^^^^^^^^^^^^^
 
 **FedLab** furnishes both synchronous and asynchronous communication patterns, and their corresponding communication logics of ``NetworkManager`` is shown as below.
 
@@ -67,12 +67,12 @@ Communication
 
 
 Experimental Scene
-==================
+------------------
 
 **FedLab** supports both single machine and  multi-machine FL simulations, with **standalone** mode for single machine experiments, while cross-machine mode and **hierarchical** mode for multi-machine experiments.
 
 Standalone
------------
+^^^^^^^^^^
 
 **FedLab** implements ``SerialTrainer`` for FL simulation in single system process. ``SerialTrainer`` allows user to simulate a FL system with multiple clients executing one by one in serial in one ``SerialTrainer``. It is designed for simulation in environment with limited computation resources.
 
@@ -81,7 +81,7 @@ Standalone
 
 
 Cross-process
--------------
+^^^^^^^^^^^^^
 
 **FedLab** enables FL simulation tasks to be deployed on multiple processes with correct network configuration (these processes can be run on single or multiple machines). More flexibly in parallel, ``SerialTrainer`` can replace the regular ``Trainer`` directly. Users can balance the calculation burden among processes by choosing different ``Trainer``. In practice, machines with more computation resources can be assigned with more workload of calculation.
 
@@ -94,7 +94,7 @@ Cross-process
 
 
 Hierarchical
-------------
+^^^^^^^^^^^^^
 
 **Hierarchical** mode for **FedLab** is designed for situation tasks on multiple computer clusters (in different LAN) or the real-world scenes. To enable the inter-connection for different computer clusters, **FedLab** develops ``Scheduler`` as middle-server process to connect client groups. Each ``Scheduler`` manages the communication between the global server and clients in a client group. And server can communicate with clients in different LAN via corresponding ``Scheduler``. The computation mode of a client group for each scheduler can be either **standalone** or **cross-process**.
 
@@ -105,6 +105,6 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
 
 
 Benchmarks
-==========
+----------
 
 **FedLab** also contains data partition settings :cite:p:`caldas2018leaf`, and implementations of FL algorithms :cite:p:`mcmahan2017communication`. For more information please see our `FedLab-benchmarks repo <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.  More benchmarks and FL algorithms demos are coming.
