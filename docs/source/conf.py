@@ -123,3 +123,6 @@ html_theme_options = {
 # -- Options for Latex/PDF output ---------------------------------------------
 # latex_documents = [('index', 'doc.tex', project, author, 'manual')]
 
+latex_elements = {
+  'extraclassoptions': 'openany,oneside'
+}
