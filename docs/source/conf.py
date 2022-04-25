@@ -45,7 +45,8 @@ extensions = [
     'sphinx.ext.autosectionlabel',  # allows referring sections its title, affects `ref`
     'sphinx_design',
     'sphinxcontrib.bibtex',
-    'sphinx.ext.imgconverter',  # for svg image to pdf
+    # 'sphinx.ext.imgconverter',  # for svg image to pdf
+    # 'sphinxcontrib.inkscapeconverter',
 ]
 
 # for 'sphinxcontrib.bibtex' extension
@@ -88,7 +89,7 @@ todo_include_todos = True
 
 # multi-language docs
 language = 'en'
-locale_dirs = ['../locales/']   # path is example but recommended.
+locale_dirs = ['../locales/']  # path is example but recommended.
 gettext_compact = False  # optional.
 gettext_uuid = True  # optional.
 
@@ -114,6 +115,11 @@ html_theme_options = {
     # """,
     "sidebar_hide_name": True,
     "light_logo": "FedLab-logo.svg",
-    "dark_logo": "FedLab-logo.svg",
+    "dark_logo": "FedLab-logo-dark.svg",
 }
 # html_logo = "FedLab-logo.svg"
+
+
+# -- Options for Latex/PDF output ---------------------------------------------
+# latex_documents = [('index', 'doc.tex', project, author, 'manual')]
+
