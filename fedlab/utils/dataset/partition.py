@@ -21,6 +21,10 @@ from . import functional as F
 
 class DataPartitioner(ABC):
     """Base class for data partition in federated learning.
+
+    Examples of :class:`DataPartitioner`: :class:`BasicPartitioner`, :class:`CIFAR10Partitioner`.
+
+    Details and tutorials of different data partition and datasets, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
     """
 
     @abstractmethod
@@ -85,6 +89,9 @@ class CIFAR10Partitioner(DataPartitioner):
         dir_alpha (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="dirichlet"``. Default as ``None``.
         verbose (bool, optional): Whether to print partition process. Default as ``True``.
         seed (int, optional): Random seed. Default as ``None``.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
     """
 
     num_classes = 10
@@ -182,20 +189,27 @@ class CIFAR100Partitioner(CIFAR10Partitioner):
 
 
 class BasicPartitioner(DataPartitioner):
-    """
+    """Basic data partitioner.
+
+    Basic data partitioner, supported partition:
     - label-distribution-skew:quantity-based
     - label-distribution-skew:distributed-based (Dirichlet)
     - quantity-skew (Dirichlet)
     - IID
 
+    For more details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
     Args:
-        targets:
-        num_clients:
-        partition:
-        dir_alpha:
-        major_classes_num:
-        verbose:
-        seed:
+        targets (list or numpy.ndarray): Sample targets. Unshuffled preferred.
+        num_clients (int): Number of clients for partition.
+        partition (str): Partition name. Only supports ``"noniid-#label"``, ``"noniid-labeldir"``, ``"unbalance"`` and ``"iid"`` partition schemes.
+        dir_alpha (float): Parameter alpha for Dirichlet distribution. Only works if ``partition="noniid-labeldir"``.
+        major_classes_num (int): Number of major class for each clients. Only works if ``partition="noniid-#label"``.
+        verbose (bool): Whether output intermediate information. Default as ``True``.
+        seed (int): Random seed. Default as ``None``.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
     """
     num_classes = 2
 
@@ -274,6 +288,29 @@ class BasicPartitioner(DataPartitioner):
 
 
 class VisionPartitioner(BasicPartitioner):
+    """Data partitioner for vision data.
+
+    Supported partition for vision data:
+    - label-distribution-skew:quantity-based
+    - label-distribution-skew:distributed-based (Dirichlet)
+    - quantity-skew (Dirichlet)
+    - IID
+
+    For more details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+
+    Args:
+        targets (list or numpy.ndarray): Sample targets. Unshuffled preferred.
+        num_clients (int): Number of clients for partition.
+        partition (str): Partition name. Only supports ``"noniid-#label"``, ``"noniid-labeldir"``, ``"unbalance"`` and ``"iid"`` partition schemes.
+        dir_alpha (float): Parameter alpha for Dirichlet distribution. Only works if ``partition="noniid-labeldir"``.
+        major_classes_num (int): Number of major class for each clients. Only works if ``partition="noniid-#label"``.
+        verbose (bool): Whether output intermediate information. Default as ``True``.
+        seed (int): Random seed. Default as ``None``.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+
+    """
     num_classes = 10
 
     def __init__(self, targets, num_clients,
@@ -302,25 +339,6 @@ class SVHNPartitioner(VisionPartitioner):
     num_features = 1024
 
 
-# class FEMNISTPartitioner(DataPartitioner):
-#     def __init__(self):
-#         """
-#         - feature-distribution-skew:real-world
-#         - IID
-#         """
-#         # num_classes =
-#         pass
-#
-#     def _perform_partition(self):
-#         pass
-#
-#     def __getitem__(self, index):
-#         return self.client_dict[index]
-#
-#     def __len__(self):
-#         return len(self.client_dict)
-
-
 class FCUBEPartitioner(DataPartitioner):
     """FCUBE data partitioner.
 
@@ -338,6 +356,7 @@ class FCUBEPartitioner(DataPartitioner):
 
     Args:
         data (numpy.ndarray): Data of dataset :class:`FCUBE`.
+        partition (str): Partition type. Only supports `'synthetic'` and `'iid'`.
     """
     num_classes = 2
     num_clients = 4  # only accept partition for 4 clients
@@ -386,4 +405,3 @@ class RCV1Partitioner(BasicPartitioner):
 class CovtypePartitioner(BasicPartitioner):
     num_features = 54
     num_classes = 2
-
