@@ -18,6 +18,16 @@ import warnings
 
 
 def split_indices(num_cumsum, rand_perm):
+    """Splice the sample index list given number of each client.
+
+    Args:
+        num_cumsum (np.ndarray): Cumulative sum of sample number for each client.
+        rand_perm (list): List of random sample index.
+
+    Returns:
+        dict: ``{ client_id: indices}``.
+
+    """
     client_indices_pairs = [(cid, idxs) for cid, idxs in
                             enumerate(np.split(rand_perm, num_cumsum)[:-1])]
     client_dict = dict(client_indices_pairs)
@@ -288,7 +298,9 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
 
 
 def label_skew_quantity_based_partition(targets, num_clients, num_classes, major_classes_num):
-    """
+    """Label-skew:quantity-based partition.
+
+    For details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
 
     Args:
         targets (np.ndarray): Labels od dataset.
@@ -359,6 +371,16 @@ def fcube_synthetic_partition(data):
 
 
 def samples_num_count(client_dict, num_clients):
+    """Return sample count for all clients in ``client_dict``.
+
+    Args:
+        client_dict (dict): Data partition result for different clients.
+        num_clients (int): Total number of clients.
+
+    Returns:
+        pandas.DataFrame
+
+    """
     client_samples_nums = [[cid, client_dict[cid].shape[0]] for cid in
                            range(num_clients)]
     client_sample_count = pd.DataFrame(data=client_samples_nums,
