@@ -5,8 +5,14 @@
 
 ==================================
 
-.. image:: ../imgs/FedLab-logo.pdf
+.. image:: ../imgs/FedLab-logo.svg
    :align: center
+   :class: only-light
+   :width: 70%
+
+.. image:: ../imgs/FedLab-logo-dark.svg
+   :align: center
+   :class: only-dark
    :width: 70%
 
 ==================================
