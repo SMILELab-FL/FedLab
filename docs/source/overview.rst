@@ -102,9 +102,43 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
 
 .. image:: ../imgs/fedlab-hierarchical.pdf
    :align: center
+   :width: 70%
 
 
 Benchmarks
 ----------
 
 **FedLab** also contains data partition settings :cite:p:`caldas2018leaf`, and implementations of FL algorithms :cite:p:`mcmahan2017communication`. For more information please see our `FedLab-benchmarks repo <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.  More benchmarks and FL algorithms demos are coming.
+
+
+Optimization Algorithms
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- FedAvg: `Communication-Efficient Learning of Deep Networks from Decentralized Data <http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf>`_
+
+- FedAsync: `Asynchronous Federated Optimization <http://arxiv.org/abs/1903.03934>`_
+
+- FedProx: `Federated Optimization in Heterogeneous Networks <https://arxiv.org/abs/1812.06127>`_
+
+- FedDyn: `Federated Learning based on Dynamic Regularization <https://openreview.net/pdf?id=B7v4QMR6Z9w>`_
+
+- Personalized-FedAvg: `Improving Federated Learning Personalization via Model Agnostic Meta Learning <https://arxiv.org/pdf/1909.12488.pdf>`_
+
+- qFFL: `Fair Resource Allocation in Federated Learning <https://arxiv.org/abs/1905.10497>`_
+
+
+Compression Algorithms
+^^^^^^^^^^^^^^^^^^^^^^
+
+- DGC: `Deep Gradient Compression: Reducing the Communication Bandwidth for Distributed Training <https://arxiv.org/abs/1712.01887>`_
+
+- QSGD: `Communication-Efficient SGD via Gradient Quantization and Encoding <https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html>`_
+
+
+Datasets
+^^^^^^^^
+
+- LEAF: `A Benchmark for Federated Settings <http://arxiv.org/abs/1812.01097>`_
+
+- NIID-Bench: `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_
+
