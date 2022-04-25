@@ -79,6 +79,8 @@ class CIFAR10Partitioner(DataPartitioner):
       - ``partition="dirichlet"``: Refer to :func:`fedlab.utils.dataset.functional.client_inner_dirichlet_partition`
         for more information.
 
+    For detail usage, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
+
     Args:
         targets (list or numpy.ndarray): Targets of dataset for partition. Each element is in range of [0, 1, ..., 9].
         num_clients (int): Number of clients for data partition.
@@ -183,7 +185,7 @@ class CIFAR10Partitioner(DataPartitioner):
 class CIFAR100Partitioner(CIFAR10Partitioner):
     """CIFAR100 data partitioner.
 
-    This is a subclass of the :class:`CIFAR10Partitioner`.
+    This is a subclass of the :class:`CIFAR10Partitioner`. For details, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
     """
     num_classes = 100
 
@@ -192,12 +194,16 @@ class BasicPartitioner(DataPartitioner):
     """Basic data partitioner.
 
     Basic data partitioner, supported partition:
+
     - label-distribution-skew:quantity-based
+
     - label-distribution-skew:distributed-based (Dirichlet)
+
     - quantity-skew (Dirichlet)
+
     - IID
 
-    For more details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
+    For more details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_ and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
     Args:
         targets (list or numpy.ndarray): Sample targets. Unshuffled preferred.
@@ -291,9 +297,13 @@ class VisionPartitioner(BasicPartitioner):
     """Data partitioner for vision data.
 
     Supported partition for vision data:
+
     - label-distribution-skew:quantity-based
+
     - label-distribution-skew:distributed-based (Dirichlet)
+
     - quantity-skew (Dirichlet)
+
     - IID
 
     For more details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
@@ -330,7 +340,7 @@ class VisionPartitioner(BasicPartitioner):
 class MNISTPartitioner(VisionPartitioner):
     """Data partitioner for MNIST.
 
-    For details, please check :class:`VisionPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    For details, please check :class:`VisionPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
     """
     num_features = 784
 
@@ -364,7 +374,7 @@ class FCUBEPartitioner(DataPartitioner):
 
     - IID
 
-    For more details, please refer to Section (IV-B-b) of original paper.
+    For more details, please refer to Section (IV-B-b) of original paper. For detailed usage, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
     Args:
         data (numpy.ndarray): Data of dataset :class:`FCUBE`.
