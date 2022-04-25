@@ -72,13 +72,9 @@ Synchronous mode
 
 Synchronous communication involves :class:`SynchronousServerManager` and :class:`PassiveClientManager`. Communication procedure is shown as follows.
 
-.. image:: ../../imgs/fedlab-synchronous.svg
+.. image:: ../../imgs/fedlab-synchronous.pdf
     :align: center
-    :class: only-light
 
-.. image:: ../../imgs/fedlab-synchronous-dark.svg
-    :align: center
-    :class: only-dark
 
 Asynchronous mode
 ==================
@@ -86,13 +82,8 @@ Asynchronous mode
 Asynchronous is given by :class:`ServerAsynchronousManager` and :class:`ClientActiveManager`. Communication
 procedure is shown as follows.
 
-.. image:: ../../imgs/fedlab-asynchronous.svg
+.. image:: ../../imgs/fedlab-asynchronous.pdf
     :align: center
-    :class: only-light
-
-.. image:: ../../imgs/fedlab-asynchronous-dark.svg
-    :align: center
-    :class: only-dark
 
 
 Customization
