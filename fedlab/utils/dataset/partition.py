@@ -328,14 +328,26 @@ class VisionPartitioner(BasicPartitioner):
 
 
 class MNISTPartitioner(VisionPartitioner):
+    """Data partitioner for MNIST.
+
+    For details, please check :class:`VisionPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 784
 
 
 class FMNISTPartitioner(VisionPartitioner):
+    """Data partitioner for FashionMNIST.
+
+    For details, please check :class:`VisionPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 784
 
 
 class SVHNPartitioner(VisionPartitioner):
+    """Data partitioner for SVHN.
+
+    For details, please check :class:`VisionPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 1024
 
 
@@ -393,15 +405,27 @@ class FCUBEPartitioner(DataPartitioner):
 
 
 class AdultPartitioner(BasicPartitioner):
+    """Data partitioner for Adult.
+
+    For details, please check :class:`BasicPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 123
     num_classes = 2
 
 
 class RCV1Partitioner(BasicPartitioner):
+    """Data partitioner for RCV1.
+
+    For details, please check :class:`BasicPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 47236
     num_classes = 2
 
 
 class CovtypePartitioner(BasicPartitioner):
+    """Data partitioner for Covtype.
+
+    For details, please check :class:`BasicPartitioner`  and `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_
+    """
     num_features = 54
     num_classes = 2
