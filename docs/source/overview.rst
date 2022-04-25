@@ -108,11 +108,10 @@ A hierarchical FL system with ``K`` client groups is depicted as below.
 Benchmarks
 ----------
 
-**FedLab** also contains data partition settings :cite:p:`caldas2018leaf`, and implementations of FL algorithms :cite:p:`mcmahan2017communication`. For more information please see our `FedLab-benchmarks repo <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.  More benchmarks and FL algorithms demos are coming.
+**FedLab** also contains data partition settings :cite:p:`caldas2018leaf`, and implementations of FL algorithms :cite:p:`mcmahan2017communication`. For more information please see our `FedLab-benchmarks repo <https://github.com/SMILELab-FL/FedLab-benchmarks>`_.  More benchmarks and FL algorithms demos are coming. We current provide reproduction of following algorithms and settings:
 
 
-Optimization Algorithms
-^^^^^^^^^^^^^^^^^^^^^^^
+**Optimization Algorithms:**
 
 - FedAvg: `Communication-Efficient Learning of Deep Networks from Decentralized Data <http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf>`_
 
@@ -127,16 +126,14 @@ Optimization Algorithms
 - qFFL: `Fair Resource Allocation in Federated Learning <https://arxiv.org/abs/1905.10497>`_
 
 
-Compression Algorithms
-^^^^^^^^^^^^^^^^^^^^^^
+**Compression Algorithms:**
 
 - DGC: `Deep Gradient Compression: Reducing the Communication Bandwidth for Distributed Training <https://arxiv.org/abs/1712.01887>`_
 
 - QSGD: `Communication-Efficient SGD via Gradient Quantization and Encoding <https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html>`_
 
 
-Datasets
-^^^^^^^^
+**Datasets:**
 
 - LEAF: `A Benchmark for Federated Settings <http://arxiv.org/abs/1812.01097>`_
 
