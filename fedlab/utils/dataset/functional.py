@@ -136,7 +136,7 @@ def hetero_dir_partition(targets, num_clients, num_classes, dir_alpha, min_requi
 
     This method simulates heterogeneous partition for which number of data points and class
     proportions are unbalanced. Samples will be partitioned into :math:`J` clients by sampling
-    :math:`p_k \sim \text{Dir}_{J}({\\alpha})` and allocating a :math:`p_{p,j}` proportion of the
+    :math:`p_k \sim \\text{Dir}_{J}({\\alpha})` and allocating a :math:`p_{p,j}` proportion of the
     samples of class :math:`k` to local client :math:`j`.
 
     Sample number for each client is decided in this function.
