@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',  # allows referring sections its title, affects `ref`
     'sphinx_design',
     'sphinxcontrib.bibtex',
+    'sphinx.ext.imgconverter',  # for svg image to pdf
 ]
 
 # for 'sphinxcontrib.bibtex' extension
