@@ -48,18 +48,7 @@ Thanks to our contributors, algorithms and benchmarks are provided in our [FedLa
 
 ## Dive into FL
 
-We provide a repo for FL beginners and researchers to have better FL learning resource: [Dive-into-Federated-Learning](https://github.com/SMILELab-FL/Dive-into-Federated-Learning).
-
-__Main contents:__
-
-- Tutorials
-- Survey
-- Frameworks
-- Benchmarks
-- FL + Semi-supervised Learning
-- FL + HPC
-- Blogs
-- Awesome List
+We will keep collecting FL resources and provide a repo for FL beginners and researchers: [Dive-into-Federated-Learning](https://github.com/SMILELab-FL/Dive-into-Federated-Learning).
 
 ## Contribution
 
