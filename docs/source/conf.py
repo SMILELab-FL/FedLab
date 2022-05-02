@@ -115,7 +115,7 @@ html_theme_options = {
     # """,
     "sidebar_hide_name": True,
     "light_logo": "FedLab-logo.svg",
-    "dark_logo": "FedLab-logo-dark.svg",
+    "dark_logo": "FedLab-logo.svg",
 }
 # html_logo = "FedLab-logo.svg"
 
