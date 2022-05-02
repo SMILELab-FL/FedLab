@@ -1,4 +1,4 @@
-<p align="center"><img src="./docs/imgs/FedLab-logo-v3.svg?raw=True" width=700></p>
+<p align="center"><img src="./docs/imgs/FedLab-logo.svg?raw=True" width=700></p>
 
 # FedLab: A Flexible Federated Learning Framework
 
