@@ -67,7 +67,7 @@ Please cite __FedLab__ in your publications if it helps your research:
 ```bibtex
 @article{smile2021fedlab,  
     title={FedLab: A Flexible Federated Learning Framework},  
-    author={Dun Zeng, Siqi Liang, Xiangjing Hu and Zenglin Xu},  
+    author={Dun Zeng, Siqi Liang, Xiangjing Hu, Hui Wang and Zenglin Xu},  
     journal={arXiv preprint arXiv:2107.11621},  
     year={2021}
 }
