@@ -17,10 +17,17 @@ import torch
 import os
 import json
 import pynvml
+import random
 import numpy as np
-import pickle
 from collections import Counter
 
+
+def setup_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
 
 class AverageMeter(object):
     """Record metrics information"""
@@ -128,16 +135,6 @@ def get_best_gpu():
     deviceMemory = np.array(deviceMemory, dtype=np.int64)
     best_device_index = np.argmax(deviceMemory)
     return torch.device("cuda:%d" % (best_device_index))
-
-
-def save_dict(dict, path):
-    with open(path, 'wb') as f:
-        pickle.dump(dict, f)
-
-
-def load_dict(path):
-    with open(path, 'rb') as f:
-        return pickle.load(f)
 
 
 def partition_report(targets,

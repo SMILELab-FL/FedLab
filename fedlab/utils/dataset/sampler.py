@@ -15,7 +15,6 @@
 import random
 import torch
 import torch.distributed as dist
-from ..functional import load_dict
 
 
 class SubsetSampler(torch.utils.data.Sampler):
@@ -82,7 +81,7 @@ class DictFileSampler(torch.utils.data.Sampler):
     """Get data sample indices given client id from data file with dict."""
 
     def __init__(self, dict_file, client_id):
-        data_indices = load_dict(dict_file)
+        data_indices = torch.load(dict_file)
         self.indices = data_indices[client_id]
 
     def __iter__(self):

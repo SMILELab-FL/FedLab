@@ -27,14 +27,16 @@ class ModelMaintainer(object):
         model (torch.nn.Module): PyTorch model.
         cuda (bool): use GPUs or not.
     """
-    def __init__(self, model, cuda) -> None:
-        
+    def __init__(self, model, cuda, device=None) -> None:
         self.cuda = cuda
 
         if cuda:
             # dynamic gpu acquire.
-            self.gpu = get_best_gpu()
-            self._model = model.cuda(self.gpu)
+            if self.device is None:
+                self.device = get_best_gpu()
+            else:
+                self.device = device
+            self._model = model.cuda(self.device)
         else:
             self._model = model.cpu()
 
