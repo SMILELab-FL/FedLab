@@ -26,6 +26,7 @@ class ModelMaintainer(object):
     Args:
         model (torch.nn.Module): PyTorch model.
         cuda (bool): use GPUs or not.
+        device (str): cuda device.
     """
     def __init__(self, model, cuda, device=None) -> None:
         self.cuda = cuda
@@ -39,6 +40,10 @@ class ModelMaintainer(object):
             self._model = model.cuda(self.device)
         else:
             self._model = model.cpu()
+
+    def set_model(self, parameters):
+        """Assign parameters to self._model"""
+        SerializationTool.deserialize_model(self._model, parameters)
 
     @property
     def model(self):
@@ -63,3 +68,28 @@ class ModelMaintainer(object):
         """
         shape_list = [param.shape for param in self._model.parameters()]
         return shape_list
+
+
+class SerialModelMaintainer(ModelMaintainer):
+    """Maintain PyTorch model.
+
+    Provide necessary attributes and operation methods. More features with local or global model
+    will be implemented here.
+
+    Args:
+        model (torch.nn.Module): PyTorch model.
+        num (int): the number of duplicate of model parameters.
+        cuda (bool): use GPUs or not.
+        device (str): cuda device.
+    """
+    def __init__(self, model, num, cuda, device=None) -> None:
+        super().__init__(model, cuda, device)
+        self.parameters = [self.model_parameters for _ in range(num)] # A list of Tensor
+
+    def set_model(self, id, parameters=None):
+        """Assign parameters to self._model"""
+        if parameters is None:
+            super().set_model(self.parameters[id])
+        else: 
+            super()   
+        SerializationTool.deserialize_model(self._model, parameters)

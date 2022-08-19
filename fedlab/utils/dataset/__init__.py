@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
 
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer, SGDClientTrainer
-from .serial_trainer_ import SerialTrainer, SubsetSerialTrainer
+from .sampler import SubsetSampler, RawPartitionSampler, DictFileSampler
+from .slicing import noniid_slicing, random_slicing
+from .partition import DataPartitioner, BasicPartitioner, VisionPartitioner
+from .partition import CIFAR10Partitioner, CIFAR100Partitioner, FMNISTPartitioner, MNISTPartitioner, \
+    SVHNPartitioner
+from .partition import FCUBEPartitioner
+from .partition import AdultPartitioner, RCV1Partitioner, CovtypePartitioner

@@ -12,7 +12,7 @@ class BaseDataset(Dataset):
     def __getitem__(self, index):
         return self.x[index], self.y[index]
 
-class FedlabDataset:
+class FedLabDataset:
     def __init__(self) -> None:
         self.num = None     # the number of dataset indexed from 0 to num-1.
         self.root = None    # the raw dataset.

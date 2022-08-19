@@ -13,71 +13,82 @@
 # limitations under the License.
 
 import torch
-
-from .trainer import ClientTrainer
-from ..client import SERIAL_TRAINER
+from ...core.client.trainer import ClientTrainer, SerialTrainer
 from ...utils import Logger, SerializationTool
-from ...utils.dataset.sampler import SubsetSampler
+from ...utils.dataset import SubsetSampler
 
-
-class SerialTrainer(ClientTrainer):
-    """Base class. Simulate multiple clients in sequence in a single process.
+class SGDClientTrainer(ClientTrainer):
+    """Client backend handler, this class provides data process method to upper layer.
 
     Args:
-        model (torch.nn.Module): Model used in this federation.
-        client_num (int): Number of clients in current trainer.
-        cuda (bool): Use GPUs or not. Default: ``False``.
-        logger (Logger, optional): Object of :class:`Logger`.
+        model (torch.nn.Module): PyTorch model.
+        data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
+        epochs (int): the number of local epoch.
+        optimizer (torch.optim.Optimizer): optimizer for this client's model.
+        criterion (torch.nn.Loss): loss function used in local training process.
+        cuda (bool, optional): use GPUs or not. Default: ``False``.
+        logger (Logger, optional): :object of :class:`Logger`.
     """
 
-    def __init__(self, model, client_num, cuda=False, logger=None):
-        super().__init__(model, cuda)
-        self.client_num = client_num
-        self.type = SERIAL_TRAINER  # represent serial trainer
+    def __init__(self,
+                 model,
+                 data_loader,
+                 epochs,
+                 optimizer,
+                 criterion,
+                 cuda=False,
+                 logger=None):
+        super(SGDClientTrainer, self).__init__(model, cuda)
+
+        self._data_loader = data_loader
+        self.epochs = epochs
+        self.optimizer = optimizer
+        self.criterion = criterion
         self._LOGGER = Logger() if logger is None else logger
-        self.param_list = []
+
+        self.model_time = 0
 
     @property
     def uplink_package(self):
-        return self.param_list
+        """Return a tensor list for uploading to server.
 
-    def _train_alone(self, model_parameters, train_loader):
-        """Train local model with :attr:`model_parameters` on :attr:`train_loader`.
-        
-        Args:
-            model_parameters (torch.Tensor): Serialized model parameters of one model.
-            train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
         """
-        raise NotImplementedError()
+        return [self.model_parameters]
 
-    def _get_dataloader(self, client_id):
-        """Get :class:`DataLoader` for ``client_id``."""
-        raise NotImplementedError()
-
-    def local_process(self, id_list, payload):
-        """Train local model with different dataset according to client id in ``id_list``.
-
-        Args:
-            id_list (list[int]): Client id in this training serial.
-            payload (list[torch.Tensor]): communication payload from server.
-        """
-        self.param_list = []
+    def local_process(self, payload):
         model_parameters = payload[0]
-        self._LOGGER.info(
-            "Local training with client id list: {}".format(id_list))
-        for idx in id_list:
-            self._LOGGER.info(
-                "Starting training procedure of client [{}]".format(idx))
+        self.train(model_parameters)
 
-            data_loader = self._get_dataloader(client_id=idx)
-            self._train_alone(model_parameters=model_parameters,
-                              train_loader=data_loader)
-            self.param_list.append(self.model_parameters)
-        return self.param_list
+    def train(self, model_parameters) -> None:
+        """Client trains its local model on local dataset.
+
+        Args:
+            model_parameters (torch.Tensor): Serialized model parameters.
+        """
+        SerializationTool.deserialize_model(
+            self._model, model_parameters)  # load parameters
+        self._LOGGER.info("Local train procedure is running")
+        for ep in range(self.epochs):
+            self._model.train()
+            for inputs, labels in self._data_loader:
+                if self.cuda:
+                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(
+                        self.gpu)
+
+                outputs = self._model(inputs)
+                loss = self.criterion(outputs, labels)
+
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+        self._LOGGER.info("Local train procedure is finished")
 
 
 class SubsetSerialTrainer(SerialTrainer):
-    """Train multiple clients in a single process.
+    """Deprecated
+    Train multiple clients in a single process.
 
     Customize :meth:`_get_dataloader` or :meth:`_train_alone` for specific algorithm design in clients.
 
@@ -104,7 +115,7 @@ class SubsetSerialTrainer(SerialTrainer):
                      "batch_size": 100,
                      "lr": 0.1
                  }) -> None:
-
+        print("SubsetSerialTrainer would be deprecated in the next version.")
         super(SubsetSerialTrainer, self).__init__(model=model,
                                                   client_num=len(data_slices),
                                                   cuda=cuda,

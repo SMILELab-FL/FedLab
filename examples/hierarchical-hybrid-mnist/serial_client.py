@@ -9,7 +9,7 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.core.client.serial_trainer import SubsetSerialTrainer
+from fedlab.core.client.serial_trainer_ import SubsetSerialTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
