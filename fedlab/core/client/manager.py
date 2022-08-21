@@ -137,7 +137,18 @@ class ActiveClientManager(ClientManager):
                 break
 
             elif message_code == MessageCode.ParameterUpdate:
-                self._trainer.local_process(payload)
+                id_list, payload = payload[0].to(
+                    torch.int32).tolist(), payload[1:]
+
+                # check the trainer type
+                if self._trainer.type == SERIAL_TRAINER:
+                    self._trainer.local_process(id_list=id_list,
+                                                payload=payload)
+
+                elif self._trainer.type == ORDINARY_TRAINER:
+                    assert len(id_list) == 1
+                    self._trainer.local_process(payload=payload)
+
                 self.synchronize()
 
             else:

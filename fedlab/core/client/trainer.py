@@ -38,11 +38,16 @@ class ClientTrainer(ModelMaintainer):
         cuda (bool): Use GPUs or not.
     """
 
-    def __init__(self, model, cuda):
-        super().__init__(model, cuda)
+    def __init__(self, model, cuda, device=None) -> None:
+        super().__init__(model, cuda, device)
+
         self.client_num = 1  # default is 1.
-        self.dataset = FedLabDataset()
+        self.dataset = self.__setup_dataset()
         self.type = ORDINARY_TRAINER
+
+    def __setup_dataset(self):
+        """Override this function to set up local dataset for clients"""
+        return FedLabDataset()
 
     @abstractproperty
     def uplink_package(self) -> List[torch.Tensor]:
@@ -76,36 +81,31 @@ class SerialClientTrainer(SerialModelMaintainer):
         model (torch.nn.Module): Model used in this federation.
         client_num (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
-        logger (Logger, optional): Object of :class:`Logger`.
     """
 
-    def __init__(self, model, client_num, cuda=False, logger=None):
-        super().__init__(model, cuda)
-        self.client_num = client_num
-        self.dataset = FedLabDataset()
+    def __init__(self, model, num, cuda, device=None) -> None:
+        super().__init__(model, num, cuda, device)
+
+        self.client_num = 1  # default is 1.
+        self.dataset = self.__setup_dataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
-        self._LOGGER = Logger() if logger is None else logger
-        self.param_list = []
 
-    @property
-    def uplink_package(self):
-        return self.param_list
+    def __setup_dataset(self):
+        """Override this function to set up local dataset for clients"""
+        return FedLabDataset()
 
-    # def _train_alone(self, model_parameters, train_loader):
-    #     """Train local model with :attr:`model_parameters` on :attr:`train_loader`.
-        
-    #     Args:
-    #         model_parameters (torch.Tensor): Serialized model parameters of one model.
-    #         train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
-    #     """
-    #     raise NotImplementedError()
+    @abstractproperty
+    def uplink_package(self) -> List[torch.Tensor]:
+        """Return a tensor list for uploading to server.
 
-    # def _get_dataloader(self, client_id):
-    #     """Get :class:`DataLoader` for ``client_id``."""
-    #     raise NotImplementedError()
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        raise NotImplementedError()
+
 
     @abstractclassmethod
-    def local_process(self, payload) -> bool:
+    def local_process(self, id_list, payload) -> bool:
         """Manager of the upper layer will call this function with accepted payload
         
             In synchronous mode, return True to end current FL round.
@@ -119,23 +119,3 @@ class SerialClientTrainer(SerialModelMaintainer):
     def evaluate(self):
         """Evaluate quality of local model."""
         raise NotImplementedError()
-
-    # def local_process(self, id_list, payload):
-    #     """Train local model with different dataset according to client id in ``id_list``.
-
-    #     Args:
-    #         id_list (list[int]): Client id in this training serial.
-    #         payload (list[torch.Tensor]): communication payload from server.
-    #     """
-    #     self.buffer = []
-    #     self._LOGGER.info(
-    #         "Local training with client id list: {}".format(id_list))
-    #     for idx in id_list:
-    #         self._LOGGER.info(
-    #             "Starting training procedure of client [{}]".format(idx))
-
-    #         # data_loader = self._get_dataloader(client_id=idx)
-    #         # self._train_alone(model_parameters=payload[0],
-    #         #                   train_loader=data_loader)
-    #         self.buffer.append(self.model_parameters)
-    #     return self.buffer

@@ -22,13 +22,13 @@ from ..model_maintainer import ModelMaintainer
 from ...utils import Logger, Aggregators, SerializationTool
 
 
-class ParameterServerBackendHandler(ModelMaintainer):
+class ServerHandler(ModelMaintainer):
     """An abstract class representing handler of parameter server.
 
     Please make sure that your self-defined server handler class subclasses this class
 
     Example:
-        Read source code of :class:`SyncParameterServerHandler` and :class:`AsyncParameterServerHandler`.
+        Read source code of :class:`SyncServerHandler` and :class:`AsyncServerHandler`.
     """
 
     def __init__(self, model, cuda=False):
@@ -44,12 +44,15 @@ class ParameterServerBackendHandler(ModelMaintainer):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
 
-    def _update_global_model(self, payload):
+    def global_update(self, buffer):
+        raise NotImplementedError()
+
+    def load(self, payload):
         """Override this function to define how to update global model (aggregation or optimization)."""
         raise NotImplementedError()
 
 
-class SyncParameterServerHandler(ParameterServerBackendHandler):
+class SyncServerHandler(ServerHandler):
     """Synchronous Parameter Server Handler.
 
     Backend of synchronous parameter server: this class is responsible for backend computing in synchronous server.
@@ -73,14 +76,14 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
                  sample_ratio,
                  cuda=False,
                  logger=None):
-        super(SyncParameterServerHandler, self).__init__(model, cuda)
+        super(SyncServerHandler, self).__init__(model, cuda)
 
         self._LOGGER = Logger() if logger is None else logger
 
         assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
-        self.client_num_in_total = 0
+        self.client_num = 0
         self.sample_ratio = sample_ratio
 
         # client buffer
@@ -102,16 +105,20 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
 
     @property
     def client_num_per_round(self):
-        return max(1, int(self.sample_ratio * self.client_num_in_total))
+        return max(1, int(self.sample_ratio * self.client_num))
 
     def sample_clients(self):
-        """Return a list of client rank indices selected randomly. The client ID is from ``1`` to
-        ``self.client_num_in_total + 1``."""
-        selection = random.sample(range(self.client_num_in_total),
+        """Return a list of client rank indices selected randomly. The client ID is from ``0`` to
+        ``self.client_num -1``."""
+        selection = random.sample(range(self.client_num),
                                   self.client_num_per_round)
         return selection
 
-    def _update_global_model(self, payload):
+    def global_update(self, buffer):
+        serialized_parameters = Aggregators.fedavg_aggregate(buffer)
+        SerializationTool.deserialize_model(self._model, serialized_parameters)
+
+    def load(self, payload):
         """Update global model with collected parameters from clients.
 
         Note:
@@ -133,14 +140,10 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
         assert len(self.client_buffer_cache) <= self.client_num_per_round
         
         if len(self.client_buffer_cache) == self.client_num_per_round:
-            model_parameters_list = self.client_buffer_cache
-            # use aggregator
-            serialized_parameters = Aggregators.fedavg_aggregate(
-                model_parameters_list)
-            SerializationTool.deserialize_model(self._model, serialized_parameters)
+            self.global_update(self.client_buffer_cache)
             self.round += 1
 
-            # reset cache cnt
+            # reset cache
             self.client_buffer_cache = []
 
             return True  # return True to end this round.
@@ -148,7 +151,7 @@ class SyncParameterServerHandler(ParameterServerBackendHandler):
             return False
 
 
-class AsyncParameterServerHandler(ParameterServerBackendHandler):
+class AsyncServerHandler(ServerHandler):
     """Asynchronous Parameter Server Handler
 
     Update global model immediately after receiving a ParameterUpdate message
@@ -157,7 +160,7 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     Args:
         model (torch.nn.Module): Global model in server
         alpha (float): Weight used in async aggregation.
-        total_time (int): Stop condition. Shut down FL system when total_time is reached.
+        global_round (int): Stop condition. Shut down FL system when global_round is reached.
         strategy (str): Adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
         cuda (bool): Use GPUs or not.
         logger (Logger, optional): Object of :class:`Logger`.
@@ -165,17 +168,17 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     def __init__(self,
                  model,
                  alpha,
-                 total_time,
+                 global_round,
                  strategy="constant",
                  cuda=False,
                  logger=None):
-        super(AsyncParameterServerHandler, self).__init__(model, cuda)
+        super(AsyncServerHandler, self).__init__(model, cuda)
         self._LOGGER = Logger() if logger is None else logger
 
-        self.client_num_in_total = 0
+        self.client_num = 0
 
-        self.time = 1
-        self.total_time = total_time
+        self.round = 1
+        self.global_round = global_round
 
         # async aggregation params
         self.alpha = alpha
@@ -186,25 +189,28 @@ class AsyncParameterServerHandler(ParameterServerBackendHandler):
     @property
     def if_stop(self):
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
-        return self.time >= self.total_time
+        return self.round >= self.global_round
 
     @property
     def downlink_package(self):
-        return [self.model_parameters, torch.Tensor([self.time])]
+        return [self.model_parameters, torch.Tensor([self.round])]
 
-    def _update_global_model(self, payload):
-        client_model_parameters, model_time = payload[0], payload[1].item()
+    def global_update(self, buffer):
+        client_model_parameters, model_time = buffer[0], buffer[1].item()
         """ "update global model from client_model_queue"""
         alpha_T = self._adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
-        self.time += 1
 
-    def _adapt_alpha(self, receive_model_time):
+    def load(self, payload):
+        self.global_update(payload)
+        self.round += 1
+
+    def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
-        staleness = self.time - receive_model_time
+        staleness = self.round - receive_model_time
         if self.strategy == "constant":
             return torch.mul(self.alpha, 1)
         elif self.strategy == "hinge" and self.b is not None and self.a is not None:

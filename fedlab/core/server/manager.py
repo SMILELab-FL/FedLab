@@ -50,7 +50,7 @@ class ServerManager(NetworkManager):
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map)
         if self._handler is not None:
-            self._handler.client_num_in_total = self.coordinator.total
+            self._handler.client_num = self.coordinator.total
 
 
 class SynchronousServerManager(ServerManager):
@@ -91,13 +91,13 @@ class SynchronousServerManager(ServerManager):
             Exception: Unexpected :class:`MessageCode`.
         """
         while self._handler.if_stop is not True:
-            activate = threading.Thread(target=self.activate_clients)
-            activate.start()
+            activator = threading.Thread(target=self.activate_clients)
+            activator.start()
 
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    if self._handler._update_global_model(payload):
+                    if self._handler.update_global_model(payload):
                         break
                 else:
                     raise Exception(
@@ -136,7 +136,7 @@ class SynchronousServerManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        client_list = range(self._handler.client_num_in_total)
+        client_list = range(self._handler.client_num)
         rank_dict = self.coordinator.map_id_list(client_list)
 
         for rank, values in rank_dict.items():
@@ -208,7 +208,7 @@ class AsynchronousServerManager(ServerManager):
         """Asynchronous communication maintain a message queue. A new thread will be started to keep monitoring message queue."""
         while self._handler.if_stop is not True:
             _, message_code, payload = self.message_queue.get()
-            self._handler._update_global_model(payload)
+            self._handler.update_global_model(payload)
 
             assert message_code == MessageCode.ParameterUpdate
 
