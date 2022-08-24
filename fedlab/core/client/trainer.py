@@ -42,10 +42,11 @@ class ClientTrainer(ModelMaintainer):
         super().__init__(model, cuda, device)
 
         self.client_num = 1  # default is 1.
-        self.dataset = self.__setup_dataset()
+        # self.dataset = self.setup_dataset()
+        self.dataset = FedLabDataset()
         self.type = ORDINARY_TRAINER
 
-    def __setup_dataset(self):
+    def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
         return FedLabDataset()
 
@@ -87,14 +88,15 @@ class SerialClientTrainer(SerialModelMaintainer):
         cuda (bool): Use GPUs or not. Default: ``False``.
     """
 
-    def __init__(self, model, num, cuda, device=None) -> None:
-        super().__init__(model, num, cuda, device)
+    def __init__(self, model, num, cuda, device=None, personal=False) -> None:
+        super().__init__(model, num, cuda, device, personal)
 
         self.client_num = 1  # default is 1.
-        self.dataset = self.__setup_dataset()
+        # self.dataset = self.setup_dataset()
+        self.dataset = FedLabDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
 
-    def __setup_dataset(self):
+    def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
         return FedLabDataset()
 

@@ -82,14 +82,16 @@ class SerialModelMaintainer(ModelMaintainer):
         cuda (bool): use GPUs or not.
         device (str): cuda device.
     """
-    def __init__(self, model, num, cuda, device=None) -> None:
+    def __init__(self, model, num, cuda, device=None, personal=False) -> None:
         super().__init__(model, cuda, device)
-        self.parameters = [self.model_parameters for _ in range(num)] # A list of Tensor
-
-    def set_model(self, id, parameters=None):
+        if personal:
+            self.parameters = [self.model_parameters for _ in range(num)] # A list of Tensor
+        else:
+            self.parameters = None
+        
+    def set_model(self, parameters, id=None):
         """Assign parameters to self._model"""
-        if parameters is None:
+        if id is None:
+            super().set_model(parameters)
+        else:
             super().set_model(self.parameters[id])
-        else: 
-            super()   
-        SerializationTool.deserialize_model(self._model, parameters)

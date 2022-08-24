@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from copy import deepcopy
 import torch
-from ...core.client.trainer import ClientTrainer, SerialTrainer
+from ...core.client.trainer import ClientTrainer, SerialClientTrainer
 from ...utils import Logger, SerializationTool
-from ...utils.dataset import SubsetSampler
 
 class SGDClientTrainer(ClientTrainer):
     """Client backend handler, this class provides data process method to upper layer.
 
     Args:
         model (torch.nn.Module): PyTorch model.
-        data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         epochs (int): the number of local epoch.
         optimizer (torch.optim.Optimizer): optimizer for this client's model.
         criterion (torch.nn.Loss): loss function used in local training process.
@@ -32,21 +31,18 @@ class SGDClientTrainer(ClientTrainer):
 
     def __init__(self,
                  model,
-                 data_loader,
                  epochs,
                  optimizer,
                  criterion,
                  cuda=False,
+                 device=None,
                  logger=None):
-        super(SGDClientTrainer, self).__init__(model, cuda)
+        super(SGDClientTrainer, self).__init__(model, cuda, device)
 
-        self._data_loader = data_loader
         self.epochs = epochs
         self.optimizer = optimizer
         self.criterion = criterion
         self._LOGGER = Logger() if logger is None else logger
-
-        self.model_time = 0
 
     @property
     def uplink_package(self):
@@ -55,13 +51,17 @@ class SGDClientTrainer(ClientTrainer):
             This attribute will be called by client manager.
             Customize it for new algorithms.
         """
-        return [self.model_parameters]
+        return self.model_parameters
+
+    def setup_dataset(self, dataset):
+        self.dataset = dataset
 
     def local_process(self, payload):
         model_parameters = payload[0]
-        self.train(model_parameters)
+        train_loader = self.dataset.get_dataloader()
+        self.train(model_parameters, train_loader)
 
-    def train(self, model_parameters) -> None:
+    def train(self, model_parameters, train_loader) -> None:
         """Client trains its local model on local dataset.
 
         Args:
@@ -72,13 +72,13 @@ class SGDClientTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is running")
         for ep in range(self.epochs):
             self._model.train()
-            for inputs, labels in self._data_loader:
+            for data, target in train_loader:
                 if self.cuda:
-                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(
+                    data, target = data.cuda(self.gpu), target.cuda(
                         self.gpu)
 
-                outputs = self._model(inputs)
-                loss = self.criterion(outputs, labels)
+                outputs = self._model(data)
+                loss = self.criterion(outputs, target)
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -86,7 +86,7 @@ class SGDClientTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is finished")
 
 
-class SubsetSerialTrainer(SerialTrainer):
+class SGDSerialTrainer(SerialClientTrainer):
     """Deprecated
     Train multiple clients in a single process.
 
@@ -94,60 +94,40 @@ class SubsetSerialTrainer(SerialTrainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        dataset (torch.utils.data.Dataset): Local dataset for this group of clients.
-        data_slices (list[list]): Subset of indices of dataset.
         logger (Logger, optional): Object of :class:`Logger`.
         cuda (bool): Use GPUs or not. Default: ``False``.
+        device (str):
         args (dict): Uncertain variables. Default: ``{"epochs": 5, "batch_size": 100, "lr": 0.1}``
 
     .. note::
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
     """
 
-    def __init__(self,
-                 model,
-                 dataset,
-                 data_slices,
-                 logger=None,
-                 cuda=False,
-                 args={
-                     "epochs": 5,
-                     "batch_size": 100,
-                     "lr": 0.1
-                 }) -> None:
-        print("SubsetSerialTrainer would be deprecated in the next version.")
-        super(SubsetSerialTrainer, self).__init__(model=model,
-                                                  client_num=len(data_slices),
-                                                  cuda=cuda,
-                                                  logger=logger)
+    def __init__(self, model, num, epochs, optimizer, criterion, logger=None, cuda=False, device=None, personal=False) -> None:
+        super().__init__(model, num, cuda, device, personal)
+        self._LOGGER = Logger() if logger is None else logger
 
+        self.epochs = epochs
+        self.optimizer = optimizer
+        self.criterion = criterion
+        self.chache = []
+
+    def setup_dataset(self, dataset):
         self.dataset = dataset
-        self.data_slices = data_slices  # [0, client_num)
-        self.args = args
 
-    def _get_dataloader(self, client_id):
-        """Return a training dataloader used in :meth:`train` for client with :attr:`id`
+    @property
+    def uplink_package(self):
+        package = deepcopy(self.chache)
+        self.chache = []
+        return package
+    
+    def local_process(self, model_parameters, id_list):
+        for id in id_list:
+            data_loader = self.dataset.get_dataloader(id)
+            parameters = self.train(model_parameters, data_loader)
+            self.chache.append(parameters)
 
-        Args:
-            client_id (int): :attr:`client_id` of client to generate dataloader
-
-        Note:
-            :attr:`client_id` here is not equal to ``client_id`` in global FL setting. It is the index of client in current :class:`SerialTrainer`.
-
-        Returns:
-            :class:`DataLoader` for specific client's sub-dataset
-        """
-        batch_size = self.args["batch_size"]
-
-        train_loader = torch.utils.data.DataLoader(
-            self.dataset,
-            sampler=SubsetSampler(indices=self.data_slices[client_id],
-                                  shuffle=True),
-            batch_size=batch_size)
-
-        return train_loader
-
-    def _train_alone(self, model_parameters, train_loader):
+    def train(self, model_parameters, train_loader):
         """Single round of local training for one client.
 
         Note:
@@ -157,23 +137,20 @@ class SubsetSerialTrainer(SerialTrainer):
             model_parameters (torch.Tensor): serialized model parameters.
             train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
         """
-        epochs, lr = self.args["epochs"], self.args["lr"]
-        SerializationTool.deserialize_model(self._model, model_parameters)
-        criterion = torch.nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
+        self.set_model(model_parameters)
         self._model.train()
 
-        for _ in range(epochs):
+        for _ in range(self.epochs):
             for data, target in train_loader:
                 if self.cuda:
                     data = data.cuda(self.gpu)
                     target = target.cuda(self.gpu)
 
                 output = self.model(data)
-                loss = criterion(output, target)
+                loss = self.criterion(output, target)
 
-                optimizer.zero_grad()
+                self.optimizer.zero_grad()
                 loss.backward()
-                optimizer.step()
+                self.optimizer.step()
 
         return self.model_parameters
