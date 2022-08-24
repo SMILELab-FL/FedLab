@@ -70,6 +70,10 @@ class ClientTrainer(ModelMaintainer):
         """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
         raise NotImplementedError()
 
+    def validate(self):
+        """Validate quality of local model."""
+        raise NotImplementedError()
+
     def evaluate(self):
         """Evaluate quality of local model."""
         raise NotImplementedError()
@@ -103,7 +107,6 @@ class SerialClientTrainer(SerialModelMaintainer):
         """
         raise NotImplementedError()
 
-
     @abstractclassmethod
     def local_process(self, id_list, payload) -> bool:
         """Manager of the upper layer will call this function with accepted payload
@@ -118,4 +121,8 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     def evaluate(self):
         """Evaluate quality of local model."""
+        raise NotImplementedError()
+
+    def validate(self):
+        """Validate quality of local model."""
         raise NotImplementedError()

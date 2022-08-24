@@ -23,7 +23,15 @@ class FedLabDataset:
         raise NotImplementedError()
 
     def get_dataset(self, id, type="train"):
-        """"Get dataset"""
+        """_summary_
+
+        Args:
+            id (_type_): _description_
+            type (str, optional): get the dataset, with type ["train", "val", "test"]. Defaults to "train".
+
+        Raises:
+            NotImplementedError: _description_
+        """
         raise NotImplementedError()
 
     def get_dataloader(self, id, batch_size, type="train"):
