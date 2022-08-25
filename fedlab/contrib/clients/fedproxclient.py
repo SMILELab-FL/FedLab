@@ -16,7 +16,6 @@ from copy import deepcopy
 import torch 
 
 from client import SGDClientTrainer
-from ...utils import SerializationTool
 
 
 class FedProxClientTrainer(SGDClientTrainer):

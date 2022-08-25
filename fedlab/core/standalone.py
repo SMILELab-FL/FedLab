@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from client.trainer import SerialClientTrainer
-from server.handler import ServerHandler
+
 
 class StandalonePipeline(object):
     def __init__(self, handler, trainer):
@@ -26,17 +25,23 @@ class StandalonePipeline(object):
         self.handler = handler
         self.trainer = trainer
 
+        self.handler.client_num = self.trainer.client_num
+
+        print(self.handler.client_num)
+
     def main(self):
         # server side
         sampled_clients = self.handler.sample_clients()
-        broadcast = self.handler.downlink_pakage
+        broadcast = self.handler.downlink_package
         
         # client side
-        self.trainer.local_process(sampled_clients, broadcast)
-        uploads = self.trainer.uplink_pakage
+        self.trainer.local_process(broadcast, sampled_clients)
+        uploads = self.trainer.uplink_package
 
         # server side
         for ele in uploads:
-            self.handler.load(ele)
+            print("load")
+            self.handler.load([ele])
 
         # evaluate
+        print("evaluate")

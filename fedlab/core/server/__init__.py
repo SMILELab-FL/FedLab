@@ -13,5 +13,4 @@
 # limitations under the License.
 
 
-from .handler import SyncParameterServerHandler, AsyncParameterServerHandler
 from .manager import SynchronousServerManager, AsynchronousServerManager

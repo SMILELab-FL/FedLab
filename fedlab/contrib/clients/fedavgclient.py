@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from client import SGDClientTrainer
 
+class FedAvgClientTrainer(SGDClientTrainer):
+    """_summary_
 
-# please see SGDClientTrainer in client.py
+    Args:
+        SGDClientTrainer (_type_): _description_
+    """
+    None

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from abc import abstractclassmethod, abstractproperty
+from random import randint
 from typing import List
 
 import torch
@@ -49,6 +50,9 @@ class ClientTrainer(ModelMaintainer):
     def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
         return FedLabDataset()
+
+    def setup_optim(self):
+        raise NotImplementedError()
 
     @abstractproperty
     def uplink_package(self) -> List[torch.Tensor]:
@@ -91,7 +95,7 @@ class SerialClientTrainer(SerialModelMaintainer):
     def __init__(self, model, num, cuda, device=None, personal=False) -> None:
         super().__init__(model, num, cuda, device, personal)
 
-        self.client_num = 1  # default is 1.
+        self.client_num = num 
         # self.dataset = self.setup_dataset()
         self.dataset = FedLabDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
@@ -99,6 +103,9 @@ class SerialClientTrainer(SerialModelMaintainer):
     def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
         return FedLabDataset()
+
+    def setup_optim(self):
+        raise NotImplementedError()
 
     @abstractproperty
     def uplink_package(self) -> List[torch.Tensor]:

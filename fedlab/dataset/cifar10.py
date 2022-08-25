@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from dataset import FedLabDataset, BaseDataset
+from .dataset import FedLabDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 

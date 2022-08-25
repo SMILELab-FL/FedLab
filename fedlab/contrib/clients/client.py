@@ -31,17 +31,11 @@ class SGDClientTrainer(ClientTrainer):
 
     def __init__(self,
                  model,
-                 epochs,
-                 optimizer,
-                 criterion,
                  cuda=False,
                  device=None,
                  logger=None):
         super(SGDClientTrainer, self).__init__(model, cuda, device)
 
-        self.epochs = epochs
-        self.optimizer = optimizer
-        self.criterion = criterion
         self._LOGGER = Logger() if logger is None else logger
 
     @property
@@ -51,10 +45,16 @@ class SGDClientTrainer(ClientTrainer):
             This attribute will be called by client manager.
             Customize it for new algorithms.
         """
-        return self.model_parameters
+        return [self.model_parameters]
 
     def setup_dataset(self, dataset):
         self.dataset = dataset
+        self.client_num = len(dataset)
+
+    def setup_optim(self, epochs, lr):
+        self.epochs = epochs
+        self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
+        self.criterion = torch.nn.CrossEntropyLoss()
 
     def local_process(self, payload):
         model_parameters = payload[0]
@@ -74,8 +74,7 @@ class SGDClientTrainer(ClientTrainer):
             self._model.train()
             for data, target in train_loader:
                 if self.cuda:
-                    data, target = data.cuda(self.gpu), target.cuda(
-                        self.gpu)
+                    data, target = data.cuda(self.device), target.cuda(self.device)
 
                 outputs = self._model(data)
                 loss = self.criterion(outputs, target)
@@ -103,17 +102,20 @@ class SGDSerialTrainer(SerialClientTrainer):
         ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
     """
 
-    def __init__(self, model, num, epochs, optimizer, criterion, logger=None, cuda=False, device=None, personal=False) -> None:
+    def __init__(self, model, num, logger=None, cuda=False, device=None, personal=False) -> None:
         super().__init__(model, num, cuda, device, personal)
         self._LOGGER = Logger() if logger is None else logger
 
-        self.epochs = epochs
-        self.optimizer = optimizer
-        self.criterion = criterion
         self.chache = []
 
     def setup_dataset(self, dataset):
         self.dataset = dataset
+
+    def setup_optim(self, epochs, batch_size, lr):
+        self.epochs = epochs
+        self.batch_size = batch_size
+        self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
+        self.criterion = torch.nn.CrossEntropyLoss()
 
     @property
     def uplink_package(self):
@@ -121,9 +123,10 @@ class SGDSerialTrainer(SerialClientTrainer):
         self.chache = []
         return package
     
-    def local_process(self, model_parameters, id_list):
+    def local_process(self, payload, id_list):
+        model_parameters = payload[0]
         for id in id_list:
-            data_loader = self.dataset.get_dataloader(id)
+            data_loader = self.dataset.get_dataloader(id, self.batch_size)
             parameters = self.train(model_parameters, data_loader)
             self.chache.append(parameters)
 
@@ -143,8 +146,8 @@ class SGDSerialTrainer(SerialClientTrainer):
         for _ in range(self.epochs):
             for data, target in train_loader:
                 if self.cuda:
-                    data = data.cuda(self.gpu)
-                    target = target.cuda(self.gpu)
+                    data = data.cuda(self.device)
+                    target = target.cuda(self.device)
 
                 output = self.model(data)
                 loss = self.criterion(output, target)

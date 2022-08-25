@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from dataset import FedLabDataset, BaseDataset
+from .dataset import FedLabDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 class PathologicalMNIST(FedLabDataset):
@@ -29,11 +29,13 @@ class PathologicalMNIST(FedLabDataset):
         # "./datasets/rotated_mnist/"
         if os.path.exists(path) is not True:
             os.mkdir(path)
+        
+        if os.path.exists(os.path.join(path, "train")) is not True:
             os.mkdir(os.path.join(path, "train"))
             # os.mkdir(os.path.join(path, "var"))
             # os.mkdir(os.path.join(path, "test"))
 
-    def preprocess(self):
+    def preprocess(self, to_file=True):
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download, transform=transforms.ToTensor())
         data_indices = noniid_slicing(mnist, self.num, self.shards)
@@ -49,7 +51,7 @@ class PathologicalMNIST(FedLabDataset):
                 data.append(x)
                 label.append(y)
             dataset = BaseDataset(data, label)
-            torch.save(dataset, os.path.join(self.dir, "train", "data{}.pkl".format(id)))
+            torch.save(dataset, os.path.join(self.path, "train", "data{}.pkl".format(id)))
 
     def get_dataset(self, id, type="train"):
         dataset = torch.load(os.path.join(self.path, type, "data{}.pkl".format(id)))        

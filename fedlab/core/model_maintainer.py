@@ -33,7 +33,7 @@ class ModelMaintainer(object):
 
         if cuda:
             # dynamic gpu acquire.
-            if self.device is None:
+            if device is None:
                 self.device = get_best_gpu()
             else:
                 self.device = device
