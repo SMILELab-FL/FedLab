@@ -25,23 +25,22 @@ class StandalonePipeline(object):
         self.handler = handler
         self.trainer = trainer
 
+        # initialization
         self.handler.client_num = self.trainer.client_num
 
-        print(self.handler.client_num)
-
     def main(self):
-        # server side
-        sampled_clients = self.handler.sample_clients()
-        broadcast = self.handler.downlink_package
-        
-        # client side
-        self.trainer.local_process(broadcast, sampled_clients)
-        uploads = self.trainer.uplink_package
+        while self.handler.if_stop is False:
+            # server side
+            sampled_clients = self.handler.sample_clients()
+            broadcast = self.handler.downlink_package
+            
+            # client side
+            self.trainer.local_process(broadcast, sampled_clients)
+            uploads = self.trainer.uplink_package
 
-        # server side
-        for ele in uploads:
-            print("load")
-            self.handler.load([ele])
+            # server side
+            self.handler.load(uploads)
 
-        # evaluate
-        print("evaluate")
+            # evaluate
+            print("perform evaluate")
+            

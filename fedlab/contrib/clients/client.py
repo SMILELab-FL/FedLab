@@ -49,16 +49,16 @@ class SGDClientTrainer(ClientTrainer):
 
     def setup_dataset(self, dataset):
         self.dataset = dataset
-        self.client_num = len(dataset)
-
-    def setup_optim(self, epochs, lr):
+    
+    def setup_optim(self, epochs, batch_size, lr):
         self.epochs = epochs
+        self.batch_size = batch_size
         self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
         self.criterion = torch.nn.CrossEntropyLoss()
 
-    def local_process(self, payload):
+    def local_process(self, payload, id):
         model_parameters = payload[0]
-        train_loader = self.dataset.get_dataloader()
+        train_loader = self.dataset.get_dataloader(id, self.batch_size)
         self.train(model_parameters, train_loader)
 
     def train(self, model_parameters, train_loader) -> None:
@@ -105,7 +105,6 @@ class SGDSerialTrainer(SerialClientTrainer):
     def __init__(self, model, num, logger=None, cuda=False, device=None, personal=False) -> None:
         super().__init__(model, num, cuda, device, personal)
         self._LOGGER = Logger() if logger is None else logger
-
         self.chache = []
 
     def setup_dataset(self, dataset):
@@ -127,8 +126,8 @@ class SGDSerialTrainer(SerialClientTrainer):
         model_parameters = payload[0]
         for id in id_list:
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
-            parameters = self.train(model_parameters, data_loader)
-            self.chache.append(parameters)
+            pack = self.train(model_parameters, data_loader)
+            self.chache.append(pack)
 
     def train(self, model_parameters, train_loader):
         """Single round of local training for one client.
@@ -156,4 +155,4 @@ class SGDSerialTrainer(SerialClientTrainer):
                 loss.backward()
                 self.optimizer.step()
 
-        return self.model_parameters
+        return [self.model_parameters]

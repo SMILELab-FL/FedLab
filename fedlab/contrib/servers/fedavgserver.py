@@ -14,7 +14,7 @@
 
 
 
-from server import SyncServerHandler
+from .server import SyncServerHandler
 
 
 class FedAvgServerHandler(SyncServerHandler):

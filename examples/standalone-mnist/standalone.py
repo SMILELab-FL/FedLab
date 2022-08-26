@@ -38,10 +38,10 @@ model =MLP(784, 10)
 
 handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
 
+trainer = SGDSerialTrainer(model, args.total_client, cuda=True)
+
 dataset = PathologicalMNIST(root='../../tests/data/mnist/', path="../../tests/data/mnist/", num=args.total_client)
 #dataset.preprocess()
-
-trainer = SGDSerialTrainer(model, args.total_client, cuda=True)
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 

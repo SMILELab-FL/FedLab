@@ -15,7 +15,7 @@
 from copy import deepcopy
 import torch 
 
-from client import SGDClientTrainer
+from .client import SGDClientTrainer
 
 
 class FedProxClientTrainer(SGDClientTrainer):

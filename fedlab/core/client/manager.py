@@ -81,12 +81,11 @@ class PassiveClientManager(ClientManager):
 
                 # check the trainer type
                 if self._trainer.type == SERIAL_TRAINER:
-                    self._trainer.local_process(id_list=id_list,
-                                                payload=payload)
+                    self._trainer.local_process(payload=payload, id_list=id_list)
 
                 elif self._trainer.type == ORDINARY_TRAINER:
                     assert len(id_list) == 1
-                    self._trainer.local_process(payload=payload)
+                    self._trainer.local_process(payload=payload, id=id_list[0])
 
                 self.synchronize()
 

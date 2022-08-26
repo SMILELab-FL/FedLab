@@ -26,16 +26,13 @@ class PathologicalMNIST(FedLabDataset):
 
         self.shards = shards
         self.download=download
-        # "./datasets/rotated_mnist/"
-        if os.path.exists(path) is not True:
-            os.mkdir(path)
-        
-        if os.path.exists(os.path.join(path, "train")) is not True:
-            os.mkdir(os.path.join(path, "train"))
-            # os.mkdir(os.path.join(path, "var"))
-            # os.mkdir(os.path.join(path, "test"))
 
-    def preprocess(self, to_file=True):
+    def preprocess(self):
+        if os.path.exists(self.path) is not True:
+            os.mkdir(self.path)
+            os.mkdir(os.path.join(self.path, "train"))
+            os.mkdir(os.path.join(self.path, "var"))
+            os.mkdir(os.path.join(self.path, "test"))
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download, transform=transforms.ToTensor())
         data_indices = noniid_slicing(mnist, self.num, self.shards)

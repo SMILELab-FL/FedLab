@@ -2,6 +2,7 @@
 
 import torch
 import random
+from copy import deepcopy
 
 from ...utils import Logger, Aggregators, SerializationTool
 from ...core.server.handler import ServerHandler
@@ -69,7 +70,8 @@ class SyncServerHandler(ServerHandler):
         return selection
 
     def global_update(self, buffer):
-        serialized_parameters = Aggregators.fedavg_aggregate(buffer)
+        parameters_list = [ele[0] for ele in buffer]
+        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
     def load(self, payload):
@@ -87,7 +89,7 @@ class SyncServerHandler(ServerHandler):
         assert len(payload) > 0
 
         if len(payload) == 1:
-            self.client_buffer_cache.append(payload[0].clone())
+            self.client_buffer_cache.append(deepcopy(payload))
         else:
             self.client_buffer_cache += payload  # serial trainer
 

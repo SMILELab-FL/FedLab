@@ -4,27 +4,12 @@ from torch import nn
 
 sys.path.append("../../")
 from fedlab.utils.logger import Logger
-from fedlab.core.server.handler import SyncParameterServerHandler
+
+from fedlab.models.mlp import MLP
+
+from fedlab.contrib.servers import FedAvgServerHandler
 from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
-
-
-# torch model
-class MLP(nn.Module):
-
-    def __init__(self, input_size=784, output_size=10):
-        super(MLP, self).__init__()
-        self.fc1 = nn.Linear(input_size, 200)
-        self.fc2 = nn.Linear(200, 200)
-        self.fc3 = nn.Linear(200, output_size)
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        x = x.view(x.shape[0], -1)
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
 
 
 parser = argparse.ArgumentParser(description='FL server example')
@@ -39,17 +24,21 @@ parser.add_argument('--sample', type=float, default=1)
 
 args = parser.parse_args()
 
-model = MLP()
+model = MLP(784,10)
 LOGGER = Logger(log_name="server")
-handler = SyncParameterServerHandler(model,
+handler = FedAvgServerHandler(model,
                                      global_round=args.round,
                                      logger=LOGGER,
                                      sample_ratio=args.sample)
+
+
 network = DistNetwork(address=(args.ip, args.port),
                       world_size=args.world_size,
                       rank=0,
                       ethernet=args.ethernet)
+
 manager_ = SynchronousServerManager(handler=handler,
                                     network=network,
+                                    mode="GLOBAL",
                                     logger=LOGGER)
 manager_.run()

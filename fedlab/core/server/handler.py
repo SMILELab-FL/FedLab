@@ -49,3 +49,5 @@ class ServerHandler(ModelMaintainer):
         """Override this function to define how to update global model (aggregation or optimization)."""
         raise NotImplementedError()
 
+    def evaluate(self):
+        raise NotImplementedError()

@@ -31,10 +31,11 @@ class ServerManager(NetworkManager):
         handler (ParameterServerBackendHandler): Performe global model update procedure.
     """
 
-    def __init__(self, network, handler):
+    def __init__(self, network, handler, mode="LOCAL"):
         super().__init__(network)
         self._handler = handler
         self.coordinator = None  # initialized in setup stage.
+        self.mode = mode
 
     def setup(self):
         """Initialization Stage.
@@ -48,7 +49,7 @@ class ServerManager(NetworkManager):
         for rank in range(1, self._network.world_size):
             _, _, content = self._network.recv(src=rank)
             rank_client_id_map[rank] = content[0].item()
-        self.coordinator = Coordinator(rank_client_id_map)
+        self.coordinator = Coordinator(rank_client_id_map, self.mode)
         if self._handler is not None:
             self._handler.client_num = self.coordinator.total
 
@@ -65,8 +66,8 @@ class SynchronousServerManager(ServerManager):
         logger (Logger, optional): Object of :class:`Logger`.
     """
 
-    def __init__(self, network, handler, logger=None):
-        super(SynchronousServerManager, self).__init__(network, handler)
+    def __init__(self, network, handler, mode="LOCAL", logger=None):
+        super(SynchronousServerManager, self).__init__(network, handler, mode)
         self._LOGGER = Logger() if logger is None else logger
 
     def setup(self):
@@ -97,7 +98,7 @@ class SynchronousServerManager(ServerManager):
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    if self._handler.update_global_model(payload):
+                    if self._handler.load(payload):
                         break
                 else:
                     raise Exception(
@@ -208,7 +209,7 @@ class AsynchronousServerManager(ServerManager):
         """Asynchronous communication maintain a message queue. A new thread will be started to keep monitoring message queue."""
         while self._handler.if_stop is not True:
             _, message_code, payload = self.message_queue.get()
-            self._handler.update_global_model(payload)
+            self._handler.load(payload)
 
             assert message_code == MessageCode.ParameterUpdate
 
