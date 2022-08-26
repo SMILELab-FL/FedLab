@@ -1,3 +1,5 @@
+
+
 # Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .cnn import CNN_CIFAR10, CNN_FEMNIST, CNN_MNIST
-from .rnn import RNN_Shakespeare
-from .mlp import MLP, MLP_CelebA
+from abc import ABC
+
+
+class Compressor(ABC):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def compress(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    def decompress(self, *args, **kwargs):
+        raise NotImplementedError()

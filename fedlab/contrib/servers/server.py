@@ -67,7 +67,7 @@ class SyncServerHandler(ServerHandler):
         ``self.client_num -1``."""
         selection = random.sample(range(self.client_num),
                                   self.client_num_per_round)
-        return selection
+        return sorted(selection)
 
     def global_update(self, buffer):
         parameters_list = [ele[0] for ele in buffer]
@@ -88,10 +88,7 @@ class SyncServerHandler(ServerHandler):
         """
         assert len(payload) > 0
 
-        if len(payload) == 1:
-            self.client_buffer_cache.append(deepcopy(payload))
-        else:
-            self.client_buffer_cache += payload  # serial trainer
+        self.client_buffer_cache.append(deepcopy(payload))
 
         assert len(self.client_buffer_cache) <= self.client_num_per_round
         

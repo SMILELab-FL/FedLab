@@ -19,15 +19,15 @@ class PathologicalMNIST(FedLabDataset):
             shards (int, optional): _description_. Defaults to 2.
             download (bool, optional): _description_. Defaults to True.
         """
-    def __init__(self, root, path, num, shards=200, download=True) -> None:
+    def __init__(self, root, path) -> None:
         self.root = os.path.expanduser(root)
         self.path = path 
-        self.num = num
 
+    def preprocess(self, num, shards, download=True):
+        self.num = num
         self.shards = shards
         self.download=download
 
-    def preprocess(self):
         if os.path.exists(self.path) is not True:
             os.mkdir(self.path)
             os.mkdir(os.path.join(self.path, "train"))
@@ -66,16 +66,16 @@ class RotatedMNIST(FedLabDataset):
         self.path = path 
         self.num = num
 
-
+        
+    def pre_process(self, thetas = [0, 90, 180, 270], download=True):
         self.download=download
         # "./datasets/rotated_mnist/"
-        if os.path.exists(path) is not True:
-            os.mkdir(path)
-            os.mkdir(os.path.join(path, "train"))
-            # os.mkdir(os.path.join(path, "var"))
-            os.mkdir(os.path.join(path, "test"))
-        
-    def pre_process(self, thetas = [0, 90, 180, 270]):
+        if os.path.exists(self.path) is not True:
+            os.mkdir(self.path)
+            os.mkdir(os.path.join(self.path, "train"))
+            os.mkdir(os.path.join(self.path, "var"))
+            os.mkdir(os.path.join(self.path, "test"))
+
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download, transform=transforms.ToTensor())
         id = 0

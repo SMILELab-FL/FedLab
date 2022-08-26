@@ -97,9 +97,17 @@ class PassiveClientManager(ClientManager):
     def synchronize(self):
         """Synchronize with server"""
         self._LOGGER.info("Uploading information to server.")
-        self._network.send(content=self._trainer.uplink_package,
-                           message_code=MessageCode.ParameterUpdate,
-                           dst=0)
+
+        if self._trainer.type == SERIAL_TRAINER:
+            payloads = self._trainer.uplink_package
+            for ele in payloads:
+                self._network.send(content=ele,
+                                message_code=MessageCode.ParameterUpdate,
+                                dst=0)
+        if self._trainer == ORDINARY_TRAINER:
+            self._network.send(content=self._trainer.uplink_package,
+                                message_code=MessageCode.ParameterUpdate,
+                                dst=0)
 
 
 class ActiveClientManager(ClientManager):
