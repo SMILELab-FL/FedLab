@@ -126,7 +126,7 @@ class AsyncServerHandler(ServerHandler):
         super(AsyncServerHandler, self).__init__(model, cuda, device)
         self._LOGGER = Logger() if logger is None else logger
         self.client_num = 0
-        self.round = 1
+        self.round = 0
         self.global_round = global_round
 
     @property
@@ -156,7 +156,7 @@ class AsyncServerHandler(ServerHandler):
     def global_update(self, buffer):
         client_model_parameters, model_time = buffer[0], buffer[1].item()
         """ "update global model from client_model_queue"""
-        alpha_T = self._adapt_alpha(model_time)
+        alpha_T = self.adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasync_aggregate(
             self.model_parameters, client_model_parameters,
             alpha_T)  # use aggregator
@@ -165,7 +165,7 @@ class AsyncServerHandler(ServerHandler):
     def load(self, payload: List[torch.Tensor]) -> bool:
         self.global_update(payload)
         self.round += 1
-
+        
     def adapt_alpha(self, receive_model_time):
         """update the alpha according to staleness"""
         staleness = self.round - receive_model_time

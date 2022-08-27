@@ -19,7 +19,8 @@ if __name__ == "__main__":
 
     model = MLP(784,10)
     
-    handler = AsyncServerHandler(model, alpha=0.5, total_time=5)
+    handler = AsyncServerHandler(model, global_round=5)
+    handler.setup_optim(0.5)
 
     network = DistNetwork(address=(args.ip, args.port),
                           world_size=args.world_size,
