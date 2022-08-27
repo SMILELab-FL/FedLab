@@ -13,10 +13,9 @@
 # limitations under the License.
 
 
-
 class StandalonePipeline(object):
     def __init__(self, handler, trainer):
-        """Perform standalone simulation process
+        """Perform standalone simulation process.
 
         Args:
             handler (ServerHandler): _description_
@@ -39,7 +38,8 @@ class StandalonePipeline(object):
             uploads = self.trainer.uplink_package
 
             # server side
-            self.handler.load(uploads)
+            for pack in uploads:
+                self.handler.load(pack)
 
             # evaluate
             print("perform evaluate")

@@ -27,10 +27,17 @@ class ServerHandler(ModelMaintainer):
 
     Example:
         Read source code of :class:`SyncServerHandler` and :class:`AsyncServerHandler`.
+        
+    Args:
+        model (torch.nn.Module): PyTorch model.
+        cuda (bool): Use GPUs or not.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
     """
-
-    def __init__(self, model, cuda=False):
-        super().__init__(model, cuda)
+    def __init__(self,
+                 model: torch.nn.Module,
+                 cuda: bool,
+                 device: str = None) -> None:
+        super().__init__(model, cuda, device)
 
     @abstractproperty
     def downlink_package(self) -> List[torch.Tensor]:

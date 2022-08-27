@@ -37,9 +37,12 @@ class ClientTrainer(ModelMaintainer):
     Args:
         model (torch.nn.Module): PyTorch model.
         cuda (bool): Use GPUs or not.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
     """
-
-    def __init__(self, model, cuda, device=None) -> None:
+    def __init__(self,
+                 model: torch.nn.Module,
+                 cuda: bool,
+                 device: str = None) -> None:
         super().__init__(model, cuda, device)
 
         self.client_num = 1  # default is 1.
@@ -47,10 +50,11 @@ class ClientTrainer(ModelMaintainer):
         self.type = ORDINARY_TRAINER
 
     def setup_dataset(self):
-        """Override this function to set up local dataset for clients"""
+        """Set up local dataset for clients."""
         return FedLabDataset()
 
     def setup_optim(self):
+        """Set up variables for optimization algorithms."""
         raise NotImplementedError()
 
     @abstractproperty
@@ -63,7 +67,7 @@ class ClientTrainer(ModelMaintainer):
         raise NotImplementedError()
 
     @abstractclassmethod
-    def local_process(self, payload) -> bool:
+    def local_process(self, payload: List[torch.Tensor]):
         """Manager of the upper layer will call this function with accepted payload
         
             In synchronous mode, return True to end current FL round.
@@ -71,7 +75,7 @@ class ClientTrainer(ModelMaintainer):
         raise NotImplementedError()
 
     def train(self):
-        """Override this method to define the algorithm of training your model. This function should manipulate :attr:`self._model`"""
+        """Override this method to define the training procedure. This function should manipulate :attr:`self._model`."""
         raise NotImplementedError()
 
     def validate(self):
@@ -87,15 +91,20 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        client_num (int): Number of clients in current trainer.
+        num (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
+        personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
     """
-
-    def __init__(self, model, num, cuda, device=None, personal=False) -> None:
+    def __init__(self,
+                 model: torch.nn.Module,
+                 num: int,
+                 cuda: bool,
+                 device: str = None,
+                 personal: bool = False) -> None:
         super().__init__(model, num, cuda, device, personal)
 
-        self.client_num = num 
-        # self.dataset = self.setup_dataset()
+        self.client_num = num
         self.dataset = FedLabDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
 
@@ -104,10 +113,11 @@ class SerialClientTrainer(SerialModelMaintainer):
         return FedLabDataset()
 
     def setup_optim(self):
+        """"""
         raise NotImplementedError()
 
     @abstractproperty
-    def uplink_package(self) -> List[torch.Tensor]:
+    def uplink_package(self) -> List[List[torch.Tensor]]:
         """Return a tensor list for uploading to server.
 
             This attribute will be called by client manager.
@@ -116,11 +126,11 @@ class SerialClientTrainer(SerialModelMaintainer):
         raise NotImplementedError()
 
     @abstractclassmethod
-    def local_process(self, id_list, payload) -> bool:
-        """Manager of the upper layer will call this function with accepted payload
-        
-            In synchronous mode, return True to end current FL round.
-        """
+    def local_process(self, id_list:list, payload: List[torch.Tensor]):
+        """Define the local main process."""
+        # Args:
+        #     id_list (list): The list consists of client ids.
+        #     payload (List[torch.Tensor]): The information that server broadcasts to clients.
         raise NotImplementedError()
 
     def train(self):

@@ -22,18 +22,15 @@ class SGDClientTrainer(ClientTrainer):
 
     Args:
         model (torch.nn.Module): PyTorch model.
-        epochs (int): the number of local epoch.
-        optimizer (torch.optim.Optimizer): optimizer for this client's model.
-        criterion (torch.nn.Loss): loss function used in local training process.
         cuda (bool, optional): use GPUs or not. Default: ``False``.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         logger (Logger, optional): :object of :class:`Logger`.
     """
-
     def __init__(self,
-                 model,
-                 cuda=False,
-                 device=None,
-                 logger=None):
+                 model:torch.nn.Module,
+                 cuda:bool=False,
+                 device:str=None,
+                 logger:Logger=None):
         super(SGDClientTrainer, self).__init__(model, cuda, device)
 
         self._LOGGER = Logger() if logger is None else logger
@@ -49,8 +46,15 @@ class SGDClientTrainer(ClientTrainer):
 
     def setup_dataset(self, dataset):
         self.dataset = dataset
-    
+
     def setup_optim(self, epochs, batch_size, lr):
+        """Set up local optimization configuration.
+
+        Args:
+            epochs (int): Local epochs.
+            batch_size (int): Local batch size. 
+            lr (float): Learning rate.
+        """
         self.epochs = epochs
         self.batch_size = batch_size
         self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
@@ -93,16 +97,13 @@ class SGDSerialTrainer(SerialClientTrainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        logger (Logger, optional): Object of :class:`Logger`.
+        num (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
-        device (str):
-        args (dict): Uncertain variables. Default: ``{"epochs": 5, "batch_size": 100, "lr": 0.1}``
-
-    .. note::
-        ``len(data_slices) == client_num``, that is, each sub-index of :attr:`dataset` corresponds to a client's local dataset one-by-one.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
+        logger (Logger, optional): Object of :class:`Logger`.
+        personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
     """
-
-    def __init__(self, model, num, logger=None, cuda=False, device=None, personal=False) -> None:
+    def __init__(self, model, num, cuda=False, device=None, logger=None, personal=False) -> None:
         super().__init__(model, num, cuda, device, personal)
         self._LOGGER = Logger() if logger is None else logger
         self.chache = []
@@ -111,6 +112,13 @@ class SGDSerialTrainer(SerialClientTrainer):
         self.dataset = dataset
 
     def setup_optim(self, epochs, batch_size, lr):
+        """Set up local optimization configuration.
+
+        Args:
+            epochs (int): Local epochs.
+            batch_size (int): Local batch size. 
+            lr (float): Learning rate.
+        """
         self.epochs = epochs
         self.batch_size = batch_size
         self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
@@ -121,7 +129,7 @@ class SGDSerialTrainer(SerialClientTrainer):
         package = deepcopy(self.chache)
         self.chache = []
         return package
-    
+
     def local_process(self, payload, id_list):
         model_parameters = payload[0]
         for id in id_list:

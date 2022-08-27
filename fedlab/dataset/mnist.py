@@ -19,9 +19,13 @@ class PathologicalMNIST(FedLabDataset):
             shards (int, optional): _description_. Defaults to 2.
             download (bool, optional): _description_. Defaults to True.
         """
-    def __init__(self, root, path) -> None:
+    def __init__(self, root, path, num=100, shards=200, download=True, preprocess=False) -> None:
         self.root = os.path.expanduser(root)
         self.path = path 
+        self.num = num
+        self.shards = shards
+        if preprocess:
+            self.preprocess(num, shards, download)
 
     def preprocess(self, num, shards, download=True):
         self.num = num
@@ -66,7 +70,6 @@ class RotatedMNIST(FedLabDataset):
         self.path = path 
         self.num = num
 
-        
     def pre_process(self, thetas = [0, 90, 180, 270], download=True):
         self.download=download
         # "./datasets/rotated_mnist/"

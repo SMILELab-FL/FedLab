@@ -16,10 +16,12 @@ import threading
 from time import sleep
 import torch
 
+from torch.multiprocessing import Queue
+from ...network import DistNetwork
 from ...network_manager import NetworkManager
 from ...communicator.processor import PackageProcessor
 from ...coordinator import Coordinator
-from ....utils import MessageCode
+from ....utils import MessageCode,Logger
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -39,7 +41,8 @@ class Connector(NetworkManager):
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
     """
 
-    def __init__(self, network, write_queue, read_queue):
+    def __init__(self, network: DistNetwork, write_queue: Queue,
+                 read_queue: Queue):
         super(Connector, self).__init__(network)
 
         # bidirectional message queues
@@ -62,17 +65,21 @@ class ServerConnector(Connector):
         network (DistNetwork): Network configuration and interfaces.
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
-        logger (Logger, optional): object of :class:`Logger`.
+        logger (Logger, optional): object of :class:`Logger`. Defaults to None.
     """
 
-    def __init__(self, network, write_queue, read_queue, logger):
+    def __init__(self,
+                 network: DistNetwork,
+                 write_queue: Queue,
+                 read_queue: Queue,
+                 logger: Logger = None):
         super(ServerConnector, self).__init__(network, write_queue, read_queue)
 
         self.mq_write = write_queue
         self.mq_read = read_queue
 
         self.group_client_num = 0
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def run(self):
         """
@@ -86,7 +93,7 @@ class ServerConnector(Connector):
         self.main_loop()
         self.shutdown()
 
-    def setup(self, *args, **kwargs):
+    def setup(self):
         super().setup()
 
         _, message_code, payload = self.mq_read.get()
@@ -97,7 +104,7 @@ class ServerConnector(Connector):
                            message_code=message_code,
                            dst=0)
 
-    def main_loop(self, *args, **kwargs):
+    def main_loop(self):
         # start a thread watching message queue
         watching_queue = threading.Thread(target=self.process_meessage_queue,
                                           daemon=True)
@@ -147,9 +154,14 @@ class ClientConnector(Connector):
         network (DistNetwork): Network configuration and interfaces.
         write_queue (torch.multiprocessing.Queue): Message queue to write.
         read_queue (torch.multiprocessing.Queue):  Message queue to read.
+        logger (Logger, optional): object of :class:`Logger`. Defaults to None.
     """
 
-    def __init__(self, network, write_queue, read_queue, logger):
+    def __init__(self,
+                 network: DistNetwork,
+                 write_queue: Queue,
+                 read_queue: Queue,
+                 logger: Logger = None):
         super(ClientConnector, self).__init__(network, write_queue, read_queue)
 
         self.mq_read = read_queue
@@ -158,7 +170,7 @@ class ClientConnector(Connector):
         self.coordinator = None
         self.group_client_num = 0
 
-        self._LOGGER = logger
+        self._LOGGER = Logger() if logger is None else logger
 
     def run(self):
         """
@@ -173,7 +185,7 @@ class ClientConnector(Connector):
         self.shutdown(
         )  # There is a bug. ClientConnector process will be blocked here. TODO:unsolved.
 
-    def setup(self, *args, **kwargs):
+    def setup(self):
         super().setup()
         rank_client_id_map = {}
 

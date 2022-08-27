@@ -18,6 +18,14 @@ import torch
 class SerializationTool(object):
     @staticmethod
     def serialize_model_gradients(model: torch.nn.Module) -> torch.Tensor:
+        """_summary_
+
+        Args:
+            model (torch.nn.Module): _description_
+
+        Returns:
+            torch.Tensor: _description_
+        """
         gradients = [param.grad.data.view(-1) for param in model.parameters()]
         m_gradients = torch.cat(gradients)
         m_gradients = m_gradients.cpu()
@@ -53,7 +61,6 @@ class SerializationTool(object):
             serialized_parameters (torch.Tensor): serialized model parameters.
             mode (str): deserialize mode. "copy" or "add".
         """
-
         current_index = 0  # keep track of where to read from grad_update
         for parameter in model.parameters():
             numel = parameter.data.numel()

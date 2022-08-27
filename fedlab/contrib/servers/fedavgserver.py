@@ -18,9 +18,5 @@ from .server import SyncServerHandler
 
 
 class FedAvgServerHandler(SyncServerHandler):
-    """_summary_
-
-    Args:
-        SyncServerHandler (_type_): _description_
-    """
+    """FedAvg server handler."""
     None

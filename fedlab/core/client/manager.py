@@ -15,7 +15,9 @@
 import torch
 
 from . import ORDINARY_TRAINER, SERIAL_TRAINER
+from ..network import DistNetwork
 from ..network_manager import NetworkManager
+from .trainer import ClientTrainer
 from ...utils import Logger, MessageCode
 
 
@@ -28,8 +30,7 @@ class ClientManager(NetworkManager):
         network (DistNetwork): Network configuration and interfaces.
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
     """
-
-    def __init__(self, network, trainer):
+    def __init__(self, network: DistNetwork, trainer: ClientTrainer):
         super().__init__(network)
         self._trainer = trainer
 
@@ -53,8 +54,10 @@ class PassiveClientManager(ClientManager):
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
         logger (Logger, optional): Object of :class:`Logger`.
     """
-
-    def __init__(self, network, trainer, logger=None):
+    def __init__(self,
+                 network: DistNetwork,
+                 trainer: ClientTrainer,
+                 logger: Logger=None):
         super().__init__(network, trainer)
         self._LOGGER = Logger() if logger is None else logger
 
@@ -95,7 +98,7 @@ class PassiveClientManager(ClientManager):
                     format(message_code))
 
     def synchronize(self):
-        """Synchronize with server"""
+        """Synchronize with server."""
         self._LOGGER.info("Uploading information to server.")
 
         if self._trainer.type == SERIAL_TRAINER:
@@ -104,7 +107,8 @@ class PassiveClientManager(ClientManager):
                 self._network.send(content=ele,
                                 message_code=MessageCode.ParameterUpdate,
                                 dst=0)
-        if self._trainer == ORDINARY_TRAINER:
+                            
+        if self._trainer.type == ORDINARY_TRAINER:
             self._network.send(content=self._trainer.uplink_package,
                                 message_code=MessageCode.ParameterUpdate,
                                 dst=0)
@@ -118,13 +122,15 @@ class ActiveClientManager(ClientManager):
         trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
         logger (Logger, optional): Object of :class:`Logger`.
     """
-
-    def __init__(self, network, trainer, logger=None):
+    def __init__(self,
+                 network: DistNetwork,
+                 trainer: ClientTrainer,
+                 logger: Logger = None):
         super().__init__(network, trainer)
         self._LOGGER = Logger() if logger is None else logger
 
     def main_loop(self):
-        """Actions to perform on receiving new message, including local training
+        """Actions to perform on receiving new message, including local training.
 
             1. client requests data from server (ACTIVELY).
             2. after receiving data, client will train local model.
@@ -164,12 +170,12 @@ class ActiveClientManager(ClientManager):
                     format(message_code))
 
     def request(self):
-        """Client request"""
+        """Client request."""
         self._LOGGER.info("request parameter procedure.")
         self._network.send(message_code=MessageCode.ParameterRequest, dst=0)
 
     def synchronize(self):
-        """Synchronize with server"""
+        """Synchronize with server."""
         self._LOGGER.info("Uploading information to server.")
         self._network.send(content=self._trainer.uplink_package,
                            message_code=MessageCode.ParameterUpdate,

@@ -16,6 +16,7 @@ import torch
 from torch.multiprocessing import Queue
 
 from .connector import ClientConnector, ServerConnector
+from ...network import DistNetwork
 from ....utils import Logger
 
 torch.multiprocessing.set_sharing_strategy("file_system")
@@ -31,7 +32,7 @@ class Scheduler():
         net_lower (DistNetwork): Distributed network manager of clients from lower level.
     """
 
-    def __init__(self, net_upper, net_lower):
+    def __init__(self, net_upper: DistNetwork, net_lower: DistNetwork):
         super(Scheduler, self).__init__()
         self.__MQs = [Queue(), Queue()]
         self.net_upper = net_upper

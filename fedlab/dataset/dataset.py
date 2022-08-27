@@ -37,3 +37,6 @@ class FedLabDataset:
     def get_dataloader(self, id, batch_size, type="train"):
         """Get data loader"""
         raise NotImplementedError()
+
+    def __len__(self):
+        return self.num

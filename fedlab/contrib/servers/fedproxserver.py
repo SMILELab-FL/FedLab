@@ -18,9 +18,5 @@ from .server import SyncServerHandler
 
 
 class FedProxServerHandler(SyncServerHandler):
-    """_summary_
-
-    Args:
-        SyncServerHandler (_type_): _description_
-    """
+    """FedProx server handler."""
     None

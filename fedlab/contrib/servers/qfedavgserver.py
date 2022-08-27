@@ -18,11 +18,7 @@ from .server import SyncServerHandler
 
 
 class qFedAvgServerHandler(SyncServerHandler):
-    """_summary_
-
-    Args:
-        SyncServerHandler (_type_): _description_
-    """
+    """qFedAvg server handler."""
     def global_update(self, buffer):
         deltas = [ele[0] for ele in buffer]
         hks = [ele[1] for ele in buffer]

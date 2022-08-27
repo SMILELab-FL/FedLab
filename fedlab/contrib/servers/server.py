@@ -1,11 +1,11 @@
-
-
 import torch
 import random
 from copy import deepcopy
 
+from typing import List
 from ...utils import Logger, Aggregators, SerializationTool
 from ...core.server.handler import ServerHandler
+
 
 class SyncServerHandler(ServerHandler):
     """Synchronous Parameter Server Handler.
@@ -22,19 +22,19 @@ class SyncServerHandler(ServerHandler):
         global_round (int): stop condition. Shut down FL system when global round is reached.
         sample_ratio (float): The result of ``sample_ratio * client_num`` is the number of clients for every FL round.
         cuda (bool): Use GPUs or not. Default: ``False``.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
         logger (Logger, optional): object of :class:`Logger`.
     """
-
     def __init__(self,
-                 model,
-                 global_round,
-                 sample_ratio,
-                 cuda=False,
-                 logger=None):
-        super(SyncServerHandler, self).__init__(model, cuda)
+                 model: torch.nn.Module,
+                 global_round: int,
+                 sample_ratio: float,
+                 cuda: bool = False,
+                 device:str=None,
+                 logger: Logger = None):
+        super(SyncServerHandler, self).__init__(model, cuda, device)
 
         self._LOGGER = Logger() if logger is None else logger
-
         assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
@@ -49,7 +49,7 @@ class SyncServerHandler(ServerHandler):
         self.round = 0
 
     @property
-    def downlink_package(self):
+    def downlink_package(self) -> List[torch.Tensor]:
         """Property for manager layer. Server manager will call this property when activates clients."""
         return [self.model_parameters]
 
@@ -74,7 +74,7 @@ class SyncServerHandler(ServerHandler):
         serialized_parameters = Aggregators.fedavg_aggregate(parameters_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
-    def load(self, payload):
+    def load(self, payload: List[torch.Tensor]) -> bool:
         """Update global model with collected parameters from clients.
 
         Note:
@@ -87,11 +87,11 @@ class SyncServerHandler(ServerHandler):
             payload (list[torch.Tensor]): A list of tensors passed by manager layer.
         """
         assert len(payload) > 0
-
+        print("load")
         self.client_buffer_cache.append(deepcopy(payload))
 
         assert len(self.client_buffer_cache) <= self.client_num_per_round
-        
+
         if len(self.client_buffer_cache) == self.client_num_per_round:
             self.global_update(self.client_buffer_cache)
             self.round += 1
@@ -112,32 +112,22 @@ class AsyncServerHandler(ServerHandler):
 
     Args:
         model (torch.nn.Module): Global model in server
-        alpha (float): Weight used in async aggregation.
-        global_round (int): Stop condition. Shut down FL system when global_round is reached.
-        strategy (str): Adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.
+        global_round (int): stop condition. Shut down FL system when global round is reached.
         cuda (bool): Use GPUs or not.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
         logger (Logger, optional): Object of :class:`Logger`.
     """
     def __init__(self,
-                 model,
-                 alpha,
-                 global_round,
-                 strategy="constant",
-                 cuda=False,
-                 logger=None):
-        super(AsyncServerHandler, self).__init__(model, cuda)
+                 model: torch.nn.Module,
+                 global_round: int,
+                 cuda: bool = False,
+                 device:str=None,
+                 logger: Logger = None):
+        super(AsyncServerHandler, self).__init__(model, cuda, device)
         self._LOGGER = Logger() if logger is None else logger
-
         self.client_num = 0
-
         self.round = 1
         self.global_round = global_round
-
-        # async aggregation params
-        self.alpha = alpha
-        self.strategy = strategy  # "constant", "hinge", "polynomial"
-        self.a = 10
-        self.b = 4
 
     @property
     def if_stop(self):
@@ -148,6 +138,21 @@ class AsyncServerHandler(ServerHandler):
     def downlink_package(self):
         return [self.model_parameters, torch.Tensor([self.round])]
 
+    def setup_optim(self, alpha, strategy='constant', a=10, b=4):
+        """Setup optimization configuration.
+
+        Args:
+            alpha (float): Weight used in async aggregation.
+            strategy (str, optional): Adaptive strategy. ``constant``, ``hinge`` and ``polynomial`` is optional. Default: ``constant``.. Defaults to 'constant'.
+            a (int, optional): Parameter used in async aggregation.. Defaults to 10.
+            b (int, optional): Parameter used in async aggregation.. Defaults to 4.
+        """
+        # async aggregation params
+        self.alpha = alpha
+        self.strategy = strategy  # "constant", "hinge", "polynomial"
+        self.a = a
+        self.b = b
+
     def global_update(self, buffer):
         client_model_parameters, model_time = buffer[0], buffer[1].item()
         """ "update global model from client_model_queue"""
@@ -157,7 +162,7 @@ class AsyncServerHandler(ServerHandler):
             alpha_T)  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
 
-    def load(self, payload):
+    def load(self, payload: List[torch.Tensor]) -> bool:
         self.global_update(payload)
         self.round += 1
 

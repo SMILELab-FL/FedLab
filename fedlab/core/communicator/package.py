@@ -47,7 +47,9 @@ class Package(object):
         content (torch.Tensor, optional): Tensors contained in this package.
     """
 
-    def __init__(self, message_code=None, content=None):
+    def __init__(self,
+                 message_code: MessageCode = None,
+                 content: List[torch.Tensor] = None):
 
         if message_code is None:
             message_code = DEFAULT_MESSAGE_CODE_VALUE
@@ -81,7 +83,7 @@ class Package(object):
         if isinstance(content, List):
             self.append_tensor_list(content)
 
-    def append_tensor(self, tensor):
+    def append_tensor(self, tensor: torch.Tensor):
         """Append new tensor to :attr:`Package.content`
 
         Args:
@@ -110,7 +112,7 @@ class Package(object):
         self.slices += slice
         self.header[HEADER_SLICE_SIZE_IDX] = len(self.slices)
 
-    def append_tensor_list(self, tensor_list):
+    def append_tensor_list(self, tensor_list: List[torch.Tensor]):
         """Append a list of tensors to :attr:`Package.content`.
 
         Args:
