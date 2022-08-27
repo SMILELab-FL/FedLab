@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 import random
 
 from fedlab.utils.functional import get_best_gpu
-from fedlab.core.client.serial_trainer import SubsetSerialTrainer
+from fedlab.core.client.serial_trainer_ import SubsetSerialTrainer
 from fedlab.utils.dataset.slicing import noniid_slicing, random_slicing
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool

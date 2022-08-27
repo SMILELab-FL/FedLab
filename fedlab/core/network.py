@@ -37,16 +37,15 @@ class DistNetwork(object):
         address (tuple): Address of this server in form of ``(SERVER_ADDR, SERVER_IP)``
         world_size (int): the size of this distributed group (including server).
         rank (int): the rank of process in distributed group.
-        ethernet (str)
-        dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``"gloo"``.
+        ethernet (str): the name of local ethernet. User could check it using command ifconfig. 
+        dist_backend (str or torch.distributed.Backend): :attr:`backend` of ``torch.distributed``. Valid values include ``mpi``, ``gloo``, and ``nccl``. Default: ``gloo``.
     """
-
     def __init__(self,
-                 address,
-                 world_size,
-                 rank,
-                 ethernet=None,
-                 dist_backend="gloo"):
+                 address: tuple,
+                 world_size: int,
+                 rank: int,
+                 ethernet: str = None,
+                 dist_backend: str = "gloo"):
         super(DistNetwork, self).__init__()
         self.address = address
         self.rank = rank
@@ -76,8 +75,7 @@ class DistNetwork(object):
         """Destroy current ``torch.distributed`` process group"""
         self._LOGGER.info(
             "Overall communication volume: sent {} bytes, received {} bytes.".
-            format(self.send_volume_intotal,
-                   self.recv_volume_intotal))
+            format(self.send_volume_intotal, self.recv_volume_intotal))
         if dist.is_initialized():
             dist.destroy_process_group()
 

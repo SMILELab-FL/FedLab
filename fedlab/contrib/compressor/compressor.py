@@ -1,3 +1,5 @@
+
+
 # Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
+from abc import ABC
 
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer
+
+class Compressor(ABC):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def compress(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    def decompress(self, *args, **kwargs):
+        raise NotImplementedError()

@@ -26,7 +26,7 @@ class Coordinator(object):
         setup_dict (dict): A dict like {rank:client_num ...}, representing the map relation between process rank and client id.
         mode (str, optional): “GLOBAL” and "LOCAL". Coordinator will map client id to (rank, global id) or (rank, local id) according to mode. For example, client id 51 is in a machine which has 1 manager and serial trainer simulating 10 clients. LOCAL id means the index of its 10 clients. Therefore, global id 51 will be mapped into local id 1 (depending on setting).
     """
-    def __init__(self, setup_dict, mode='LOCAL') -> None:
+    def __init__(self, setup_dict: dict, mode: str = 'LOCAL') -> None:
         self.map = setup_dict
         self.mode = mode
 
@@ -49,7 +49,7 @@ class Coordinator(object):
                 ret_id = local_id if self.mode == 'LOCAL' else global_id
                 return rank, ret_id
 
-    def map_id_list(self, id_list):
+    def map_id_list(self, id_list: list):
         """a map function from id_list to dict{rank:local id}
 
             This can be very useful in Scale modules.
@@ -85,7 +85,7 @@ class Coordinator(object):
         return "Coordinator map information: {} \nMap mode: {} \nTotal: {}".format(
             self.map, self.mode, self.total)
 
-    def __call__(self, info, *args, **kwds):
+    def __call__(self, info):
         if isinstance(info, int):
             return self.map_id(info)
         if isinstance(info, list):

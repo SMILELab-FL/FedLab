@@ -14,15 +14,15 @@
 
 from torch.multiprocessing import Process
 
+from .network import DistNetwork
 
 class NetworkManager(Process):
-    """Abstract class
+    """Abstract class.
 
     Args:
         network (DistNetwork): object to manage torch.distributed network communication.
     """
-
-    def __init__(self, network):
+    def __init__(self, network: DistNetwork):
         super(NetworkManager, self).__init__()
         self._network = network
 
@@ -38,7 +38,7 @@ class NetworkManager(Process):
         self.main_loop()
         self.shutdown()
 
-    def setup(self, *args, **kwargs):
+    def setup(self):
         """Initialize network connection and necessary setups.
         
         At first, ``self._network.init_network_connection()`` is required to be called.
@@ -47,11 +47,11 @@ class NetworkManager(Process):
         """
         self._network.init_network_connection()
 
-    def main_loop(self, *args, **kwargs):
+    def main_loop(self):
         """Define the actions of communication stage."""
         raise NotImplementedError()
 
-    def shutdown(self, *args, **kwargs):
+    def shutdown(self):
         """Shutdown stage.
 
         Close the network connection in the end.

@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
+from .client import SGDClientTrainer
 
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer
+class FedAvgClientTrainer(SGDClientTrainer):
+    """_summary_
+
+    Args:
+        SGDClientTrainer (_type_): _description_
+    """
+    None

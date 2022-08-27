@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
-
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer
+from .cnn import CNN_CIFAR10, CNN_FEMNIST, CNN_MNIST
+from .rnn import RNN_Shakespeare
+from .mlp import MLP, MLP_CelebA

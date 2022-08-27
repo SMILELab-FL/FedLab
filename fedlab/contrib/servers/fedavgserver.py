@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
 
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer
+
+from .server import SyncServerHandler
+
+
+class FedAvgServerHandler(SyncServerHandler):
+    """FedAvg server handler."""
+    None

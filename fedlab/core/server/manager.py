@@ -16,6 +16,8 @@ import threading
 import torch
 from torch.multiprocessing import Queue
 
+from .handler import ServerHandler
+from ..network import DistNetwork
 from ..network_manager import NetworkManager
 from ..coordinator import Coordinator
 from ...utils import Logger, MessageCode
@@ -28,13 +30,16 @@ class ServerManager(NetworkManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        handler (ParameterServerBackendHandler): Performe global model update procedure.
+        handler (ServerHandler): Performe global model update procedure.
     """
-
-    def __init__(self, network, handler):
+    def __init__(self,
+                 network: DistNetwork,
+                 handler: ServerHandler,
+                 mode: str = "LOCAL"):
         super().__init__(network)
         self._handler = handler
         self.coordinator = None  # initialized in setup stage.
+        self.mode = mode
 
     def setup(self):
         """Initialization Stage.
@@ -48,9 +53,9 @@ class ServerManager(NetworkManager):
         for rank in range(1, self._network.world_size):
             _, _, content = self._network.recv(src=rank)
             rank_client_id_map[rank] = content[0].item()
-        self.coordinator = Coordinator(rank_client_id_map)
+        self.coordinator = Coordinator(rank_client_id_map, self.mode)
         if self._handler is not None:
-            self._handler.client_num_in_total = self.coordinator.total
+            self._handler.client_num = self.coordinator.total
 
 
 class SynchronousServerManager(ServerManager):
@@ -61,12 +66,15 @@ class SynchronousServerManager(ServerManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        handler (ParameterServerBackendHandler): Backend calculation handler for parameter server.
+        handler (ServerHandler): Backend calculation handler for parameter server.
         logger (Logger, optional): Object of :class:`Logger`.
     """
-
-    def __init__(self, network, handler, logger=None):
-        super(SynchronousServerManager, self).__init__(network, handler)
+    def __init__(self,
+                 network: DistNetwork,
+                 handler: ServerHandler,
+                 mode: str = "LOCAL",
+                 logger: Logger = None):
+        super(SynchronousServerManager, self).__init__(network, handler, mode)
         self._LOGGER = Logger() if logger is None else logger
 
     def setup(self):
@@ -80,24 +88,24 @@ class SynchronousServerManager(ServerManager):
 
         Loop:
             1. activate clients for current training round.
-            2. listen for message from clients -> transmit received parameters to server backend.
+            2. listen for message from clients -> transmit received parameters to server handler.
 
         Note:
             Communication agreements related: user can overwrite this function to customize
             communication agreements. This method is key component connecting behaviors of
-            :class:`ParameterServerBackendHandler` and :class:`NetworkManager`.
+            :class:`ServerHandler` and :class:`NetworkManager`.
 
         Raises:
             Exception: Unexpected :class:`MessageCode`.
         """
         while self._handler.if_stop is not True:
-            activate = threading.Thread(target=self.activate_clients)
-            activate.start()
+            activator = threading.Thread(target=self.activate_clients)
+            activator.start()
 
             while True:
                 sender_rank, message_code, payload = self._network.recv()
                 if message_code == MessageCode.ParameterUpdate:
-                    if self._handler._update_global_model(payload):
+                    if self._handler.load(payload):
                         break
                 else:
                     raise Exception(
@@ -136,7 +144,7 @@ class SynchronousServerManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        client_list = range(self._handler.client_num_in_total)
+        client_list = range(self._handler.client_num)
         rank_dict = self.coordinator.map_id_list(client_list)
 
         for rank, values in rank_dict.items():
@@ -160,11 +168,13 @@ class AsynchronousServerManager(ServerManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        handler (ParameterServerBackendHandler): Backend computation handler for parameter server.
+        handler (ServerHandler): Backend computation handler for parameter server.
         logger (Logger, optional): Object of :class:`Logger`.
     """
-
-    def __init__(self, network, handler, logger=None):
+    def __init__(self,
+                 network: DistNetwork,
+                 handler: ServerHandler,
+                 logger: Logger=None):
         super(AsynchronousServerManager, self).__init__(network, handler)
         self._LOGGER = Logger() if logger is None else logger
 
@@ -208,7 +218,7 @@ class AsynchronousServerManager(ServerManager):
         """Asynchronous communication maintain a message queue. A new thread will be started to keep monitoring message queue."""
         while self._handler.if_stop is not True:
             _, message_code, payload = self.message_queue.get()
-            self._handler._update_global_model(payload)
+            self._handler.load(payload)
 
             assert message_code == MessageCode.ParameterUpdate
 

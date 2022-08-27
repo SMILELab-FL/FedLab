@@ -13,12 +13,15 @@
 # limitations under the License.
 
 from abc import abstractclassmethod, abstractproperty
+from random import randint
 from typing import List
 
 import torch
 
-from ..client import ORDINARY_TRAINER
-from ..model_maintainer import ModelMaintainer
+from fedlab.dataset.dataset import FedLabDataset
+
+from ..client import ORDINARY_TRAINER, SERIAL_TRAINER
+from ..model_maintainer import ModelMaintainer, SerialModelMaintainer
 from ...utils import Logger, SerializationTool
 
 
@@ -34,12 +37,25 @@ class ClientTrainer(ModelMaintainer):
     Args:
         model (torch.nn.Module): PyTorch model.
         cuda (bool): Use GPUs or not.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
     """
+    def __init__(self,
+                 model: torch.nn.Module,
+                 cuda: bool,
+                 device: str = None) -> None:
+        super().__init__(model, cuda, device)
 
-    def __init__(self, model, cuda):
-        super().__init__(model, cuda)
         self.client_num = 1  # default is 1.
+        self.dataset = FedLabDataset()
         self.type = ORDINARY_TRAINER
+
+    def setup_dataset(self):
+        """Set up local dataset for clients."""
+        return FedLabDataset()
+
+    def setup_optim(self):
+        """Set up variables for optimization algorithms."""
+        raise NotImplementedError()
 
     @abstractproperty
     def uplink_package(self) -> List[torch.Tensor]:
@@ -51,11 +67,70 @@ class ClientTrainer(ModelMaintainer):
         raise NotImplementedError()
 
     @abstractclassmethod
-    def local_process(self, payload) -> bool:
+    def local_process(self, payload: List[torch.Tensor]):
         """Manager of the upper layer will call this function with accepted payload
         
             In synchronous mode, return True to end current FL round.
         """
+        raise NotImplementedError()
+
+    def train(self):
+        """Override this method to define the training procedure. This function should manipulate :attr:`self._model`."""
+        raise NotImplementedError()
+
+    def validate(self):
+        """Validate quality of local model."""
+        raise NotImplementedError()
+
+    def evaluate(self):
+        """Evaluate quality of local model."""
+        raise NotImplementedError()
+
+class SerialClientTrainer(SerialModelMaintainer):
+    """Base class. Simulate multiple clients in sequence in a single process.
+
+    Args:
+        model (torch.nn.Module): Model used in this federation.
+        num (int): Number of clients in current trainer.
+        cuda (bool): Use GPUs or not. Default: ``False``.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
+        personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
+    """
+    def __init__(self,
+                 model: torch.nn.Module,
+                 num: int,
+                 cuda: bool,
+                 device: str = None,
+                 personal: bool = False) -> None:
+        super().__init__(model, num, cuda, device, personal)
+
+        self.client_num = num
+        self.dataset = FedLabDataset()
+        self.type = SERIAL_TRAINER  # represent serial trainer
+
+    def setup_dataset(self):
+        """Override this function to set up local dataset for clients"""
+        return FedLabDataset()
+
+    def setup_optim(self):
+        """"""
+        raise NotImplementedError()
+
+    @abstractproperty
+    def uplink_package(self) -> List[List[torch.Tensor]]:
+        """Return a tensor list for uploading to server.
+
+            This attribute will be called by client manager.
+            Customize it for new algorithms.
+        """
+        raise NotImplementedError()
+
+    @abstractclassmethod
+    def local_process(self, id_list:list, payload: List[torch.Tensor]):
+        """Define the local main process."""
+        # Args:
+        #     id_list (list): The list consists of client ids.
+        #     payload (List[torch.Tensor]): The information that server broadcasts to clients.
         raise NotImplementedError()
 
     def train(self):
@@ -66,71 +141,6 @@ class ClientTrainer(ModelMaintainer):
         """Evaluate quality of local model."""
         raise NotImplementedError()
 
-
-class SGDClientTrainer(ClientTrainer):
-    """Client backend handler, this class provides data process method to upper layer.
-
-    Args:
-        model (torch.nn.Module): PyTorch model.
-        data_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
-        epochs (int): the number of local epoch.
-        optimizer (torch.optim.Optimizer): optimizer for this client's model.
-        criterion (torch.nn.Loss): loss function used in local training process.
-        cuda (bool, optional): use GPUs or not. Default: ``False``.
-        logger (Logger, optional): :object of :class:`Logger`.
-    """
-
-    def __init__(self,
-                 model,
-                 data_loader,
-                 epochs,
-                 optimizer,
-                 criterion,
-                 cuda=False,
-                 logger=None):
-        super(SGDClientTrainer, self).__init__(model, cuda)
-
-        self._data_loader = data_loader
-        self.epochs = epochs
-        self.optimizer = optimizer
-        self.criterion = criterion
-        self._LOGGER = Logger() if logger is None else logger
-
-        self.model_time = 0
-
-    @property
-    def uplink_package(self):
-        """Return a tensor list for uploading to server.
-
-            This attribute will be called by client manager.
-            Customize it for new algorithms.
-        """
-        return [self.model_parameters]
-
-    def local_process(self, payload):
-        model_parameters = payload[0]
-        self.train(model_parameters)
-
-    def train(self, model_parameters) -> None:
-        """Client trains its local model on local dataset.
-
-        Args:
-            model_parameters (torch.Tensor): Serialized model parameters.
-        """
-        SerializationTool.deserialize_model(
-            self._model, model_parameters)  # load parameters
-        self._LOGGER.info("Local train procedure is running")
-        for ep in range(self.epochs):
-            self._model.train()
-            for inputs, labels in self._data_loader:
-                if self.cuda:
-                    inputs, labels = inputs.cuda(self.gpu), labels.cuda(
-                        self.gpu)
-
-                outputs = self._model(inputs)
-                loss = self.criterion(outputs, labels)
-
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
-        self._LOGGER.info("Local train procedure is finished")
+    def validate(self):
+        """Validate quality of local model."""
+        raise NotImplementedError()

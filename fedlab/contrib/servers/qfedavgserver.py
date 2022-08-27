@@ -12,8 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ORDINARY_TRAINER = 0
-SERIAL_TRAINER = 1
 
-from .manager import ClientManager, ActiveClientManager, PassiveClientManager
-from .trainer import ClientTrainer
+
+from .server import SyncServerHandler
+
+
+class qFedAvgServerHandler(SyncServerHandler):
+    """qFedAvg server handler."""
+    def global_update(self, buffer):
+        deltas = [ele[0] for ele in buffer]
+        hks = [ele[1] for ele in buffer]
+
+        hk = sum(hks)
+        updates = sum([delta/hk for delta in deltas])
+        model_parameters = self.model_parameters - updates
+
+        self.set_model(model_parameters)
