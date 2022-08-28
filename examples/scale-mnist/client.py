@@ -45,7 +45,9 @@ network = DistNetwork(address=(args.ip, args.port),
 
 trainer = SGDSerialTrainer(model, 10, cuda=args.cuda)
 
-dataset = PathologicalMNIST(root='../../tests/data/mnist/', path="../../tests/data/mnist/", num=100)
+dataset = PathologicalMNIST(root='../../tests/data/mnist/',
+                            path="../../tests/data/mnist/",
+                            num=100)
 
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)

@@ -2,11 +2,6 @@ import sys
 import argparse
 sys.path.append("../../")
 
-import torch
-from torch import nn
-import torchvision
-from torchvision import transforms
-
 from fedlab.contrib.servers import SyncServerHandler
 from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
