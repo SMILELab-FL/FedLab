@@ -113,6 +113,36 @@ class DistNetwork(object):
                     0 if content is None else volumn))
         return sender_rank, message_code, content
 
+    def broadcast_send(self, content=None, message_code=None, dst=None, count=True):
+        if dst is None:
+            dst = range(self.world_size)
+        else:
+            if isinstance(dst, list) is not True:
+                raise TypeError("The type of dst should be List rather than {}".format(type(dst)))
+
+        for rank in dst:
+            if rank is not self.rank:
+                self.send(content=content, message_code=message_code, dst=rank, count=count)
+
+    def broadcast_recv(self, src=None, count=True):
+        sender_ranks = []
+        message_codes = []
+        contents = []
+        if src is None:
+            src = range(self.world_size)
+        else:
+            if isinstance(src, list) is not True:
+                raise TypeError("The type of dst should be List rather than {}".format(type(src)))
+
+        for rank in src:
+            if rank is not self.rank:
+                sender_rank, message_code, content = self.recv(src=rank, count=count)
+                sender_ranks.append(sender_rank)
+                message_codes.append(message_code)
+                contents.append(content)
+
+        return sender_ranks, message_codes, contents
+
     def __str__(self):
         info_str = "torch.distributed connection is initializing with ip address {}:{}, rank {}, world size: {}, backend {}, ethernet {}.".format(
             self.address[0],
