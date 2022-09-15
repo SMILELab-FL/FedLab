@@ -1,6 +1,3 @@
-
-
-
 import os
 
 import torch
@@ -12,7 +9,7 @@ from .dataset import FedLabDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
-class RotatedCIFAR10Partitioner():
+class RotatedCIFAR10(FedLabDataset):
     def __init__(self, root, save_dir):
         self.root = os.path.expanduser(root)
         self.dir = save_dir 
