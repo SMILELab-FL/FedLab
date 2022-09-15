@@ -13,7 +13,7 @@ from fedlab.utils.dataset.sampler import RawPartitionSampler
 from fedlab.core.network import DistNetwork
 from fedlab.contrib.clients import SGDClientTrainer
 from fedlab.models import MLP
-from fedlab.dataset.mnist import PathologicalMNIST
+from fedlab.dataset.pathological_mnist import PathologicalMNIST
 
 class AsyncTrainer(SGDClientTrainer):
     @property

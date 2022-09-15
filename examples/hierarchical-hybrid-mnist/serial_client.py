@@ -7,7 +7,7 @@ from fedlab.contrib.clients import SGDSerialTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.models import MLP
-from fedlab.dataset.mnist import PathologicalMNIST
+from fedlab.dataset.pathological_mnist import PathologicalMNIST
 
 
 parser = argparse.ArgumentParser(description="Distbelief training example")

@@ -1,14 +1,20 @@
 import argparse
+from statistics import mode
 import sys
+
 import torch
+from torch import nn
+import torchvision
+import torchvision.transforms as transforms
 
 sys.path.append("../../")
+
 from fedlab.core.client.manager import PassiveClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
-from fedlab.models import MLP
-from fedlab.contrib.clients import FedAvgClientTrainer
+from fedlab.models.mlp import MLP
 from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.clients import FedAvgClientTrainer
 
 parser = argparse.ArgumentParser(description="Distbelief training example")
 
@@ -28,9 +34,7 @@ if torch.cuda.is_available():
 else:
     args.cuda = False
 
-model = MLP(784,10)
-
-
+model = MLP(784, 10)
 network = DistNetwork(
     address=(args.ip, args.port),
     world_size=args.world_size,

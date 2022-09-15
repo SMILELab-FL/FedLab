@@ -20,7 +20,7 @@ from fedlab.models.mlp import MLP
 from fedlab.contrib.servers.server import SyncServerHandler
 from fedlab.contrib.clients.client import SGDSerialTrainer
 from fedlab.core.standalone import StandalonePipeline
-from fedlab.dataset.mnist import PathologicalMNIST
+from fedlab.dataset.pathological_mnist import PathologicalMNIST
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")

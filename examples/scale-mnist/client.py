@@ -12,7 +12,7 @@ from fedlab.contrib.clients import SGDSerialTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
-from fedlab.dataset.mnist import PathologicalMNIST
+from fedlab.dataset.pathological_mnist import PathologicalMNIST
 from fedlab.models.mlp import MLP
 from fedlab.utils.logger import Logger
 
