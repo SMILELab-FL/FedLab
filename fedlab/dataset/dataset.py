@@ -1,4 +1,5 @@
 from torch.utils.data import Dataset
+import os 
 
 class BaseDataset(Dataset):
     """Base dataset iterator"""
@@ -20,7 +21,11 @@ class FedLabDataset:
 
     def preprocess(self):
         """Define the dataset partition process"""
-        raise NotImplementedError()
+        if os.path.exists(self.path) is not True:
+            os.mkdir(self.path)
+            os.mkdir(os.path.join(self.path, "train"))
+            os.mkdir(os.path.join(self.path, "var"))
+            os.mkdir(os.path.join(self.path, "test"))
 
     def get_dataset(self, id, type="train"):
         """_summary_
