@@ -91,9 +91,6 @@ class CIFAR10Partitioner(DataPartitioner):
         dir_alpha (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="dirichlet"``. Default as ``None``.
         verbose (bool, optional): Whether to print partition process. Default as ``True``.
         seed (int, optional): Random seed. Default as ``None``.
-
-    Returns:
-        dict: ``{ client_id: indices}``.
     """
 
     num_classes = 10
