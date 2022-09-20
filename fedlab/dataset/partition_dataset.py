@@ -24,7 +24,10 @@ from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, M
 
 
 class PartitionDataset(FedLabDataset):
-    """
+    """:class:`FedLabDataset` with partitioning preprocess. For detailed partitioning, please
+    check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
+
+    
     Args:
         root (str): Path to download raw dataset.
         path (str): Path to save partitioned subdataset.
