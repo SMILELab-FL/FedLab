@@ -71,7 +71,7 @@ class Subset(Dataset):
         return len(self.targets)
 
 
-class FedLabDataset(object):
+class FedDataset(object):
     def __init__(self) -> None:
         self.num = None  # the number of dataset indexed from 0 to num-1.
         self.root = None  # the raw dataset.

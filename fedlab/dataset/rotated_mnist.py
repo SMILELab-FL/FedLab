@@ -19,11 +19,11 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from .dataset import FedLabDataset, BaseDataset
+from .dataset import FedDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
-class RotatedMNIST(FedLabDataset):
+class RotatedMNIST(FedDataset):
     def __init__(self, root, path, num, download=True) -> None:
         self.root = os.path.expanduser(root)
         self.path = path
