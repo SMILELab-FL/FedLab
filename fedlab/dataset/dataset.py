@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from torch.utils.data import Dataset
+import os 
 
 
 class BaseDataset(Dataset):
@@ -70,15 +71,19 @@ class Subset(Dataset):
         return len(self.targets)
 
 
-class FedLabDataset:
+class FedDataset(object):
     def __init__(self) -> None:
         self.num = None  # the number of dataset indexed from 0 to num-1.
         self.root = None  # the raw dataset.
         self.path = None  # path to save the partitioned datasets.
 
     def preprocess(self):
-        """Define the dataset partition and other preprocess processes."""
-        raise NotImplementedError()
+        """Define the dataset partition process"""
+        if os.path.exists(self.path) is not True:
+            os.mkdir(self.path)
+            os.mkdir(os.path.join(self.path, "train"))
+            os.mkdir(os.path.join(self.path, "var"))
+            os.mkdir(os.path.join(self.path, "test"))
 
     def get_dataset(self, id, type="train"):
         """_summary_

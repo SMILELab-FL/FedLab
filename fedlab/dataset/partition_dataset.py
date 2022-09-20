@@ -19,11 +19,11 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from .dataset import FedLabDataset, Subset
+from .dataset import FedDataset, Subset
 from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
 
 
-class PartitionDataset(FedLabDataset):
+class PartitionDataset(FedDataset):
     """:class:`FedLabDataset` with partitioning preprocess. For detailed partitioning, please
     check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 

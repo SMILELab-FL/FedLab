@@ -14,7 +14,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 ## Documentations
 
-- Documentation [English version](https://fedlab.readthedocs.io/en/master/)｜[中文版](https://fedlab.readthedocs.io/zh_CN/latest/)
+- [Documentation website](https://fedlab.readthedocs.io/en/master/)
 - [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
 - [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
 - [Examples](https://fedlab.readthedocs.io/en/master/example.html)
@@ -22,9 +22,9 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
 
-## Quick start with demos
+## Quick start with examples
 
-New FedLab (v1.2.1) provides fully finished communication pattern. We futher simplified the APIs of NetworkManager part and re-organised the APIs of trainer. Currently, three basic scenes (Standalone, Cross-process and Hierachical) are supported by choosing different client trainer. Please see our [demos](./examples/README.md).
+Please see our [demos](./examples/README.md).
 
 ## FedLab Benchmarks
 
@@ -45,10 +45,6 @@ Thanks to our contributors, algorithms and benchmarks are provided in our [FedLa
 3. Datasets
 - [x] LEAF: [A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097)
 - [x] NIID-Bench: [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079)
-
-## Dive into FL
-
-We will keep collecting FL resources and provide a repo for FL beginners and researchers: [Dive-into-Federated-Learning](https://github.com/SMILELab-FL/Dive-into-Federated-Learning).
 
 ## Contribution
 
