@@ -32,13 +32,14 @@ class ClientTrainer(ModelMaintainer):
     It should have a function to update its model called :meth:`local_process`.
 
     If you use our framework to define the activities of client, please make sure that your self-defined class
-    should subclass it. All subclasses should overwrite :meth:`local_process` and property `uplink_package`.
+    should subclass it. All subclasses should overwrite :meth:`local_process` and property ``uplink_package``.
 
     Args:
         model (torch.nn.Module): PyTorch model.
         cuda (bool): Use GPUs or not.
-        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
+        device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to ``None``.
     """
+
     def __init__(self,
                  model: torch.nn.Module,
                  cuda: bool,
@@ -46,12 +47,12 @@ class ClientTrainer(ModelMaintainer):
         super().__init__(model, cuda, device)
 
         self.client_num = 1  # default is 1.
-        self.dataset = FedLabDataset()
+        self.dataset = None
         self.type = ORDINARY_TRAINER
 
     def setup_dataset(self):
-        """Set up local dataset for clients."""
-        return FedLabDataset()
+        """Set up local dataset ``self.dataset`` for clients."""
+        raise NotImplementedError()
 
     def setup_optim(self):
         """Set up variables for optimization algorithms."""
@@ -86,6 +87,7 @@ class ClientTrainer(ModelMaintainer):
         """Evaluate quality of local model."""
         raise NotImplementedError()
 
+
 class SerialClientTrainer(SerialModelMaintainer):
     """Base class. Simulate multiple clients in sequence in a single process.
 
@@ -96,6 +98,7 @@ class SerialClientTrainer(SerialModelMaintainer):
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
     """
+
     def __init__(self,
                  model: torch.nn.Module,
                  num: int,
@@ -126,7 +129,7 @@ class SerialClientTrainer(SerialModelMaintainer):
         raise NotImplementedError()
 
     @abstractclassmethod
-    def local_process(self, id_list:list, payload: List[torch.Tensor]):
+    def local_process(self, id_list: list, payload: List[torch.Tensor]):
         """Define the local main process."""
         # Args:
         #     id_list (list): The list consists of client ids.
