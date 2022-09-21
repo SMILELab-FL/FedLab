@@ -14,11 +14,10 @@
 
 from torch.utils.data import Dataset
 import os
-import torch
 
 from PIL import Image
 import numpy as np
-import sys
+
 
 
 class BaseDataset(Dataset):
@@ -48,7 +47,7 @@ class Subset(Dataset):
     def __init__(self, dataset, indices, transform=None, target_transform=None):
         self.data = []
         for idx in indices:
-            self.data.append(Image.fromarray(dataset.data[idx]))
+            self.data.append(dataset.data[idx])
         if not isinstance(dataset.targets, np.ndarray):
             dataset.targets = np.array(dataset.targets)
         self.targets = dataset.targets[indices].tolist()
@@ -74,6 +73,31 @@ class Subset(Dataset):
 
     def __len__(self):
         return len(self.targets)
+
+class CIFARSubset(Subset):
+    """For data subset with different augmentation for different client.
+
+    Args:
+        dataset (Dataset): The whole Dataset
+        indices (List[int]): Indices of sub-dataset to achieve from ``dataset``.
+        transform (callable, optional): A function/transform that takes in an PIL image and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes in the target and transforms it.
+    """
+    def __init__(self,
+                 dataset,
+                 indices,
+                 transform=None,
+                 target_transform=None,
+                 to_image=True):
+        self.data = []
+        for idx in indices:
+            if to_image:
+                self.data.append(Image.fromarray(dataset.data[idx]))
+        if not isinstance(dataset.targets, np.ndarray):
+            dataset.targets = np.array(dataset.targets)
+        self.targets = dataset.targets[indices].tolist()
+        self.transform = transform
+        self.target_transform = target_transform
 
 
 class FedDataset(object):
