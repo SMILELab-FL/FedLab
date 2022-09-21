@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from torch.utils.data import Dataset
-import os 
+import os
 
 
 class BaseDataset(Dataset):
@@ -31,10 +31,10 @@ class BaseDataset(Dataset):
 
 
 class Subset(Dataset):
-    """For data subset with different augmentation.
+    """For data subset with different augmentation for different client.
 
     Args:
-        dataset (): Client ID for the partial dataset to achieve.
+        dataset (Dataset): The whole Dataset
         indices (List[int]): Indices of sub-dataset to achieve from ``dataset``.
         transform (callable, optional): A function/transform that takes in an PIL image and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes in the target and transforms it.
