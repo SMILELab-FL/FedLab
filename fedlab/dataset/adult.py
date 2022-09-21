@@ -22,6 +22,16 @@ from torch.utils.data import Dataset
 
 
 class Adult(Dataset):
+    """`Adult <https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a>`_ dataset from `LIBSVM Data <https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/>`_.
+
+    Args:
+        root (str): Root directory of raw dataset to download if ``download`` is set to ``True``.
+        train (bool, optional): If True, creates dataset from training set, otherwise creates from test set.
+        transform (callable, optional): A function/transform that takes in an PIL image and returns a transformed version. Default as ``None``.
+        target_transform (callable, optional): A function/transform that takes in the target and transforms it. Default as ``None``.
+        download (bool, optional): If true, downloads the dataset from the internet and puts it in root directory. If dataset is already downloaded, it is not downloaded again.
+
+    """
     url = "https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/"
     train_file_name = "a9a"
     test_file_name = "a9a.t"
@@ -81,6 +91,13 @@ class Adult(Dataset):
         return os.path.exists(self.full_file_path)
 
     def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (features, target) where target is index of the target class.
+        """
         data, label = self.data[index], self.targets[index]
 
         if self.transform is not None:
