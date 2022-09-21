@@ -29,6 +29,7 @@ def setup_seed(seed):
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
 
+
 class AverageMeter(object):
     """Record metrics information"""
 
@@ -125,7 +126,7 @@ def get_best_gpu():
         ]
     else:
         cuda_devices = range(deviceCount)
-    
+
     assert max(cuda_devices) < deviceCount
     deviceMemory = []
     for i in cuda_devices:
@@ -236,7 +237,8 @@ def partition_report(targets,
         fh.write("\n".join(reports))
         fh.close()
 
-def accuracy(output, target, topk=(1, )):
+
+def accuracy(output, target, topk=(1,)):
     """Computes the top-k accuracy for the specified values of k, in range of [0, 1]"""
     maxk = max(topk)
     batch_size = target.size(0)
@@ -250,4 +252,3 @@ def accuracy(output, target, topk=(1, )):
         correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
         res.append(correct_k.mul_(1.0 / batch_size))
     return res
-    

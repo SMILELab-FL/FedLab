@@ -26,6 +26,7 @@ setup(
                       'torchvision>=0.8.2',
                       'numpy',
                       'pandas',
+                      'scikit-learn',
                       'pynvml',
                       'tqdm'],
     python_requires='>=3.6',

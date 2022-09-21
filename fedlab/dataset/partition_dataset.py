@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from .dataset import FedDataset, Subset
+from .basic_dataset import FedDataset, Subset
 from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
 
 
@@ -73,6 +73,10 @@ class PartitionDataset(FedDataset):
                    dir_alpha=None,
                    verbose=True,
                    seed=None, download=True):
+        """Perform FL partition on the dataset, and save each subset for each client into ``data{cid}.pkl`` file.
+
+        For details of partition schemes, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
+        """
         self.download = download
 
         if os.path.exists(self.path) is not True:
@@ -120,10 +124,26 @@ class PartitionDataset(FedDataset):
             torch.save(subsets[cid], os.path.join(self.path, "train", "data{}.pkl".format(cid)))
 
     def get_dataset(self, cid, type="train"):
+        """Load subdataset for client with client ID ``cid`` from local file.
+
+        Args:
+             cid (int): client id
+             type (str, optional): Dataset type, can be ``"train"``, ``"val"`` or ``"test"``. Default as ``"train"``.
+
+        Returns:
+            Dataset
+        """
         dataset = torch.load(os.path.join(self.path, type, "data{}.pkl".format(cid)))
         return dataset
 
     def get_dataloader(self, cid, batch_size=None, type="train"):
+        """Return dataload for client with client ID ``cid``.
+
+        Args:
+            cid (int): client id
+            batch_size (int, optional): batch size in DataLoader.
+            type (str, optional): Dataset type, can be ``"train"``, ``"val"`` or ``"test"``. Default as ``"train"``.
+        """
         dataset = self.get_dataset(cid, type)
         batch_size = len(dataset) if batch_size is None else batch_size
         data_loader = DataLoader(dataset, batch_size=batch_size)

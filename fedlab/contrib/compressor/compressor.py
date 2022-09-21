@@ -1,5 +1,3 @@
-
-
 # Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
 
 # Licensed under the Apache License, Version 2.0 (the "License");
