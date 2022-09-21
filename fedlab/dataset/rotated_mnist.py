@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from .dataset import FedDataset, BaseDataset
+from .basic_dataset import FedDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
