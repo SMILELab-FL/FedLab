@@ -11,3 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from .basic_dataset import FedDataset, BaseDataset, Subset
+from .partition_dataset import PartitionDataset
+from .pathological_mnist import PathologicalMNIST
+from .rotated_mnist import RotatedMNIST
+from .rotated_cifar10 import RotatedCIFAR10
+from .fcube import FCUBE
+from .covtype import Covtype
+from .rcv1 import RCV1

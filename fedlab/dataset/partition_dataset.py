@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 
-from .dataset import FedDataset, Subset
+from .basic_dataset import FedDataset, Subset
 from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
 
 
