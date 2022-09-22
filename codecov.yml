@@ -5,6 +5,8 @@ codecov:
 
 ignore:
   - "fedlab/core/hierarchical"
+  - "fedlab/contrib"
+  - "fedlab/models"
 
 coverage:
   precision: 2  # decimal number for coverage report on codecov web
