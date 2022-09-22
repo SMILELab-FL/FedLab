@@ -55,7 +55,8 @@ class Subset(Dataset):
         self.target_transform = target_transform
 
     def __getitem__(self, index):
-        """
+        """Get item
+
         Args:
             index (int): index
 
@@ -115,7 +116,7 @@ class FedDataset(object):
             os.mkdir(os.path.join(self.path, "test"))
 
     def get_dataset(self, id, type="train"):
-        """_summary_
+        """Get dataset class
 
         Args:
             id (int): Client ID for the partial dataset to achieve.

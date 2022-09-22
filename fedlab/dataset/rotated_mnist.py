@@ -29,7 +29,7 @@ class RotatedMNIST(FedDataset):
         self.path = path
         self.num = num
 
-    def pre_process(self, thetas=[0, 90, 180, 270], download=True):
+    def preprocess(self, thetas=[0, 90, 180, 270], download=True):
         self.download = download
         # "./datasets/rotated_mnist/"
         if os.path.exists(self.path) is not True:
