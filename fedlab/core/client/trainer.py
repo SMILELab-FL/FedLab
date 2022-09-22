@@ -18,7 +18,7 @@ from typing import List
 
 import torch
 
-from fedlab.dataset.dataset import FedLabDataset
+from fedlab.dataset.basic_dataset import FedDataset
 
 from ..client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ..model_maintainer import ModelMaintainer, SerialModelMaintainer
@@ -108,12 +108,12 @@ class SerialClientTrainer(SerialModelMaintainer):
         super().__init__(model, num, cuda, device, personal)
 
         self.client_num = num
-        self.dataset = FedLabDataset()
+        self.dataset = FedDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
 
     def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
-        return FedLabDataset()
+        return FedDataset()
 
     def setup_optim(self):
         """"""

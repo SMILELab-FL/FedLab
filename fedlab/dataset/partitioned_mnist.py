@@ -50,7 +50,6 @@ class PartitionedMNIST(FedDataset):
                  num_clients,
                  download=True,
                  preprocess=False,
-                 balance=True,
                  partition="iid",
                  dir_alpha=None,
                  verbose=True,
@@ -65,19 +64,22 @@ class PartitionedMNIST(FedDataset):
         self.targt_transform = target_transform
 
         if preprocess:
-            self.preprocess(balance=balance,
-                            partition=partition,
+            self.preprocess(partition=partition,
                             dir_alpha=dir_alpha,
                             verbose=verbose,
                             seed=seed,
-                            download=download)
+                            download=download,
+                            transform=transform,
+                            target_transform=target_transform)
 
     def preprocess(self,
                    partition="iid",
                    dir_alpha=None,
                    verbose=True,
                    seed=None,
-                   download=True):
+                   download=True,
+                   transform=None,
+                   target_transform=None):
         """Perform FL partition on the dataset, and save each subset for each client into ``data{cid}.pkl`` file.
 
         For details of partition schemes, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
@@ -92,8 +94,7 @@ class PartitionedMNIST(FedDataset):
 
         trainset = torchvision.datasets.MNIST(root=self.root,
                                                 train=True,
-                                                download=self.download,
-                                                transform=self.transform)
+                                                download=download)
 
         partitioner = MNISTPartitioner(trainset.targets,
                                         self.num_clients,
@@ -106,8 +107,8 @@ class PartitionedMNIST(FedDataset):
         subsets = {
             cid: Subset(trainset,
                         partitioner.client_dict[cid],
-                        transform=self.transform,
-                        target_transform=self.targt_transform)
+                        transform=transform,
+                        target_transform=target_transform)
             for cid in range(self.num_clients)
         }
         for cid in subsets:

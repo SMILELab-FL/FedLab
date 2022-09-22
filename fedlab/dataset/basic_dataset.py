@@ -48,9 +48,12 @@ class Subset(Dataset):
         self.data = []
         for idx in indices:
             self.data.append(dataset.data[idx])
+
         if not isinstance(dataset.targets, np.ndarray):
             dataset.targets = np.array(dataset.targets)
+            
         self.targets = dataset.targets[indices].tolist()
+
         self.transform = transform
         self.target_transform = target_transform
 
