@@ -23,7 +23,7 @@ from .basic_dataset import FedDataset, Subset
 from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
 
 
-class PartitionDataset(FedDataset):
+class PartitionedMNIST(FedDataset):
     """:class:`FedLabDataset` with partitioning preprocess. For detailed partitioning, please
     check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
@@ -44,15 +44,20 @@ class PartitionDataset(FedDataset):
         transform (callable, optional): A function/transform that takes in an PIL image and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes in the target and transforms it.
     """
-
-    def __init__(self, root, path, dataname, num_clients, download=True, preprocess=False,
-                 balance=True, partition="iid",
-                 unbalance_sgm=0,
-                 num_shards=None,
+    def __init__(self,
+                 root,
+                 path,
+                 num_clients,
+                 download=True,
+                 preprocess=False,
+                 balance=True,
+                 partition="iid",
                  dir_alpha=None,
                  verbose=True,
-                 seed=None, transform=None, target_transform=None) -> None:
-        self.dataname = dataname
+                 seed=None,
+                 transform=None,
+                 target_transform=None) -> None:
+
         self.root = os.path.expanduser(root)
         self.path = path
         self.num_clients = num_clients
@@ -60,19 +65,19 @@ class PartitionDataset(FedDataset):
         self.targt_transform = target_transform
 
         if preprocess:
-            self.preprocess(balance=balance, partition=partition,
-                            unbalance_sgm=unbalance_sgm,
-                            num_shards=num_shards,
+            self.preprocess(balance=balance,
+                            partition=partition,
                             dir_alpha=dir_alpha,
                             verbose=verbose,
-                            seed=seed, download=download)
+                            seed=seed,
+                            download=download)
 
-    def preprocess(self, balance=True, partition="iid",
-                   unbalance_sgm=0,
-                   num_shards=None,
+    def preprocess(self,
+                   partition="iid",
                    dir_alpha=None,
                    verbose=True,
-                   seed=None, download=True):
+                   seed=None,
+                   download=True):
         """Perform FL partition on the dataset, and save each subset for each client into ``data{cid}.pkl`` file.
 
         For details of partition schemes, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
@@ -84,44 +89,31 @@ class PartitionDataset(FedDataset):
             os.mkdir(os.path.join(self.path, "train"))
             os.mkdir(os.path.join(self.path, "var"))
             os.mkdir(os.path.join(self.path, "test"))
-        # train dataset partitioning
-        if self.dataname == 'cifar10':
-            trainset = torchvision.datasets.CIFAR10(root=self.root, train=True,
-                                                    download=self.download)
-            partitioner = CIFAR10Partitioner(trainset.targets, self.num_clients, balance=balance,
-                                             partition=partition,
-                                             unbalance_sgm=unbalance_sgm,
-                                             num_shards=num_shards,
-                                             dir_alpha=dir_alpha,
-                                             verbose=verbose,
-                                             seed=seed)
-        elif self.dataname == 'cifar100':
-            trainset = torchvision.datasets.CIFAR100(root=self.root, train=True,
-                                                     download=self.download)
-            partitioner = CIFAR100Partitioner(trainset.targets, self.num_clients, balance=balance,
-                                              partition=partition,
-                                              unbalance_sgm=unbalance_sgm,
-                                              num_shards=num_shards,
-                                              dir_alpha=dir_alpha,
-                                              verbose=verbose,
-                                              seed=seed)
-        elif self.dataname == 'mnist':
-            trainset = torchvision.datasets.MNIST(root=self.root, train=True,
-                                                  download=self.download)
-            partitioner = MNISTPartitioner(trainset.targets, self.num_clients,
-                                           partition=partition,
-                                           dir_alpha=dir_alpha,
-                                           verbose=verbose,
-                                           seed=seed)
-        else:
-            raise ValueError(
-                f"'dataname'={self.dataname} currently is not supported. Only 'cifar10', 'cifar100', 'mnist' are supported.")
 
+        trainset = torchvision.datasets.MNIST(root=self.root,
+                                                train=True,
+                                                download=self.download,
+                                                transform=self.transform)
+
+        partitioner = MNISTPartitioner(trainset.targets,
+                                        self.num_clients,
+                                        partition=partition,
+                                        dir_alpha=dir_alpha,
+                                        verbose=verbose,
+                                        seed=seed)
+
+        # partition
         subsets = {
-            cid: Subset(trainset, partitioner.client_dict[cid], transform=self.transform,
-                        target_transform=self.targt_transform) for cid in range(self.num_clients)}
+            cid: Subset(trainset,
+                        partitioner.client_dict[cid],
+                        transform=self.transform,
+                        target_transform=self.targt_transform)
+            for cid in range(self.num_clients)
+        }
         for cid in subsets:
-            torch.save(subsets[cid], os.path.join(self.path, "train", "data{}.pkl".format(cid)))
+            torch.save(
+                subsets[cid],
+                os.path.join(self.path, "train", "data{}.pkl".format(cid)))
 
     def get_dataset(self, cid, type="train"):
         """Load subdataset for client with client ID ``cid`` from local file.
@@ -133,7 +125,8 @@ class PartitionDataset(FedDataset):
         Returns:
             Dataset
         """
-        dataset = torch.load(os.path.join(self.path, type, "data{}.pkl".format(cid)))
+        dataset = torch.load(
+            os.path.join(self.path, type, "data{}.pkl".format(cid)))
         return dataset
 
     def get_dataloader(self, cid, batch_size=None, type="train"):

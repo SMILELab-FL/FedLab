@@ -1,3 +1,18 @@
+# Copyright 2021 Peng Cheng Laboratory (http://www.szpclab.com/) and FedLab Authors (smilelab.group)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import os
 
 import torch
@@ -10,9 +25,17 @@ from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
 class RotatedCIFAR10(FedDataset):
-    def __init__(self, root, save_dir):
+    """_summary_
+
+        Args:
+            root (_type_): _description_
+            save_dir (_type_): _description_
+            num_clients (_type_): _description_
+        """
+    def __init__(self, root, save_dir, num_clients):
         self.root = os.path.expanduser(root)
-        self.dir = save_dir 
+        self.dir = save_dir
+        self.num_clients = num_clients
         # "./datasets/rotated_mnist/"
         if os.path.exists(save_dir) is not True:
             os.mkdir(save_dir)
@@ -22,8 +45,14 @@ class RotatedCIFAR10(FedDataset):
         self.transform  = transforms.Compose(
                                 [transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        
-    def pre_process(self, thetas = [0, 180], shards=100):
+
+    def preprocess(self, shards, thetas = [0, 180]):
+        """_summary_
+
+        Args:
+            shards (_type_): _description_
+            thetas (list, optional): _description_. Defaults to [0, 180].
+        """
         cifar10 = torchvision.datasets.CIFAR10(self.root, train=True)
         id = 0
         for theta in thetas:
@@ -49,7 +78,7 @@ class RotatedCIFAR10(FedDataset):
                 rotated_data.append(x)
             dataset = BaseDataset(rotated_data, labels)
             torch.save(dataset, os.path.join(self.dir,"test", "data{}.pkl".format(i)))
-        
+
     def get_dataset(self, id, type="train"):
         dataset = torch.load(os.path.join(self.dir, type, "data{}.pkl".format(id)))
         return dataset
