@@ -24,7 +24,7 @@ from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, M
 
 
 class PartitionedMNIST(FedDataset):
-    """:class:`FedLabDataset` with partitioning preprocess. For detailed partitioning, please
+    """:class:`FedDataset` with partitioning preprocess. For detailed partitioning, please
     check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
     
@@ -34,10 +34,7 @@ class PartitionedMNIST(FedDataset):
         num_clients (int): Number of clients.
         download (bool): Whether to download the raw dataset.
         preprocess (bool): Whether to preprocess the dataset.
-        balance (bool, optional): Balanced partition over all clients or not. Default as ``True``.
         partition (str, optional): Partition type, only ``"iid"``, ``shards``, ``"dirichlet"`` are supported. Default as ``"iid"``.
-        unbalance_sgm (float, optional): Log-normal distribution variance for unbalanced data partition over clients. Default as ``0`` for balanced partition.
-        num_shards (int, optional): Number of shards in non-iid ``"shards"`` partition. Only works if ``partition="shards"``. Default as ``None``.
         dir_alpha (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="dirichlet"``. Default as ``None``.
         verbose (bool, optional): Whether to print partition process. Default as ``True``.
         seed (int, optional): Random seed. Default as ``None``.

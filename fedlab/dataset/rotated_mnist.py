@@ -24,7 +24,14 @@ from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
 class RotatedMNIST(FedDataset):
-    def __init__(self, root, path, num, download=True) -> None:
+    """Rotate MNIST and partition them.
+
+        Args:
+            root (str): Path to download raw dataset.
+            path (str): Path to save partitioned subdataset.
+            num_clients (int): Number of clients.
+        """
+    def __init__(self, root, path, num) -> None:
         self.root = os.path.expanduser(root)
         self.path = path
         self.num = num

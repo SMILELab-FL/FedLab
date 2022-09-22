@@ -23,14 +23,13 @@ from torchvision import transforms
 from .basic_dataset import FedDataset, BaseDataset
 from ..utils.dataset.functional import noniid_slicing, random_slicing
 
-
 class RotatedCIFAR10(FedDataset):
-    """_summary_
+    """Rotate CIFAR10 and patrition them.
 
         Args:
-            root (_type_): _description_
-            save_dir (_type_): _description_
-            num_clients (_type_): _description_
+            root (str): Path to download raw dataset.
+            path (str): Path to save partitioned subdataset.
+            num_clients (int): Number of clients.
         """
     def __init__(self, root, save_dir, num_clients):
         self.root = os.path.expanduser(root)
