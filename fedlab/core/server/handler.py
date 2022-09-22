@@ -57,4 +57,5 @@ class ServerHandler(ModelMaintainer):
         raise NotImplementedError()
 
     def evaluate(self):
+        """Override this function to define the evaluation of global model."""
         raise NotImplementedError()

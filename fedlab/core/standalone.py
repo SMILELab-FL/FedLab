@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-class StandalonePipeline(object):
+class StandalonePipelineExample(object):
     def __init__(self, handler, trainer):
         """Perform standalone simulation process.
 
@@ -42,5 +42,7 @@ class StandalonePipeline(object):
                 self.handler.load(pack)
 
             # evaluate
-            print("perform evaluate")
+            print("Implement your evaluation here.")
+            # self.handler.evaluate()
+            
             

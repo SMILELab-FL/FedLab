@@ -101,7 +101,6 @@ class SyncServerHandler(ServerHandler):
             payload (list[torch.Tensor]): A list of tensors passed by manager layer.
         """
         assert len(payload) > 0
-        print("load")
         self.client_buffer_cache.append(deepcopy(payload))
 
         assert len(self.client_buffer_cache) <= self.client_num_per_round
@@ -116,7 +115,6 @@ class SyncServerHandler(ServerHandler):
             return True  # return True to end this round.
         else:
             return False
-
 
 class AsyncServerHandler(ServerHandler):
     """Asynchronous Parameter Server Handler

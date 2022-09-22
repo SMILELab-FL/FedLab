@@ -50,7 +50,11 @@ class AverageMeter(object):
 
 
 def evaluate(model, criterion, test_loader):
-    """Evaluate classify task model accuracy."""
+    """Evaluate classify task model accuracy.
+    
+    Returns:
+        (loss.sum, acc.avg)
+    """
     model.eval()
     gpu = next(model.parameters()).device
 
