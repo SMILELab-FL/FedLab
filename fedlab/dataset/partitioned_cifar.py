@@ -24,7 +24,7 @@ from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, M
 
 
 class PartitionCIFAR(FedDataset):
-    """:class:`FedLabDataset` with partitioning preprocess. For detailed partitioning, please
+    """:class:`FedDataset` with partitioning preprocess. For detailed partitioning, please
     check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
     

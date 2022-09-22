@@ -24,26 +24,25 @@ from ..utils.dataset.functional import noniid_slicing, random_slicing
 
 
 class PathologicalMNIST(FedDataset):
-    """_summary_
+    """The partition stratigy in FedAvg. See http://proceedings.mlr.press/v54/mcmahan17a?ref=https://githubhelp.com
 
         Args:
-            root (_type_): _description_
-            path (_type_): _description_
-            num (_type_): _description_
-            shards (int, optional): _description_. Defaults to 2.
-            download (bool, optional): _description_. Defaults to True.
+            root (str): Path to download raw dataset.
+            path (str): Path to save partitioned subdataset.
+            num_clients (int): Number of clients.
+            shards (int, optional): Sort the dataset by the label, and uniformly partition them into shards. Then 
+            download (bool, optional): Download. Defaults to True.
         """
-
-    def __init__(self, root, path, num=100, shards=200, download=True, preprocess=False) -> None:
+    def __init__(self, root, path, num_clients=100, shards=200, download=True, preprocess=False) -> None:
         self.root = os.path.expanduser(root)
         self.path = path
-        self.num = num
+        self.num_clients = num_clients
         self.shards = shards
         if preprocess:
-            self.preprocess(num, shards, download)
+            self.preprocess(num_clients, shards, download)
 
-    def preprocess(self, num, shards, download=True):
-        self.num = num
+    def preprocess(self, num_clients, shards, download=True):
+        self.num_clients = num_clients
         self.shards = shards
         self.download = download
 
