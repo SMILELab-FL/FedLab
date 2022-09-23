@@ -22,6 +22,7 @@ from fedlab.utils.serialization import SerializationTool
 from fedlab.core.server.handler import ServerHandler
 
 
+@unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
 class ServerHandlerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
