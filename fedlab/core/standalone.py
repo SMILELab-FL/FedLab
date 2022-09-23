@@ -42,7 +42,10 @@ class StandalonePipeline(object):
                 self.handler.load(pack)
 
             # evaluate
-            print("Implement your evaluation here.")
+            self.evaluate()
             # self.handler.evaluate()
+
+    def evaluate(self):
+        print("Implement your evaluation here.")
             
             

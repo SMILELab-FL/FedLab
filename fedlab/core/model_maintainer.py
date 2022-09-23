@@ -14,6 +14,7 @@
 
 from typing import List
 import torch
+from copy import deepcopy
 from ..utils.serialization import SerializationTool
 from ..utils.functional import get_best_gpu
 
@@ -41,9 +42,9 @@ class ModelMaintainer(object):
                 self.device = get_best_gpu()
             else:
                 self.device = device
-            self._model = model.cuda(self.device)
+            self._model = deepcopy(model).cuda(self.device)
         else:
-            self._model = model.cpu()
+            self._model = deepcopy(model).cpu()
 
     def set_model(self, parameters: torch.Tensor):
         """Assign parameters to self._model."""
