@@ -19,6 +19,7 @@ from .client import SGDClientTrainer
 
 
 class FedProxClientTrainer(SGDClientTrainer):
+    """Federated client with local SGD with proximal term solver."""
     def train(self, model_parameters, mu, train_loader) -> None:
         """Client trains its local model on local dataset.
 

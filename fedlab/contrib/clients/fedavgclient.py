@@ -15,9 +15,5 @@
 from .client import SGDClientTrainer
 
 class FedAvgClientTrainer(SGDClientTrainer):
-    """_summary_
-
-    Args:
-        SGDClientTrainer (_type_): _description_
-    """
+    """Federated client with local SGD solver."""
     None
