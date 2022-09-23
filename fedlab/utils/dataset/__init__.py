@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from .sampler import SubsetSampler, RawPartitionSampler, DictFileSampler
 from .partition import DataPartitioner, BasicPartitioner, VisionPartitioner
 from .partition import CIFAR10Partitioner, CIFAR100Partitioner, FMNISTPartitioner, MNISTPartitioner, \
     SVHNPartitioner

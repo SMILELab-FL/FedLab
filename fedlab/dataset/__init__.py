@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from .basic_dataset import FedDataset, BaseDataset, Subset
-from .partition_dataset import PartitionDataset
 from .pathological_mnist import PathologicalMNIST
 from .rotated_mnist import RotatedMNIST
 from .rotated_cifar10 import RotatedCIFAR10
