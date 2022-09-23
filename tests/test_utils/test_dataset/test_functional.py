@@ -17,6 +17,8 @@ import unittest
 import os
 import numpy as np
 from fedlab.utils.dataset import functional as F
+import torchvision
+import torchvision.transforms as transforms
 
 
 class DatasetFunctionalTestCase(unittest.TestCase):
@@ -25,6 +27,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         cls.num_samples = 1000
         cls.num_classes = 5
         cls.num_clients = 20
+        cls.targets = np.random.randint(cls.num_classes, size=cls.num_samples)
 
     def setUp(self) -> None:
         np.random.seed(2021)
@@ -69,14 +72,13 @@ class DatasetFunctionalTestCase(unittest.TestCase):
 
     def test_hetero_dir_partition(self):
         # use np.ndarray targets
-        targets = np.random.randint(self.num_classes, size=self.num_samples)
-        client_dict = F.hetero_dir_partition(targets,
+        client_dict = F.hetero_dir_partition(self.targets,
                                              self.num_clients,
                                              self.num_classes, 0.3)
         self._hetero_content_check(client_dict)
 
         # use list targets
-        client_dict = F.hetero_dir_partition(targets.tolist(),
+        client_dict = F.hetero_dir_partition(self.targets.tolist(),
                                              self.num_clients,
                                              self.num_classes, 0.3)
         self._hetero_content_check(client_dict)
@@ -95,20 +97,19 @@ class DatasetFunctionalTestCase(unittest.TestCase):
 
     def test_shards_partition(self):
         num_shards = 200
-        targets = np.random.randint(self.num_classes, size=self.num_samples)
 
         # use np.ndarray targets
-        client_dict = F.shards_partition(targets, self.num_clients, num_shards)
+        client_dict = F.shards_partition(self.targets, self.num_clients, num_shards)
         self._shards_content_check(client_dict, num_shards)
 
         # use list targets
-        client_dict = F.shards_partition(targets.tolist(), self.num_clients, num_shards)
+        client_dict = F.shards_partition(self.targets.tolist(), self.num_clients, num_shards)
         self._shards_content_check(client_dict, num_shards)
 
         # check warnings when num_shards is not dividable for num_clients and num_samples
         with self.assertWarns(Warning,
                               msg="warning: length of dataset isn't divided exactly by num_shards. ") as cm:
-            F.shards_partition(targets, self.num_clients, 299)
+            F.shards_partition(self.targets, self.num_clients, 299)
 
     def _shards_content_check(self, client_dict, num_shards):
         # check number of partition parts
@@ -120,11 +121,10 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                              range(self.num_clients)]))
 
     def test_client_inner_dirichlet_partition(self):
-        targets = np.random.randint(self.num_classes, size=self.num_samples)
         client_sample_nums = F.balance_split(self.num_clients, self.num_samples)
 
         # use np.ndarray targets
-        client_dict = F.client_inner_dirichlet_partition(targets,
+        client_dict = F.client_inner_dirichlet_partition(self.targets,
                                                          self.num_clients,
                                                          self.num_classes,
                                                          dir_alpha=0.3,
@@ -133,7 +133,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         self._client_inner_dirichlet_content_check(client_dict, client_sample_nums)
 
         # use list targets
-        client_dict = F.client_inner_dirichlet_partition(targets.tolist(),
+        client_dict = F.client_inner_dirichlet_partition(self.targets.tolist(),
                                                          self.num_clients,
                                                          self.num_classes,
                                                          dir_alpha=0.3,
@@ -155,3 +155,32 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         # check sample number for each client
         self.assertTrue(all([client_dict[cid].shape[0] == client_sample_nums[cid] for cid in
                              range(self.num_clients)]))
+
+    def test_noniid_slicing(self):
+        trainset = torchvision.datasets.MNIST(
+                root="./tests/data/mnist/",
+                train=True,
+                download=True,
+                transform=transforms.ToTensor())
+        client_dict = F.noniid_slicing(trainset, num_clients=self.num_clients, num_shards=200)
+        self._content_check(client_dict, len(trainset))
+
+
+
+    def test_random_slicing(self):
+        client_dict = F.random_slicing(self.targets.tolist(),
+                                      num_clients=self.num_clients)
+        self._content_check(client_dict)
+        
+    def _content_check(self, client_dict, num_samples=None):
+        # check number of partition parts
+        self.assertTrue(len(client_dict) == self.num_clients)
+        # total number should equal to num_samples
+        all_samples = np.concatenate([client_dict[cid] for cid in range(self.num_clients)]).tolist()
+        unique_samples = set(all_samples)
+        if num_samples is None:
+            num_samples = self.num_samples
+        self.assertTrue(unique_samples == set(list(range(num_samples))))
+
+
+        

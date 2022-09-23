@@ -19,40 +19,48 @@ import torch
 
 from ..task_setting_for_test import CNN_Mnist
 from fedlab.utils.serialization import SerializationTool
-from fedlab.core.server.handler import AsyncParameterServerHandler, SyncParameterServerHandler
+from fedlab.core.server.handler import ServerHandler
 
 
-class HandlerTestCase(unittest.TestCase):
+class ServerHandlerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.model = CNN_Mnist()
-        cls.sample_ratio = 0.1
-        cls.total_num = 100
 
     def setUp(self) -> None:
+        class TestServerHandler(ServerHandler):
+            def __init__(self, model, cuda=True, device=None):
+                super().__init__(model, cuda, device)
 
-        self.AsyncHandler = AsyncParameterServerHandler(model=self.model, alpha=0.5, total_time=3)
-        self.AsyncHandler.client_num_in_total = self.total_num
-        self.SyncHandler = SyncParameterServerHandler(model=self.model, sample_ratio=self.sample_ratio, global_round=2)
-        self.SyncHandler.client_num_in_total = self.total_num
+        self.cuda = True
+        self.device = 'cuda'
+        self.handler = TestServerHandler(model=self.model, cuda=self.cuda, device=self.device)
         
     def tearDown(self) -> None:
         return super().tearDown()
 
-    def test_update_model(self):
-        coming_model = CNN_Mnist()
-        coming_parameters = SerializationTool.serialize_model(coming_model)
+    def test_init(self):
+        self.assertEqual(self.handler.cuda, self.cuda)
+        self.assertEqual(self.handler.device, self.device)
 
-        self.AsyncHandler._update_global_model(payload=[coming_parameters,
-                                        torch.Tensor([random.randint(1, 10)])])
+    def test_downlink_package(self):
+        with self.assertRaises(NotImplementedError):
+            self.handler.downlink_package
 
-        parameter_list = []
-        for id in range(self.SyncHandler.client_num_per_round):
-            tensors = torch.Tensor(size=coming_parameters.shape)
-            parameter_list.append(tensors)
-            flag = self.SyncHandler._update_global_model(payload=[tensors])
-        assert flag
+    def test_if_stop(self):
+        self.assertEqual(self.handler.if_stop, False)
+    
+    def test_global_update(self):
+        with self.assertRaises(NotImplementedError):
+            self.handler.global_update(None)
+    
+    def test_load(self):
+        with self.assertRaises(NotImplementedError):
+            self.handler.load(None)
 
-    def test_sample(self):
-        samples = self.SyncHandler.sample_clients()
-        assert len(samples) == max(1, int(self.sample_ratio * self.total_num))
+    def test_evaluate(self):
+        with self.assertRaises(NotImplementedError):
+            self.handler.evaluate()
+            
+
+    
