@@ -173,6 +173,6 @@ codecov_upload.sh
 pypi_release.sh
 
 unit_test.ipynb
-
+/exp_logs
 # release cache
 

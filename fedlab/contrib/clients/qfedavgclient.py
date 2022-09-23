@@ -20,6 +20,7 @@ from .client import SGDClientTrainer
 
 
 class qFedAvgClientTrainer(SGDClientTrainer):
+    """Federated client with modified upload package and local SGD solver."""
     @property
     def uplink_package(self):
         return [self.delta, self.hk]

@@ -9,7 +9,6 @@ Federated learning (FL), proposed by Google at the very beginning, is recently a
 
 To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
 
-
 ## Documentations
 
 - [Documentation website](https://fedlab.readthedocs.io/en/master/)
