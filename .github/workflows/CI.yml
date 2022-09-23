@@ -3,7 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - v1.0 #[ push, pull_request ]
+      - 'master'
+      - 'feature-test-siqi'
+      - 'release-v**'
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -57,15 +59,15 @@ jobs:
         run: |
           pip install numpy
 
-      - name: Test with coverage
-        run: |
-          pip install coverage
-          pip install codecov
-          coverage run --source=fedlab setup.py test
+      # - name: Test with coverage
+      #   run: |
+      #     pip install coverage
+      #     pip install codecov
+      #     coverage run --source=fedlab setup.py test
 
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          name: codecov-umbrella
-          fail_ci_if_error: true
+      # - name: Upload Coverage to Codecov
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     name: codecov-umbrella
+      #     fail_ci_if_error: true
