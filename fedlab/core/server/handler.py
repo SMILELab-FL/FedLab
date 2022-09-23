@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import abstractproperty
+from abc import abstractmethod
 from typing import List
 
 import torch
@@ -39,23 +39,28 @@ class ServerHandler(ModelMaintainer):
                  device: str = None) -> None:
         super().__init__(model, cuda, device)
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def downlink_package(self) -> List[torch.Tensor]:
         """Property for manager layer. Server manager will call this property when activates clients."""
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def if_stop(self) -> bool:
         """:class:`NetworkManager` keeps monitoring this attribute, and it will stop all related processes and threads when ``True`` returned."""
         return False
 
+    @abstractmethod
     def global_update(self, buffer):
         raise NotImplementedError()
 
+    @abstractmethod
     def load(self, payload):
         """Override this function to define how to update global model (aggregation or optimization)."""
         raise NotImplementedError()
 
+    @abstractmethod
     def evaluate(self):
         """Override this function to define the evaluation of global model."""
         raise NotImplementedError()

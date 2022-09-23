@@ -22,7 +22,7 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.utils.functional import AverageMeter, get_best_gpu, evaluate, save_dict, load_dict
+from fedlab.utils.functional import AverageMeter, get_best_gpu, evaluate
 from fedlab.utils.functional import read_config_from_json, partition_report
 
 
@@ -71,9 +71,9 @@ class FunctionalTestCase(unittest.TestCase):
     def test_dict(self):
         test_dict = {1: [1, 2, 3, 4, 5], 2: [6, 7, 8, 9, 10]}
 
-        save_dict(test_dict, "./test.pkl")
+        torch.save(test_dict, "./test.pkl")
 
-        check_dict = load_dict("./test.pkl")
+        check_dict = torch.load("./test.pkl")
 
         assert test_dict == check_dict
         os.remove("./test.pkl")
