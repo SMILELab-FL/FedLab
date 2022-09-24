@@ -8,7 +8,7 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.contrib.clients import SGDSerialTrainer
+from fedlab.contrib.clients import SGDSerialClientTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
@@ -43,7 +43,7 @@ network = DistNetwork(address=(args.ip, args.port),
                       rank=args.rank,
                       ethernet=args.ethernet)
 
-trainer = SGDSerialTrainer(model, 10, cuda=args.cuda)
+trainer = SGDSerialClientTrainer(model, 10, cuda=args.cuda)
 
 dataset = PathologicalMNIST(root='../../tests/data/mnist/',
                             path="../../tests/data/mnist/",
