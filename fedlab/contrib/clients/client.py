@@ -89,7 +89,7 @@ class SGDClientTrainer(ClientTrainer):
         self._LOGGER.info("Local train procedure is finished")
 
 
-class SGDSerialTrainer(SerialClientTrainer):
+class SGDSerialClientTrainer(SerialClientTrainer):
     """Deprecated
     Train multiple clients in a single process.
 

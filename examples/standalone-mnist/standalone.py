@@ -18,7 +18,7 @@ from fedlab.utils.functional import evaluate, get_best_gpu
 
 from fedlab.models.mlp import MLP
 from fedlab.contrib.servers.server import SyncServerHandler
-from fedlab.contrib.clients.client import SGDSerialTrainer
+from fedlab.contrib.clients.client import SGDSerialClientTrainer
 from fedlab.core.standalone import StandalonePipeline
 from fedlab.dataset.pathological_mnist import PathologicalMNIST
 
@@ -40,7 +40,7 @@ model =MLP(784, 10)
 handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
 
 # client
-trainer = SGDSerialTrainer(model, args.total_client, cuda=True)
+trainer = SGDSerialClientTrainer(model, args.total_client, cuda=True)
 dataset = PathologicalMNIST(root='../../tests/data/mnist/', path="../../tests/data/mnist/", num=args.total_client)
 #dataset.preprocess()
 trainer.setup_dataset(dataset)
