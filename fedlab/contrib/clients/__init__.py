@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from .client import SGDClientTrainer, SGDSerialTrainer
+from .client import SGDClientTrainer, SGDSerialClientTrainer
 from .fedavgclient import FedAvgClientTrainer
 from .fedproxclient import FedProxClientTrainer
 from .qfedavgclient import qFedAvgClientTrainer
