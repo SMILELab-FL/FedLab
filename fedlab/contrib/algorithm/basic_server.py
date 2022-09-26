@@ -34,7 +34,7 @@ class SyncServerHandler(ServerHandler):
     Args:
         model (torch.nn.Module): Model used in this federation.
         global_round (int): stop condition. Shut down FL system when global round is reached.
-        sample_ratio (float): The result of ``sample_ratio * client_num`` is the number of clients for every FL round.
+        sample_ratio (float): The result of ``sample_ratio * num_clients`` is the number of clients for every FL round.
         cuda (bool): Use GPUs or not. Default: ``False``.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
         logger (Logger, optional): object of :class:`Logger`.
@@ -52,7 +52,7 @@ class SyncServerHandler(ServerHandler):
         assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
-        self.client_num = 0
+        self.num_clients = 0
         self.sample_ratio = sample_ratio
 
         # client buffer
@@ -73,14 +73,14 @@ class SyncServerHandler(ServerHandler):
         return self.round >= self.global_round
 
     @property
-    def client_num_per_round(self):
-        return max(1, int(self.sample_ratio * self.client_num))
+    def num_clients_per_round(self):
+        return max(1, int(self.sample_ratio * self.num_clients))
 
     def sample_clients(self):
         """Return a list of client rank indices selected randomly. The client ID is from ``0`` to
-        ``self.client_num -1``."""
-        selection = random.sample(range(self.client_num),
-                                  self.client_num_per_round)
+        ``self.num_clients -1``."""
+        selection = random.sample(range(self.num_clients),
+                                  self.num_clients_per_round)
         return sorted(selection)
 
     def global_update(self, buffer):
@@ -103,9 +103,9 @@ class SyncServerHandler(ServerHandler):
         assert len(payload) > 0
         self.client_buffer_cache.append(deepcopy(payload))
 
-        assert len(self.client_buffer_cache) <= self.client_num_per_round
+        assert len(self.client_buffer_cache) <= self.num_clients_per_round
 
-        if len(self.client_buffer_cache) == self.client_num_per_round:
+        if len(self.client_buffer_cache) == self.num_clients_per_round:
             self.global_update(self.client_buffer_cache)
             self.round += 1
 
@@ -137,7 +137,7 @@ class AsyncServerHandler(ServerHandler):
                  logger: Logger = None):
         super(AsyncServerHandler, self).__init__(model, cuda, device)
         self._LOGGER = Logger() if logger is None else logger
-        self.client_num = 0
+        self.num_clients = 0
         self.round = 0
         self.global_round = global_round
 

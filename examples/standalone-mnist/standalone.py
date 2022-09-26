@@ -17,10 +17,10 @@ from fedlab.utils.serialization import SerializationTool
 from fedlab.utils.functional import evaluate, get_best_gpu
 
 from fedlab.models.mlp import MLP
-from fedlab.contrib.servers.server import SyncServerHandler
-from fedlab.contrib.clients.client import SGDSerialClientTrainer
+from fedlab.contrib.algorithm.basic_server import SyncServerHandler
+from fedlab.contrib.algorithm.basic_client import SGDSerialClientTrainer
 from fedlab.core.standalone import StandalonePipeline
-from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")

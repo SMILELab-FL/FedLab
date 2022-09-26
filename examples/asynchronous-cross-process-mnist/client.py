@@ -11,9 +11,9 @@ sys.path.append("../../")
 from fedlab.core.client.manager import ActiveClientManager
 from fedlab.utils.dataset.sampler import RawPartitionSampler
 from fedlab.core.network import DistNetwork
-from fedlab.contrib.clients import SGDClientTrainer
+from fedlab.contrib.algorithm.basic_client import SGDClientTrainer
 from fedlab.models import MLP
-from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 
 class AsyncTrainer(SGDClientTrainer):
     @property

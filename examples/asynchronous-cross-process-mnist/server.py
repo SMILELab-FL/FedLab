@@ -5,7 +5,7 @@ from torch import nn
 
 sys.path.append("../../")
 from fedlab.core.network import DistNetwork
-from fedlab.contrib.servers import AsyncServerHandler
+from fedlab.contrib.algorithm.basic_server import AsyncServerHandler
 from fedlab.core.server.manager import AsynchronousServerManager
 from fedlab.models import MLP
 

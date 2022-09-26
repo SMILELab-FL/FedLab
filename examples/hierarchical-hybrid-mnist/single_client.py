@@ -7,8 +7,8 @@ from fedlab.core.client.manager import PassiveClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.utils.logger import Logger
 from fedlab.models import MLP
-from fedlab.contrib.clients import FedAvgClientTrainer
-from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.algorithm.fedavg import FedAvgClientTrainer
+from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 
 parser = argparse.ArgumentParser(description="Distbelief training example")
 
