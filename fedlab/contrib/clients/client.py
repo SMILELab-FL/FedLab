@@ -97,14 +97,14 @@ class SGDSerialClientTrainer(SerialClientTrainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        num (int): Number of clients in current trainer.
+        num_clients (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         logger (Logger, optional): Object of :class:`Logger`.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
     """
-    def __init__(self, model, num, cuda=False, device=None, logger=None, personal=False) -> None:
-        super().__init__(model, num, cuda, device, personal)
+    def __init__(self, model, num_clients, cuda=False, device=None, logger=None, personal=False) -> None:
+        super().__init__(model, num_clients, cuda, device, personal)
         self._LOGGER = Logger() if logger is None else logger
         self.chache = []
 
