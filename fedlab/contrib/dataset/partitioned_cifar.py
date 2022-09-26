@@ -20,7 +20,7 @@ import torchvision
 from torchvision import transforms
 
 from .basic_dataset import FedDataset, CIFARSubset
-from ..utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
+from ...utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
 
 
 class PartitionCIFAR(FedDataset):

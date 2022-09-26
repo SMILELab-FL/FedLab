@@ -2,7 +2,7 @@ import sys
 import argparse
 sys.path.append("../../")
 
-from fedlab.contrib.servers import SyncServerHandler
+from fedlab.contrib.algorithm.basic_client import SyncServerHandler
 from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
 from fedlab.models import MLP

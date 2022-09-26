@@ -21,7 +21,7 @@ import torchvision
 from torchvision import transforms
 
 from .basic_dataset import FedDataset, BaseDataset
-from ..utils.dataset.functional import noniid_slicing, random_slicing
+from ...utils.dataset.functional import noniid_slicing, random_slicing
 
 class RotatedCIFAR10(FedDataset):
     """Rotate CIFAR10 and patrition them.

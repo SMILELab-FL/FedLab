@@ -3,11 +3,11 @@ import argparse
 import sys
 
 sys.path.append("../../")
-from fedlab.contrib.clients import SGDSerialTrainer
+from fedlab.contrib.algorithm.basic_client import SGDSerialClientTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.models import MLP
-from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 
 
 parser = argparse.ArgumentParser(description="Distbelief training example")
@@ -35,7 +35,7 @@ network = DistNetwork(address=(args.ip, args.port),
                       rank=args.rank,
                       ethernet=args.ethernet)
 
-trainer = SGDSerialTrainer(model=model, num=10, cuda=args.cuda)
+trainer = SGDSerialClientTrainer(model=model, num=10, cuda=args.cuda)
 
 dataset = PathologicalMNIST(root='../../tests/data/mnist/',
                             path="../../tests/data/mnist/",
