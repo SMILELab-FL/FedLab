@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import abstractclassmethod, abstractproperty
+from abc import abstractclassmethod, abstractproperty, abstractmethod
 from random import randint
 from typing import List
 
@@ -58,7 +58,8 @@ class ClientTrainer(ModelMaintainer):
         """Set up variables for optimization algorithms."""
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def uplink_package(self) -> List[torch.Tensor]:
         """Return a tensor list for uploading to server.
 
@@ -93,7 +94,7 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        num (int): Number of clients in current trainer.
+        client_num (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
@@ -101,25 +102,26 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     def __init__(self,
                  model: torch.nn.Module,
-                 num: int,
+                 client_num: int,
                  cuda: bool,
                  device: str = None,
                  personal: bool = False) -> None:
-        super().__init__(model, num, cuda, device, personal)
+        super().__init__(model, client_num, cuda, device, personal)
 
-        self.client_num = num
+        self.client_num = client_num
         self.dataset = FedDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
 
     def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
-        return FedDataset()
+        raise NotImplementedError()
 
     def setup_optim(self):
         """"""
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def uplink_package(self) -> List[List[torch.Tensor]]:
         """Return a tensor list for uploading to server.
 

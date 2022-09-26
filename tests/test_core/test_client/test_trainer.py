@@ -22,70 +22,127 @@ import torchvision.transforms as transforms
 import random
 
 from fedlab.utils.functional import get_best_gpu
+from fedlab.core.client import ORDINARY_TRAINER, SERIAL_TRAINER
 from fedlab.core.client.trainer import ClientTrainer, SerialClientTrainer
 from fedlab.utils.dataset.functional import noniid_slicing, random_slicing
 from fedlab.utils.aggregator import Aggregators
 from fedlab.utils.serialization import SerializationTool
 
-from ..task_setting_for_test import mlp
+from ..task_setting_for_test import CNN_Mnist
 
 
-class TrainerTestCase(unittest.TestCase):
+@unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+class ClientTrainerTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.total_client = 10
-        self.num_per_round = 5
-        self.aggregator = Aggregators.fedavg_aggregate
+        class TestClientTrainer(ClientTrainer):
+            def __init__(self, model, cuda=True, device=None):
+                super().__init__(model, cuda, device)
 
-        self.root = "./tests/data/mnist/"
+        self.model = CNN_Mnist()
+        self.cuda = True
+        self.device = 'cuda'
+        self.trainer = TestClientTrainer(model=self.model, cuda=self.cuda, device=self.device)
 
     def tearDown(self) -> None:
         return super().tearDown()
 
-    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
-    def test_serial_train_iid(self):
+    
+    def test_init(self):
+        self.assertEqual(self.trainer.cuda, self.cuda)
+        self.assertEqual(self.trainer.device, self.device)
+        self.assertEqual(self.trainer.type, ORDINARY_TRAINER)
 
-        trainset = torchvision.datasets.MNIST(root=self.root,
-                                              train=True,
-                                              download=True,
-                                              transform=transforms.ToTensor())
-        data_indices = random_slicing(trainset, num_clients=self.total_client)
-        gpu = get_best_gpu()
-        model = mlp().cuda(gpu)
-        trainer = SubsetSerialTrainer(
-            model=model,
-            dataset=trainset,
-            data_slices=data_indices,
-            args={"batch_size": 100, "epochs": 1, "lr": 0.1},
-        )
+    
+    def test_setup_dataset(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.setup_dataset()
 
-        to_select = [i for i in range(self.total_client)]
-        model_parameters = SerializationTool.serialize_model(model)
-        selection = random.sample(to_select, self.num_per_round)
-        aggregated_parameters = trainer.local_process(
-            payload=[model_parameters],
-            id_list=selection)
 
-    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
-    def test_serial_train_noniid(self):
+    def test_setup_optim(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.setup_optim()
 
-        root = "./tests/data/mnist/"
-        trainset = torchvision.datasets.MNIST(root=root,
-                                              train=True,
-                                              download=True,
-                                              transform=transforms.ToTensor())
-        data_indices = data_indices = noniid_slicing(
-            trainset, num_clients=self.total_client, num_shards=200)
-        gpu = get_best_gpu()
-        model = mlp().cuda(gpu)
-        trainer = SubsetSerialTrainer(
-            model=model,
-            dataset=trainset,
-            data_slices=data_indices,
-            args={"batch_size": 100, "epochs": 1, "lr": 0.1},
-        )
-        to_select = [i for i in range(self.total_client)]
-        model_parameters = SerializationTool.serialize_model(model)
-        selection = random.sample(to_select, self.num_per_round)
-        aggregated_parameters = trainer.local_process(
-            payload=[model_parameters],
-            id_list=selection)
+
+    def test_uplink_package(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.uplink_package
+
+
+    def test_local_process(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.local_process([None])
+
+    def test_train(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.train()
+
+    def test_validate(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.validate()
+
+    def test_evaluate(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.evaluate()
+
+    
+
+@unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
+class SerialClientTrainerTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        class TestSerialClientTrainer(SerialClientTrainer):
+            def __init__(self, model, client_num, cuda, device=None, personal=False):
+                super().__init__(model, client_num, cuda, device, personal)
+
+        self.model = CNN_Mnist()
+        self.cuda = True
+        self.device = 'cuda'
+        self.client_num = 10
+        self.personal = True
+        self.trainer = TestSerialClientTrainer(model=self.model, client_num=self.client_num, cuda=self.cuda, device=self.device, personal=self.personal)
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    
+    def test_init(self):
+        self.assertEqual(self.trainer.cuda, self.cuda)
+        self.assertEqual(self.trainer.device, self.device)
+        self.assertEqual(self.trainer.type, SERIAL_TRAINER)
+        self.assertEqual(self.trainer.client_num, self.client_num)
+        # self.assertEqual(self.trainer.personal, self.personal)
+        if self.personal is True:
+            self.assertEqual(len(self.trainer.parameters), self.client_num)
+        else:
+            self.assertEqual(self.trainer.parameters, None)
+
+    
+    def test_setup_dataset(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.setup_dataset()
+
+
+    def test_setup_optim(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.setup_optim()
+
+
+    def test_uplink_package(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.uplink_package
+
+
+    def test_local_process(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.local_process(id_list=[1,2], payload=[None, None])
+
+    def test_train(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.train()
+
+    def test_validate(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.validate()
+
+    def test_evaluate(self):
+        with self.assertRaises(NotImplementedError):
+            self.trainer.evaluate()
