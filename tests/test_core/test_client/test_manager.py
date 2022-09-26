@@ -14,11 +14,9 @@
 
 import unittest
 
-import sys
-sys.path.append("../../../")
 from fedlab.core.client.manager import ActiveClientManager, PassiveClientManager
-from fedlab.core.client.trainer import ClientTrainer
 from fedlab.core.network import DistNetwork
+from fedlab.core.client.trainer import ClientTrainer
 
 
 class TestTrainer(ClientTrainer):
