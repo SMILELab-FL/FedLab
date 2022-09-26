@@ -8,11 +8,11 @@ from torch import nn
 import torchvision
 import torchvision.transforms as transforms
 
-from fedlab.contrib.clients import SGDSerialClientTrainer
+from fedlab.contrib.algorithm.basic_client import SGDSerialClientTrainer
 from fedlab.core.client import PassiveClientManager
 from fedlab.core.network import DistNetwork
 
-from fedlab.dataset.pathological_mnist import PathologicalMNIST
+from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 from fedlab.models.mlp import MLP
 from fedlab.utils.logger import Logger
 

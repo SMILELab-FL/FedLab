@@ -7,7 +7,7 @@ from fedlab.utils.logger import Logger
 
 from fedlab.models.mlp import MLP
 
-from fedlab.contrib.servers import FedAvgServerHandler
+from fedlab.contrib.algorithm.fedavg import FedAvgServerHandler
 from fedlab.core.server.manager import SynchronousServerManager
 from fedlab.core.network import DistNetwork
 

@@ -8,7 +8,7 @@ import torchvision
 from torchvision import transforms
 
 from fedlab.core.server.manager import SynchronousServerManager
-from fedlab.contrib.servers.fedavgserver import SyncServerHandler
+from fedlab.contrib.algorithm.basic_server import SyncServerHandler
 from fedlab.core.network import DistNetwork
 from fedlab.models.mlp import MLP
 from fedlab.utils.logger import Logger
