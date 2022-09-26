@@ -1,11 +1,29 @@
-
 import torch
-
 import tqdm
 from copy import deepcopy
+
+from .basic_server import SyncServerHandler
+from .basic_client import SGDClientTrainer, SGDSerialClientTrainer
 from ...utils.serialization import SerializationTool
 
-from .client import SGDSerialClientTrainer
+
+##################
+#
+#      Server
+#
+##################
+
+
+class DittoServerHandler(SyncServerHandler):
+    """Ditto server acts the same as fedavg server."""
+    None
+
+
+##################
+#
+#      Client
+#
+##################
 
 
 class DittoClientTrainer(SGDSerialClientTrainer):
