@@ -93,7 +93,7 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
-        num (int): Number of clients in current trainer.
+        num_clients (int): Number of clients in current trainer.
         cuda (bool): Use GPUs or not. Default: ``False``.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
@@ -101,13 +101,13 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     def __init__(self,
                  model: torch.nn.Module,
-                 num: int,
+                 num_clients: int,
                  cuda: bool,
                  device: str = None,
                  personal: bool = False) -> None:
-        super().__init__(model, num, cuda, device, personal)
+        super().__init__(model, num_clients, cuda, device, personal)
 
-        self.client_num = num
+        self.num_clients = num_clients
         self.dataset = FedDataset()
         self.type = SERIAL_TRAINER  # represent serial trainer
 
