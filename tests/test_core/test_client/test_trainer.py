@@ -90,15 +90,15 @@ class ClientTrainerTestCase(unittest.TestCase):
 class SerialClientTrainerTestCase(unittest.TestCase):
     def setUp(self) -> None:
         class TestSerialClientTrainer(SerialClientTrainer):
-            def __init__(self, model, client_num, cuda, device=None, personal=False):
-                super().__init__(model, client_num, cuda, device, personal)
+            def __init__(self, model, num_clients, cuda, device=None, personal=False):
+                super().__init__(model, num_clients, cuda, device, personal)
 
         self.model = CNN_Mnist()
         self.cuda = True
         self.device = 'cuda'
-        self.client_num = 10
+        self.num_clients = 10
         self.personal = True
-        self.trainer = TestSerialClientTrainer(model=self.model, client_num=self.client_num, cuda=self.cuda, device=self.device, personal=self.personal)
+        self.trainer = TestSerialClientTrainer(model=self.model, num_clients=self.num_clients, cuda=self.cuda, device=self.device, personal=self.personal)
 
     def tearDown(self) -> None:
         return super().tearDown()
@@ -108,10 +108,10 @@ class SerialClientTrainerTestCase(unittest.TestCase):
         self.assertEqual(self.trainer.cuda, self.cuda)
         self.assertEqual(self.trainer.device, self.device)
         self.assertEqual(self.trainer.type, SERIAL_TRAINER)
-        self.assertEqual(self.trainer.client_num, self.client_num)
+        self.assertEqual(self.trainer.num_clients, self.num_clients)
         # self.assertEqual(self.trainer.personal, self.personal)
         if self.personal is True:
-            self.assertEqual(len(self.trainer.parameters), self.client_num)
+            self.assertEqual(len(self.trainer.parameters), self.num_clients)
         else:
             self.assertEqual(self.trainer.parameters, None)
 

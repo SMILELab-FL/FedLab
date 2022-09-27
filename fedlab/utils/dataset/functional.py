@@ -87,9 +87,9 @@ def lognormal_unbalance_split(num_clients, num_samples, unbalance_sgm):
 
 
 def dirichlet_unbalance_split(num_clients, num_samples, alpha):
-    """Assign different sample number for each client using Log-Normal distribution.
+    """Assign different sample number for each client using Dirichlet distribution.
 
-    Sample numbers for clients are drawn from Log-Normal distribution.
+    Sample numbers for clients are drawn from Dirichlet distribution.
 
     Args:
         num_clients (int): Number of clients for partition.
