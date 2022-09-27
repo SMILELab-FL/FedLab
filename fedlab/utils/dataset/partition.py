@@ -26,18 +26,20 @@ class DataPartitioner(ABC):
 
     Details and tutorials of different data partition and datasets, please check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
     """
+    def __init__(self):
+        pass
 
     @abstractmethod
     def _perform_partition(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def __getitem__(self, index):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def __len__(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
 
 class CIFAR10Partitioner(DataPartitioner):
@@ -90,6 +92,7 @@ class CIFAR10Partitioner(DataPartitioner):
         num_shards (int, optional): Number of shards in non-iid ``"shards"`` partition. Only works if ``partition="shards"``. Default as ``None``.
         dir_alpha (float, optional): Dirichlet distribution parameter for non-iid partition. Only works if ``partition="dirichlet"``. Default as ``None``.
         verbose (bool, optional): Whether to print partition process. Default as ``True``.
+        min_require_size (int, optional): Minimum required sample number for each client. If set to ``None``, then equals to ``num_classes``. Only works if ``partition="noniid-labeldir"``.
         seed (int, optional): Random seed. Default as ``None``.
     """
 
@@ -101,6 +104,7 @@ class CIFAR10Partitioner(DataPartitioner):
                  num_shards=None,
                  dir_alpha=None,
                  verbose=True,
+                 min_require_size=None,
                  seed=None):
 
         self.targets = np.array(targets)  # with shape (num_samples,)
@@ -113,6 +117,7 @@ class CIFAR10Partitioner(DataPartitioner):
         self.num_shards = num_shards
         self.unbalance_sgm = unbalance_sgm
         self.verbose = verbose
+        self.min_require_size = min_require_size
         # self.rng = np.random.default_rng(seed)  # rng currently not supports randint
         np.random.seed(seed)
 
@@ -138,7 +143,7 @@ class CIFAR10Partitioner(DataPartitioner):
                                                      self.num_clients,
                                                      self.num_classes,
                                                      self.dir_alpha,
-                                                     min_require_size=10)
+                                                     min_require_size=self.min_require_size)
 
             else:  # partition is 'shards'
                 client_dict = F.shards_partition(self.targets, self.num_clients, self.num_shards)
@@ -209,6 +214,7 @@ class BasicPartitioner(DataPartitioner):
         dir_alpha (float): Parameter alpha for Dirichlet distribution. Only works if ``partition="noniid-labeldir"``.
         major_classes_num (int): Number of major class for each clients. Only works if ``partition="noniid-#label"``.
         verbose (bool): Whether output intermediate information. Default as ``True``.
+        min_require_size (int, optional): Minimum required sample number for each client. If set to ``None``, then equals to ``num_classes``. Only works if ``partition="noniid-labeldir"``.
         seed (int): Random seed. Default as ``None``.
 
     Returns:
@@ -221,6 +227,7 @@ class BasicPartitioner(DataPartitioner):
                  dir_alpha=None,
                  major_classes_num=1,
                  verbose=True,
+                 min_require_size=None,
                  seed=None):
         self.targets = np.array(targets)  # with shape (num_samples,)
         self.num_samples = self.targets.shape[0]
@@ -229,6 +236,8 @@ class BasicPartitioner(DataPartitioner):
         self.partition = partition
         self.dir_alpha = dir_alpha
         self.verbose = verbose
+        self.min_require_size = min_require_size
+            
         # self.rng = np.random.default_rng(seed)  # rng currently not supports randint
         np.random.seed(seed)
 
@@ -268,7 +277,7 @@ class BasicPartitioner(DataPartitioner):
             # label-distribution-skew:distributed-based (Dirichlet)
             client_dict = F.hetero_dir_partition(self.targets, self.num_clients, self.num_classes,
                                                  self.dir_alpha,
-                                                 min_require_size=10)
+                                                 min_require_size=self.min_require_size)
 
         elif self.partition == "unbalance":
             # quantity-skew (Dirichlet)

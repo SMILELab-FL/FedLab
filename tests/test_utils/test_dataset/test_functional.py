@@ -174,8 +174,6 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         client_dict = F.noniid_slicing(trainset, num_clients=self.num_clients, num_shards=200)
         self._content_check(client_dict, len(trainset))
 
-
-
     def test_random_slicing(self):
         client_dict = F.random_slicing(self.targets.tolist(),
                                       num_clients=self.num_clients)
@@ -189,7 +187,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         unique_samples = set(all_samples)
         if num_samples is None:
             num_samples = self.num_samples
-        self.assertTrue(unique_samples == set(list(range(num_samples))))
+        self.assertTrue(unique_samples <= set(list(range(num_samples))))
 
 
     def test_label_skew_quantity_based_partition(self):
@@ -197,7 +195,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         client_dict = F.label_skew_quantity_based_partition(self.targets, self.num_clients, self.num_classes, major_classes_num)
         # basic partition check
         self._content_check(client_dict)
-        # check class number for each client
+        # check label class number for each client
         for cid in client_dict:
             cid_labels = [self.targets[idx]for idx in client_dict[cid]]
             unique_labels = set(cid_labels)
