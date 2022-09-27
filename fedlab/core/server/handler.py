@@ -52,6 +52,11 @@ class ServerHandler(ModelMaintainer):
         return False
 
     @abstractmethod
+    def setup_optim(self):
+        """Override this function to load your optimization hyperparameters."""
+        raise NotImplementedError()
+
+    @abstractmethod
     def global_update(self, buffer):
         raise NotImplementedError()
 

@@ -83,21 +83,22 @@ class SerialModelMaintainer(ModelMaintainer):
 
     Args:
         model (torch.nn.Module): PyTorch model.
-        num (int): The number of independent models. 
+        num_clients (int): The number of independent models. 
         cuda (bool): Use GPUs or not.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest idle memory as default.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
     """
     def __init__(self,
                  model: torch.nn.Module,
-                 num: int,
+                 num_clients: int,
                  cuda: bool,
                  device: str = None,
                  personal: bool = False) -> None:
         super().__init__(model, cuda, device)
         if personal:
-            self.parameters = [self.model_parameters
-                               for _ in range(num)]  # A list of Tensor
+            self.parameters = [
+                self.model_parameters for _ in range(num_clients)
+            ]  # A list of Tensor
         else:
             self.parameters = None
 

@@ -26,7 +26,7 @@ class DittoServerHandler(SyncServerHandler):
 ##################
 
 
-class DittoClientTrainer(SGDSerialClientTrainer):
+class DittoSerialClientTrainer(SGDSerialClientTrainer):
     def __init__(self, model, num, cuda=False, device=None, logger=None, personal=True) -> None:
         super().__init__(model, num, cuda, device, logger, personal)
         self.ditto_gmodels = []
