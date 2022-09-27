@@ -131,6 +131,5 @@ class FunctionalTestCase(unittest.TestCase):
         seed = 2022
         setup_seed(seed)
 
-    # def test_accuracy(self):
-    #     pass
+    
 
