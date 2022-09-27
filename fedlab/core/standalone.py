@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .client.trainer import SerialClientTrainer
+from .server.handler import ServerHandler
 
 class StandalonePipeline(object):
-    def __init__(self, handler, trainer):
+    def __init__(self, handler: ServerHandler, trainer: SerialClientTrainer):
         """Perform standalone simulation process.
 
         Args:

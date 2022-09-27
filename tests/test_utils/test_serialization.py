@@ -55,6 +55,25 @@ class SerializationTestCase(unittest.TestCase):
             flags.append(torch.equal(param1, param2))
         self.assertIn(False, flags)  # at least one False in flags
 
+    def _model_params_multiply(self, model, times):
+        for param in model.parameters():
+            param.data = param.data * times
+
+    def test_serialize_model_gradients(self):
+        # set gradients with calculation
+        batch_size = 100
+        sample_data = torch.randn(batch_size, self.input_size)*255
+        output = self.model(sample_data)
+        res = output.mean()
+        res.backward()
+        # serialize gradients
+        serialized_grads = SerializationTool.serialize_model_gradients(self.model)
+        m_grads = torch.Tensor([0])
+        for param in self.model.parameters():
+            m_grads = torch.cat((m_grads, param.grad.data.view(-1)))
+        m_grads = m_grads[1:]
+        self.assertTrue(torch.equal(serialized_grads, m_grads))
+
     @torch.no_grad()
     def test_serialize_model(self):
         serialized_params = SerializationTool.serialize_model(self.model)
@@ -65,9 +84,29 @@ class SerializationTestCase(unittest.TestCase):
         self.assertTrue(torch.equal(serialized_params, m_params))
 
     @torch.no_grad()
-    def test_restore_model(self):
+    def test_deserialize_model_copy(self):
         model = Net(self.input_size, self.hidden_size, self.num_classes)
         self._model_params_neq(self.model, model)
         serialized_params = SerializationTool.serialize_model(self.model)
-        SerializationTool.deserialize_model(model, serialized_params)
+        SerializationTool.deserialize_model(model, serialized_params, mode='copy')
         self._model_params_eq(self.model, model)
+
+    @torch.no_grad()
+    def test_deserialize_model_add(self):
+        model = Net(self.input_size, self.hidden_size, self.num_classes)
+        self._model_params_neq(self.model, model)
+        serialized_params = SerializationTool.serialize_model(self.model)
+        SerializationTool.deserialize_model(model, serialized_params, mode='copy')  # copy first
+        SerializationTool.deserialize_model(model, serialized_params, mode='add')  # add params then
+        self._model_params_multiply(self.model, 2)  # now self.model.params = self.model.params * 2
+        self._model_params_eq(self.model, model)
+
+    @torch.no_grad()
+    def test_deserialize_model_other(self):
+        model = Net(self.input_size, self.hidden_size, self.num_classes)
+        serialized_params = SerializationTool.serialize_model(self.model)
+        with self.assertRaises(ValueError):
+            SerializationTool.deserialize_model(model, serialized_params, mode='minus')
+
+    
+

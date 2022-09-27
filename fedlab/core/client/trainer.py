@@ -18,7 +18,7 @@ from typing import List
 
 import torch
 
-from fedlab.dataset.basic_dataset import FedDataset
+from fedlab.contrib.dataset.basic_dataset import FedDataset
 
 from ..client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ..model_maintainer import ModelMaintainer, SerialModelMaintainer
