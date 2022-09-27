@@ -262,6 +262,36 @@ class BasicPartitionerTestCase(unittest.TestCase):
         self.assertTrue(unique_samples <= set(list(range(num_samples))))
 
 
+
+class VisionPartitionerTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.num_classes = 10
+        cls.num_clients = 10
+        cls.seed = 2021
+        targets = []
+        for k in range(cls.num_classes):
+            targets.extend([k for _ in range(500)])
+        cls.num_samples = len(targets)
+        targets = np.array(targets)
+        np.random.seed(cls.seed)
+        cls.targets = targets[np.random.permutation(cls.num_samples)].tolist()  # shuffle
+
+    def test_init(self):
+        verbose = False
+        partition = 'iid'
+        partitioner = VisionPartitioner(self.targets,
+                                        self.num_clients, 
+                                        partition=partition,
+                                        verbose=verbose, 
+                                        seed=self.seed)
+        self.assertEqual(self.num_samples, partitioner.num_samples)
+        self.assertEqual(self.num_clients, partitioner.num_clients)
+        self.assertEqual(partition, partitioner.partition)
+        self.assertEqual(verbose, partitioner.verbose)
+
+
+
 class FCUBEPartitionerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
