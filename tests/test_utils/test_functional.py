@@ -23,7 +23,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 from fedlab.utils.functional import AverageMeter, get_best_gpu, evaluate
-from fedlab.utils.functional import read_config_from_json, partition_report
+from fedlab.utils.functional import read_config_from_json, partition_report, setup_seed
 
 
 class FunctionalTestCase(unittest.TestCase):
@@ -67,16 +67,6 @@ class FunctionalTestCase(unittest.TestCase):
             lambda: read_config_from_json(json_file=json_file,
                                           user_name="client_2"),
         )
-
-    def test_dict(self):
-        test_dict = {1: [1, 2, 3, 4, 5], 2: [6, 7, 8, 9, 10]}
-
-        torch.save(test_dict, "./test.pkl")
-
-        check_dict = torch.load("./test.pkl")
-
-        assert test_dict == check_dict
-        os.remove("./test.pkl")
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_evaluate(self):
@@ -122,6 +112,24 @@ class FunctionalTestCase(unittest.TestCase):
         file = os.path.join(os.path.dirname(__file__), "tmp.csv")
         partition_report(labels, data_indices, class_num=3, verbose=True, file=None)
         partition_report(labels, data_indices, class_num=3, verbose=False, file=file)
-        self.assertTrue(os.path.exists(file))
-        if os.path.exists(file):
-            os.remove(file)
+        self._check_file_and_remove(file)
+
+        partition_report(labels, data_indices, class_num=3, verbose=False, file=None)
+
+        partition_report(labels, data_indices, verbose=False, file=file)
+        self._check_file_and_remove(file)
+
+        partition_report(labels, data_indices, verbose=True, file=None)
+        partition_report(labels.tolist(), data_indices, verbose=True, file=None)
+
+    def _check_file_and_remove(self, file_name):
+        self.assertTrue(os.path.exists(file_name))
+        if os.path.exists(file_name):
+            os.remove(file_name)
+
+    def test_setup_seed(self):
+        seed = 2022
+        setup_seed(seed)
+
+    
+

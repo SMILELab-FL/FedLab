@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import abstractclassmethod, abstractproperty
+from abc import abstractclassmethod, abstractproperty, abstractmethod
 from random import randint
 from typing import List
 
 import torch
 
-from fedlab.dataset.basic_dataset import FedDataset
+from fedlab.contrib.dataset.basic_dataset import FedDataset
 
 from ..client import ORDINARY_TRAINER, SERIAL_TRAINER
 from ..model_maintainer import ModelMaintainer, SerialModelMaintainer
@@ -58,7 +58,8 @@ class ClientTrainer(ModelMaintainer):
         """Set up variables for optimization algorithms."""
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def uplink_package(self) -> List[torch.Tensor]:
         """Return a tensor list for uploading to server.
 
@@ -93,7 +94,11 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     Args:
         model (torch.nn.Module): Model used in this federation.
+<<<<<<< HEAD
         num_clients (int): Number of clients in current trainer.
+=======
+        client_num (int): Number of clients in current trainer.
+>>>>>>> master
         cuda (bool): Use GPUs or not. Default: ``False``.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None.
         personal (bool, optional): If Ture is passed, SerialModelMaintainer will generate the copy of local parameters list and maintain them respectively. These paremeters are indexed by [0, num-1]. Defaults to False.
@@ -113,13 +118,14 @@ class SerialClientTrainer(SerialModelMaintainer):
 
     def setup_dataset(self):
         """Override this function to set up local dataset for clients"""
-        return FedDataset()
+        raise NotImplementedError()
 
     def setup_optim(self):
         """"""
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def uplink_package(self) -> List[List[torch.Tensor]]:
         """Return a tensor list for uploading to server.
 
