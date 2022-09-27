@@ -204,8 +204,9 @@ class DatasetFunctionalTestCase(unittest.TestCase):
     def test_fcube_synthetic_partition(self):
         # generate fcube data
         X_train, y_train = [], []
+        num_clients = 4
         for loc in range(4):
-            for i in range(int(self.num_samples / 4)):
+            for i in range(int(self.num_samples / num_clients)):
                 p1 = random.random()
                 p2 = random.random()
                 p3 = random.random()
@@ -224,7 +225,7 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         targets = np.array(y_train, dtype=np.int32)
         # perform partition
         client_dict = F.fcube_synthetic_partition(data)
-        self.assertEqual(len(client_dict), 4)  # check client number is 4
+        self.assertEqual(len(client_dict), num_clients)  # check client number 
         self.assertEqual(self.num_samples, sum([len(client_dict[cid]) for cid in client_dict]))  # check total sample number
 
 
