@@ -15,6 +15,7 @@
 
 import unittest
 import os
+import random
 import numpy as np
 from fedlab.utils.dataset import functional as F
 import torchvision
@@ -189,6 +190,45 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         if num_samples is None:
             num_samples = self.num_samples
         self.assertTrue(unique_samples == set(list(range(num_samples))))
+
+
+    def test_label_skew_quantity_based_partition(self):
+        major_classes_num = 3
+        client_dict = F.label_skew_quantity_based_partition(self.targets, self.num_clients, self.num_classes, major_classes_num)
+        # basic partition check
+        self._content_check(client_dict)
+        # check class number for each client
+        for cid in client_dict:
+            cid_labels = [self.targets[idx]for idx in client_dict[cid]]
+            unique_labels = set(cid_labels)
+            self.assertEqual(len(unique_labels), major_classes_num)
+
+    def test_fcube_synthetic_partition(self):
+        # generate fcube data
+        X_train, y_train = [], []
+        for loc in range(4):
+            for i in range(int(self.num_samples / 4)):
+                p1 = random.random()
+                p2 = random.random()
+                p3 = random.random()
+                if loc > 1:
+                    p2 = -p2
+                if loc % 2 == 1:
+                    p3 = -p3
+                if i % 2 == 0:
+                    X_train.append([p1, p2, p3])
+                    y_train.append(0)
+                else:
+                    X_train.append([-p1, -p2, -p3])
+                    y_train.append(1)
+
+        data = np.array(X_train, dtype=np.float32)
+        targets = np.array(y_train, dtype=np.int32)
+        # perform partition
+        client_dict = F.fcube_synthetic_partition(data)
+        self.assertEqual(len(client_dict), 4)  # check client number is 4
+        self.assertEqual(self.num_samples, sum([len(client_dict[cid]) for cid in client_dict]))  # check total sample number
+
 
 
         
