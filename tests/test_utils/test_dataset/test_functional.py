@@ -15,6 +15,7 @@
 
 import unittest
 import os
+import random
 import numpy as np
 from fedlab.utils.dataset import functional as F
 import torchvision
@@ -69,6 +70,14 @@ class DatasetFunctionalTestCase(unittest.TestCase):
                                                                 self.num_samples, 0)
         balance_clt_sample_nums = F.balance_split(self.num_clients, self.num_samples)
         self.assertTrue(all(lognormal_clt_sample_nums == balance_clt_sample_nums))
+
+    def test_dirichlet_unbalance_split(self):
+        # check length 
+        clt_sample_nums = F.dirichlet_unbalance_split(self.num_clients,
+                                                      self.num_samples, 0.6)
+        self.assertTrue(clt_sample_nums.shape[0] == self.num_clients)
+        # sample number for each client should not be equal
+        self.assertFalse(all(clt_sample_nums == int(self.num_samples / self.num_clients)))
 
     def test_hetero_dir_partition(self):
         # use np.ndarray targets
@@ -165,8 +174,6 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         client_dict = F.noniid_slicing(trainset, num_clients=self.num_clients, num_shards=200)
         self._content_check(client_dict, len(trainset))
 
-
-
     def test_random_slicing(self):
         client_dict = F.random_slicing(self.targets.tolist(),
                                       num_clients=self.num_clients)
@@ -180,7 +187,47 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         unique_samples = set(all_samples)
         if num_samples is None:
             num_samples = self.num_samples
-        self.assertTrue(unique_samples == set(list(range(num_samples))))
+        self.assertTrue(unique_samples <= set(list(range(num_samples))))
+
+
+    def test_label_skew_quantity_based_partition(self):
+        major_classes_num = 3
+        client_dict = F.label_skew_quantity_based_partition(self.targets, self.num_clients, self.num_classes, major_classes_num)
+        # basic partition check
+        self._content_check(client_dict)
+        # check label class number for each client
+        for cid in client_dict:
+            cid_labels = [self.targets[idx]for idx in client_dict[cid]]
+            unique_labels = set(cid_labels)
+            self.assertEqual(len(unique_labels), major_classes_num)
+
+    def test_fcube_synthetic_partition(self):
+        # generate fcube data
+        X_train, y_train = [], []
+        num_clients = 4
+        for loc in range(4):
+            for i in range(int(self.num_samples / num_clients)):
+                p1 = random.random()
+                p2 = random.random()
+                p3 = random.random()
+                if loc > 1:
+                    p2 = -p2
+                if loc % 2 == 1:
+                    p3 = -p3
+                if i % 2 == 0:
+                    X_train.append([p1, p2, p3])
+                    y_train.append(0)
+                else:
+                    X_train.append([-p1, -p2, -p3])
+                    y_train.append(1)
+
+        data = np.array(X_train, dtype=np.float32)
+        targets = np.array(y_train, dtype=np.int32)
+        # perform partition
+        client_dict = F.fcube_synthetic_partition(data)
+        self.assertEqual(len(client_dict), num_clients)  # check client number 
+        self.assertEqual(self.num_samples, sum([len(client_dict[cid]) for cid in client_dict]))  # check total sample number
+
 
 
         
