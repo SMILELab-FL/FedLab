@@ -60,7 +60,7 @@ class IFCAServerHander(SyncServerHandler):
 ##################
 
 
-class IFCAClientTrainer(SGDSerialClientTrainer):
+class IFCASerialClientTrainer(SGDSerialClientTrainer):
     def __init__(self, model, num_clients, cuda=False, device=None, logger=None, personal=False) -> None:
         super().__init__(model, num_clients, cuda, device, logger, personal)
 

@@ -32,7 +32,7 @@ class FedDynServerHandler(SyncServerHandler):
 ##################
 
 
-class FedDynClientTrainer(SGDSerialClientTrainer):
+class FedDynSerialClientTrainer(SGDSerialClientTrainer):
     def __init__(self, model, num_clients, cuda=False, device=None, logger=None, personal=False) -> None:
         super().__init__(model, num_clients, cuda, device, logger, personal)
 
