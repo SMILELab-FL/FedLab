@@ -16,7 +16,7 @@ class ScaffoldServerHandler(SyncServerHandler):
     @property
     def downlink_package(self):
         return [self.model_parameters, self.global_c]
-    
+
     def setup_optim(self, option=None):
         self.option = option  # weighted_scale, uniform, weighted_com
 
