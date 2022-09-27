@@ -112,9 +112,20 @@ class FunctionalTestCase(unittest.TestCase):
         file = os.path.join(os.path.dirname(__file__), "tmp.csv")
         partition_report(labels, data_indices, class_num=3, verbose=True, file=None)
         partition_report(labels, data_indices, class_num=3, verbose=False, file=file)
-        self.assertTrue(os.path.exists(file))
-        if os.path.exists(file):
-            os.remove(file)
+        self._check_file_and_remove(file)
+
+        partition_report(labels, data_indices, class_num=3, verbose=False, file=None)
+
+        partition_report(labels, data_indices, verbose=False, file=file)
+        self._check_file_and_remove(file)
+
+        partition_report(labels, data_indices, verbose=True, file=None)
+        partition_report(labels.tolist(), data_indices, verbose=True, file=None)
+
+    def _check_file_and_remove(self, file_name):
+        self.assertTrue(os.path.exists(file_name))
+        if os.path.exists(file_name):
+            os.remove(file_name)
 
     def test_setup_seed(self):
         seed = 2022
