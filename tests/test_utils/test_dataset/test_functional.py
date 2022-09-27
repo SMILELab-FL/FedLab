@@ -70,6 +70,14 @@ class DatasetFunctionalTestCase(unittest.TestCase):
         balance_clt_sample_nums = F.balance_split(self.num_clients, self.num_samples)
         self.assertTrue(all(lognormal_clt_sample_nums == balance_clt_sample_nums))
 
+    def test_dirichlet_unbalance_split(self):
+        # check length 
+        clt_sample_nums = F.dirichlet_unbalance_split(self.num_clients,
+                                                      self.num_samples, 0.6)
+        self.assertTrue(clt_sample_nums.shape[0] == self.num_clients)
+        # sample number for each client should not be equal
+        self.assertFalse(all(clt_sample_nums == int(self.num_samples / self.num_clients)))
+
     def test_hetero_dir_partition(self):
         # use np.ndarray targets
         client_dict = F.hetero_dir_partition(self.targets,
