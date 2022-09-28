@@ -3,6 +3,7 @@ from PIL import Image
 from pathlib import Path
 from torch.utils.data import Dataset
 
+from .basic_dataset import FedDataset
 
 class CelebADataset(Dataset):
     def __init__(self,
