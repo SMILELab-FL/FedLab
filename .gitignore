@@ -176,3 +176,5 @@ unit_test.ipynb
 /exp_logs
 # release cache
 
+/datasets/mnist/mnist
+/datasets/mnist/fedmnist*

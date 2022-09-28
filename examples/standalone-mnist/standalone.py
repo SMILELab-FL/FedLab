@@ -30,7 +30,7 @@ parser.add_argument("--com_round", type=int)
 parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--epochs", type=int)
-parser.add_argument("--lr", type=float, default=0.02)
+parser.add_argument("--lr", type=float)
 
 args = parser.parse_args()
 
@@ -41,7 +41,7 @@ handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
 
 # client
 trainer = SGDSerialClientTrainer(model, args.total_client, cuda=True)
-dataset = PathologicalMNIST(root='../../tests/data/mnist/', path="../../tests/data/mnist/", num=args.total_client)
+dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../datasets/mnist/", num=args.total_client)
 #dataset.preprocess()
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)

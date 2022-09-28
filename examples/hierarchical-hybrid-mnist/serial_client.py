@@ -37,8 +37,8 @@ network = DistNetwork(address=(args.ip, args.port),
 
 trainer = SGDSerialClientTrainer(model=model, num=10, cuda=args.cuda)
 
-dataset = PathologicalMNIST(root='../../tests/data/mnist/',
-                            path="../../tests/data/mnist/",
+dataset = PathologicalMNIST(root='../../datasets/mnist/',
+                            path="../../datasets/mnist/",
                             num=10)
 
 trainer.setup_dataset(dataset)
