@@ -29,7 +29,7 @@ class TopkCompressor(Compressor):
         self.index_dtype = torch.int64
         self.value_dtype = torch.float32
 
-    def compress_tensor(self, tensor):
+    def compress(self, tensor):
         """compress tensor into (values, indices)
         Args:
             tensor (torch.Tensor): tensor
@@ -61,42 +61,10 @@ class TopkCompressor(Compressor):
 
         return values, indices
 
-    def decompress_tensor(self, values, indices, shape):
+    def decompress(self, values, indices, shape):
         """decompress tensor"""
         de_tensor = torch.zeros(size=shape, dtype=self.value_dtype).view(-1)
         de_tensor = de_tensor.index_put_([indices], values,
                                          accumulate=True).view(shape)
         return de_tensor
-
-    def compress(self, parameters):
-        """compress model
-        Args:
-            parameters (torch.nn.module): PyTorch module.
-        Returns:
-            tuple: list(values) and list(indices).
-        """
-        values_list = []
-        indices_list = []
-        for param in parameters:
-            values, indices = self.compress_tensor(param)
-            values_list.append(values)
-            indices_list.append(indices)
-
-        return values_list, indices_list
-
-    def decompress(self, shape_list, values_list, indices_list):
-        """decompress model
-        Args:
-            shape_list (list[tuple]): The shape of every corresponding tensor.
-            values_list (list[torch.Tensor]): list(values).
-            indices_list (list[torch.Tensor]): list(indices).
-        """
-        parameters_layer_list = []
-        for shape, values, indices in zip(shape_list, values_list,
-                                          indices_list):
-            de_tensor = self.decompress_tensor(values, indices, shape)
-            parameters_layer_list.append(de_tensor.view(-1))
-
-        parameters = torch.cat(parameters_layer_list)
-
-        return parameters
+    
