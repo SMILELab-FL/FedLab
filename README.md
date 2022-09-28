@@ -9,7 +9,7 @@ Federated learning (FL), proposed by Google at the very beginning, is recently a
 
 To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
 
-## Documentations
+## Content of Documentations
 
 - [Documentation website](https://fedlab.readthedocs.io/en/master/)
 - [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
@@ -19,39 +19,42 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 - [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
 
 
-## Quick start with examples
+## Quick start
 
-Please see our [demos](./examples/README.md).
+1. Please read our tutorials in jupyter notebook.
 
-## FedLab Benchmarks
+2. Run our quick start examples of different scenarios with partitioned MNIST dataset.
 
-Thanks to our contributors, algorithms and benchmarks are provided in our [FedLab-Benchmarks repo](https://github.com/SMILELab-FL/FedLab-benchmarks). More FedLab version of FL algorithms are coming.
-
-1. Optimization Algorithms
-- [x] FedAvg: [Communication-Efficient Learning of Deep Networks from Decentralized Data](http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf)
-- [x] FedAsync: [Asynchronous Federated Optimization](http://arxiv.org/abs/1903.03934)
-- [x] FedProx: [Federated Optimization in Heterogeneous Networks](https://arxiv.org/abs/1812.06127)
-- [x] FedDyn: [Federated Learning based on Dynamic Regularization](https://openreview.net/pdf?id=B7v4QMR6Z9w)
-- [x] Personalized-FedAvg: [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf)
-- [x] qFFL: [Fair Resource Allocation in Federated Learning](https://arxiv.org/abs/1905.10497)
-
-2. Compression Algorithms
-- [x] DGC: [Deep Gradient Compression: Reducing the Communication Bandwidth for Distributed Training](https://arxiv.org/abs/1712.01887)
-- [x] QSGD: [Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html)
-
-3. Datasets
-- [x] LEAF: [A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097)
-- [x] NIID-Bench: [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079)
-
-## Contribution
-
-You're welcome to contribute to this project through _Pull Request_.
-
-- By contributing, you agree that your contributions will be licensed under [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) 
-- Docstring  and code should follow Google Python Style Guide: [中文版](https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/)|[English](https://google.github.io/styleguide/pyguide.html)
-- The code should provide test cases using `unittest.TestCase`
+```
+# example of standalone
+$ cd ./examples/standalone/
+$ bash python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
+```
 
 
+## Baselines
+
+We provide the reproduction of baseline federated algorthms for users in this repo.
+
+| Method              | Type   | Paper                                                        | Publication  | Official code                                        |
+| ------------------- | ------ | ------------------------------------------------------------ | ------------ | ---------------------------------------------------- |
+| FedAvg              | Optim. | [Communication-Efficient Learning of Deep Networks from Decentralized Data](http://proceedings.mlr.press/v54/mcmahan17a/mcmahan17a.pdf) | AISTATS'2017 |                                                      |
+| FedProx             | Optim. | [Federated Optimization in Heterogeneous Networks](https://arxiv.org/abs/1812.06127) | MLSys' 2020  | [Code](https://github.com/litian96/FedProx)          |
+| FedDyn              | Optim. | [Federated Learning Based on Dynamic Regularization](https://openreview.net/forum?id=B7v4QMR6Z9w) | ICLR' 2021   | [Code](https://github.com/alpemreacar/FedDyn)        |
+| q-FFL               | Optim. | [Fair Resource Allocation in Federated Learning](https://arxiv.org/abs/1905.10497) | ICLR' 2020   | [Code](https://github.com/litian96/fair_flearn)      |
+| FedNova             | Optim. | [Tackling the Objective Inconsistency Problem in Heterogeneous Federated Optimization](https://proceedings.neurips.cc/paper/2020/hash/564127c03caab942e503ee6f810f54fd-Abstract.html) | NeurIPS'2020 | [Code](https://github.com/JYWa/FedNova)              |
+| IFCA                | Optim. | [An Efficient Framework for Clustered Federated Learning](https://proceedings.neurips.cc/paper/2020/hash/e32cc80bf07915058ce90722ee17bb71-Abstract.html) | NeurIPS'2020 | [Code](https://github.com/jichan3751/ifca)           |
+| Ditto               | Optim. | [Ditto: Fair and Robust Federated Learning Through Personalization]() | ICML'2021    | [Code](https://github.com/litian96/ditto)            |
+| Power-of-choice     |        | [Client Selection in Federated Learning: Convergence Analysis and Power-of-Choice Selection Strategies](https://arxiv.org/abs/2010.01243) | Pre-print    |                                                      |
+| SCAFFOLD            | Optim. | [SCAFFOLD: Stochastic Controlled Averaging for Federated Learning]() | ICML'2020    |                     
+| Personalized-FedAvg |        | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |              |                                                      |
+| QSGD                | Com    | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
+| NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | Pre-print    | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
+| LEAF                | Data.  | [LEAF: A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097) | Pre-print    | [Code](https://github.com/TalwalkarLab/leaf/)        |
+
+## Performance
+
+TODO
 
 ## Citation
 

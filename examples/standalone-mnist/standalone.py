@@ -30,7 +30,7 @@ parser.add_argument("--com_round", type=int)
 parser.add_argument("--sample_ratio", type=float)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--epochs", type=int)
-parser.add_argument("--lr", type=float, default=0.02)
+parser.add_argument("--lr", type=float)
 
 args = parser.parse_args()
 
