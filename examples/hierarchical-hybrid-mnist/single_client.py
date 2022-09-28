@@ -42,8 +42,8 @@ LOGGER = Logger(log_name="client " + str(args.rank))
 
 trainer = FedAvgClientTrainer(model, cuda=args.cuda)
 
-dataset = PathologicalMNIST(root='../../tests/data/mnist/',
-                            path="../../tests/data/mnist/",
+dataset = PathologicalMNIST(root='../../datasets/mnist/',
+                            path="../../datasets/mnist/",
                             num=args.world_size - 1)
 #dataset.preprocess()
 trainer.setup_dataset(dataset)

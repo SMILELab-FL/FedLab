@@ -46,7 +46,7 @@ else:
 model = MLP(784,10)
 
 trainer = AsyncTrainer(model, cuda=args.cuda)
-dataset = PathologicalMNIST(root='../../tests/data/mnist/', path="../../tests/data/mnist/")
+dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../tests/data/mnist/")
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 

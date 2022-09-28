@@ -56,6 +56,10 @@ We provide the reproduction of baseline federated algorthms for users in this re
 
 TODO
 
+## Data Partition
+
+TODO
+
 ## Citation
 
 Please cite __FedLab__ in your publications if it helps your research:
