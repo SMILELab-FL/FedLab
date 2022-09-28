@@ -67,4 +67,4 @@ class TopkCompressor(Compressor):
         de_tensor = de_tensor.index_put_([indices], values,
                                          accumulate=True).view(shape)
         return de_tensor
-    
+        
