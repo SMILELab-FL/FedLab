@@ -25,20 +25,15 @@ class StandalonePipelineTestCase(unittest.TestCase):
         cls.comm_round = 3
         cls.sample_ratio = 0.5
         data_path = '../data/mnist'
-        # cls.dataset = PartitionedMNIST(root=data_path, path=data_path, num_clients=cls.num_clients, download=True, partition="iid", verbose=False)
         cls.dataset = PathologicalMNIST(root=data_path, path=data_path, num_clients=cls.num_clients, preprocess=True)
         
     def setUp(self) -> None:
-        
         # prepare client trainer
         self.trainer = SGDSerialClientTrainer(self.model, self.num_clients, cuda=True)
         self.trainer.setup_dataset(self.dataset)
         self.trainer.setup_optim(epochs=2, batch_size=16, lr=0.1)
         # prepare server handler
         self.handler = SyncServerHandler(self.model, self.comm_round, self.sample_ratio)
-        
-    # def tearDown(self):
-    #     pass
 
     def test_init(self):
         pipeline = TestStandalonePipeline(self.handler, self.trainer)
