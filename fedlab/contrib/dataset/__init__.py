@@ -16,6 +16,8 @@ from .basic_dataset import FedDataset, BaseDataset, Subset
 from .pathological_mnist import PathologicalMNIST
 from .rotated_mnist import RotatedMNIST
 from .rotated_cifar10 import RotatedCIFAR10
+from .partitioned_cifar import PartitionCIFAR
+from .partitioned_mnist import PartitionedMNIST
 from .fcube import FCUBE
 from .covtype import Covtype
 from .rcv1 import RCV1
