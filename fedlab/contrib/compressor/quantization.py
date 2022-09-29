@@ -41,7 +41,7 @@ class QSGDCompressor(Compressor):
     def compress(self, tensor):
         """Compress a tensor with quantization
         Args:
-            vec ([type]): [description]
+            tensor ([type]): [description]
         Returns:
             norm (torch.Tensor): The normalization number.
             signs (torch.Tensor): Tensor that indicates the sign of coresponding number.

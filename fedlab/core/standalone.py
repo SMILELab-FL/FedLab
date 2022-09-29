@@ -27,14 +27,14 @@ class StandalonePipeline(object):
         self.trainer = trainer
 
         # initialization
-        self.handler.client_num = self.trainer.client_num
+        self.handler.num_clients = self.trainer.num_clients
 
     def main(self):
         while self.handler.if_stop is False:
             # server side
             sampled_clients = self.handler.sample_clients()
             broadcast = self.handler.downlink_package
-            
+
             # client side
             self.trainer.local_process(broadcast, sampled_clients)
             uploads = self.trainer.uplink_package
@@ -49,5 +49,3 @@ class StandalonePipeline(object):
 
     def evaluate(self):
         print("Implement your evaluation here.")
-            
-            
