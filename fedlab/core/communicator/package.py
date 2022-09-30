@@ -124,7 +124,7 @@ class Package(object):
     def to(self, dtype):
         if dtype in supported_torch_dtypes:
             self.dtype = dtype
-            self.content.to(self.dtype)
+            self.content = self.content.to(self.dtype)
         else:
             warnings.warn(
                 "FedLab only supports following data types: torch.int8, torch.int16, torch.int32, torch.int64, torch.float16, torch.float32, torch.float64."
