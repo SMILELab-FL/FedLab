@@ -19,13 +19,28 @@ import torch.distributed as dist
 import os
 
 from random import randint
-from fedlab.core.communicator.package import Package
+from fedlab.core.communicator import dtype_torch2flab, dtype_flab2torch
+from fedlab.core.communicator import (
+    INT8, INT16, INT32, INT64, FLOAT16, FLOAT32, FLOAT64
+)
+from fedlab.core.communicator.package import Package, supported_torch_dtypes
 from fedlab.utils.message_code import MessageCode
 from fedlab.core.communicator.package import (
     HEADER_SENDER_RANK_IDX, HEADER_RECEIVER_RANK_IDX, HEADER_SLICE_SIZE_IDX,
     HEADER_MESSAGE_CODE_IDX, DEFAULT_SLICE_SIZE, DEFAULT_MESSAGE_CODE_VALUE,
     HEADER_SIZE, HEADER_DATA_TYPE_IDX)
 
+class DtypeFuncTestCase(unittest.TestCase):
+    def setUp(self):
+        self.fedlab_types = [INT8, INT16, INT32, INT64, FLOAT16, FLOAT32, FLOAT64] 
+
+    def test_dtype_flab2torch(self):
+        for fedlab_dtype in self.fedlab_types:
+            res = dtype_flab2torch(fedlab_dtype)
+    
+    def test_dtype_torch2flab(self):
+        for torch_dtype in supported_torch_dtypes:
+            res = dtype_torch2flab(torch_dtype)
 
 class PackageTestCase(unittest.TestCase):
 
