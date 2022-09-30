@@ -63,11 +63,16 @@ class PackageTestCase(unittest.TestCase):
     def test_pack_up_default(self):
         p = Package()
 
-        assert p.content == None
-        assert p.header[HEADER_SENDER_RANK_IDX] == dist.get_rank()
-        assert p.header[HEADER_RECEIVER_RANK_IDX] == -1
-        assert p.header[HEADER_MESSAGE_CODE_IDX] == DEFAULT_MESSAGE_CODE_VALUE
-        assert p.header[HEADER_SLICE_SIZE_IDX] == DEFAULT_SLICE_SIZE
+        # assert p.content == None
+        # assert p.header[HEADER_SENDER_RANK_IDX] == dist.get_rank()
+        # assert p.header[HEADER_RECEIVER_RANK_IDX] == -1
+        # assert p.header[HEADER_MESSAGE_CODE_IDX] == DEFAULT_MESSAGE_CODE_VALUE
+        # assert p.header[HEADER_SLICE_SIZE_IDX] == DEFAULT_SLICE_SIZE
+        self.assertEqual(p.content, None)
+        self.assertEqual(p.header[HEADER_SENDER_RANK_IDX], dist.get_rank())
+        self.assertEqual(p.header[HEADER_RECEIVER_RANK_IDX], -1)
+        self.assertEqual(p.header[HEADER_MESSAGE_CODE_IDX], DEFAULT_MESSAGE_CODE_VALUE)
+        self.assertEqual(p.header[HEADER_SLICE_SIZE_IDX], DEFAULT_SLICE_SIZE)
 
     def test_pack_up_with_content(self):
         # init with single tensor content
@@ -79,17 +84,30 @@ class PackageTestCase(unittest.TestCase):
         p2 = Package(content=self.tensor_list)
         self._assert_tensor_eq(p2.content, self.content)
 
-    def test_add_tensor(self):
+    def test_pack_up_with_MessageCode(self):
+        # init with message_code as MessageCode
+        for msg_code in MessageCode:
+            p = Package(message_code=msg_code)
+            self.assertEqual(p.header[HEADER_MESSAGE_CODE_IDX], msg_code.value)
+
+    def test_append_tensor(self):
         p = Package()
         p.append_tensor(self.tensor_list[0])
 
-        assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
+        # assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
+        self.assertEqual(p.header[HEADER_SLICE_SIZE_IDX], len(p.slices))
 
-    def test_add_tensor_list(self):
+    def test_append_tensor_invalid(self):
+        p = Package()
+        with self.assertRaises(ValueError):
+            p.append_tensor({'a':1, 'b': 2, 'c': 3})  # use dict as input tensor, rather than torch.Tensor
+
+    def test_append_tensor_list(self):
         p = Package()
         p.append_tensor_list(self.tensor_list)
 
-        assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
+        # assert p.header[HEADER_SLICE_SIZE_IDX] == len(p.slices)
+        self.assertEqual(p.header[HEADER_SLICE_SIZE_IDX], len(p.slices))
 
     def test_parse_content(self):
         p = Package()
@@ -109,8 +127,13 @@ class PackageTestCase(unittest.TestCase):
         sender_rank, receiver_rank, slice_size, message_code, data_type = Package.parse_header(
             p.header)
 
-        assert sender_rank == p.header[HEADER_SENDER_RANK_IDX]
-        assert receiver_rank == p.header[HEADER_RECEIVER_RANK_IDX]
-        assert slice_size == p.header[HEADER_SLICE_SIZE_IDX]
-        assert message_code.value == p.header[HEADER_MESSAGE_CODE_IDX]
-        assert data_type == p.header[HEADER_DATA_TYPE_IDX]
+        # assert sender_rank == p.header[HEADER_SENDER_RANK_IDX]
+        # assert receiver_rank == p.header[HEADER_RECEIVER_RANK_IDX]
+        # assert slice_size == p.header[HEADER_SLICE_SIZE_IDX]
+        # assert message_code.value == p.header[HEADER_MESSAGE_CODE_IDX]
+        # assert data_type == p.header[HEADER_DATA_TYPE_IDX]
+        self.assertEqual(sender_rank, p.header[HEADER_SENDER_RANK_IDX])
+        self.assertEqual(receiver_rank, p.header[HEADER_RECEIVER_RANK_IDX])
+        self.assertEqual(slice_size, p.header[HEADER_SLICE_SIZE_IDX])
+        self.assertEqual(message_code.value, p.header[HEADER_MESSAGE_CODE_IDX])
+        self.assertEqual(data_type, p.header[HEADER_DATA_TYPE_IDX])
