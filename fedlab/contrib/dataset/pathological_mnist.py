@@ -54,7 +54,7 @@ class PathologicalMNIST(FedDataset):
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download,
                                            transform=transforms.ToTensor())
-        data_indices = noniid_slicing(mnist, self.num, self.shards)
+        data_indices = noniid_slicing(mnist, self.num_clients, self.shards)
 
         samples, labels = [], []
         for x, y in mnist:
