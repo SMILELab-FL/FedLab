@@ -31,6 +31,29 @@ $ cd ./examples/standalone/
 $ bash python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
 ```
 
+## Architecture
+Files architecture of FedLab. These content may be helpful for users to understand our repo.
+
+```
+├── fedlab
+│   ├── contrib
+│   ├── core
+│   ├── models
+│   └── utils
+├── datasets
+│   └──...
+├── examples
+│   ├── asynchronous-cross-process-mnist
+│   ├── cross-process-mnist
+│   ├── hierarchical-hybrid-mnist
+│   ├── network-connection-checker
+│   ├── scale-mnist
+│   └── standalone-mnist
+└── tutorials
+    ├── communication_tutorial.ipynb
+    ├── customize_tutorial.ipynb
+    └── pipeline_tutorial.ipynb
+```
 
 ## Baselines
 
@@ -45,9 +68,9 @@ We provide the reproduction of baseline federated algorthms for users in this re
 | FedNova             | Optim. | [Tackling the Objective Inconsistency Problem in Heterogeneous Federated Optimization](https://proceedings.neurips.cc/paper/2020/hash/564127c03caab942e503ee6f810f54fd-Abstract.html) | NeurIPS'2020 | [Code](https://github.com/JYWa/FedNova)              |
 | IFCA                | Optim. | [An Efficient Framework for Clustered Federated Learning](https://proceedings.neurips.cc/paper/2020/hash/e32cc80bf07915058ce90722ee17bb71-Abstract.html) | NeurIPS'2020 | [Code](https://github.com/jichan3751/ifca)           |
 | Ditto               | Optim. | [Ditto: Fair and Robust Federated Learning Through Personalization]() | ICML'2021    | [Code](https://github.com/litian96/ditto)            |
-| Power-of-choice     |        | [Client Selection in Federated Learning: Convergence Analysis and Power-of-Choice Selection Strategies](https://arxiv.org/abs/2010.01243) | Pre-print    |                                                      |
+| Power-of-choice     |  Misc. | [Client Selection in Federated Learning: Convergence Analysis and Power-of-Choice Selection Strategies](https://arxiv.org/abs/2010.01243) | Pre-print    |                                                      |
 | SCAFFOLD            | Optim. | [SCAFFOLD: Stochastic Controlled Averaging for Federated Learning]() | ICML'2020    |                     
-| Personalized-FedAvg | Optim. | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |              |                                                      |
+| Personalized-FedAvg | Optim. | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |    Pre-print      |                                                      |
 | QSGD                | Com.   | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
 | NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | Pre-print    | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
 | LEAF                | Data.  | [LEAF: A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097) | Pre-print    | [Code](https://github.com/TalwalkarLab/leaf/)        |
@@ -64,18 +87,22 @@ In this section, we provide the perfermance report of several reproducted federa
 
 We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below. The results reveal the most vital challenge in federated learning. 
 
-![](./examples/imgs/non_iid_impacts_on_fedavg.jpg)
+![](/examples/imgs/non_iid_impacts_on_fedavg.jpg)
 
 We provide the performance report of current FL optimization algorithms in 100 rounds.
 
 | Algorithm      | FedAvg | FedProx | Scaffold | FedDyn | FedNova |
 | -------------- | ------ | ------- | -------- | ------ | ------- |
 | $\alpha = 0.1$ |        |         |          |        |         |
-| $\alpha = 0.7$ |        |         |          |        |         |
 
 ### Communication compression
 
 We provide a few performance baseline in communication-efficient federated learning, which includes QSGD and top-k.
+
+| Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% |
+| -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- |
+| Accuracy             |          |           |           |            |        |         |
+| Communication               |          |           |           |            |        |         |
 
 ## Citation
 
