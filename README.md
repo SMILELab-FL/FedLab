@@ -21,7 +21,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 ## Quick start
 
-1. Please read our tutorials in jupyter notebook.
+1. Please read our [tutorials](./tutorials/) in jupyter notebook.
 
 2. Run our quick start examples of different scenarios with partitioned MNIST dataset.
 
@@ -47,8 +47,8 @@ We provide the reproduction of baseline federated algorthms for users in this re
 | Ditto               | Optim. | [Ditto: Fair and Robust Federated Learning Through Personalization]() | ICML'2021    | [Code](https://github.com/litian96/ditto)            |
 | Power-of-choice     |        | [Client Selection in Federated Learning: Convergence Analysis and Power-of-Choice Selection Strategies](https://arxiv.org/abs/2010.01243) | Pre-print    |                                                      |
 | SCAFFOLD            | Optim. | [SCAFFOLD: Stochastic Controlled Averaging for Federated Learning]() | ICML'2020    |                     
-| Personalized-FedAvg |        | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |              |                                                      |
-| QSGD                | Com    | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
+| Personalized-FedAvg | Optim.       | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |              |                                                      |
+| QSGD                | Com.    | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
 | NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | Pre-print    | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
 | LEAF                | Data.  | [LEAF: A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097) | Pre-print    | [Code](https://github.com/TalwalkarLab/leaf/)        |
 
