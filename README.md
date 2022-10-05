@@ -81,7 +81,7 @@ TODO
 
 ## Performance & Insights
 
-In this section, we provide the perfermance report of several reproducted federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights that FedLab could provide for federated learning research. Without loss of generality, experiments in this section is conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
+We provide the performance report of several reproduced federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights FedLab could provide for federated learning research. Without loss of generality, this section's experiments are conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
 
 ### Non-IID
 
