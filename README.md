@@ -62,18 +62,20 @@ In this section, we provide the perfermance report of several reproducted federa
 
 ### Non-IID
 
-We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below:
+We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below. The results reveal the most vital challenge in federated learning. 
 
 ![](./examples/imgs/non_iid_impacts_on_fedavg.jpg)
 
-The results reveal the most vital challenge in federated learning. 
+We provide the performance report of current FL optimization algorithms in 100 rounds.
 
-
-
-
-### Client selection
+| Algorithm      | FedAvg | FedProx | Scaffold | FedDyn | FedNova |
+| -------------- | ------ | ------- | -------- | ------ | ------- |
+| $\alpha = 0.1$ |        |         |          |        |         |
+| $\alpha = 0.7$ |        |         |          |        |         |
 
 ### Communication compression
+
+We provide a few performance baseline in communication-efficient federated learning, which includes QSGD and top-k.
 
 ## Citation
 
