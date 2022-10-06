@@ -48,9 +48,12 @@ class PathologicalMNIST(FedDataset):
 
         if os.path.exists(self.path) is not True:
             os.mkdir(self.path)
+        
+        if os.path.exists(os.path.join(self.path, "train")) is not True:
             os.mkdir(os.path.join(self.path, "train"))
             os.mkdir(os.path.join(self.path, "var"))
             os.mkdir(os.path.join(self.path, "test"))
+            
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download,
                                            transform=transforms.ToTensor())
