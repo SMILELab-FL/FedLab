@@ -109,7 +109,7 @@ Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the fi
 
 <img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="200" align="left"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="200" align="right">
 
-
+<br>
 
 #### 4. Shards partition
 
