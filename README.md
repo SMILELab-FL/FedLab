@@ -77,7 +77,61 @@ We provide the reproduction of baseline federated algorthms for users in this re
 
 ## Datasets & Data Partition
 
+Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including iid and non-iid scenarios. Though there already exists some datasets and partition schemes for published data benchmark, it still can be very messy and hard for researchers to partition datasets according to their specific research problems, and maintain partition results during simulation. __FedLab__ provides [`fedlab.utils.dataset.partition.DataPartitioner`](https://fedlab.readthedocs.io/en/master/autoapi/fedlab/utils/dataset/partition/index.html#fedlab.utils.dataset.partition.DataPartitioner) that allows you to use pre-partitioned datasets as well as your own data. `DataPartitioner` stores sample indices for each client given a data partition scheme. Also, FedLab provides some extra datasets that are used in current FL researches while not provided by official PyTorch `torchvision.datasets` yet.
 
+### Data Partition
+
+We provide multiple data partition schemes used in recent FL papers[[1]](#1)[[2]](#2)[[3]](#3). Here we show the data partition visualization of several common used datasets as the examples.
+
+#### 1. Balanced IID partition
+
+Each client has same number of samples, and same distribution for all class samples. 
+
+Given 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_iid_100clients.png" height="300"></p>
+
+#### 2. Unbalanced IID partition
+
+Assign different sample number for each client using Log-Normal distribution $\text{Log-N}(0, \sigma^2)$, while keep same distribution for different class samples. 
+
+Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="300"></p>
+
+And distribution of sample number for clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="300"></p>
+
+#### 3. Hetero Dirichlet partition
+
+Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
+
+Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="300"></p>
+
+And distribution of sample number for clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="300"></p>
+
+#### 4. Shards partition
+
+Non-iid partition based on shards, used in [[4]](#4).
+
+Given `shard_number=200`, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_shards_200_100clients.png" height="300"></p>
+
+#### 5. Balanced Dirichlet partition
+
+
+
+#### 6. Unbalanced Dirichlet partition
+
+
+
+### Datasets
 
 ## Performance & Insights
 
@@ -126,3 +180,18 @@ For technical issues reated to __FedLab__ development, please contact our develo
 - Dun Zeng: zengdun@foxmail.com
 - [Siqi Liang](https://scholar.google.com/citations?user=LIjv5BsAAAAJ&hl=en): zszxlsq@gmail.com
 
+
+
+## References
+
+<a id="1">[1]</a> Li, Q., Diao, Y., Chen, Q., & He, B. (2022, May). Federated learning on non-iid data silos: An experimental study. In *2022 IEEE 38th International Conference on Data Engineering (ICDE)* (pp. 965-978). IEEE.
+
+<a id="2">[2]</a> Caldas, S., Duddu, S. M. K., Wu, P., Li, T., Konečný, J., McMahan, H. B., ... & Talwalkar, A. (2018). Leaf: A benchmark for federated settings. *arXiv preprint arXiv:1812.01097*.
+
+<a id="3">[3]</a> Yurochkin, M., Agarwal, M., Ghosh, S., Greenewald, K., Hoang, N., & Khazaeni, Y. (2019, May). Bayesian nonparametric federated learning of neural networks. In *International Conference on Machine Learning* (pp. 7252-7261). PMLR.
+
+<a id="4">[4]</a> McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017, April). Communication-efficient learning of deep networks from decentralized data. In *Artificial intelligence and statistics* (pp. 1273-1282). PMLR.
+
+<a id="5">[5]</a> Yurochkin, M., Agarwal, M., Ghosh, S., Greenewald, K., Hoang, N., & Khazaeni, Y. (2019, May). Bayesian nonparametric federated learning of neural networks. In *International Conference on Machine Learning* (pp. 7252-7261). PMLR.
+
+<a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
