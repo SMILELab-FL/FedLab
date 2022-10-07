@@ -69,25 +69,201 @@ We provide the reproduction of baseline federated algorthms for users in this re
 | IFCA                | Optim. | [An Efficient Framework for Clustered Federated Learning](https://proceedings.neurips.cc/paper/2020/hash/e32cc80bf07915058ce90722ee17bb71-Abstract.html) | NeurIPS'2020 | [Code](https://github.com/jichan3751/ifca)           |
 | Ditto               | Optim. | [Ditto: Fair and Robust Federated Learning Through Personalization]() | ICML'2021    | [Code](https://github.com/litian96/ditto)            |
 | Power-of-choice     |  Misc. | [Client Selection in Federated Learning: Convergence Analysis and Power-of-Choice Selection Strategies](https://arxiv.org/abs/2010.01243) | Pre-print    |                                                      |
-| SCAFFOLD            | Optim. | [SCAFFOLD: Stochastic Controlled Averaging for Federated Learning]() | ICML'2020    |                     
+| SCAFFOLD            | Optim. | [SCAFFOLD: Stochastic Controlled Averaging for Federated Learning]() | ICML'2020    ||
 | Personalized-FedAvg | Optim. | [Improving Federated Learning Personalization via Model Agnostic Meta Learning](https://arxiv.org/pdf/1909.12488.pdf) |    Pre-print      |                                                      |
 | QSGD                | Com.   | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
-| NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | Pre-print    | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
+| NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | ICDE' 2022 | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
 | LEAF                | Data.  | [LEAF: A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097) | Pre-print    | [Code](https://github.com/TalwalkarLab/leaf/)        |
 
-## Data Partition
+## Datasets & Data Partition
 
-TODO
+Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including iid and non-iid scenarios. Though there already exists some datasets and partition schemes for published data benchmark, it still can be very messy and hard for researchers to partition datasets according to their specific research problems, and maintain partition results during simulation. __FedLab__ provides [`fedlab.utils.dataset.partition.DataPartitioner`](https://fedlab.readthedocs.io/en/master/autoapi/fedlab/utils/dataset/partition/index.html#fedlab.utils.dataset.partition.DataPartitioner) that allows you to use pre-partitioned datasets as well as your own data. `DataPartitioner` stores sample indices for each client given a data partition scheme. Also, FedLab provides some extra datasets that are used in current FL researches while not provided by official PyTorch `torchvision.datasets` yet.
+
+### Data Partition
+
+We provide multiple data partition schemes used in recent FL papers[[1]](#1)[[2]](#2)[[3]](#3). Here we show the data partition visualization of several common used datasets as the examples.
+
+#### 1. Balanced IID partition
+
+Each client has same number of samples, and same distribution for all class samples. 
+
+Given 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_iid_100clients.png" height="200"></p>
+
+#### 2. Unbalanced IID partition
+
+Assign different sample number for each client using Log-Normal distribution $\text{Log-N}(0, \sigma^2)$, while keep same distribution for different class samples. 
+
+Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
+
+#### 3. Hetero Dirichlet partition
+
+Non-iid partition used in [[3]](#3) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
+
+Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="200"></p>
+
+
+
+#### 4. Shards partition
+
+Non-iid partition based on shards, used in [[4]](#4).
+
+Given `shard_number=200`, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_shards_200_100clients.png" height="200"></p>
+
+#### 5. Balanced Dirichlet partition
+
+Non-iid partition used in [[5]](#5). Each client has same number of samples, while class distribution in each client follows Dirichlet distribution $\text{Dir}{(\alpha)}$.
+
+Given $\alpha=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_dir_alpha_0.3_100clients.png" height="200"></p>
+
+#### 6. Unbalanced Dirichlet partition
+
+Non-iid partition used in [[5]](#5). Sample numbers of clients are drawn from Log-normal distribution $\text{Log-N}(0, \sigma^2)$, while class distribution in each client follows Dirichlet distribution $\text{Dir}{(\alpha)}$.
+
+Given $\sigma=0.3$, $\alpha=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_dir_alpha_0.3_unbalance_sgm_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_dir_alpha_0.3_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
+
+#### 7. Quantity-based Label Distribution Skew partition
+
+Non-iid partition used in [[1]](#1). Each client has only specific number of sample class.
+
+Given class number for each client as $3$, 10 clients and FashionMNIST, the data samples assigned to each client could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fmnist_noniid-label_3_clients_10.png" height="200"></p>
+
+#### 8. Noise-based Feature Distribution Skew partition
+
+Non-iid partition used in [[1]](#1). Different client's sample feature has different levels of Gaussian noise. Data example for 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fmnist_feature_skew_vis.png" height="400"></p>
+
+#### 9. FCUBE Synthetic partition
+
+Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown as:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fcube_synthetic_part.png" height="600"></p>
+
+### Datasets supported
+
+<table style="height: 458px;">
+<tbody>
+<tr style="height: 45px;">
+  <td style="height: 45px;"><b>Data Type</b></td>
+  <td style="height: 45px;"><b>Data Name</b></td>
+  <td style="height: 45px;"><b>#Training Samples</b></td>
+  <td style="height: 45px;"><b>#Test Samples</b></td>
+  <td style="height: 45px;"><b>#Label Classes</b></td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 168px;" rowspan="7"><b>Vision data</b></td>
+<td style="height: 24px;">CIFAR10</td>
+<td style="height: 24px;">50K</td>
+<td style="height: 24px;">&nbsp;10K</td>
+<td style="height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">CIFAR100</td>
+<td style="height: 24px;">50K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">100</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">FashionMNIST</td>
+<td style="height: 24px;">60K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">MNIST</td>
+<td style="height: 24px;">60K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">SVHN</td>
+<td style="height: 24px;">73K</td>
+<td style="height: 24px;">26K&nbsp;</td>
+<td style="height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">CelebA</td>
+<td style="height: 24px;" colspan="2">200, 288&nbsp;</td>
+<td style="height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">FEMNIST</td>
+<td style="height: 24px;" colspan="2">805, 263&nbsp;</td>
+<td style="height: 24px;">62</td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 72.8239px;" rowspan="3"><b>Text data</b></td>
+<td style="height: 24px;">Shakespeare</td>
+<td style="height: 24px;" colspan="2">4, 226, 158&nbsp;</td>
+<td style="height: 24px;">-</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">Sent14</td>
+<td style="height: 24px;" colspan="2">1, 600, 498&nbsp;</td>
+<td style="height: 24px;">3</td>
+</tr>
+<tr style="height: 24.8239px;">
+<td style="height: 24.8239px;">Reddit</td>
+<td style="height: 24.8239px;" colspan="2">56, 587, 343&nbsp;</td>
+<td style="height: 24.8239px;">-</td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 72px;" rowspan="3"><b>Tabular data</b></td>
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a" target="_blank">Adult</a></td>
+<td style="height: 24px;">32, 561</td>
+<td style="height: 24px;">&nbsp;16, 281</td>
+<td style="height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#covtype.binary" target="_blank">Covtype</a></td>
+<td style="height: 24px;" colspan="2">&nbsp;581, 012&nbsp;</td>
+<td style="height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#rcv1.binary" target="_blank">RCV1 binary</a></td>
+<td style="height: 24px;">20, 242</td>
+<td style="height: 24px;">&nbsp;677, 399</td>
+<td style="height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+  <td style="height: 48px;" rowspan="2"><b>Synthetic data</b></td>
+<td style="height: 24px;">FCUBE</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px;">LEAF-Synthetic</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
+</tr>
+</tbody>
+</table>
 
 ## Performance & Insights
 
-In this section, we provide the perfermance report of several reproducted federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights that FedLab could provide for federated learning research. Without loss of generality, experiments in this section is conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
+We provide the performance report of several reproduced federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights FedLab could provide for federated learning research. Without loss of generality, this section's experiments are conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
 
 ### Federated Optimization on Non-IID Data
 
 We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below. The results reveal the most vital challenge in federated learning. 
 
-![](/examples/imgs/non_iid_impacts_on_fedavg.jpg)
+<p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
 We provide the performance report of current FL optimization algorithms in 100 rounds.
 
@@ -125,4 +301,20 @@ For technical issues reated to __FedLab__ development, please contact our develo
 
 - Dun Zeng: zengdun@foxmail.com
 - [Siqi Liang](https://scholar.google.com/citations?user=LIjv5BsAAAAJ&hl=en): zszxlsq@gmail.com
+
+
+
+## References
+
+<a id="1">[1]</a> Li, Q., Diao, Y., Chen, Q., & He, B. (2022, May). Federated learning on non-iid data silos: An experimental study. In *2022 IEEE 38th International Conference on Data Engineering (ICDE)* (pp. 965-978). IEEE.
+
+<a id="2">[2]</a> Caldas, S., Duddu, S. M. K., Wu, P., Li, T., Konečný, J., McMahan, H. B., ... & Talwalkar, A. (2018). Leaf: A benchmark for federated settings. *arXiv preprint arXiv:1812.01097*.
+
+<a id="3">[3]</a> Yurochkin, M., Agarwal, M., Ghosh, S., Greenewald, K., Hoang, N., & Khazaeni, Y. (2019, May). Bayesian nonparametric federated learning of neural networks. In *International Conference on Machine Learning* (pp. 7252-7261). PMLR.
+
+<a id="4">[4]</a> McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017, April). Communication-efficient learning of deep networks from decentralized data. In *Artificial intelligence and statistics* (pp. 1273-1282). PMLR.
+
+<a id="5">[5]</a> Acar, D. A. E., Zhao, Y., Navarro, R. M., Mattina, M., Whatmough, P. N., & Saligrama, V. (2021). Federated learning based on dynamic regularization. *arXiv preprint arXiv:2111.04263*.
+
+<a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
 
