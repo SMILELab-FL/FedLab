@@ -223,18 +223,18 @@ Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown a
 </tr>
 <tr style="height: 24px;">
   <td style="height: 72px;" rowspan="3"><b>Tabular data</b></td>
-<td style="height: 24px;">Adult</td>
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a" target="_blank">Adult</a></td>
 <td style="height: 24px;">32, 561</td>
 <td style="height: 24px;">&nbsp;16, 281</td>
 <td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="height: 24px;">Covtype</td>
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#covtype.binary" target="_blank">Covtype</a></td>
 <td style="height: 24px;" colspan="2">&nbsp;581, 012&nbsp;</td>
 <td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="height: 24px;">RCV1 binary</td>
+  <td style="height: 24px;"><a href="https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#rcv1.binary" target="_blank">RCV1 binary</a></td>
 <td style="height: 24px;">20, 242</td>
 <td style="height: 24px;">&nbsp;677, 399</td>
 <td style="height: 24px;">2</td>
