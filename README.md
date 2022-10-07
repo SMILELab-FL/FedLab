@@ -28,7 +28,7 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 ```
 # example of standalone
 $ cd ./examples/standalone/
-$ bash python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
+$ python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
 ```
 
 ## Architecture
@@ -269,7 +269,7 @@ We provide the performance report of current FL optimization algorithms in 100 r
 
 | Algorithm      | FedAvg | FedProx | Scaffold | FedNova | FedDyn |
 | -------------- | ------ | ------- | -------- | ------- | ------ |
-| $\alpha = 0.1$ | 92.24  | 90.70   |          |         |        |
+| $\alpha = 0.1$ |        |         |          |         |        |
 
 ### Communication Efficiency
 
