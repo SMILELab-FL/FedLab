@@ -103,7 +103,7 @@ Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the fi
 
 #### 3. Hetero Dirichlet partition
 
-Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $$p_k∼\text{Dir}_J(\alpha)$$ and allocating a $$p_{k,j}$$ proportion of the samples of class $k$ to local client $j$.
+Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
 
 Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
