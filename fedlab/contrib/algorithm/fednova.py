@@ -14,7 +14,7 @@ from ...utils import Aggregators
 class FedNovaServerHandler(SyncServerHandler):
     """FedAvg server handler."""
 
-    def setup_optim(self, option=None):
+    def setup_optim(self, option="weighted_scale"):
         self.option = option  # weighted_scale, uniform, weighted_com
 
     def global_update(self, buffer):
@@ -33,7 +33,7 @@ class FedNovaServerHandler(SyncServerHandler):
             K = len(deltas)
             N = self.num_clients
             tau_eff = sum([tauk * pk for tauk, pk in zip(taus, p)])
-            delta = torch.sum([dk * pk
+            delta = sum([dk * pk
                                         for dk, pk in zip(deltas, p)]) * N / K
 
         elif self.option == 'uniform':
@@ -42,13 +42,13 @@ class FedNovaServerHandler(SyncServerHandler):
 
         elif self.option == 'weighted_com':
             tau_eff = sum([tauk * pk for tauk, pk in zip(taus, p)])
-            delta = torch.sum([dk * pk for dk, pk in zip(deltas, p)])
+            delta = sum([dk * pk for dk, pk in zip(deltas, p)])
 
         else:
             sump = sum(p)
             p = [pk / sump for pk in p]
             tau_eff = sum([tauk * pk for tauk, pk in zip(taus, p)])
-            delta = torch.sum([dk * pk for dk, pk in zip(deltas, p)])
+            delta = sum([dk * pk for dk, pk in zip(deltas, p)])
 
         self.set_model(self.model_parameters + tau_eff * delta)
 

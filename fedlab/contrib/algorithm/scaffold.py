@@ -17,9 +17,6 @@ class ScaffoldServerHandler(SyncServerHandler):
     def downlink_package(self):
         return [self.model_parameters, self.global_c]
 
-    def setup_optim(self, option=None):
-        self.option = option  # weighted_scale, uniform, weighted_com
-
     def setup_optim(self, lr):
         self.lr = lr
         self.global_c = torch.zeros_like(self.model_parameters)
@@ -77,12 +74,15 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
                 self.optimizer.zero_grad()
                 loss.backward()
 
+                grad = self.model_gradients
+                grad = grad - self.cs[id] + global_c
                 idx = 0
                 for parameter in self._model.parameters():
-                    parameter.grad = parameter.grad - self.cs[id][
-                        idx:idx + parameter.grad.numel(
-                        )] + global_c[idx:idx + parameter.grad.numel()]
-                    idx += parameter.grad.numel()
+                    layer_size = parameter.grad.numel()
+                    shape = parameter.grad.shape
+                    #parameter.grad = parameter.grad - self.cs[id][idx:idx + layer_size].view(parameter.grad.shape) + global_c[idx:idx + layer_size].view(parameter.grad.shape)
+                    parameter.grad.data[:] = grad[idx:idx+layer_size].view(shape)[:]
+                    idx += layer_size
 
                 self.optimizer.step()
 

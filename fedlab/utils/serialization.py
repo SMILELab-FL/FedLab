@@ -29,6 +29,7 @@ class SerializationTool(object):
         gradients = [param.grad.data.view(-1) for param in model.parameters()]
         m_gradients = torch.cat(gradients)
         m_gradients = m_gradients.cpu()
+        
         return m_gradients
 
     @staticmethod

@@ -121,6 +121,7 @@ class SGDSerialClientTrainer(SerialClientTrainer):
         """
         self.epochs = epochs
         self.batch_size = batch_size
+        self.lr = lr
         self.optimizer = torch.optim.SGD(self._model.parameters(), lr)
         self.criterion = torch.nn.CrossEntropyLoss()
 
