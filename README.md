@@ -143,11 +143,117 @@ Given class number for each client as $3$, 10 clients and FashionMNIST, the data
 
 #### 8. Noise-based Feature Distribution Skew partition
 
-Non-iid partition used in [[1]](#1). Different client's sample feature has different level of Gaussian noise. Data example for 10 clients could be:
+Non-iid partition used in [[1]](#1). Different client's sample feature has different levels of Gaussian noise. Data example for 10 clients could be:
 
 <p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fmnist_feature_skew_vis.png" height="400"></p>
 
-### Datasets
+#### 9. FCUBE Synthetic partition
+
+Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown as:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fcube_synthetic_part.png" height="600"></p>
+
+### Datasets supported
+
+<table style="height: 458px; width: 645px;">
+<tbody>
+<tr style="height: 45px;">
+<td style="width: 176px; height: 45px;">Data Type</td>
+<td style="width: 176px; height: 45px;">Data Name</td>
+<td style="width: 72px; height: 45px;">#Training Samples</td>
+<td style="width: 70px; height: 45px;">#Test Samples</td>
+<td style="width: 80.0881px; height: 45px;">#Label Classes</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 168px;" rowspan="7">Vision data</td>
+<td style="width: 176px; height: 24px;">CIFAR10</td>
+<td style="width: 72px; height: 24px;">50K</td>
+<td style="width: 70px; height: 24px;">&nbsp;10K</td>
+<td style="width: 80.0881px; height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">CIFAR100</td>
+<td style="width: 72px; height: 24px;">50K</td>
+<td style="width: 70px; height: 24px;">10K&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">100</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">FashionMNIST</td>
+<td style="width: 72px; height: 24px;">60K</td>
+<td style="width: 70px; height: 24px;">10K&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">MNIST</td>
+<td style="width: 72px; height: 24px;">60K</td>
+<td style="width: 70px; height: 24px;">10K&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">SVHN</td>
+<td style="width: 72px; height: 24px;">73K</td>
+<td style="width: 70px; height: 24px;">26K&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">10</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">CelebA</td>
+<td style="width: 142px; height: 24px;" colspan="2">200, 288&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">FEMNIST</td>
+<td style="width: 142px; height: 24px;" colspan="2">805, 263&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">62</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 72.8239px;" rowspan="3">Text data</td>
+<td style="width: 176px; height: 24px;">Shakespeare</td>
+<td style="width: 142px; height: 24px;" colspan="2">4, 226, 158&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">-</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">Sent14</td>
+<td style="width: 142px; height: 24px;" colspan="2">1, 600, 498&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">3</td>
+</tr>
+<tr style="height: 24.8239px;">
+<td style="width: 176px; height: 24.8239px;">Reddit</td>
+<td style="width: 142px; height: 24.8239px;" colspan="2">56, 587, 343&nbsp;</td>
+<td style="width: 80.0881px; height: 24.8239px;">-</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 72px;" rowspan="3">Tabular data</td>
+<td style="width: 176px; height: 24px;">[Adult](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a)</td>
+<td style="width: 72px; height: 24px;">32, 561</td>
+<td style="width: 70px; height: 24px;">&nbsp;16, 281</td>
+<td style="width: 80.0881px; height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">[Covtype](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#covtype.binary)</td>
+<td style="width: 142px; height: 24px;" colspan="2">&nbsp;581, 012&nbsp;</td>
+<td style="width: 80.0881px; height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">[RCV1 binary](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#rcv1.binary)</td>
+<td style="width: 72px; height: 24px;">20, 242</td>
+<td style="width: 70px; height: 24px;">&nbsp;677, 399</td>
+<td style="width: 80.0881px; height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 48px;" rowspan="2">Synthetic data</td>
+<td style="width: 176px; height: 24px;">FCUBE</td>
+<td style="width: 72px; height: 24px;">&nbsp;-</td>
+<td style="width: 70px; height: 24px;">&nbsp;-</td>
+<td style="width: 80.0881px; height: 24px;">2</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 176px; height: 24px;">LEAF-Synthetic</td>
+<td style="width: 72px; height: 24px;">&nbsp;-</td>
+<td style="width: 70px; height: 24px;">&nbsp;-</td>
+<td style="width: 80.0881px; height: 24px;">&nbsp;-</td>
+</tr>
+</tbody>
+</table>
 
 ## Performance & Insights
 
@@ -211,3 +317,4 @@ For technical issues reated to __FedLab__ development, please contact our develo
 <a id="5">[5]</a> Acar, D. A. E., Zhao, Y., Navarro, R. M., Mattina, M., Whatmough, P. N., & Saligrama, V. (2021). Federated learning based on dynamic regularization. *arXiv preprint arXiv:2111.04263*.
 
 <a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
+
