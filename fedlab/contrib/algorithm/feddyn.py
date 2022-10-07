@@ -20,7 +20,7 @@ class FedDynServerHandler(SyncServerHandler):
 
     def global_update(self, buffer):
         parameters_list = [ele[0] for ele in buffer]
-        self.h = self.h - self.alpha * (1.0/self.num_clients) * (torch.sum(parameters_list) - self.model_parameters)
+        self.h = self.h - self.alpha * (1.0/self.num_clients) * (sum(parameters_list) - self.model_parameters)
         new_parameters = Aggregators.fedavg_aggregate(parameters_list) - 1.0 / self.alpha * self.h
         self.set_model(new_parameters)
 
@@ -50,7 +50,7 @@ class FedDynSerialClientTrainer(SGDSerialClientTrainer):
         model_parameters = payload[0]
         for id in id_list:
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
-            pack = self.train(model_parameters, data_loader)
+            pack = self.train(id, model_parameters, data_loader)
             self.chache.append(pack)
 
     def train(self, id, model_parameters, train_loader):
