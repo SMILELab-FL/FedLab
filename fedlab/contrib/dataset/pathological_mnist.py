@@ -41,9 +41,9 @@ class PathologicalMNIST(FedDataset):
         if preprocess:
             self.preprocess(num_clients, shards, download)
 
-    def preprocess(self, num_clients, shards, download=True):
-        self.num_clients = num_clients
-        self.shards = shards
+    def preprocess(self, download=True):
+        # self.num_clients = num_clients
+        # self.shards = shards
         self.download = download
 
         if os.path.exists(self.path) is not True:

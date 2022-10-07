@@ -47,7 +47,7 @@ trainer = SGDSerialClientTrainer(model, 10, cuda=args.cuda)
 
 dataset = PathologicalMNIST(root='../../datasets/mnist/',
                             path="../../datasets/mnist/",
-                            num=100)
+                            num_clients=100)
 
 if args.rank == 1:
     dataset.preprocess()

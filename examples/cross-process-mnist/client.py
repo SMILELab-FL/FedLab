@@ -50,7 +50,7 @@ trainer = FedAvgClientTrainer(model, cuda=args.cuda)
 
 dataset = PathologicalMNIST(root='../../datasets/mnist/',
                             path="../../datasets/mnist/",
-                            num=args.world_size - 1)
+                            num_clients=args.world_size - 1)
 if args.rank == 1:
     dataset.preprocess()
 

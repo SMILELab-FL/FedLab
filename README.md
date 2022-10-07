@@ -83,7 +83,7 @@ TODO
 
 In this section, we provide the perfermance report of several reproducted federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights that FedLab could provide for federated learning research. Without loss of generality, experiments in this section is conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
 
-### Non-IID
+### Federated Optimization on Non-IID Data
 
 We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below. The results reveal the most vital challenge in federated learning. 
 
@@ -91,18 +91,18 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
 
 We provide the performance report of current FL optimization algorithms in 100 rounds.
 
-| Algorithm      | FedAvg | FedProx | Scaffold | FedDyn | FedNova |
-| -------------- | ------ | ------- | -------- | ------ | ------- |
-| $\alpha = 0.1$ |        |         |          |        |         |
+| Algorithm      | FedAvg | FedProx | Scaffold | FedNova | FedDyn |
+| -------------- | ------ | ------- | -------- | ------- | ------ |
+| $\alpha = 0.1$ | 92.24  | 90.70   |          |         |        |
 
-### Communication compression
+### Communication Efficiency
 
 We provide a few performance baseline in communication-efficient federated learning, which includes QSGD and top-k.
 
 | Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% |
 | -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- |
 | Accuracy             |          |           |           |            |        |         |
-| Communication               |          |           |           |            |        |         |
+| Communication        |          |           |           |            |        |         |
 
 ## Citation
 
