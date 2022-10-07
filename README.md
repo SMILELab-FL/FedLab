@@ -93,7 +93,7 @@ Given 100 clients and CIFAR10, the data samples assigned to the first 10 clients
 
 #### 2. Unbalanced IID partition
 
-Assign different sample number for each client using Log-Normal distribution $$\text{Log-N}(0, \sigma^2)$$, while keep same distribution for different class samples. 
+Assign different sample number for each client using Log-Normal distribution $\text{Log-N}(0, \sigma^2)$, while keep same distribution for different class samples. 
 
 Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
