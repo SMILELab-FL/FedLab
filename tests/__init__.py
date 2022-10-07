@@ -18,7 +18,14 @@ import unittest
 
 
 def get_tests():
+    # Load all TestCase
     loader = unittest.TestLoader()
     start_dir = './'
     suite = loader.discover(start_dir, pattern='test_*.py')
+
+    # # TODO: load specific TestCase
+    # loader = unittest.TestLoader()
+    # start_dir = './'
+    # suite = loader.discover(start_dir, pattern='test_processor.py')
+
     return suite

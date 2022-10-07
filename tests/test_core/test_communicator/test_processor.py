@@ -18,7 +18,7 @@ from random import randint
 
 import sys
 
-sys.path.append("../../")
+# sys.path.append("../../")
 
 from fedlab.core.communicator.package import Package
 from fedlab.utils.message_code import MessageCode
@@ -107,6 +107,8 @@ class PackageProcessorTestCase(unittest.TestCase):
     def _receiver_run(self, recv_network, check_content):
         recv_network.init_network_connection()
         _, _, content = PackageProcessor.recv_package(src=1)
+        print(f"Length of content: {len(content)}")
+        print(f"Recieved Contents: {content}")
         for t, p_t in zip(content, check_content):
             self.assertTrue(torch.equal(t, p_t))
         recv_network.close_network_connection()
