@@ -155,102 +155,102 @@ Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown a
 
 ### Datasets supported
 
-<table style="height: 458px; width: 645px;">
+<table style="height: 458px;">
 <tbody>
 <tr style="height: 45px;">
-<td style="width: 176px; height: 45px;">Data Type</td>
-<td style="width: 176px; height: 45px;">Data Name</td>
-<td style="width: 72px; height: 45px;">#Training Samples</td>
-<td style="width: 70px; height: 45px;">#Test Samples</td>
-<td style="width: 80.0881px; height: 45px;">#Label Classes</td>
+<td style="height: 45px;">Data Type</td>
+<td style="height: 45px;">Data Name</td>
+<td style="height: 45px;">#Training Samples</td>
+<td style="height: 45px;">#Test Samples</td>
+<td style="height: 45px;">#Label Classes</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 168px;" rowspan="7">Vision data</td>
-<td style="width: 176px; height: 24px;">CIFAR10</td>
-<td style="width: 72px; height: 24px;">50K</td>
-<td style="width: 70px; height: 24px;">&nbsp;10K</td>
-<td style="width: 80.0881px; height: 24px;">10</td>
+<td style="height: 168px;" rowspan="7">Vision data</td>
+<td style="height: 24px;">CIFAR10</td>
+<td style="height: 24px;">50K</td>
+<td style="height: 24px;">&nbsp;10K</td>
+<td style="height: 24px;">10</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">CIFAR100</td>
-<td style="width: 72px; height: 24px;">50K</td>
-<td style="width: 70px; height: 24px;">10K&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">100</td>
+<td style="height: 24px;">CIFAR100</td>
+<td style="height: 24px;">50K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">100</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">FashionMNIST</td>
-<td style="width: 72px; height: 24px;">60K</td>
-<td style="width: 70px; height: 24px;">10K&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">10</td>
+<td style="height: 24px;">FashionMNIST</td>
+<td style="height: 24px;">60K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">10</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">MNIST</td>
-<td style="width: 72px; height: 24px;">60K</td>
-<td style="width: 70px; height: 24px;">10K&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">10</td>
+<td style="height: 24px;">MNIST</td>
+<td style="height: 24px;">60K</td>
+<td style="height: 24px;">10K&nbsp;</td>
+<td style="height: 24px;">10</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">SVHN</td>
-<td style="width: 72px; height: 24px;">73K</td>
-<td style="width: 70px; height: 24px;">26K&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">10</td>
+<td style="height: 24px;">SVHN</td>
+<td style="height: 24px;">73K</td>
+<td style="height: 24px;">26K&nbsp;</td>
+<td style="height: 24px;">10</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">CelebA</td>
-<td style="width: 142px; height: 24px;" colspan="2">200, 288&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">2</td>
+<td style="height: 24px;">CelebA</td>
+<td style="height: 24px;" colspan="2">200, 288&nbsp;</td>
+<td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">FEMNIST</td>
-<td style="width: 142px; height: 24px;" colspan="2">805, 263&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">62</td>
+<td style="height: 24px;">FEMNIST</td>
+<td style="height: 24px;" colspan="2">805, 263&nbsp;</td>
+<td style="height: 24px;">62</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 72.8239px;" rowspan="3">Text data</td>
-<td style="width: 176px; height: 24px;">Shakespeare</td>
-<td style="width: 142px; height: 24px;" colspan="2">4, 226, 158&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">-</td>
+<td style="height: 72.8239px;" rowspan="3">Text data</td>
+<td style="height: 24px;">Shakespeare</td>
+<td style="height: 24px;" colspan="2">4, 226, 158&nbsp;</td>
+<td style="height: 24px;">-</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">Sent14</td>
-<td style="width: 142px; height: 24px;" colspan="2">1, 600, 498&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">3</td>
+<td style="height: 24px;">Sent14</td>
+<td style="height: 24px;" colspan="2">1, 600, 498&nbsp;</td>
+<td style="height: 24px;">3</td>
 </tr>
 <tr style="height: 24.8239px;">
-<td style="width: 176px; height: 24.8239px;">Reddit</td>
-<td style="width: 142px; height: 24.8239px;" colspan="2">56, 587, 343&nbsp;</td>
-<td style="width: 80.0881px; height: 24.8239px;">-</td>
+<td style="height: 24.8239px;">Reddit</td>
+<td style="height: 24.8239px;" colspan="2">56, 587, 343&nbsp;</td>
+<td style="height: 24.8239px;">-</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 72px;" rowspan="3">Tabular data</td>
-<td style="width: 176px; height: 24px;">[Adult](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a)</td>
-<td style="width: 72px; height: 24px;">32, 561</td>
-<td style="width: 70px; height: 24px;">&nbsp;16, 281</td>
-<td style="width: 80.0881px; height: 24px;">2</td>
+<td style="height: 72px;" rowspan="3">Tabular data</td>
+<td style="height: 24px;">[Adult](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#a9a)</td>
+<td style="height: 24px;">32, 561</td>
+<td style="height: 24px;">&nbsp;16, 281</td>
+<td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">[Covtype](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#covtype.binary)</td>
-<td style="width: 142px; height: 24px;" colspan="2">&nbsp;581, 012&nbsp;</td>
-<td style="width: 80.0881px; height: 24px;">2</td>
+<td style="height: 24px;">[Covtype](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#covtype.binary)</td>
+<td style="height: 24px;" colspan="2">&nbsp;581, 012&nbsp;</td>
+<td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">[RCV1 binary](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#rcv1.binary)</td>
-<td style="width: 72px; height: 24px;">20, 242</td>
-<td style="width: 70px; height: 24px;">&nbsp;677, 399</td>
-<td style="width: 80.0881px; height: 24px;">2</td>
+<td style="height: 24px;">[RCV1 binary](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#rcv1.binary)</td>
+<td style="height: 24px;">20, 242</td>
+<td style="height: 24px;">&nbsp;677, 399</td>
+<td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 48px;" rowspan="2">Synthetic data</td>
-<td style="width: 176px; height: 24px;">FCUBE</td>
-<td style="width: 72px; height: 24px;">&nbsp;-</td>
-<td style="width: 70px; height: 24px;">&nbsp;-</td>
-<td style="width: 80.0881px; height: 24px;">2</td>
+<td style="height: 48px;" rowspan="2">Synthetic data</td>
+<td style="height: 24px;">FCUBE</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">2</td>
 </tr>
 <tr style="height: 24px;">
-<td style="width: 176px; height: 24px;">LEAF-Synthetic</td>
-<td style="width: 72px; height: 24px;">&nbsp;-</td>
-<td style="width: 70px; height: 24px;">&nbsp;-</td>
-<td style="width: 80.0881px; height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">LEAF-Synthetic</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
+<td style="height: 24px;">&nbsp;-</td>
 </tr>
 </tbody>
 </table>
