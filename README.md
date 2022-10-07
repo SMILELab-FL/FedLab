@@ -89,31 +89,23 @@ Each client has same number of samples, and same distribution for all class samp
 
 Given 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
 
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_iid_100clients.png" height="300"></p>
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_iid_100clients.png" height="200"></p>
 
 #### 2. Unbalanced IID partition
 
 Assign different sample number for each client using Log-Normal distribution $\text{Log-N}(0, \sigma^2)$, while keep same distribution for different class samples. 
 
-Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="300"></p>
-
-And distribution of sample number for clients could be:
-
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="300"></p>
+<p align="left"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="200"></p><p align="right"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
 
 #### 3. Hetero Dirichlet partition
 
 Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
 
-Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients could be:
+Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="300"></p>
-
-And distribution of sample number for clients could be:
-
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="300"></p>
+<p align="left"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="200"></p><p align="right"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="200"></p>
 
 #### 4. Shards partition
 
@@ -121,7 +113,7 @@ Non-iid partition based on shards, used in [[4]](#4).
 
 Given `shard_number=200`, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
 
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_shards_200_100clients.png" height="300"></p>
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_shards_200_100clients.png" height="200"></p>
 
 #### 5. Balanced Dirichlet partition
 
