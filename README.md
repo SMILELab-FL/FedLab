@@ -99,11 +99,9 @@ Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the fi
 
 <p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
 
-
-
 #### 3. Hetero Dirichlet partition
 
-Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
+Non-iid partition used in [[3]](#3) and [[6]](#6). Number of data points and class proportions are unbalanced. Samples will be partitioned into $J$ clients by sampling $p_k∼\text{Dir}_J(\alpha)$ and allocating a $p_{k,j}$ proportion of the samples of class $k$ to local client $j$.
 
 Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
@@ -121,11 +119,33 @@ Given `shard_number=200`, 100 clients and CIFAR10, the data samples assigned to 
 
 #### 5. Balanced Dirichlet partition
 
+Non-iid partition used in [[5]](#5). Each client has same number of samples, while class distribution in each client follows Dirichlet distribution $\text{Dir}{(\alpha)}$.
 
+Given $\alpha=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_balance_dir_alpha_0.3_100clients.png" height="200"></p>
 
 #### 6. Unbalanced Dirichlet partition
 
+Non-iid partition used in [[5]](#5). Sample numbers of clients are drawn from Log-normal distribution $\text{Log-N}(0, \sigma^2)$, while class distribution in each client follows Dirichlet distribution $\text{Dir}{(\alpha)}$.
 
+Given $\sigma=0.3$, $\alpha=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_dir_alpha_0.3_unbalance_sgm_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_dir_alpha_0.3_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
+
+#### 7. Quantity-based Label Distribution Skew partition
+
+Non-iid partition used in [[1]](#1). Each client has only specific number of sample class.
+
+Given class number for each client as $3$, 10 clients and FashionMNIST, the data samples assigned to each client could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fmnist_noniid-label_3_clients_10.png" height="200"></p>
+
+#### 8. Noise-based Feature Distribution Skew partition
+
+Non-iid partition used in [[1]](#1). Different client's sample feature has different level of Gaussian noise. Data example for 10 clients could be:
+
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/fmnist_feature_skew_vis.png" height="400"></p>
 
 ### Datasets
 
@@ -188,6 +208,6 @@ For technical issues reated to __FedLab__ development, please contact our develo
 
 <a id="4">[4]</a> McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017, April). Communication-efficient learning of deep networks from decentralized data. In *Artificial intelligence and statistics* (pp. 1273-1282). PMLR.
 
-<a id="5">[5]</a> Yurochkin, M., Agarwal, M., Ghosh, S., Greenewald, K., Hoang, N., & Khazaeni, Y. (2019, May). Bayesian nonparametric federated learning of neural networks. In *International Conference on Machine Learning* (pp. 7252-7261). PMLR.
+<a id="5">[5]</a> Acar, D. A. E., Zhao, Y., Navarro, R. M., Mattina, M., Whatmough, P. N., & Saligrama, V. (2021). Federated learning based on dynamic regularization. *arXiv preprint arXiv:2111.04263*.
 
 <a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
