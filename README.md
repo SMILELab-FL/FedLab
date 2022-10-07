@@ -97,7 +97,7 @@ Assign different sample number for each client using Log-Normal distribution $\t
 
 Given $\sigma=0.3$, 100 clients and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
-<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="200"  align="left"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="200" align="right">
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_unbalance_iid_unbalance_sgm_0.3_100clients_dist.png" height="200"></p>
 
 
 
@@ -107,7 +107,7 @@ Non-iid partition used in [[5]](#5) and [[6]](#6). Number of data points and cla
 
 Given 100 clients, $\alpha=0.3$ and CIFAR10, the data samples assigned to the first 10 clients is showed left below. And distribution of sample number for clients is showed right below.
 
-<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="200"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="200"></p>
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients.png" height="200">&nbsp;&nbsp;&nbsp;<img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/cifar10_hetero_dir_0.3_100clients_dist.png" height="200"></p>
 
 
 
