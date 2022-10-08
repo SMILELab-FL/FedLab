@@ -265,11 +265,66 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
 
 <p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
-We provide the performance report of current FL optimization algorithms in 100 rounds.
+<table>
+   <tr>
+      <td colspan="5">The rounds for FedAvg to achieve 99% test accuracy on MNIST using CNN with E=5 reported in [7]  /  FedLab</td>
+   </tr>
+   <tr>
+      <td rowspan="2">Sample ratio</td>
+      <td colspan="2">IID</td>
+      <td colspan="2">Non-IID</td>
+   </tr>
+   <tr>
+      <td>B=FULL</td>
+      <td>B=10</td>
+      <td>B=FULL</td>
+      <td>B=10</td>
+   </tr>
+   <tr>
+      <td>0.0</td>
+      <td>387  /  *</td>
+      <td>50  /  *</td>
+      <td>1181  /  *</td>
+      <td>956  /  *</td>
+   </tr>
+   <tr>
+      <td>0.1</td>
+      <td>339  /  *</td>
+      <td>18  /  *</td>
+      <td>1100  /  *</td>
+      <td>206  /  *</td>
+   </tr>
+   <tr>
+      <td>0.2</td>
+      <td>337  /  *</td>
+      <td>18  /  * </td>
+      <td>978  /  *</td>
+      <td>200  /  </td>
+   </tr>
+   <tr>
+      <td>0.5</td>
+      <td>164  /  *</td>
+      <td>18  /  * </td>
+      <td>1067  /  *</td>
+      <td>261  /  *</td>
+   </tr> 
+   <tr>
+      <td>1.0</td>
+      <td>246  /  *</td>
+      <td>16  /  *</td>
+      <td>--  /  *</td>
+      <td>97  /  *</td>
+   </tr>
+</table>
 
-| Algorithm      | FedAvg | FedProx | Scaffold | FedNova | FedDyn |
-| -------------- | ------ | ------- | -------- | ------- | ------ |
-| $\alpha = 0.1$ |        |         |          |         |        |
+
+Time cost in 100 rounds under diffrent acceleration set(TODO):
+
+| Standalone  | Cross-process 1M-4GPU-10P | Cross-process 2M-4*2GPU-10P |
+| ----------  | ------------------------- | --------------------------- |
+|  *     |     *                  |              *      |
+
+
 
 ### Communication Efficiency
 
@@ -277,7 +332,7 @@ We provide a few performance baseline in communication-efficient federated learn
 
 | Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% |
 | -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- |
-| Accuracy             |          |           |           |            |        |         |
+| Test Accuracy        |          |           |           |            |        |         |
 | Communication        |          |           |           |            |        |         |
 
 ## Citation
@@ -318,3 +373,4 @@ For technical issues reated to __FedLab__ development, please contact our develo
 
 <a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
 
+<a id="7">[7]</a> McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017, April). Communication-efficient learning of deep networks from decentralized data. In Artificial intelligence and statistics (pp. 1273-1282). PMLR.
