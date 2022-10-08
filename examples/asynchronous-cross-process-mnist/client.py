@@ -9,7 +9,6 @@ from torch import nn
 
 sys.path.append("../../")
 from fedlab.core.client.manager import ActiveClientManager
-from fedlab.utils.dataset.sampler import RawPartitionSampler
 from fedlab.core.network import DistNetwork
 from fedlab.contrib.algorithm.basic_client import SGDClientTrainer
 from fedlab.models import MLP
@@ -46,7 +45,9 @@ else:
 model = MLP(784,10)
 
 trainer = AsyncTrainer(model, cuda=args.cuda)
-dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../tests/data/mnist/")
+dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../datasets/mnist/")
+if args.rank == 1:
+    dataset.preprocess()
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 

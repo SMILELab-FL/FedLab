@@ -29,7 +29,18 @@ class SerializationTool(object):
         gradients = [param.grad.data.view(-1) for param in model.parameters()]
         m_gradients = torch.cat(gradients)
         m_gradients = m_gradients.cpu()
+        
         return m_gradients
+
+    @staticmethod
+    def deserialize_model_gradients(model: torch.nn.Module, gradients: torch.Tensor):
+        idx = 0
+        for parameter in model.parameters():
+            layer_size = parameter.grad.numel()
+            shape = parameter.grad.shape
+
+            parameter.grad.data[:] = gradients[idx:idx+layer_size].view(shape)[:]
+            idx += layer_size
 
     @staticmethod
     def serialize_model(model: torch.nn.Module) -> torch.Tensor:

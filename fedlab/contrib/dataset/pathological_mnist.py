@@ -41,16 +41,19 @@ class PathologicalMNIST(FedDataset):
         if preprocess:
             self.preprocess(num_clients, shards, download)
 
-    def preprocess(self, num_clients, shards, download=True):
-        self.num_clients = num_clients
-        self.shards = shards
+    def preprocess(self, download=True):
+        # self.num_clients = num_clients
+        # self.shards = shards
         self.download = download
 
         if os.path.exists(self.path) is not True:
             os.mkdir(self.path)
+        
+        if os.path.exists(os.path.join(self.path, "train")) is not True:
             os.mkdir(os.path.join(self.path, "train"))
             os.mkdir(os.path.join(self.path, "var"))
             os.mkdir(os.path.join(self.path, "test"))
+            
         # train
         mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download,
                                            transform=transforms.ToTensor())
