@@ -1,5 +1,5 @@
 from copy import deepcopy
-import torch 
+import torch
 
 from .basic_server import SyncServerHandler
 from .basic_client import SGDClientTrainer, SGDSerialClientTrainer
@@ -15,7 +15,6 @@ from .basic_client import SGDClientTrainer, SGDSerialClientTrainer
 class FedProxServerHandler(SyncServerHandler):
     """FedProx server handler."""
     None
-
 
 
 ##################
@@ -85,6 +84,8 @@ class FedProxSerialClientTrainer(SGDSerialClientTrainer):
         """
         self.set_model(model_parameters)
         frz_model = deepcopy(self._model)
+        frz_model.eval()
+
         for ep in range(self.epochs):
             self._model.train()
             for data, target in train_loader:
@@ -99,10 +100,9 @@ class FedProxSerialClientTrainer(SGDSerialClientTrainer):
                     l2 += torch.sum(torch.pow(w - w0, 2))
 
                 loss = l1 + 0.5 * mu * l2
-                outputs = self._model(data)
-                loss = self.criterion(outputs, target)
 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
         return [self.model_parameters]
