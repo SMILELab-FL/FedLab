@@ -15,10 +15,7 @@
 import unittest
 import os
 from random import randint
-
 import sys
-
-# sys.path.append("../../")
 
 from fedlab.core.communicator.package import Package
 from fedlab.utils.message_code import MessageCode
@@ -30,50 +27,28 @@ import torch.distributed as dist
 from torch.multiprocessing import Process
 
 
-# class test_sender(Process):
-#     def __init__(self, content) -> None:
-#         super(test_sender, self).__init__()
-#         self.net = DistNetwork(address=("localhost", "3001"),
-#                                world_size=2,
-#                                rank=1)
-#         self.tensor_list = content
-
-#     def run(self):
-#         self.net.init_network_connection()
-#         p = Package(message_code=MessageCode.ParameterUpdate,
-#                     content=self.tensor_list)
-#         PackageProcessor.send_package(p, dst=0)
-#         self.net.close_network_connection()
-
-# def sender_run(network, content):
-#     network.init_network_connection()
-#     p = Package(message_code=MessageCode.ParameterUpdate,
-#                 content=content)
-#     PackageProcessor.send_package(p, dst=0)
-#     network.close_network_connection()
-
-# def receiver_run(network, check_content):
-#     network.init_network_connection()
-#     _, _, content = PackageProcessor.recv_package(src=1)
-    
-
-# class test_receiver(Process):
-#     def __init__(self, check_content) -> None:
-#         super(test_receiver, self).__init__()
-#         self.net = DistNetwork(address=("localhost", "3001"),
-#                                world_size=2,
-#                                rank=0)
-#         self.check_list = check_content
-
-#     def run(self):
-#         self.net.init_network_connection()
-#         _, _, content = PackageProcessor.recv_package(src=1)
-
-#         for t, p_t in zip(content, self.check_list):
-#             assert torch.equal(t, p_t)
-
-#         self.net.close_network_connection()
-
+"""
+This test case uses multiprocessing! 
+To enable code coverage for involved modules, need to to following steps:
+   1. Set 
+      ```
+      concurrency = multiprocessing
+      ```
+      in .coveragerc config file
+   2. Use following command to run coverage supporting for multi-process tests
+      ```
+      coverage run --concurrency=multiprocessing --parallel-mode setup.py test
+      ```
+   3. Combine coverage results from different processes using following command
+      ```
+      coverage combine
+      ``` 
+   4. Generate coverage report and generate xml report
+      ```
+      coverage report
+      coverage xml
+      ```
+"""
 
 class PackageProcessorTestCase(unittest.TestCase):
     def setUp(self):
@@ -107,8 +82,6 @@ class PackageProcessorTestCase(unittest.TestCase):
     def _receiver_run(self, recv_network, check_content):
         recv_network.init_network_connection()
         _, _, content = PackageProcessor.recv_package(src=1)
-        # print(f"Length of content: {len(content)}")
-        # print(f"Recieved Contents: {content}")
         for t, p_t in zip(content, check_content):
             self.assertTrue(torch.equal(t, p_t))
         recv_network.close_network_connection()
