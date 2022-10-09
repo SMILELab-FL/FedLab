@@ -26,6 +26,6 @@ def get_tests():
     # # TODO: load specific TestCase
     # loader = unittest.TestLoader()
     # start_dir = './'
-    # suite = loader.discover(start_dir, pattern='test_processor.py')
+    # suite = loader.discover(start_dir, pattern='test_network_manager.py')
 
     return suite
