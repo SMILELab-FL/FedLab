@@ -74,7 +74,7 @@ We provide the reproduction of baseline federated algorthms for users in this re
 | QSGD                | Com.   | [QSGD: Communication-Efficient SGD via Gradient Quantization and Encoding](https://proceedings.neurips.cc/paper/2017/hash/6c340f25839e6acdc73414517203f5f0-Abstract.html) | NeurIPS'2017 |                                                      |
 | NIID-Bench          | Data.  | [Federated Learning on Non-IID Data Silos: An Experimental Study](https://arxiv.org/abs/2102.02079) | ICDE' 2022 | [Code](https://github.com/Xtra-Computing/NIID-Bench) |
 | LEAF                | Data.  | [LEAF: A Benchmark for Federated Settings](http://arxiv.org/abs/1812.01097) | Pre-print    | [Code](https://github.com/TalwalkarLab/leaf/)        |
-
+| ...                |   |  |     |      |
 ## Datasets & Data Partition
 
 Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including iid and non-iid scenarios. Though there already exists some datasets and partition schemes for published data benchmark, it still can be very messy and hard for researchers to partition datasets according to their specific research problems, and maintain partition results during simulation. __FedLab__ provides [`fedlab.utils.dataset.partition.DataPartitioner`](https://fedlab.readthedocs.io/en/master/autoapi/fedlab/utils/dataset/partition/index.html#fedlab.utils.dataset.partition.DataPartitioner) that allows you to use pre-partitioned datasets as well as your own data. `DataPartitioner` stores sample indices for each client given a data partition scheme. Also, FedLab provides some extra datasets that are used in current FL researches while not provided by official PyTorch `torchvision.datasets` yet.
@@ -267,7 +267,7 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
 
 <table>
    <tr>
-      <td colspan="5">The rounds for FedAvg to achieve 99% test accuracy on MNIST using CNN with E=5 reported in [7]  /  FedLab</td>
+      <td colspan="5">The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [4]  /  FedLab</td>
    </tr>
    <tr>
       <td rowspan="2">Sample ratio</td>
@@ -282,38 +282,38 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
    </tr>
    <tr>
       <td>0.0</td>
-      <td>387  /  *</td>
-      <td>50  /  *</td>
-      <td>1181  /  *</td>
-      <td>956  /  *</td>
+      <td>1455  /  *</td>
+      <td>316  /  *</td>
+      <td>4278  /  *</td>
+      <td>3275  /  *</td>
    </tr>
    <tr>
       <td>0.1</td>
-      <td>339  /  *</td>
-      <td>18  /  *</td>
-      <td>1100  /  *</td>
-      <td>206  /  *</td>
+      <td>1474  /  *</td>
+      <td>87  /  *</td>
+      <td>1796  /  *</td>
+      <td>664  /  *</td>
    </tr>
    <tr>
       <td>0.2</td>
-      <td>337  /  *</td>
-      <td>18  /  * </td>
-      <td>978  /  *</td>
-      <td>200  /  </td>
+      <td>1658  /  *</td>
+      <td>77  /  * </td>
+      <td>1528  /  *</td>
+      <td>619  / 427  </td>
    </tr>
    <tr>
       <td>0.5</td>
-      <td>164  /  *</td>
-      <td>18  /  * </td>
-      <td>1067  /  *</td>
-      <td>261  /  *</td>
+      <td>--  /  *</td>
+      <td>75  /  * </td>
+      <td>--  /  *</td>
+      <td>443  / 474</td>
    </tr> 
    <tr>
       <td>1.0</td>
-      <td>246  /  *</td>
-      <td>16  /  *</td>
       <td>--  /  *</td>
-      <td>97  /  *</td>
+      <td>70  /  *</td>
+      <td>--  /  *</td>
+      <td>380  /  *</td>
    </tr>
 </table>
 
@@ -372,5 +372,3 @@ For technical issues reated to __FedLab__ development, please contact our develo
 <a id="5">[5]</a> Acar, D. A. E., Zhao, Y., Navarro, R. M., Mattina, M., Whatmough, P. N., & Saligrama, V. (2021). Federated learning based on dynamic regularization. *arXiv preprint arXiv:2111.04263*.
 
 <a id="6">[6]</a> Wang, H., Yurochkin, M., Sun, Y., Papailiopoulos, D., & Khazaeni, Y. (2020). Federated learning with matched averaging. *arXiv preprint arXiv:2002.06440*.
-
-<a id="7">[7]</a> McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017, April). Communication-efficient learning of deep networks from decentralized data. In Artificial intelligence and statistics (pp. 1273-1282). PMLR.

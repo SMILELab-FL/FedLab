@@ -178,3 +178,5 @@ unit_test.ipynb
 
 /datasets/mnist/*mnist
 /datasets/mnist/fedmnist*
+test_client.py
+test_server.py
