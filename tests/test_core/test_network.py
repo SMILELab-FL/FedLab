@@ -206,7 +206,7 @@ class NetworkTestCase(unittest.TestCase):
         rank_net.close_network_connection()
 
     def test_broadcast_recv_invalid_src(self):
-        port = "9999"
+        port = "2222"
         rank_net = DistNetwork(address=(self.host_ip, port),
                                    world_size=1,
                                    rank=0)
