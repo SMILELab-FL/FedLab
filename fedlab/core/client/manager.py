@@ -40,7 +40,7 @@ class ClientManager(NetworkManager):
         :class:`ClientManager` reports number of clients simulated by current client process.
         """
         super().setup()
-        tensor = torch.Tensor([self._trainer.client_num]).int()
+        tensor = torch.Tensor([self._trainer.num_clients]).int()
         self._network.send(content=tensor,
                            message_code=MessageCode.SetUp,
                            dst=0)

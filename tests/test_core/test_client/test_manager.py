@@ -13,34 +13,66 @@
 # limitations under the License.
 
 import unittest
+import time
 
-from fedlab.core.client.manager import ActiveClientManager, PassiveClientManager
+from fedlab.core.client.manager import ClientManager, ActiveClientManager, PassiveClientManager
 from fedlab.core.network import DistNetwork
 from fedlab.core.client.trainer import ClientTrainer
+from fedlab.utils.message_code import MessageCode
 
+from ..task_setting_for_test import CNN_Mnist
 
-class TestTrainer(ClientTrainer):
-    def __init__(self):
-        # super().__init__(model, cuda)
-        pass
-
-    def train(self):
-        pass
+import torch
+import torch.distributed as dist
+from torch.multiprocessing import Process
 
 
 class ClientManagerTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        return super().setUp()
-
-    def tearDown(self) -> None:
-        return super().tearDown()
+        self.host_ip = 'localhost'
+        self.model = CNN_Mnist()
 
     def test_init(self):
-        trainer = TestTrainer()
-        network = DistNetwork(
-            address=("127.0.0.1", "3002"), world_size=1, rank=0, ethernet=None
-        )
+        port = '3333'
+        network = DistNetwork(address=(self.host_ip, port),
+                              world_size=1,
+                              rank=0)
+        trainer = ClientTrainer(model=self.model, cuda=False) 
+        client_manager = ClientManager(network, trainer)
+        self.assertIsInstance(client_manager._network, DistNetwork)
+        self.assertIsInstance(client_manager._trainer, ClientTrainer)
+    
+    def test_setup(self):
+        server_rank = 0
+        client_rank = 1
+        port = '3333'
 
-        cam = ActiveClientManager(trainer=trainer, network=network)
+        server_network = DistNetwork(address=(self.host_ip, port),
+                                     world_size=2,
+                                     rank=server_rank)
+        client_network = DistNetwork(address=(self.host_ip, port),
+                                     world_size=2,
+                                     rank=client_rank)
+        trainer = ClientTrainer(model=self.model, cuda=False) 
+        client_manager = ClientManager(client_network, trainer)
+        
+        server = Process(target=self._run_server, args=(server_network, client_rank))
+        client = Process(target=self._run_client_manager, args=(client_manager,))
 
-        cpm = PassiveClientManager(trainer=trainer, network=network)
+        server.start()
+        client.start()
+
+        server.join()
+        client.join()
+
+    def _run_server(self, server_network, src):
+        server_network.init_network_connection()
+        client_rank, message_code, content = server_network.recv(src=src)
+        self.assertEqual(client_rank, src)
+        self.assertEqual(message_code, MessageCode.SetUp)
+        server_network.close_network_connection()
+
+    def _run_client_manager(self, client_manager):
+        client_manager.setup()
+        client_manager.shutdown()
+
