@@ -91,16 +91,117 @@ class NetworkTestCase(unittest.TestCase):
         sender.join()
         receiver.join()
 
+    def test_broadcast_send_and_recv(self):
+        port = "5555"
+        world_size = 6
+        sender_num = 3
+        recv_num = world_size - sender_num
+
+        sender_ranks = list(range(sender_num))
+        recv_ranks = list(range(sender_num, world_size))
+
+        rank_nets = []
+        processes = []
+
+        # set DistNetwork for each rank
+        for rank in range(world_size):
+            rank_net = DistNetwork(address=(self.host_ip, port),
+                                   world_size=world_size,
+                                   rank=rank)
+            rank_nets.append(rank_net)
+
+        # add sender processes
+        for rank in sender_ranks:
+            p = Process(target=self._broadcast_sender_run, 
+                        args=(rank_nets[rank], self.tensor_list, recv_ranks))
+            processes.append(p)
+        # add receiver processes
+        for rank in recv_ranks:
+            p = Process(target=self._broadcast_receiver_run,
+                        args=(rank_nets[rank], self.tensor_list, sender_ranks))
+            processes.append(p)
+        # run the broadcast_send/recv
+        for p in processes:
+            p.start()
+        for p in processes:
+            p.join()
+
+    def test_broadcast_send_and_recv_default_dst(self):
+        port = "6666"
+        world_size = 4
+
+        sender_ranks = [3]
+        recv_ranks = [0, 1, 2]
+
+        rank_nets = []
+        processes = []
+
+        # set DistNetwork for each rank
+        for rank in range(world_size):
+            rank_net = DistNetwork(address=(self.host_ip, port),
+                                   world_size=world_size,
+                                   rank=rank)
+            rank_nets.append(rank_net)
+
+        # add sender processes
+        for rank in sender_ranks:
+            p = Process(target=self._broadcast_sender_run, 
+                        args=(rank_nets[rank], self.tensor_list))
+            processes.append(p)
+        # add receiver processes
+        for rank in recv_ranks:
+            p = Process(target=self._broadcast_receiver_run,
+                        args=(rank_nets[rank], self.tensor_list, sender_ranks))
+            processes.append(p)
+        # run the broadcast_send/recv
+        for p in processes:
+            p.start()
+        for p in processes:
+            p.join()
+
+    def test_broadcast_send_and_recv_default_src(self):
+        port = "7777"
+        world_size = 4
+
+        sender_ranks = [0, 1, 2]
+        recv_ranks = [3]
+
+        rank_nets = []
+        processes = []
+
+        # set DistNetwork for each rank
+        for rank in range(world_size):
+            rank_net = DistNetwork(address=(self.host_ip, port),
+                                   world_size=world_size,
+                                   rank=rank)
+            rank_nets.append(rank_net)
+
+        # add sender processes
+        for rank in sender_ranks:
+            p = Process(target=self._broadcast_sender_run, 
+                        args=(rank_nets[rank], self.tensor_list, recv_ranks))
+            processes.append(p)
+        # add receiver processes
+        for rank in recv_ranks:
+            p = Process(target=self._broadcast_receiver_run,
+                        args=(rank_nets[rank], self.tensor_list))
+            processes.append(p)
+        # run the broadcast_send/recv
+        for p in processes:
+            p.start()
+        for p in processes:
+            p.join()
+
     def _rank_run(self, rank_name, rank_net):
         rank_net.init_network_connection()
         time.sleep(30)
         rank_net.close_network_connection()
 
     def _check_pids_by_port(self, host_ip, port, rank_num, kind='tcp'):
+        # find PIDs of processes using certain connection like 'tcp' with specific port number
         time.sleep(10)
         pids = []
         connects = psutil.net_connections(kind=kind)
-        # print(connects)
         for con in connects:
             if con.pid is not None:
                 if con.laddr != tuple():
@@ -120,9 +221,34 @@ class NetworkTestCase(unittest.TestCase):
     def _receiver_run(self, recv_network, check_content):
         recv_network.init_network_connection()
         _, _, content = recv_network.recv(src=1)
-        for t, p_t in zip(content, check_content):
-            self.assertTrue(torch.equal(t, p_t))
+        self.assertTrue(self._check_content_eq(content, check_content))
         recv_network.close_network_connection()
+
+    def _broadcast_sender_run(self, send_network, content, dst=None):
+        send_network.init_network_connection()
+        send_network.broadcast_send(content, 
+                                    message_code=MessageCode.ParameterUpdate, 
+                                    dst=dst)
+        send_network.close_network_connection()
+
+    def _broadcast_receiver_run(self, recv_network, check_content, src=None):
+        recv_network.init_network_connection()
+        sender_ranks, _, contents = recv_network.broadcast_recv(src=src)
+        # check sender rank
+        if src is None:
+            src = list(range(recv_network.world_size))
+        if recv_network.rank in src:
+            src.remove(recv_network.rank)
+        self.assertEqual(sorted(src), sorted(sender_ranks)) 
+        # check received contents 
+        for idx, sender_rank in enumerate(sender_ranks):
+            content = contents[idx]
+            self.assertTrue(self._check_content_eq(content, check_content))
+        recv_network.close_network_connection()
+
+    def _check_content_eq(self, content, check_content):
+        check_res = [torch.equal(t, p_t) for t, p_t in zip(content, check_content)]
+        return all(check_res)
 
 
 
