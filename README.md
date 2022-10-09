@@ -9,15 +9,6 @@ Federated learning (FL), proposed by Google at the very beginning, is recently a
 
 To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
 
-## Content of Documentations
-
-- [Documentation website](https://fedlab.readthedocs.io/en/master/)
-- [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
-- [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
-- [Examples](https://fedlab.readthedocs.io/en/master/example.html)
-- [Contribute Guideline](https://fedlab.readthedocs.io/en/master/contributing.html)
-- [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
-
 
 ## Quick start
 
@@ -36,10 +27,20 @@ $ pip install -r requirements.txt
 $ pip install fedlab 
 ```
 
+### Learning materials
+
+We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\tutorials. These tutorials include data partition, customize algorithms, and pipeline demos. For the FedLab or FL beginners, we recommend this [notebook](tutorials/pipeline_tutorial.ipynb). Furthermore, we provide reproductions of federated algorithms via FedLab, which are stored in fedlab.contirb.algorithm. We think they are good examples for users to further explore FedLab.
+
+[Website Documentations](https://fedlab.readthedocs.io/en/master/) are availiable:
+
+- [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
+- [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
+- [Examples](https://fedlab.readthedocs.io/en/master/example.html)
+- [Contribute Guideline](https://fedlab.readthedocs.io/en/master/contributing.html)
+- [API Reference](https://fedlab.readthedocs.io/en/master/autoapi/index.html)
+
 
 ### Run Examples
-
-- Please read our [tutorials](./tutorials/) in jupyter notebook.
 
 - Run our quick start examples of different scenarios with partitioned MNIST dataset.
 
