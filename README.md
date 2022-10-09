@@ -21,9 +21,27 @@ To relieve the burden of researchers in implementing FL algorithms and emancipat
 
 ## Quick start
 
-1. Please read our [tutorials](./tutorials/) in jupyter notebook.
+### Install
 
-2. Run our quick start examples of different scenarios with partitioned MNIST dataset.
+- Install the latest version from source code:
+```
+$ git clone git@github.com:SMILELab-FL/FedLab.git
+$ cd FedLab
+$ pip install -r requirements.txt
+```
+
+- Install the stable version (old version) via pip:
+```
+# assign the version fedlab==1.1.2
+$ pip install fedlab 
+```
+
+
+### Run Examples
+
+- Please read our [tutorials](./tutorials/) in jupyter notebook.
+
+- Run our quick start examples of different scenarios with partitioned MNIST dataset.
 
 ```
 # example of standalone
@@ -265,10 +283,9 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
 
 <p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
+
+The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [[4]](#4)  /  FedLab:
 <table>
-   <tr>
-      <td colspan="5">The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [4]  /  FedLab</td>
-   </tr>
    <tr>
       <td rowspan="2">Sample ratio</td>
       <td colspan="2">IID</td>
@@ -285,14 +302,14 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
       <td>1455  /  *</td>
       <td>316  /  *</td>
       <td>4278  /  *</td>
-      <td>3275  /  *</td>
+      <td>3275  /  1056</td>
    </tr>
    <tr>
       <td>0.1</td>
       <td>1474  /  *</td>
       <td>87  /  *</td>
       <td>1796  /  *</td>
-      <td>664  /  *</td>
+      <td>664  /  439</td>
    </tr>
    <tr>
       <td>0.2</td>
