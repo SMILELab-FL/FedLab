@@ -192,6 +192,33 @@ class NetworkTestCase(unittest.TestCase):
         for p in processes:
             p.join()
 
+    def test_broadcast_send_invalid_dst(self):
+        port = "9999"
+        rank_net = DistNetwork(address=(self.host_ip, port),
+                                   world_size=1,
+                                   rank=0)
+        rank_net.init_network_connection()
+        with self.assertRaises(TypeError):
+            invalid_dst = 1
+            rank_net.broadcast_send(self.tensor_list, 
+                                    message_code=MessageCode.ParameterUpdate, 
+                                    dst=invalid_dst)
+        rank_net.close_network_connection()
+
+    def test_broadcast_recv_invalid_src(self):
+        port = "9999"
+        rank_net = DistNetwork(address=(self.host_ip, port),
+                                   world_size=1,
+                                   rank=0)
+        rank_net.init_network_connection()
+        with self.assertRaises(TypeError):
+            invalid_src = 1
+            rank_net.broadcast_recv(self.tensor_list, 
+                                    message_code=MessageCode.ParameterUpdate, 
+                                    src=invalid_src)
+        rank_net.close_network_connection()
+            
+
     def _rank_run(self, rank_name, rank_net):
         rank_net.init_network_connection()
         time.sleep(30)
