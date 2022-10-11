@@ -16,24 +16,11 @@
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
-# from .test_core.test_client.test_manager import PassiveClientManagerTestCase, ClientManagerTestCase
-
 
 def get_tests():
     # Load all TestCase
     loader = unittest.TestLoader()
     start_dir = './'
     suite = loader.discover(start_dir, pattern='test_*.py')
-
-    # # TODO: load specific TestCase
-    # loader = unittest.TestLoader()
-    # start_dir = './test_core/test_client'
-    # suite = loader.discover(start_dir, pattern='test_manager.py')
-
-    # # TODO: load single test case
-    # suite = unittest.TestSuite()
-    # suite.addTest(PassiveClientManagerTestCase('test_init'))
-    # suite.addTest(ClientManagerTestCase('test_setup'))
-
 
     return suite

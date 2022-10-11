@@ -55,7 +55,7 @@ class ServerManager(NetworkManager):
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map, self.mode)
         if self._handler is not None:
-            self._handler.client_num = self.coordinator.total
+            self._handler.num_clients = self.coordinator.total
 
 
 class SynchronousServerManager(ServerManager):
