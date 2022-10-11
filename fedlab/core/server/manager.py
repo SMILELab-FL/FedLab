@@ -142,7 +142,7 @@ class SynchronousServerManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        client_list = range(self._handler.client_num)
+        client_list = range(self._handler.num_clients)
         rank_dict = self.coordinator.map_id_list(client_list)
 
         for rank, values in rank_dict.items():
