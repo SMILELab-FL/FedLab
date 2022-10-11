@@ -55,7 +55,7 @@ class ServerManager(NetworkManager):
             rank_client_id_map[rank] = content[0].item()
         self.coordinator = Coordinator(rank_client_id_map, self.mode)
         if self._handler is not None:
-            self._handler.client_num = self.coordinator.total
+            self._handler.num_clients = self.coordinator.total
 
 
 class SynchronousServerManager(ServerManager):
@@ -77,8 +77,6 @@ class SynchronousServerManager(ServerManager):
         super(SynchronousServerManager, self).__init__(network, handler, mode)
         self._LOGGER = Logger() if logger is None else logger
 
-    def setup(self):
-        return super().setup()
 
     def main_loop(self):
         """Actions to perform in server when receiving a package from one client.
@@ -144,7 +142,7 @@ class SynchronousServerManager(ServerManager):
             Communication agreements related: User can overwrite this function to define package
             for exiting information.
         """
-        client_list = range(self._handler.client_num)
+        client_list = range(self._handler.num_clients)
         rank_dict = self.coordinator.map_id_list(client_list)
 
         for rank, values in rank_dict.items():

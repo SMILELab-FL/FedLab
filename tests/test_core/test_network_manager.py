@@ -15,7 +15,9 @@
 import os
 from random import randint
 import sys
+from io import StringIO
 import unittest
+from unittest.mock import patch
 import psutil
 
 from fedlab.core.network_manager import NetworkManager
@@ -52,14 +54,22 @@ class ManagerTestCase(unittest.TestCase):
             manager.main_loop()
 
     def test_run(self):
+        class TestNetworkManager(NetworkManager):
+            def __init__(self, network):
+                super(TestNetworkManager, self).__init__(network)
+            
+            def main_loop(self):
+                print("Main Loop done")
+
         port = '3457'
         network = DistNetwork(address=(self.host_ip, port),
                               world_size=1,
                               rank=0)
-        manager = NetworkManager(network)
-        with self.assertRaises(NotImplementedError):
+        manager = TestNetworkManager(network)
+        with patch('sys.stdout', new=StringIO()) as mock_stdout:
+            expected_output = "Main Loop done\n"
             manager.run()
-        manager.shutdown()  # NEED TO perform shutdown manually
+            self.assertEqual(mock_stdout.getvalue(), expected_output)
 
 
     def _check_pids_by_port(self, host_ip, port, kind='tcp'):

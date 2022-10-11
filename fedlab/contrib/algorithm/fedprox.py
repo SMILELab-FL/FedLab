@@ -74,7 +74,7 @@ class FedProxSerialClientTrainer(SGDSerialClientTrainer):
         for id in id_list:
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
             pack = self.train(model_parameters, data_loader, self.mu)
-            self.chache.append(pack)
+            self.cache.append(pack)
 
     def train(self, model_parameters, train_loader, mu) -> None:
         """Client trains its local model on local dataset.

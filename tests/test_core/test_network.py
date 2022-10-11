@@ -24,7 +24,6 @@ from fedlab.utils.message_code import MessageCode
 from fedlab.core.network import DistNetwork
 from fedlab.core.communicator.processor import PackageProcessor
 
-
 import torch
 import torch.distributed as dist
 from torch.multiprocessing import Process
