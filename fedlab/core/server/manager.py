@@ -77,8 +77,6 @@ class SynchronousServerManager(ServerManager):
         super(SynchronousServerManager, self).__init__(network, handler, mode)
         self._LOGGER = Logger() if logger is None else logger
 
-    def setup(self):
-        return super().setup()
 
     def main_loop(self):
         """Actions to perform in server when receiving a package from one client.

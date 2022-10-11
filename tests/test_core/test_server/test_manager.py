@@ -97,4 +97,11 @@ class ServerManagerTestCase(unittest.TestCase):
             self.assertEqual(coor_map[rank], num_clients_list[rank-1])
         
         
+class SynchronousServerManagerTestCase(unittest.TestCase):
+    def setUp(self):
+        self.host_ip = 'localhost'
+        self.model = CNN_Mnist()
 
+    def test_init(self):
+        self._check_init(mode="LOCAL")
+        self._check_init(mode="GLOBAL")
