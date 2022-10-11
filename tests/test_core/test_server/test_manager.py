@@ -105,3 +105,13 @@ class SynchronousServerManagerTestCase(unittest.TestCase):
     def test_init(self):
         self._check_init(mode="LOCAL")
         self._check_init(mode="GLOBAL")
+
+    def _check_init(self, mode):
+        port = '3444'
+        network = DistNetwork(address=(self.host_ip, port),
+                              world_size=1,
+                              rank=0)
+        handler = TestServerHandler(self.model, cuda=False)
+        manager = SynchronousServerManager(network, handler, mode=mode)
+        self.assertIsInstance(manager._handler, ServerHandler)
+        self.assertEqual(manager.mode, mode)
