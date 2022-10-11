@@ -16,7 +16,7 @@
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
-from .test_core.test_client.test_manager import ClientManagerTestCase
+# from .test_core.test_client.test_manager import PassiveClientManagerTestCase, ClientManagerTestCase
 
 
 def get_tests():
@@ -32,7 +32,7 @@ def get_tests():
 
     # # TODO: load single test case
     # suite = unittest.TestSuite()
-    # suite.addTest(ClientManagerTestCase('test_init'))
+    # suite.addTest(PassiveClientManagerTestCase('test_init'))
     # suite.addTest(ClientManagerTestCase('test_setup'))
 
 

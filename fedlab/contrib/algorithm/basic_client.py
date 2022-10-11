@@ -106,7 +106,7 @@ class SGDSerialClientTrainer(SerialClientTrainer):
     def __init__(self, model, num_clients, cuda=False, device=None, logger=None, personal=False) -> None:
         super().__init__(model, num_clients, cuda, device, personal)
         self._LOGGER = Logger() if logger is None else logger
-        self.chache = []
+        self.cache = []
 
     def setup_dataset(self, dataset):
         self.dataset = dataset
@@ -127,8 +127,8 @@ class SGDSerialClientTrainer(SerialClientTrainer):
 
     @property
     def uplink_package(self):
-        package = deepcopy(self.chache)
-        self.chache = []
+        package = deepcopy(self.cache)
+        self.cache = []
         return package
 
     def local_process(self, payload, id_list):
@@ -136,7 +136,7 @@ class SGDSerialClientTrainer(SerialClientTrainer):
         for id in id_list:
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
             pack = self.train(model_parameters, data_loader)
-            self.chache.append(pack)
+            self.cache.append(pack)
 
     def train(self, model_parameters, train_loader):
         """Single round of local training for one client.

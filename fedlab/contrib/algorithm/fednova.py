@@ -18,8 +18,8 @@ class FedNovaServerHandler(SyncServerHandler):
         self.option = option  # weighted_scale, uniform, weighted_com
 
     def global_update(self, buffer):
-        models = [ele[0] for ele in buffer]
-        taus = [ele[1] for ele in buffer]
+        models = [elem[0] for elem in buffer]
+        taus = [elem[1] for elem in buffer]
 
         deltas = [(model - self.model_parameters)/tau for model, tau in zip(models, taus)]
 
@@ -70,4 +70,4 @@ class FedNovaSerialClientTrainer(SGDSerialClientTrainer):
             pack = self.train(model_parameters, data_loader)
             tau = [torch.Tensor([len(data_loader) * self.epochs])]
             pack += tau
-            self.chache.append(pack)
+            self.cache.append(pack)

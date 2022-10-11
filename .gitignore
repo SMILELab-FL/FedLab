@@ -172,6 +172,8 @@ codecov
 codecov_upload.sh
 pypi_release.sh
 
+temp_test
+
 unit_test.ipynb
 /exp_logs
 # release cache
