@@ -15,7 +15,6 @@
 
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
-from .test_core.test_server.test_manager import SynchronousServerManagerTestCase
 
 
 def get_tests():

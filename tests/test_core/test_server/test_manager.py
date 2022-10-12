@@ -348,3 +348,116 @@ class SynchronousServerManagerTestCase(unittest.TestCase):
         server_manager._network.close_network_connection()  # close server network manually
 
 
+class AsynchronousServerManagerTestCase(unittest.TestCase):
+    def setUp(self):
+        self.host_ip = 'localhost'
+        self.model = CNN_Mnist()
+
+    def test_init(self):
+        port = '3444'
+        network = DistNetwork(address=(self.host_ip, port),
+                              world_size=1,
+                              rank=0)
+        handler = TestServerHandler(self.model, cuda=False)
+        manager = AsynchronousServerManager(network, handler)
+        self.assertIsInstance(manager._handler, ServerHandler)
+
+    def test_shutdown_clients(self):
+        port = '5555'
+        client_rank_num = 3
+        num_clients_list = [randint(3,10) for _ in range(client_rank_num)]  # number of clients for each client trainer
+        mode = "LOCAL"
+
+        # set server network
+        server_network = DistNetwork(address=(self.host_ip, port),
+                                     world_size=1 + client_rank_num,
+                                     rank=0)
+        handler = TestServerHandler(self.model, cuda=False)
+        server_manager = AsynchronousServerManager(server_network, handler)
+        server_p = Process(target=self._run_server_manager_shutdown_clients,
+                           args=(server_manager,))
+        
+
+        client_networks = []
+        client_proceses = []
+        for rank in range(1, client_rank_num + 1):
+            client_network = DistNetwork(address=(self.host_ip, port),
+                                         world_size=1 + client_rank_num,
+                                         rank=rank)
+            client_networks.append(client_network)
+            client_p = Process(target=self._run_client_network_shutdown,
+                               args=(client_network, num_clients_list[rank-1], rank, client_rank_num+1))
+            client_proceses.append(client_p)
+        
+        server_p.start()
+        for client_p in client_proceses:
+            client_p.start()
+
+        server_p.join()
+        for client_p in client_proceses:
+            client_p.join()
+
+    def test_shutdown(self):
+        port = '6666'
+        client_rank_num = 3
+        num_clients_list = [randint(3,10) for _ in range(client_rank_num)]  # number of clients for each client trainer
+        mode = "LOCAL"
+
+        # set server network
+        server_network = DistNetwork(address=(self.host_ip, port),
+                                     world_size=1 + client_rank_num,
+                                     rank=0)
+        handler = TestServerHandler(self.model, cuda=False)
+        server_manager = AsynchronousServerManager(server_network, handler)
+        server_p = Process(target=self._run_server_manager_shutdown,
+                           args=(server_manager,))
+        
+
+        client_networks = []
+        client_proceses = []
+        for rank in range(1, client_rank_num + 1):
+            client_network = DistNetwork(address=(self.host_ip, port),
+                                         world_size=1 + client_rank_num,
+                                         rank=rank)
+            client_networks.append(client_network)
+            client_p = Process(target=self._run_client_network_shutdown,
+                               args=(client_network, num_clients_list[rank-1], rank, client_rank_num+1))
+            client_proceses.append(client_p)
+        
+        server_p.start()
+        for client_p in client_proceses:
+            client_p.start()
+
+        server_p.join()
+        for client_p in client_proceses:
+            client_p.join()
+
+    def _run_server_manager_shutdown_clients(self, server_manager):
+        server_manager.setup()
+        server_manager.shutdown_clients()
+        server_manager._network.close_network_connection()  # close server network manually
+
+    def _run_client_network_shutdown(self, client_network, num_clients, rank, world_size):
+        # setup stage
+        client_network.init_network_connection()
+        client_network.send(content=torch.tensor(num_clients).int(),
+                            message_code=MessageCode.SetUp,
+                            dst=0)
+        client_network.send(message_code=MessageCode.ParameterUpdate,
+                            dst=0)
+        client_network.send(message_code=MessageCode.ParameterRequest,
+                            dst=0)  # empty request but needed
+        # receive Exit signal from server when server tries to shutdown clients
+        _, message_code, _ = client_network.recv(src=0)
+        assert message_code == MessageCode.Exit
+        # send Exit signal back to server
+        if rank == world_size - 1: 
+            client_network.send(message_code=MessageCode.Exit,
+                                dst=0)
+        client_network.close_network_connection()
+
+    def _run_server_manager_shutdown(self, server_manager):
+        server_manager.setup()
+        server_manager.shutdown()
+
+    
