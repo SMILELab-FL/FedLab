@@ -145,6 +145,40 @@ class SynchronousServerManagerTestCase(unittest.TestCase):
         for client_p in client_proceses:
             client_p.join()
 
+    def test_shutdown(self):
+        port = '6666'
+        client_rank_num = 3
+        num_clients_list = [randint(3,10) for _ in range(client_rank_num)]  # number of clients for each client trainer
+        mode = "LOCAL"
+
+        # set server network
+        server_network = DistNetwork(address=(self.host_ip, port),
+                                     world_size=1 + client_rank_num,
+                                     rank=0)
+        handler = TestServerHandler(self.model, cuda=False)
+        server_manager = SynchronousServerManager(server_network, handler, mode=mode)
+        server_p = Process(target=self._run_server_manager_shutdown,
+                           args=(server_manager,))
+
+        client_networks = []
+        client_proceses = []
+        for rank in range(1, client_rank_num + 1):
+            client_network = DistNetwork(address=(self.host_ip, port),
+                                         world_size=1 + client_rank_num,
+                                         rank=rank)
+            client_networks.append(client_network)
+            client_p = Process(target=self._run_client_network_shutdown,
+                               args=(client_network, num_clients_list[rank-1], rank, client_rank_num+1))
+            client_proceses.append(client_p)
+        
+        server_p.start()
+        for client_p in client_proceses:
+            client_p.start()
+
+        server_p.join()
+        for client_p in client_proceses:
+            client_p.join()
+
     def _check_init(self, mode):
         port = '3444'
         network = DistNetwork(address=(self.host_ip, port),
@@ -173,3 +207,7 @@ class SynchronousServerManagerTestCase(unittest.TestCase):
         server_manager.setup()
         server_manager.shutdown_clients()
         server_manager._network.close_network_connection()  # close server network manually
+
+    def _run_server_manager_shutdown(self, server_manager):
+        server_manager.setup()
+        server_manager.shutdown()

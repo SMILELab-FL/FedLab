@@ -15,12 +15,19 @@
 
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
-
+from .test_core.test_server.test_manager import SynchronousServerManagerTestCase
 
 def get_tests():
-    # Load all TestCase
-    loader = unittest.TestLoader()
-    start_dir = './'
-    suite = loader.discover(start_dir, pattern='test_*.py')
+    # # Load all TestCase
+    # loader = unittest.TestLoader()
+    # start_dir = './'
+    # suite = loader.discover(start_dir, pattern='test_*.py')
+
+    # TODO: load single test case
+    # loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+    # loaded_tests = loader.loadTestsFromTestCase(ServerManagerTestCase)
+    # suite.addTests(loaded_tests)
+    suite.addTest(SynchronousServerManagerTestCase('test_shutdown'))
 
     return suite
