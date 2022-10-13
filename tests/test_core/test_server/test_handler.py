@@ -54,6 +54,10 @@ class ServerHandlerTestCase(unittest.TestCase):
     def test_global_update(self):
         with self.assertRaises(NotImplementedError):
             self.handler.global_update(None)
+
+    def test_setup_optim(self):
+        with self.assertRaises(NotImplementedError):
+            self.handler.setup_optim()
     
     def test_load(self):
         with self.assertRaises(NotImplementedError):

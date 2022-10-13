@@ -53,7 +53,7 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
         for id in id_list:
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
             pack = self.train(id, model_parameters, global_c, data_loader)
-            self.chache.append(pack)
+            self.cache.append(pack)
 
     def train(self, id, model_parameters, global_c, train_loader):
         self.set_model(model_parameters)

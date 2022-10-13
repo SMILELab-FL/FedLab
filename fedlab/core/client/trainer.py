@@ -46,7 +46,7 @@ class ClientTrainer(ModelMaintainer):
                  device: str = None) -> None:
         super().__init__(model, cuda, device)
 
-        self.client_num = 1  # default is 1.
+        self.num_clients = 1  # default is 1.
         self.dataset = FedDataset() # or Dataset
         self.type = ORDINARY_TRAINER
 

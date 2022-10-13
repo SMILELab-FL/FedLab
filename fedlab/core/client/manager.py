@@ -17,7 +17,8 @@ import torch
 from . import ORDINARY_TRAINER, SERIAL_TRAINER
 from ..network import DistNetwork
 from ..network_manager import NetworkManager
-from .trainer import ClientTrainer
+from ..model_maintainer import ModelMaintainer
+from .trainer import ClientTrainer, SerialClientTrainer
 from ...utils import Logger, MessageCode
 
 
@@ -28,9 +29,9 @@ class ClientManager(NetworkManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
+        trainer (ModelMaintainer): Subclass of :class:`ClientTrainer` or :class:`SerialClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
     """
-    def __init__(self, network: DistNetwork, trainer: ClientTrainer):
+    def __init__(self, network: DistNetwork, trainer: ModelMaintainer):
         super().__init__(network)
         self._trainer = trainer
 
@@ -40,7 +41,7 @@ class ClientManager(NetworkManager):
         :class:`ClientManager` reports number of clients simulated by current client process.
         """
         super().setup()
-        tensor = torch.Tensor([self._trainer.client_num]).int()
+        tensor = torch.Tensor([self._trainer.num_clients]).int()
         self._network.send(content=tensor,
                            message_code=MessageCode.SetUp,
                            dst=0)
@@ -51,12 +52,12 @@ class PassiveClientManager(ClientManager):
 
     Args:
         network (DistNetwork): Network configuration and interfaces.
-        trainer (ClientTrainer): Subclass of :class:`ClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
+        trainer (ModelMaintainer): Subclass of :class:`ClientTrainer` or :class:`SerialClientTrainer`. Provides :meth:`local_process` and :attr:`uplink_package`. Define local client training procedure.
         logger (Logger, optional): Object of :class:`Logger`.
     """
     def __init__(self,
                  network: DistNetwork,
-                 trainer: ClientTrainer,
+                 trainer: ModelMaintainer,
                  logger: Logger=None):
         super().__init__(network, trainer)
         self._LOGGER = Logger() if logger is None else logger
@@ -103,8 +104,8 @@ class PassiveClientManager(ClientManager):
 
         if self._trainer.type == SERIAL_TRAINER:
             payloads = self._trainer.uplink_package
-            for ele in payloads:
-                self._network.send(content=ele,
+            for elem in payloads:
+                self._network.send(content=elem,
                                 message_code=MessageCode.ParameterUpdate,
                                 dst=0)
                             
