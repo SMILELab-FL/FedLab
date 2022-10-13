@@ -336,7 +336,7 @@ class ActiveClientManagerTestCase(unittest.TestCase):
         client.join()
 
     def test_main_loop(self):
-        # self._check_main_loop_oridinary_trainer()
+        self._check_main_loop_oridinary_trainer()
         self._check_main_loop_serial_trainer()
 
     def _check_main_loop_oridinary_trainer(self):
