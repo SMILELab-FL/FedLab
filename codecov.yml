@@ -4,7 +4,6 @@ codecov:
   require_ci_to_pass: yes
 
 ignore:
-  - "fedlab/core/hierarchical"
   - "fedlab/contrib"
   - "fedlab/models"
 
