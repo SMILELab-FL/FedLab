@@ -302,35 +302,35 @@ The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 r
       <td>0.0</td>
       <td>1455  /  1293</td>
       <td>316  /  77 </td>
-      <td>4278  /  *</td>
+      <td>4278  /  1815</td>
       <td>3275  /  1056</td>
    </tr>
    <tr>
       <td>0.1       </td>
       <td>1474  /  1230</td>
       <td>87  /  43 </td>
-      <td>1796  /  *</td>
+      <td>1796  /  2778</td>
       <td>664  /  439</td>
    </tr>
    <tr>
       <td>0.2</td>
       <td>1658  / 1234</td>
       <td>77  /  37 </td>
-      <td>1528  /  *</td>
+      <td>1528  /  2805</td>
       <td>619  / 427  </td>
    </tr>
    <tr>
       <td>0.5</td>
-      <td>--  /  *</td>
+      <td>--  /  1229</td>
       <td>75  /  36 </td>
-      <td>--  /  *</td>
+      <td>--  /  3034</td>
       <td>443  / 474</td>
    </tr> 
    <tr>
       <td>1.0</td>
-      <td>--  /  *</td>
+      <td>--  /  1284</td>
       <td>70  /  35 </td>
-      <td>--  /  *</td>
+      <td>--  /  3154</td>
       <td>380  /  507</td>
    </tr>
 </table>
