@@ -141,7 +141,7 @@ class PassiveClientManagerTestCase(unittest.TestCase):
         self._check_init_serial_trainer()
 
     def test_synchronize(self):
-        # self._check_synchronize_ordinary_trainer()
+        self._check_synchronize_ordinary_trainer()
         self._check_synchronize_serial_trainer()
 
     def _check_init_serial_trainer(self):
