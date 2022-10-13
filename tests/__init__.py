@@ -16,6 +16,7 @@
 from tests.test_core.task_setting_for_test import unittest_dataloader
 import unittest
 
+
 def get_tests():
     # Load all TestCase
     loader = unittest.TestLoader()
