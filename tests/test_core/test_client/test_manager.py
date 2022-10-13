@@ -56,30 +56,6 @@ class TestSerialClientTrainer(SerialClientTrainer):
         return None
 
 
-class TestPassiveClientManager(PassiveClientManager):
-    def __init__(self, network, trainer, logger=None):
-        super().__init__(network, trainer, logger)
-
-    def synchronize(self):
-        """Synchronize with server."""
-        self._LOGGER.info("Uploading information to server.")
-        if self._trainer.type == SERIAL_TRAINER:
-            payloads = self._trainer.uplink_package
-            for idx, elem in enumerate(payloads):
-                self._LOGGER.info("SERIAL_TRAINER trying to synchronize sending client-{idx}'s information...")
-                self._network.send(content=elem,
-                                message_code=MessageCode.ParameterUpdate,
-                                dst=0)
-                self._LOGGER.info("SERIAL_TRAINER synchronize client-{idx} done.")
-                            
-        if self._trainer.type == ORDINARY_TRAINER:
-            self._LOGGER.info("ORDINARY_TRAINER trying to synchronize sending...")
-            self._network.send(content=self._trainer.uplink_package,
-                                message_code=MessageCode.ParameterUpdate,
-                                dst=0)
-            self._LOGGER.info("ORDINARY_TRAINER synchronize done.")
-
-
 
 class ClientManagerTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -340,8 +316,6 @@ class ActiveClientManagerTestCase(unittest.TestCase):
         client.join()
 
     def test_request(self):
-        check_content = [torch.tensor([1,2,3,4])]
-
         server_network = DistNetwork(address=(self.host_ip, self.port),
                                      world_size=2,
                                      rank=0)
@@ -361,6 +335,60 @@ class ActiveClientManagerTestCase(unittest.TestCase):
         server.join()
         client.join()
 
+    def test_main_loop(self):
+        # self._check_main_loop_oridinary_trainer()
+        self._check_main_loop_serial_trainer()
+
+    def _check_main_loop_oridinary_trainer(self):
+        check_content = [torch.tensor([1,2,3,4])]
+
+        server_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=self.server_rank)
+        client_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=self.client_rank)
+        trainer = TestClientTrainer(model=self.model, cuda=False) 
+        client_manager = ActiveClientManager(client_network, trainer)
+        
+        server = Process(target=self._run_server_main_loop, 
+                         args=(server_network, 1, check_content))
+        client = Process(target=self._run_client_main_loop, args=(client_manager,))
+
+        server.start()
+        client.start()
+
+        server.join()
+        client.join()
+
+    def _check_main_loop_serial_trainer(self):
+        check_content = [torch.tensor([1,2,3,4])]
+        num_clients = 5
+
+        server_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=self.server_rank)
+        client_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=self.client_rank)
+        trainer = TestSerialClientTrainer(model=self.model, cuda=False, num_clients=num_clients) 
+        client_manager = ActiveClientManager(client_network, trainer)
+        
+        server = Process(target=self._run_server_main_loop, 
+                         args=(server_network, 1, check_content))
+        client = Process(target=self._run_client_main_loop, args=(client_manager,))
+
+        server.start()
+        client.start()
+
+        server.join()
+        client.join()
+
+    def _run_client_main_loop(self, client_manager):
+        client_manager._network.init_network_connection()
+        client_manager.main_loop()
+        client_manager._network.close_network_connection()
+
     def _run_client_synchronize(self, client_manager):
         client_manager._network.init_network_connection()
         client_manager.synchronize()
@@ -370,6 +398,27 @@ class ActiveClientManagerTestCase(unittest.TestCase):
         client_manager._network.init_network_connection()
         client_manager.request()
         client_manager._network.close_network_connection()
+
+    def _run_server_main_loop(self, server_network, client_rank, check_content):
+        server_network.init_network_connection()
+        # recv request from client
+        _, message_code, _ = server_network.recv(src=client_rank)
+        self.assertEqual(message_code, MessageCode.ParameterRequest)
+        # send ParameterUpdate signal
+        server_network.send(content=[torch.tensor([0]), torch.tensor([1,2,3,4])], 
+                            message_code=MessageCode.ParameterUpdate, 
+                            dst=client_rank)
+        # synchronize stage
+        _, message_code, _ = server_network.recv(src=client_rank)
+        self.assertEqual(message_code, MessageCode.ParameterUpdate)
+        # recv request from client
+        _, message_code, _ = server_network.recv(src=client_rank)
+        self.assertEqual(message_code, MessageCode.ParameterRequest)
+        # Exit stage
+        server_network.send(message_code=MessageCode.Exit, dst=client_rank)
+        _, message_code, _ = server_network.recv(src=client_rank)
+        self.assertEqual(message_code, MessageCode.Exit)
+        server_network.close_network_connection()
 
     def _run_server_synchronize(self, server_network, client_rank, check_content):
         server_network.init_network_connection()
