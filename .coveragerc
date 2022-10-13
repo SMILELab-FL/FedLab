@@ -1,0 +1,4 @@
+# .coveragerc to control coverage.py
+[run]
+concurrency = multiprocessing
+source = fedlab
