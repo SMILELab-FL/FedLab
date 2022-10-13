@@ -4,6 +4,8 @@ import random
 from random import randint
 from copy import deepcopy
 
+import threading
+
 from fedlab.core.client import ORDINARY_TRAINER, SERIAL_TRAINER
 from fedlab.core.network import DistNetwork
 from fedlab.core.model_maintainer import ModelMaintainer
@@ -14,14 +16,15 @@ from fedlab.utils import MessageCode, Logger, message_code
 from ..task_setting_for_test import CNN_Mnist
 
 import torch
+from torch.multiprocessing import Queue
 import torch.distributed as dist
 from torch.multiprocessing import Process
 
 class TestServerHandler(ServerHandler):
-    def __init__(self, model, cuda=False, device=None, world_size=1):
+    def __init__(self, model, cuda=False, device=None, world_size=1, global_round=1):
         super().__init__(model, cuda, device)
         self.sample_ratio = 1.0
-        self.global_round = 1
+        self.global_round = global_round
         self.round = 0
         # client buffer
         self.client_buffer_cache = []
@@ -51,11 +54,40 @@ class TestServerHandler(ServerHandler):
         else:
             return False
 
-
     def sample_clients(self):
         selection = random.sample(range(self.num_clients),
                                   self.num_clients_per_round)
         return sorted(selection)
+
+
+class TestAsyncServerHandler(ServerHandler):
+    def __init__(self, model, cuda=False, device=None, global_round=1):
+        super().__init__(model, cuda, device)
+        self.sample_ratio = 1.0
+        self.global_round = global_round
+        self.round = 0
+
+    @property
+    def downlink_package(self):
+        return [torch.tensor([1,2,3,4]), torch.Tensor([self.round])]
+
+    @property
+    def num_clients_per_round(self):
+        return max(1, int(self.sample_ratio * self.num_clients))
+
+    @property
+    def if_stop(self):
+        return self.round >= self.global_round
+
+    def load(self, payload):
+        self.round += 1
+
+    def sample_clients(self):
+        selection = random.sample(range(self.num_clients),
+                                  self.num_clients_per_round)
+        return sorted(selection) 
+
+
 
 class ServerManagerTestCase(unittest.TestCase):
     def setUp(self):
@@ -351,11 +383,11 @@ class SynchronousServerManagerTestCase(unittest.TestCase):
 class AsynchronousServerManagerTestCase(unittest.TestCase):
     def setUp(self):
         self.host_ip = 'localhost'
+        self.port = '6666'
         self.model = CNN_Mnist()
 
     def test_init(self):
-        port = '3444'
-        network = DistNetwork(address=(self.host_ip, port),
+        network = DistNetwork(address=(self.host_ip, self.port),
                               world_size=1,
                               rank=0)
         handler = TestServerHandler(self.model, cuda=False)
@@ -363,13 +395,12 @@ class AsynchronousServerManagerTestCase(unittest.TestCase):
         self.assertIsInstance(manager._handler, ServerHandler)
 
     def test_shutdown_clients(self):
-        port = '5555'
         client_rank_num = 3
         num_clients_list = [randint(3,10) for _ in range(client_rank_num)]  # number of clients for each client trainer
         mode = "LOCAL"
 
         # set server network
-        server_network = DistNetwork(address=(self.host_ip, port),
+        server_network = DistNetwork(address=(self.host_ip, self.port),
                                      world_size=1 + client_rank_num,
                                      rank=0)
         handler = TestServerHandler(self.model, cuda=False)
@@ -381,7 +412,7 @@ class AsynchronousServerManagerTestCase(unittest.TestCase):
         client_networks = []
         client_proceses = []
         for rank in range(1, client_rank_num + 1):
-            client_network = DistNetwork(address=(self.host_ip, port),
+            client_network = DistNetwork(address=(self.host_ip, self.port),
                                          world_size=1 + client_rank_num,
                                          rank=rank)
             client_networks.append(client_network)
@@ -398,13 +429,12 @@ class AsynchronousServerManagerTestCase(unittest.TestCase):
             client_p.join()
 
     def test_shutdown(self):
-        port = '6666'
         client_rank_num = 3
         num_clients_list = [randint(3,10) for _ in range(client_rank_num)]  # number of clients for each client trainer
         mode = "LOCAL"
 
         # set server network
-        server_network = DistNetwork(address=(self.host_ip, port),
+        server_network = DistNetwork(address=(self.host_ip, self.port),
                                      world_size=1 + client_rank_num,
                                      rank=0)
         handler = TestServerHandler(self.model, cuda=False)
@@ -416,7 +446,7 @@ class AsynchronousServerManagerTestCase(unittest.TestCase):
         client_networks = []
         client_proceses = []
         for rank in range(1, client_rank_num + 1):
-            client_network = DistNetwork(address=(self.host_ip, port),
+            client_network = DistNetwork(address=(self.host_ip, self.port),
                                          world_size=1 + client_rank_num,
                                          rank=rank)
             client_networks.append(client_network)
@@ -431,6 +461,78 @@ class AsynchronousServerManagerTestCase(unittest.TestCase):
         server_p.join()
         for client_p in client_proceses:
             client_p.join()
+
+    def test_updater_thread(self):
+        server_rank = 0
+        client_rank = 1
+
+        # set server network
+        server_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=1,
+                                     rank=server_rank)
+        handler = TestServerHandler(self.model, cuda=False)
+        server_manager = AsynchronousServerManager(server_network, handler)
+        server_manager.message_queue.put((client_rank, MessageCode.ParameterUpdate, torch.tensor([1,2,3,4])))
+        server_manager.updater_thread()
+
+    # def test_main_loop(self):
+    #     server_rank = 0
+    #     client_rank = 1
+    #     port = '7777'
+
+    #     # set server network
+    #     server_network = DistNetwork(address=(self.host_ip, port),
+    #                                  world_size=2,
+    #                                  rank=server_rank)
+    #     handler = TestAsyncServerHandler(self.model, cuda=False)
+    #     server_manager = AsynchronousServerManager(server_network, handler)
+    #     server_p = Process(target=self._run_server_manager_main_loop,
+    #                        args=(server_manager,))
+        
+    #     client_network = DistNetwork(address=(self.host_ip, port),
+    #                                     world_size=2,
+    #                                     rank=client_rank)
+    #     client_p = Process(target=self._run_client_network_main_loop,
+    #                         args=(client_network,))
+        
+    #     server_p.start()
+    #     client_p.start()
+
+    #     server_p.join()
+    #     client_p.join()
+
+    # def _run_client_network_main_loop(self, client_network):
+    #     client_network.init_network_connection()
+    #     # client sends request
+    #     client_network.send(message_code=MessageCode.ParameterRequest, dst=0)
+    #     _, message_code, _ = client_network.recv(src=0)
+    #     self.assertEqual(message_code, MessageCode.ParameterUpdate)
+    #     # client sends ParameterUpdate signal
+    #     client_network.send(content=torch.tensor([1,2,3,4]), 
+    #                         message_code=MessageCode.ParameterUpdate, 
+    #                         dst=0)
+    #     # empty signals: not sure how many signals are needed
+    #     client_network.send(message_code=MessageCode.ParameterRequest, dst=0)
+    #     _, message_code, _ = client_network.recv(src=0)
+    #     # client_network.send(message_code=MessageCode.ParameterRequest, dst=0)
+    #     # _, message_code, _ = client_network.recv(src=0)
+    #     # client_network.send(message_code=MessageCode.ParameterRequest, dst=0)
+    #     # _, message_code, _ = client_network.recv(src=0)
+    #     print("ClientNetwork main loop done")
+    #     # shutdown client
+    #     client_network.close_network_connection()
+    #     print("ClientNetwork shutdown done")
+
+    # def _run_server_manager_main_loop(self, server_manager):
+    #     server_manager._network.init_network_connection()
+    #     server_manager.main_loop()
+    #     server_manager._LOGGER.info("ServerManager main_loop done")
+    #     server_manager._network.close_network_connection()
+    #     server_manager._LOGGER.info("ServerManager shutdown down")
+
+    def _run_server_manager_updater_thread(self, server_manager, client_rank):
+        server_manager.message_queue.put((client_rank, MessageCode.ParameterUpdate, torch.tensor([1,2,3,4])))
+        server_manager.updater_thread()
 
     def _run_server_manager_shutdown_clients(self, server_manager):
         server_manager.setup()
