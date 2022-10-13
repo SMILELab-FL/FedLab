@@ -149,7 +149,7 @@ class PassiveClientManagerTestCase(unittest.TestCase):
         network = DistNetwork(address=(self.host_ip, self.port),
                               world_size=1,
                               rank=0)
-        manager = ClientManager(network=network, trainer=trainer)
+        manager = PassiveClientManager(network=network, trainer=trainer)
         self.assertIsInstance(manager._network, DistNetwork)
         self.assertIsInstance(manager._trainer, ModelMaintainer)
 
@@ -158,10 +158,9 @@ class PassiveClientManagerTestCase(unittest.TestCase):
         network = DistNetwork(address=(self.host_ip, self.port),
                               world_size=1,
                               rank=0)
-        manager = ClientManager(network=network, trainer=trainer)
+        manager = PassiveClientManager(network=network, trainer=trainer)
         self.assertIsInstance(manager._network, DistNetwork)
         self.assertIsInstance(manager._trainer, ModelMaintainer)
-
     
     def _check_synchronize_ordinary_trainer(self):
         num_clients = 1
@@ -192,6 +191,7 @@ class PassiveClientManagerTestCase(unittest.TestCase):
             _, message_code, content = server_network.recv(src=client_rank)
             self._check_content_eq(content, check_content)
             self.assertEqual(message_code, MessageCode.ParameterUpdate)
+        server_network.close_network_connection()
 
     def _run_client_synchronize(self, client_manager):
         client_manager._network.init_network_connection()
@@ -221,7 +221,95 @@ class PassiveClientManagerTestCase(unittest.TestCase):
         server.join()
         client.join()
 
-   
+    def _check_content_eq(self, content, check_content):
+        check_res = [torch.equal(t, p_t) for t, p_t in zip(content, check_content)]
+        return all(check_res)
+
+
+class ActiveClientManagerTestCase(unittest.TestCase):
+    def setUp(self):
+        self.host_ip = 'localhost'
+        self.port = '5555'
+        self.server_rank = 0
+        self.client_rank = 1
+        self.model = CNN_Mnist()
+
+    def test_init(self):
+        trainer = ClientTrainer(model=self.model, cuda=False)
+        network = DistNetwork(address=(self.host_ip, self.port),
+                              world_size=1,
+                              rank=0)
+        manager = ActiveClientManager(network=network, trainer=trainer)
+        self.assertIsInstance(manager._network, DistNetwork)
+        self.assertIsInstance(manager._trainer, ModelMaintainer)
+    
+    def test_synchronize(self):
+        check_content = [torch.tensor([1,2,3,4])]
+
+        server_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=0)
+        client_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=1)
+        trainer = TestClientTrainer(model=self.model, cuda=False) 
+        client_manager = ActiveClientManager(client_network, trainer)
+        
+        server = Process(target=self._run_server_synchronize, 
+                         args=(server_network, 1, check_content))
+        client = Process(target=self._run_client_synchronize, args=(client_manager,))
+
+        server.start()
+        client.start()
+
+        server.join()
+        client.join()
+
+    def test_request(self):
+        check_content = [torch.tensor([1,2,3,4])]
+
+        server_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=0)
+        client_network = DistNetwork(address=(self.host_ip, self.port),
+                                     world_size=2,
+                                     rank=1)
+        trainer = TestClientTrainer(model=self.model, cuda=False) 
+        client_manager = ActiveClientManager(client_network, trainer)
+        
+        server = Process(target=self._run_server_request, 
+                         args=(server_network, 1))
+        client = Process(target=self._run_client_request, args=(client_manager,))
+
+        server.start()
+        client.start()
+
+        server.join()
+        client.join()
+
+    def _run_client_synchronize(self, client_manager):
+        client_manager._network.init_network_connection()
+        client_manager.synchronize()
+        client_manager._network.close_network_connection()
+
+    def _run_client_request(self, client_manager):
+        client_manager._network.init_network_connection()
+        client_manager.request()
+        client_manager._network.close_network_connection()
+
+    def _run_server_synchronize(self, server_network, client_rank, check_content):
+        server_network.init_network_connection()
+        _, message_code, content = server_network.recv(src=client_rank)
+        self._check_content_eq(content, check_content)
+        self.assertEqual(message_code, MessageCode.ParameterUpdate)
+        server_network.close_network_connection()
+
+    def _run_server_request(self, server_network, client_rank):
+        server_network.init_network_connection()
+        _, message_code, _ = server_network.recv(src=client_rank)
+        self.assertEqual(message_code, MessageCode.ParameterRequest)
+        server_network.close_network_connection()
+    
 
     def _check_content_eq(self, content, check_content):
         check_res = [torch.equal(t, p_t) for t, p_t in zip(content, check_content)]
