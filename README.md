@@ -336,13 +336,11 @@ The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 r
 </table>
 
 
-Time cost in 100 rounds under diffrent acceleration set(TODO):
+Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-4GPU-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes (2M-4*2GPU-10P is similar). 
 
 | Standalone  | Cross-process 1M-4GPU-10P | Cross-process 2M-4*2GPU-10P |
 | ----------  | ------------------------- | --------------------------- |
-|  *     |     *                  |              *      |
-
-
+|  45m36.6s   |     *                     |              *              |
 
 ### Communication Efficiency
 
