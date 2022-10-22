@@ -56,8 +56,6 @@ class FedProxClientTrainer(SGDClientTrainer):
                     l2 += torch.sum(torch.pow(w - w0, 2))
 
                 loss = l1 + 0.5 * mu * l2
-                outputs = self._model(data)
-                loss = self.criterion(outputs, target)
 
                 self.optimizer.zero_grad()
                 loss.backward()
