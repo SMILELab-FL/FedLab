@@ -178,9 +178,6 @@ class AsynchronousServerManager(ServerManager):
 
         self.message_queue = Queue()
 
-    def setup(self):
-        return super().setup()
-
     def main_loop(self):
         """Communication agreements of asynchronous FL.
 
