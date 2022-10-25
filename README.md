@@ -285,7 +285,7 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist w
 <p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
 
-The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [[4]](#4)  /  FedLab:
+We use the same partitioned MNIST dataset in FedAvg[[4]](#4) to evaluate the corectness of FedLab. The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [[4]](#4)  /  FedLab:
 <table>
    <tr>
       <td rowspan="2">Sample ratio</td>
@@ -302,56 +302,59 @@ The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 r
       <td>0.0</td>
       <td>1455  /  1293</td>
       <td>316  /  77 </td>
-      <td>4278  /  *</td>
+      <td>4278  /  1815</td>
       <td>3275  /  1056</td>
    </tr>
    <tr>
       <td>0.1       </td>
       <td>1474  /  1230</td>
       <td>87  /  43 </td>
-      <td>1796  /  *</td>
+      <td>1796  /  2778</td>
       <td>664  /  439</td>
    </tr>
    <tr>
       <td>0.2</td>
       <td>1658  / 1234</td>
       <td>77  /  37 </td>
-      <td>1528  /  *</td>
+      <td>1528  /  2805</td>
       <td>619  / 427  </td>
    </tr>
    <tr>
       <td>0.5</td>
-      <td>--  /  *</td>
+      <td>--  /  1229</td>
       <td>75  /  36 </td>
-      <td>--  /  *</td>
+      <td>--  /  3034</td>
       <td>443  / 474</td>
    </tr> 
    <tr>
       <td>1.0</td>
-      <td>--  /  *</td>
+      <td>--  /  1284</td>
       <td>70  /  35 </td>
-      <td>--  /  *</td>
+      <td>--  /  3154</td>
       <td>380  /  507</td>
    </tr>
 </table>
 
+### Computation Efficienty
 
-Time cost in 100 rounds under diffrent acceleration set(TODO):
+Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes. 2M-10P stands for the simulation runs on 2 machine with 4 GPUs and 10 processes (5 processes on each machine). 
 
-| Standalone  | Cross-process 1M-4GPU-10P | Cross-process 2M-4*2GPU-10P |
+Hardware: Intel(R) Xeon(R) Gold 6240L CPU @ 2.60GHz + Tesla V100 * 4.
+
+| Standalone  | Cross-process 1M-10P | Cross-process 2M-10P |
 | ----------  | ------------------------- | --------------------------- |
-|  *     |     *                  |              *      |
+|  45.6 Min   |     2.9 Min               |              4.23 Min       |
 
 
 
 ### Communication Efficiency
 
-We provide a few performance baseline in communication-efficient federated learning, which includes QSGD and top-k.
+We provide a few performance baselines in communication-efficient federated learning including QSGD and top-k. In the experiment setting, we choose $\alpha = 0.5$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds with sample ratio 0.1 (10 clients for each FL round) of FedAvg, where each client performs 5 local epoches of SGD with full batch and learning rate 0.1. We report the top-1 test accuracy and its communication volume during the training.
 
-| Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% |
-| -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- |
-| Test Accuracy        |          |           |           |            |        |         |
-| Communication        |          |           |           |            |        |         |
+| Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% | Top-20% |
+| -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- | ------- |
+| Test Accuracy (%)    |  93.14   |  93.03    |  93.27    |  93.11     |  11.35 |  61.25  |  89.96  |
+| Communication (MB)   |  302.45  |  45.59    |  85.06    |  160.67    |  0.94  |  1.89   |   3.79  |
 
 ## Citation
 
