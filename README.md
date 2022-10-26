@@ -5,9 +5,9 @@
 [![GH Actions Tests](https://github.com/SMILELab-FL/FedLab/actions/workflows/CI.yml/badge.svg)](https://github.com/SMILELab-FL/FedLab/actions) [![Documentation Status](https://readthedocs.org/projects/fedlab/badge/?version=master)](https://fedlab.readthedocs.io/en/master/?badge=master) [![License](https://img.shields.io/github/license/SMILELab-FL/FedLab)](https://opensource.org/licenses/Apache-2.0) [![codecov](https://codecov.io/gh/SMILELab-FL/FedLab/branch/master/graph/badge.svg?token=4HHB5JCSC6)](https://codecov.io/gh/SMILELab-FL/FedLab) [![arXiv](https://img.shields.io/badge/arXiv-2107.11621-red.svg)](https://arxiv.org/abs/2107.11621) [![Pyversions](https://img.shields.io/pypi/pyversions/fedlab.svg?style=flat-square)](https://pypi.python.org/pypi/fedlab)
 
 
-Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning research area of machine learning, which aims to protect individual data privacy in distributed machine learning process, especially in ﬁnance, smart healthcare and edge computing. Different from traditional data-centered distributed machine learning, participants in FL setting utilize localized data to train local model, then leverages speciﬁc strategies with other participants to acquire the ﬁnal model collaboratively, avoiding direct data sharing behavior.
+Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning research area of machine learning, which aims to protect individual data privacy in the distributed machine learning processes, especially in ﬁnance, smart healthcare, and edge computing. Different from traditional data-centered distributed machine learning, participants in the FL setting utilize localized data to train local models, then leverages speciﬁc strategies with other participants to acquire the ﬁnal model collaboratively, avoiding direct data-sharing behavior.
 
-To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in __FedLab__ are also presented.
+To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from the repetitive implementation of basic FL settings, we introduce a highly customizable framework __FedLab__ in this work. __FedLab__ provides the necessary modules for FL simulation, including ***communication***, ***compression***, ***model optimization***, ***data partition*** and other ***functional modules***. Users can build an FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, the FL baseline algorithms implemented via __FedLab__ are also presented.
 
 
 ## Quick start
@@ -29,7 +29,7 @@ $ pip install fedlab
 
 ### Learning materials
 
-We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\tutorials. These tutorials include data partition, customize algorithms, and pipeline demos. For the FedLab or FL beginners, we recommend this [notebook](tutorials/pipeline_tutorial.ipynb). Furthermore, we provide reproductions of federated algorithms via FedLab, which are stored in fedlab.contirb.algorithm. We think they are good examples for users to further explore FedLab.
+We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\tutorials. These tutorials include data partition, customized algorithms, and pipeline demos. For the FedLab or FL beginners, we recommend this [notebook](tutorials/pipeline_tutorial.ipynb). Furthermore, we provide reproductions of federated algorithms via FedLab, which are stored in fedlab.contirb.algorithm. We think they are good examples for users to further explore FedLab.
 
 [Website Documentations](https://fedlab.readthedocs.io/en/master/) are availiable:
 
@@ -42,7 +42,7 @@ We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\t
 
 ### Run Examples
 
-- Run our quick start examples of different scenarios with partitioned MNIST dataset.
+- Run our quick start examples of different scenarios with a partitioned MNIST dataset.
 
 ```
 # example of standalone
@@ -51,7 +51,7 @@ $ python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --bat
 ```
 
 ## Architecture
-Files architecture of FedLab. These content may be helpful for users to understand our repo.
+Files architecture of FedLab. These contents may be helpful for users to understand our repo.
 
 ```
 ├── fedlab
@@ -60,7 +60,7 @@ Files architecture of FedLab. These content may be helpful for users to understa
 │   ├── models
 │   └── utils
 ├── datasets
-│   └──...
+│   └── ...
 ├── examples
 │   ├── asynchronous-cross-process-mnist
 │   ├── cross-process-mnist
@@ -71,7 +71,8 @@ Files architecture of FedLab. These content may be helpful for users to understa
 └── tutorials
     ├── communication_tutorial.ipynb
     ├── customize_tutorial.ipynb
-    └── pipeline_tutorial.ipynb
+    ├── pipeline_tutorial.ipynb
+    └── ...
 ```
 
 ## Baselines
@@ -96,7 +97,7 @@ We provide the reproduction of baseline federated algorthms for users in this re
 | ...                |   |  |     |      |
 ## Datasets & Data Partition
 
-Sophisticated in real world, FL need to handle various kind of data distribution scenarios, including iid and non-iid scenarios. Though there already exists some datasets and partition schemes for published data benchmark, it still can be very messy and hard for researchers to partition datasets according to their specific research problems, and maintain partition results during simulation. __FedLab__ provides [`fedlab.utils.dataset.partition.DataPartitioner`](https://fedlab.readthedocs.io/en/master/autoapi/fedlab/utils/dataset/partition/index.html#fedlab.utils.dataset.partition.DataPartitioner) that allows you to use pre-partitioned datasets as well as your own data. `DataPartitioner` stores sample indices for each client given a data partition scheme. Also, FedLab provides some extra datasets that are used in current FL researches while not provided by official PyTorch `torchvision.datasets` yet.
+Sophisticated in the real world, FL needs to handle various kind of data distribution scenarios, including iid and non-iid scenarios. Though there already exists some datasets and partition schemes for published data benchmark, it still can be very messy and hard for researchers to partition datasets according to their specific research problems, and maintain partition results during simulation. __FedLab__ provides [`fedlab.utils.dataset.partition.DataPartitioner`](https://fedlab.readthedocs.io/en/master/autoapi/fedlab/utils/dataset/partition/index.html#fedlab.utils.dataset.partition.DataPartitioner) that allows you to use pre-partitioned datasets as well as your own data. `DataPartitioner` stores sample indices for each client given a data partition scheme. Also, FedLab provides some extra datasets that are used in current FL researches while not provided by official PyTorch `torchvision.datasets` yet.
 
 ### Data Partition
 
@@ -276,11 +277,11 @@ Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown a
 
 ## Performance & Insights
 
-We provide the performance report of several reproduced federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights FedLab could provide for federated learning research. Without loss of generality, this section's experiments are conducted on partitioned mnist datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
+We provide the performance report of several reproduced federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights FedLab could provide for federated learning research. Without loss of generality, this section's experiments are conducted on partitioned MNIST datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
 
 ### Federated Optimization on Non-IID Data
 
-We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds of FedAvg with 5 local batchs with full batch, learning rate 0.1 and sample ratio 0.1 (10 clients for each FL round). The test accuracy over communication round is shown below. The results reveal the most vital challenge in federated learning. 
+We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned MNIST with 100 clients. We run 200 rounds of FedAvg with 5 local batches with full batch, learning rate 0.1, and sample ratio 0.1 (10 clients for each FL round). The test accuracy over the communication round is shown below. The results reveal the most vital challenge in federated learning. 
 
 <p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
@@ -337,9 +338,9 @@ We use the same partitioned MNIST dataset in FedAvg[[4]](#4) to evaluate the cor
 
 ### Computation Efficienty
 
-Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes. 2M-10P stands for the simulation runs on 2 machine with 4 GPUs and 10 processes (5 processes on each machine). 
+Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes. 2M-10P stands for the simulation runs on 2 machines with 4 GPUs and 10 processes (5 processes on each machine). 
 
-Hardware: Intel(R) Xeon(R) Gold 6240L CPU @ 2.60GHz + Tesla V100 * 4.
+Hardware platform: Intel(R) Xeon(R) Gold 6240L CPU @ 2.60GHz + Tesla V100 * 4.
 
 | Standalone  | Cross-process 1M-10P | Cross-process 2M-10P |
 | ----------  | ------------------------- | --------------------------- |
@@ -349,7 +350,7 @@ Hardware: Intel(R) Xeon(R) Gold 6240L CPU @ 2.60GHz + Tesla V100 * 4.
 
 ### Communication Efficiency
 
-We provide a few performance baselines in communication-efficient federated learning including QSGD and top-k. In the experiment setting, we choose $\alpha = 0.5$ in label Dirichlet partitioned mnist with 100 clients. We run 200 rounds with sample ratio 0.1 (10 clients for each FL round) of FedAvg, where each client performs 5 local epoches of SGD with full batch and learning rate 0.1. We report the top-1 test accuracy and its communication volume during the training.
+We provide a few performance baselines in communication-efficient federated learning including QSGD and top-k. In the experiment setting, we choose $\alpha = 0.5$ in the label Dirichlet partitioned MNIST with 100 clients. We run 200 rounds with a sample ratio of 0.1 (10 clients for each FL round) of FedAvg, where each client performs 5 local epochs of SGD with a full batch and learning rate of 0.1. We report the top-1 test accuracy and its communication volume during the training.
 
 | Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% | Top-20% |
 | -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- | ------- |

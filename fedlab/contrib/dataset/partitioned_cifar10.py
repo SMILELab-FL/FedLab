@@ -17,13 +17,12 @@ import os
 import torch
 from torch.utils.data import DataLoader
 import torchvision
-from torchvision import transforms
 
-from .basic_dataset import FedDataset, CIFARSubset
-from ...utils.dataset.partition import CIFAR10Partitioner, CIFAR100Partitioner, MNISTPartitioner
+from .basic_dataset import FedDataset, BaseDataset
+from ...utils.dataset.partition import CIFAR10Partitioner
 
 
-class PartitionCIFAR(FedDataset):
+class PartitionedCIFAR10(FedDataset):
     """:class:`FedDataset` with partitioning preprocess. For detailed partitioning, please
     check `Federated Dataset and DataPartitioner <https://fedlab.readthedocs.io/en/master/tutorials/dataset_partition.html>`_.
 
@@ -99,48 +98,36 @@ class PartitionCIFAR(FedDataset):
             os.mkdir(os.path.join(self.path, "var"))
             os.mkdir(os.path.join(self.path, "test"))
         # train dataset partitioning
-        if self.dataname == 'cifar10':
-            trainset = torchvision.datasets.CIFAR10(root=self.root,
-                                                    train=True,
-                                                    download=self.download)
-            partitioner = CIFAR10Partitioner(trainset.targets,
-                                             self.num_clients,
-                                             balance=balance,
-                                             partition=partition,
-                                             unbalance_sgm=unbalance_sgm,
-                                             num_shards=num_shards,
-                                             dir_alpha=dir_alpha,
-                                             verbose=verbose,
-                                             seed=seed)
-        elif self.dataname == 'cifar100':
-            trainset = torchvision.datasets.CIFAR100(root=self.root,
-                                                     train=True,
-                                                     download=self.download)
-            partitioner = CIFAR100Partitioner(trainset.targets,
-                                              self.num_clients,
-                                              balance=balance,
-                                              partition=partition,
-                                              unbalance_sgm=unbalance_sgm,
-                                              num_shards=num_shards,
-                                              dir_alpha=dir_alpha,
-                                              verbose=verbose,
-                                              seed=seed)
-        else:
-            raise ValueError(
-                f"'dataname'={self.dataname} currently is not supported. Only 'cifar10', and 'cifar100' are supported."
-            )
+        trainset = torchvision.datasets.CIFAR10(root=self.root,
+                                                train=True,
+                                                transform=self.transform,
+                                                download=self.download)
+        partitioner = CIFAR10Partitioner(trainset.targets,
+                                         self.num_clients,
+                                         balance=balance,
+                                         partition=partition,
+                                         unbalance_sgm=unbalance_sgm,
+                                         num_shards=num_shards,
+                                         dir_alpha=dir_alpha,
+                                         verbose=verbose,
+                                         seed=seed)
 
-        subsets = {
-            cid: CIFARSubset(trainset,
-                        partitioner.client_dict[cid],
-                        transform=self.transform,
-                        target_transform=self.targt_transform)
-            for cid in range(self.num_clients)
-        }
-        for cid in subsets:
+        self.data_indices = partitioner.client_dict
+        
+        samples, labels = [], []
+        for x, y in trainset:
+            samples.append(x)
+            labels.append(y)
+        for id, indices in self.data_indices.items():
+            data, label = [], []
+            for idx in indices:
+                x, y = samples[idx], labels[idx]
+                data.append(x)
+                label.append(y)
+            dataset = BaseDataset(data, label)
             torch.save(
-                subsets[cid],
-                os.path.join(self.path, "train", "data{}.pkl".format(cid)))
+                dataset,
+                os.path.join(self.path, "train", "data{}.pkl".format(id)))
 
     def get_dataset(self, cid, type="train"):
         """Load subdataset for client with client ID ``cid`` from local file.
@@ -166,5 +153,5 @@ class PartitionCIFAR(FedDataset):
         """
         dataset = self.get_dataset(cid, type)
         batch_size = len(dataset) if batch_size is None else batch_size
-        data_loader = DataLoader(dataset, batch_size=batch_size)
+        data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         return data_loader

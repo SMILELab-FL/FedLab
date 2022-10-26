@@ -48,4 +48,4 @@ class StandalonePipeline(object):
             # self.handler.evaluate()
 
     def evaluate(self):
-        print("Implement your evaluation here.")
+        print("This is a example implementation. Please read the source code at fedlab.core.standalone.")
