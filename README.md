@@ -336,7 +336,7 @@ We use the same partitioned MNIST dataset in FedAvg[[4]](#4) to evaluate the cor
    </tr>
 </table>
 
-### Computation Efficiency
+### Simulation Efficiency
 
 Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes. 2M-10P stands for the simulation runs on 2 machines with 4 GPUs and 10 processes (5 processes on each machine). 
 
