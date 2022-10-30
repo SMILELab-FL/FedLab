@@ -359,7 +359,7 @@ We provide a few performance baselines in communication-efficient federated lear
 | Test Accuracy (%)    |  93.14   |  93.03    |  93.27    |  93.11     |  11.35 |  61.25  |  89.96  |
 | Communication (MB)   |  302.45  |  45.59    |  85.06    |  160.67    |  0.94  |  1.89   |   3.79  |
 
-The above results are obtained by running the [turoial](https://github.com/SMILELab-FL/FedLab/blob/master/tutorials/communication_tutorial.ipynb).
+The above results are obtained by running the [tutorial](https://github.com/SMILELab-FL/FedLab/blob/master/tutorials/communication_tutorial.ipynb).
 
 ## Citation
 
