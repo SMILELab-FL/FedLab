@@ -285,7 +285,6 @@ We choose $\alpha = [0.1, 0.3, 0.5, 0.7]$ in label Dirichlet partitioned MNIST w
 
 <p align="center"><img src="./examples/imgs/non_iid_impacts_on_fedavg.jpg" height="300"></p>
 
-
 We use the same partitioned MNIST dataset in FedAvg[[4]](#4) to evaluate the corectness of FedLab. The rounds for FedAvg to achieve 97% test accuracy on MNIST using 2NN with E=5 reported in [[4]](#4)  /  FedLab:
 <table>
    <tr>
@@ -336,6 +335,8 @@ We use the same partitioned MNIST dataset in FedAvg[[4]](#4) to evaluate the cor
    </tr>
 </table>
 
+The results are obtained by running the [tutorial](https://github.com/SMILELab-FL/FedLab/blob/master/tutorials/readme_exp.ipynb) with random seed 0. 
+
 ### Simulation Efficiency
 
 Time cost in 100 rounds (50 clients are sampled per round) under different acceleration settings. 1M-10P stands for the simulation runs on 1 machine with 4 GPUs and 10 processes. 2M-10P stands for the simulation runs on 2 machines with 4 GPUs and 10 processes (5 processes on each machine). 
@@ -346,6 +347,7 @@ Hardware platform: Intel(R) Xeon(R) Gold 6240L CPU @ 2.60GHz + Tesla V100 * 4.
 | ----------  | ------------------------- | --------------------------- |
 |  45.6 Min   |     2.9 Min               |              4.23 Min       |
 
+The results are obtained by running the [tutorial](https://github.com/SMILELab-FL/FedLab/blob/master/tutorials/readme_exp.ipynb) and an example of cross-process scenario. Besides, the results reveal the simulation efficiency of FedLab under different simulation modes. Cross-process with 2 machines could be slower in this setting due to communication bottleneck.
 
 
 ### Communication Efficiency
@@ -356,6 +358,8 @@ We provide a few performance baselines in communication-efficient federated lear
 | -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- | ------- |
 | Test Accuracy (%)    |  93.14   |  93.03    |  93.27    |  93.11     |  11.35 |  61.25  |  89.96  |
 | Communication (MB)   |  302.45  |  45.59    |  85.06    |  160.67    |  0.94  |  1.89   |   3.79  |
+
+The above results are obtained by running the [turoial](https://github.com/SMILELab-FL/FedLab/blob/master/tutorials/communication_tutorial.ipynb).
 
 ## Citation
 
