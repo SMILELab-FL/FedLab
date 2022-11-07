@@ -48,8 +48,7 @@ class RotatedMNIST(FedDataset):
         # train
         mnist = torchvision.datasets.MNIST(self.root,
                                            train=True,
-                                           download=self.download,
-                                           transform=transforms.ToTensor())
+                                           download=self.download)
         id = 0
         to_tensor = transforms.ToTensor()
         for theta in thetas:
@@ -73,8 +72,7 @@ class RotatedMNIST(FedDataset):
         mnist_test = torchvision.datasets.MNIST(
             self.root,
             train=False,
-            download=self.download,
-            transform=transforms.ToTensor())
+            download=self.download)
         labels = mnist_test.targets
         for i, theta in enumerate(thetas):
             rotated_data = []
