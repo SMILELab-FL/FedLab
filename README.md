@@ -354,7 +354,7 @@ The results are obtained by running the [tutorial](https://github.com/SMILELab-F
 
 We provide a few performance baselines in communication-efficient federated learning including QSGD and top-k. In the experiment setting, we choose $\alpha = 0.5$ in the label Dirichlet partitioned MNIST with 100 clients. We run 200 rounds with a sample ratio of 0.1 (10 clients for each FL round) of FedAvg, where each client performs 5 local epochs of SGD with a full batch and learning rate of 0.1. We report the top-1 test accuracy and its communication volume during the training.
 
-| Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | top-5% | Top-10% | Top-20% |
+| Setting              | Baseline | QSGD-4bit | QSGD-8bit | QSGD-16bit | Top-5% | Top-10% | Top-20% |
 | -------------------- | -------- | --------- | --------- | ---------- | ------ | ------- | ------- |
 | Test Accuracy (%)    |  93.14   |  93.03    |  93.27    |  93.11     |  11.35 |  61.25  |  89.96  |
 | Communication (MB)   |  302.45  |  45.59    |  85.06    |  160.67    |  0.94  |  1.89   |   3.79  |
