@@ -13,8 +13,8 @@ pdataset = PickleDataset(pickle_root="pickle_datasets", dataset_name="shakespear
 # create responding dataset in pickle file form
 pdataset.create_pickle_dataset(data_root="../datasets")
 # read saved pickle dataset and get responding dataset
-train_dataset = pdataset.get_dataset_pickle(dataset_type="train", client_id="0")
-test_dataset = pdataset.get_dataset_pickle(dataset_type="test", client_id="2")
+train_dataset = pdataset.get_dataset_pickle(dataset_type="train", client_id=0)
+test_dataset = pdataset.get_dataset_pickle(dataset_type="test", client_id=2)
 ```
 
 Parameter Description:
