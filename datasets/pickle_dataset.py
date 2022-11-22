@@ -25,10 +25,7 @@ from torch.utils.data.dataset import ConcatDataset
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BASE_DIR))
-from fedlab.contrib.dataset.femnist import FemnistDataset
-from fedlab.contrib.dataset.shakespeare import ShakespeareDataset
-from fedlab.contrib.dataset.celeba import CelebADataset
-from fedlab.contrib.dataset.sent140 import Sent140Dataset
+from leaf_datasets import FemnistDataset, ShakespeareDataset, CelebADataset, Sent140Dataset
 from datasets.nlp_utils.util import Tokenizer, Vocab
 
 logging.getLogger().setLevel(logging.INFO)

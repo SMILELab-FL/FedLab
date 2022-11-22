@@ -1,7 +1,7 @@
 import os
 import torch
 
-from .nlp_utils.util import Tokenizer, Vocab
+from nlp_utils.util import Tokenizer, Vocab
 from torch.utils.data import Dataset
 from pathlib import Path
 from torch.utils.data import Dataset
