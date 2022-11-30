@@ -22,3 +22,4 @@ from .rotated_mnist import RotatedMNIST
 from .rotated_cifar10 import RotatedCIFAR10
 from .partitioned_mnist import PartitionedMNIST
 from .partitioned_cifar10 import PartitionedCIFAR10
+from .synthetic_dataset import SyntheticDataset
