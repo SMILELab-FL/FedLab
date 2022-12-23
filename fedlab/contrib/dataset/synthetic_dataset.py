@@ -17,7 +17,13 @@ class SyntheticDataset(FedDataset):
             print("Warning: please make sure that you have preprocess the data once!")
 
     def preprocess(self, root, path, partition=0.2):
+        """Preprocess the raw data to fedlab dataset format.
 
+        Args:
+            root (str): path to the raw data.
+            path (str): path to save the preprocessed datasets.
+            partition (float, optional): The propotion of testset. Defaults to 0.2.
+        """
         if os.path.exists(self.path) is not True:
             os.mkdir(self.path)
             os.mkdir(os.path.join(self.path, "train"))
@@ -32,10 +38,10 @@ class SyntheticDataset(FedDataset):
             train_size = int(len(label)*partition)
 
             trainset = BaseDataset(data[0:train_size], label[0:train_size])
-            torch.save(os.path.join(path, "train","data{}.pkl".format(id)), trainset)
+            torch.save(trainset, os.path.join(path, "train","data{}.pkl".format(id)))
 
             testset = BaseDataset(data[train_size:], label[train_size:])
-            torch.save(os.path.join(path, "test","data{}.pkl".format(id)), testset)
+            torch.save(testset, os.path.join(path, "test","data{}.pkl".format(id)))
 
     def get_dataset(self, id, type="train"):
         dataset = torch.load(
