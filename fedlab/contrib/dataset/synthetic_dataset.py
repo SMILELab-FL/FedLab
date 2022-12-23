@@ -10,7 +10,8 @@ from .basic_dataset import FedDataset, BaseDataset
 
 class SyntheticDataset(FedDataset):
     def __init__(self, root, path, preprocess=False) -> None:
-
+        self.root = root
+        self.path = path
         if preprocess is True:
             self.preprocess(root, path)
         else:
@@ -37,10 +38,11 @@ class SyntheticDataset(FedDataset):
             data, label = user_data[id]['x'], user_data[id]['y']
             train_size = int(len(label)*partition)
 
-            trainset = BaseDataset(data[0:train_size], label[0:train_size])
+            trainset = BaseDataset(torch.Tensor(data[0:train_size]), label[0:train_size])
             torch.save(trainset, os.path.join(path, "train","data{}.pkl".format(id)))
 
-            testset = BaseDataset(data[train_size:], label[train_size:])
+            testset = BaseDataset(torch.Tensor(data[train_size:], label[train_size:]))
+            torch.save(testset, os.path.join(path, "test","data{}.pkl".format(id)))
             torch.save(testset, os.path.join(path, "test","data{}.pkl".format(id)))
 
     def get_dataset(self, id, type="train"):
@@ -53,3 +55,4 @@ class SyntheticDataset(FedDataset):
         batch_size = len(dataset) if batch_size is None else batch_size
         data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         return data_loader
+
