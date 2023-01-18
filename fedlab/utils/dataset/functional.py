@@ -303,7 +303,7 @@ def label_skew_quantity_based_partition(targets, num_clients, num_classes, major
     For details, please check `Federated Learning on Non-IID Data Silos: An Experimental Study <https://arxiv.org/abs/2102.02079>`_.
 
     Args:
-        targets (np.ndarray): Labels od dataset.
+        targets (List or np.ndarray): Labels od dataset.
         num_clients (int): Number of clients.
         num_classes (int): Number of unique classes.
         major_classes_num (int): Number of classes for each client, should be less then ``num_classes``.
@@ -312,6 +312,9 @@ def label_skew_quantity_based_partition(targets, num_clients, num_classes, major
         dict: ``{ client_id: indices}``.
 
     """
+    if not isinstance(targets, np.ndarray):
+        targets = np.array(targets)
+
     idx_batch = [np.ndarray(0, dtype=np.int64) for _ in range(num_clients)]
     # only for major_classes_num < num_classes.
     # if major_classes_num = num_classes, it equals to IID partition
