@@ -1,6 +1,7 @@
 import os
 import torch
 
+from PIL import Image
 from nlp_utils.util import Tokenizer, Vocab
 from torch.utils.data import Dataset
 from pathlib import Path
