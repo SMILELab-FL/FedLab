@@ -183,3 +183,8 @@ unit_test.ipynb
 test_client.py
 test_server.py
 unit_test*
+
+/datasets/*/data
+/datasets/*/meta
+/datasets/*/data/*
+/datasets/*/meta/*

@@ -41,8 +41,7 @@ class SyntheticDataset(FedDataset):
             trainset = BaseDataset(torch.Tensor(data[0:train_size]), label[0:train_size])
             torch.save(trainset, os.path.join(path, "train","data{}.pkl".format(id)))
 
-            testset = BaseDataset(torch.Tensor(data[train_size:], label[train_size:]))
-            torch.save(testset, os.path.join(path, "test","data{}.pkl".format(id)))
+            testset = BaseDataset(torch.Tensor(data[train_size:]), label[train_size:])
             torch.save(testset, os.path.join(path, "test","data{}.pkl".format(id)))
 
     def get_dataset(self, id, type="train"):

@@ -15,6 +15,36 @@
 import torch
 
 
+# def serialize_model(model: torch.nn.Module) -> torch.Tensor:
+#     # parameters = [param.data.view(-1) for param in model.parameters()]
+#     parameters = [param.data.view(-1) for param in model.state_dict().values()]
+#     m_parameters = torch.cat(parameters)
+#     m_parameters = m_parameters.cpu()
+
+#     return m_parameters
+
+# def deserialize_model(model: torch.nn.Module,
+#                       serialized_parameters: torch.Tensor,
+#                       mode="copy"):
+#         current_index = 0  # keep track of where to read from grad_update
+
+#         for param in model.state_dict().values():
+#             numel = param.numel()
+#             size = param.size()
+#             if mode == "copy":
+#                 param.copy_(
+#                     serialized_parameters[current_index:current_index +
+#                                           numel].view(size))
+#             elif mode == "add":
+#                 param.add_(
+#                     serialized_parameters[current_index:current_index +
+#                                           numel].view(size))
+#             else:
+#                 raise ValueError(
+#                     "Invalid deserialize mode {}, require \"copy\" or \"add\" "
+#                     .format(mode))
+#             current_index += numel
+
 class SerializationTool(object):
     @staticmethod
     def serialize_model_gradients(model: torch.nn.Module) -> torch.Tensor:
@@ -43,7 +73,7 @@ class SerializationTool(object):
             idx += layer_size
 
     @staticmethod
-    def serialize_model(model: torch.nn.Module) -> torch.Tensor:
+    def serialize_trainable_model(model: torch.nn.Module) -> torch.Tensor:
         """Unfold model parameters
         
         Unfold every layer of model, concate all of tensors into one.
@@ -60,7 +90,16 @@ class SerializationTool(object):
         return m_parameters
 
     @staticmethod
-    def deserialize_model(model: torch.nn.Module,
+    def serialize_model(model: torch.nn.Module) -> torch.Tensor:
+        # parameters = [param.data.view(-1) for param in model.parameters()]
+        parameters = [param.data.view(-1) for param in model.state_dict().values()]
+        m_parameters = torch.cat(parameters)
+        m_parameters = m_parameters.cpu()
+
+        return m_parameters
+
+    @staticmethod
+    def deserialize_trainable_model(model: torch.nn.Module,
                           serialized_parameters: torch.Tensor,
                           mode="copy"):
         """Assigns serialized parameters to model.parameters.
@@ -82,6 +121,29 @@ class SerializationTool(object):
                                           numel].view(size))
             elif mode == "add":
                 parameter.data.add_(
+                    serialized_parameters[current_index:current_index +
+                                          numel].view(size))
+            else:
+                raise ValueError(
+                    "Invalid deserialize mode {}, require \"copy\" or \"add\" "
+                    .format(mode))
+            current_index += numel
+
+    @staticmethod
+    def deserialize_model(model: torch.nn.Module,
+                      serialized_parameters: torch.Tensor,
+                      mode="copy"):
+        current_index = 0  # keep track of where to read from grad_update
+
+        for param in model.state_dict().values():
+            numel = param.numel()
+            size = param.size()
+            if mode == "copy":
+                param.copy_(
+                    serialized_parameters[current_index:current_index +
+                                          numel].view(size))
+            elif mode == "add":
+                param.add_(
                     serialized_parameters[current_index:current_index +
                                           numel].view(size))
             else:
