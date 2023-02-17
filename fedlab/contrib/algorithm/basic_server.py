@@ -81,6 +81,11 @@ class SyncServerHandler(ServerHandler):
         ``self.num_clients -1``."""
         selection = random.sample(range(self.num_clients),
                                   self.num_clients_per_round)
+
+        # If the number of clients per round is not fixed, please change the value of self.sample_ratio correspondly.
+        self.sample_ratio = float(len(selection))/self.num_clients
+        assert self.num_clients_per_round == len(selection)
+
         return sorted(selection)
 
     def global_update(self, buffer):

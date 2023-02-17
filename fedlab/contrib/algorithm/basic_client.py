@@ -134,7 +134,7 @@ class SGDSerialClientTrainer(SerialClientTrainer):
 
     def local_process(self, payload, id_list):
         model_parameters = payload[0]
-        for id in tqdm(id_list):
+        for id in tqdm(id_list, desc=">>> Local training"):
             data_loader = self.dataset.get_dataloader(id, self.batch_size)
             pack = self.train(model_parameters, data_loader)
             self.cache.append(pack)
