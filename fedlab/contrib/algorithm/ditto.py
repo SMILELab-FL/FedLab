@@ -42,7 +42,7 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
         for id in tqdm(id_list):
             # self._LOGGER.info("Local process is running. Training client {}".format(id))
             train_loader = self.dataset.get_data_loader(id, batch_size=self.args.batch_size)
-            self.parameters[id], glb_model  = self._train_alone(global_model, self.local_models[id], train_loader)
+            self.local_models[id], glb_model  = self.train(global_model, self.local_models[id], train_loader)
             self.ditto_gmodels.append(deepcopy(glb_model))
 
     @property
