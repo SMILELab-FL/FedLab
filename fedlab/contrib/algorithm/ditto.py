@@ -30,7 +30,8 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
     def __init__(self, model, num, cuda=False, device=None, logger=None, personal=True) -> None:
         super().__init__(model, num, cuda, device, logger, personal)
         self.ditto_gmodels = []
-
+        self.local_models = self.parameters
+    
     def setup_dataset(self, dataset):
         return super().setup_dataset(dataset)
     
