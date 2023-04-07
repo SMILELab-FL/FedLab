@@ -31,7 +31,7 @@ $ pip install fedlab
 
 We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\tutorials. These tutorials include data partition, customized algorithms, and pipeline demos. For the FedLab or FL beginners, we recommend this [notebook](tutorials/pipeline_tutorial.ipynb). Furthermore, we provide reproductions of federated algorithms via FedLab, which are stored in fedlab.contirb.algorithm. We think they are good examples for users to further explore FedLab.
 
-[Website Documentations](https://fedlab.readthedocs.io/en/master/) are availiable:
+[Website Documentations](https://fedlab.readthedocs.io/en/master/) are available:
 
 - [Overview of FedLab](https://fedlab.readthedocs.io/en/master/overview.html)
 - [Installation & Setup](https://fedlab.readthedocs.io/en/master/install.html)
@@ -383,7 +383,7 @@ Please cite __FedLab__ in your publications if it helps your research:
 
 Project Investigator: [Prof. Zenglin Xu](https://scholar.google.com/citations?user=gF0H9nEAAAAJ&hl=en) (xuzenglin@hit.edu.cn).
 
-For technical issues reated to __FedLab__ development, please contact our development team through Github issues or email:
+For technical issues related to __FedLab__ development, please contact our development team through Github issues or email:
 
 - Dun Zeng: zengdun@foxmail.com
 - [Siqi Liang](https://scholar.google.com/citations?user=LIjv5BsAAAAJ&hl=en): zszxlsq@gmail.com
