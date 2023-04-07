@@ -367,11 +367,15 @@ The above results are obtained by running the [tutorial](https://github.com/SMIL
 Please cite __FedLab__ in your publications if it helps your research:
 
 ```bibtex
-@article{smile2021fedlab,  
-    title={FedLab: A Flexible Federated Learning Framework},  
-    author={Dun Zeng, Siqi Liang, Xiangjing Hu, Hui Wang and Zenglin Xu},  
-    journal={arXiv preprint arXiv:2107.11621},  
-    year={2021}
+@article{JMLR:v24:22-0440,
+  author  = {Dun Zeng and Siqi Liang and Xiangjing Hu and Hui Wang and Zenglin Xu},
+  title   = {FedLab: A Flexible Federated Learning Framework},
+  journal = {Journal of Machine Learning Research},
+  year    = {2023},
+  volume  = {24},
+  number  = {100},
+  pages   = {1--7},
+  url     = {http://jmlr.org/papers/v24/22-0440.html}
 }
 ```
 
