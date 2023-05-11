@@ -1,5 +1,7 @@
 
 import argparse
+import sys
+sys.path.append("../../")
 from fedlab.core.network import DistNetwork
 
 parser = argparse.ArgumentParser(description="Network connection checker")
