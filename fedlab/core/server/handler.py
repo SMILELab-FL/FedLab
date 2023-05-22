@@ -45,6 +45,11 @@ class ServerHandler(ModelMaintainer):
         """Property for manager layer. Server manager will call this property when activates clients."""
         raise NotImplementedError()
 
+    # only sync handler need this property
+    # @property
+    # def num_clients_per_round(self):
+    #     return self.round_clients
+
     @property
     @abstractmethod
     def if_stop(self) -> bool:
