@@ -86,7 +86,7 @@ class SyncServerHandler(ServerHandler):
     # def num_clients_per_round(self):
     #     return max(1, int(self.sample_ratio * self.num_clients))
 
-    def sample_clients(self):
+    def sample_clients(self, num_to_sample=None):
         """Return a list of client rank indices selected randomly. The client ID is from ``0`` to
         ``self.num_clients -1``."""
         # selection = random.sample(range(self.num_clients),
@@ -96,6 +96,7 @@ class SyncServerHandler(ServerHandler):
         # assert self.num_clients_per_round == len(selection)
 
         # new version with built-in sampler
+        num_to_sample = self.round_clients if num_to_sample is None else num_to_sample
         sampled = self.sampler.sample(self.round_clients)
         self.round_clients = len(sampled)
 
