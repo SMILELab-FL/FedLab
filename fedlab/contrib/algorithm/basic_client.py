@@ -91,7 +91,7 @@ class SGDClientTrainer(ClientTrainer):
 
 
 class SGDSerialClientTrainer(SerialClientTrainer):
-    """Deprecated
+    """
     Train multiple clients in a single process.
 
     Customize :meth:`_get_dataloader` or :meth:`_train_alone` for specific algorithm design in clients.
