@@ -22,6 +22,7 @@ from ...core.server.handler import ServerHandler
 from ..client_sampler.base_sampler import FedSampler
 from ..client_sampler.uniform_sampler import RandomSampler
 
+
 class SyncServerHandler(ServerHandler):
     """Synchronous Parameter Server Handler.
 
@@ -41,14 +42,17 @@ class SyncServerHandler(ServerHandler):
         sampler (FedSampler, optional): assign a sampler to define the client sampling strategy. Default: random sampling with :class:`FedSampler`.
         logger (Logger, optional): object of :class:`Logger`.
     """
-    def __init__(self,
-                 model: torch.nn.Module,
-                 global_round: int,
-                 sample_ratio: float,
-                 cuda: bool = False,
-                 device:str=None,
-                 sampler:FedSampler=None,
-                 logger: Logger = None):
+
+    def __init__(
+        self,
+        model: torch.nn.Module,
+        global_round: int,
+        sample_ratio: float,
+        cuda: bool = False,
+        device: str = None,
+        sampler: FedSampler = None,
+        logger: Logger = None,
+    ):
         super(SyncServerHandler, self).__init__(model, cuda, device)
 
         self._LOGGER = Logger() if logger is None else logger
@@ -60,7 +64,9 @@ class SyncServerHandler(ServerHandler):
         self.sampler = sampler
 
         # client buffer
-        self.round_clients = max(1, int(self.sample_ratio * self.num_clients)) # for dynamic client sampling
+        self.round_clients = max(
+            1, int(self.sample_ratio * self.num_clients)
+        )  # for dynamic client sampling
         self.client_buffer_cache = []
 
         # stop condition
@@ -94,7 +100,7 @@ class SyncServerHandler(ServerHandler):
         # If the number of clients per round is not fixed, please change the value of self.sample_ratio correspondly.
         # self.sample_ratio = float(len(selection))/self.num_clients
         # assert self.num_clients_per_round == len(selection)
-        
+
         if self.sampler is None:
             self.sampler = RandomSampler(self.num_clients)
         # new version with built-in sampler
@@ -107,7 +113,8 @@ class SyncServerHandler(ServerHandler):
 
     def global_update(self, buffer):
         parameters_list = [ele[0] for ele in buffer]
-        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list)
+        weights = [ele[1] for ele in buffer]
+        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list, weights)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
     def load(self, payload: List[torch.Tensor]) -> bool:
@@ -138,6 +145,7 @@ class SyncServerHandler(ServerHandler):
         else:
             return False
 
+
 class AsyncServerHandler(ServerHandler):
     """Asynchronous Parameter Server Handler
 
@@ -151,12 +159,15 @@ class AsyncServerHandler(ServerHandler):
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
         logger (Logger, optional): Object of :class:`Logger`.
     """
-    def __init__(self,
-                 model: torch.nn.Module,
-                 global_round: int,
-                 cuda: bool = False,
-                 device:str=None,
-                 logger: Logger = None):
+
+    def __init__(
+        self,
+        model: torch.nn.Module,
+        global_round: int,
+        cuda: bool = False,
+        device: str = None,
+        logger: Logger = None,
+    ):
         super(AsyncServerHandler, self).__init__(model, cuda, device)
         self._LOGGER = Logger() if logger is None else logger
         self.num_clients = 0
@@ -172,7 +183,7 @@ class AsyncServerHandler(ServerHandler):
     def downlink_package(self):
         return [self.model_parameters, torch.Tensor([self.round])]
 
-    def setup_optim(self, alpha, strategy='constant', a=10, b=4):
+    def setup_optim(self, alpha, strategy="constant", a=10, b=4):
         """Setup optimization configuration.
 
         Args:
@@ -192,8 +203,8 @@ class AsyncServerHandler(ServerHandler):
         """ "update global model from client_model_queue"""
         alpha_T = self.adapt_alpha(model_time)
         aggregated_params = Aggregators.fedasync_aggregate(
-            self.model_parameters, client_model_parameters,
-            alpha_T)  # use aggregator
+            self.model_parameters, client_model_parameters, alpha_T
+        )  # use aggregator
         SerializationTool.deserialize_model(self._model, aggregated_params)
 
     def load(self, payload: List[torch.Tensor]) -> bool:
@@ -209,9 +220,8 @@ class AsyncServerHandler(ServerHandler):
             if staleness <= self.b:
                 return torch.mul(self.alpha, 1)
             else:
-                return torch.mul(self.alpha,
-                                 1 / (self.a * ((staleness - self.b) + 1)))
+                return torch.mul(self.alpha, 1 / (self.a * ((staleness - self.b) + 1)))
         elif self.strategy == "polynomial" and self.a is not None:
-            return torch.mul(self.alpha, (staleness + 1)**(-self.a))
+            return torch.mul(self.alpha, (staleness + 1) ** (-self.a))
         else:
             raise ValueError("Invalid strategy {}".format(self.strategy))
