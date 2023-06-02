@@ -57,7 +57,7 @@ class SyncServerHandler(ServerHandler):
         # basic setting
         self.num_clients = 0
         self.sample_ratio = sample_ratio
-        self.sampler = RandomSampler(self.num_clients) if sampler is None else sampler
+        self.sampler = sampler
 
         # client buffer
         self.round_clients = max(1, int(self.sample_ratio * self.num_clients)) # for dynamic client sampling
@@ -94,7 +94,9 @@ class SyncServerHandler(ServerHandler):
         # If the number of clients per round is not fixed, please change the value of self.sample_ratio correspondly.
         # self.sample_ratio = float(len(selection))/self.num_clients
         # assert self.num_clients_per_round == len(selection)
-
+        
+        if self.sampler is None:
+            self.sampler = RandomSampler(self.num_clients)
         # new version with built-in sampler
         num_to_sample = self.round_clients if num_to_sample is None else num_to_sample
         sampled = self.sampler.sample(self.round_clients)
