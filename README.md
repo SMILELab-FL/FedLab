@@ -378,6 +378,15 @@ Please cite __FedLab__ in your publications if it helps your research:
   url     = {http://jmlr.org/papers/v24/22-0440.html}
 }
 ```
+or
+```
+@article{zeng2021fedlab,
+  title={Fedlab: A flexible federated learning framework},
+  author={Zeng, Dun and Liang, Siqi and Hu, Xiangjing and Wang, Hui and Xu, Zenglin},
+  journal={arXiv preprint arXiv:2107.11621},
+  year={2021}
+}
+```
 
 ## Contact
 
