@@ -12,7 +12,11 @@ from ...utils.serialization import SerializationTool
 
 class FedAvgServerHandler(SyncServerHandler):
     """FedAvg server handler."""
-    None
+    def global_update(self, buffer):
+        parameters_list = [ele[0] for ele in buffer]
+        weights = [ele[1] for ele in buffer]
+        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list, weights)
+        SerializationTool.deserialize_model(self._model, serialized_parameters)
 
 
 ##################
