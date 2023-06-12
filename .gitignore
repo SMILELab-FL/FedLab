@@ -183,3 +183,8 @@ unit_test.ipynb
 test_client.py
 test_server.py
 unit_test*
+
+/datasets/femnist/data
+/datasets/femnist/meta
+/datasets/shakespeare/data
+/datasets/shakespeare/meta
