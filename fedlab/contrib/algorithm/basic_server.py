@@ -113,8 +113,7 @@ class SyncServerHandler(ServerHandler):
 
     def global_update(self, buffer):
         parameters_list = [ele[0] for ele in buffer]
-        weights = [ele[1] for ele in buffer]
-        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list, weights)
+        serialized_parameters = Aggregators.fedavg_aggregate(parameters_list)
         SerializationTool.deserialize_model(self._model, serialized_parameters)
 
     def load(self, payload: List[torch.Tensor]) -> bool:
