@@ -30,7 +30,8 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
     def __init__(self, model, num, cuda=False, device=None, logger=None, personal=True) -> None:
         super().__init__(model, num, cuda, device, logger, personal)
         self.ditto_gmodels = []
-
+        self.local_models = self.parameters
+    
     def setup_dataset(self, dataset):
         return super().setup_dataset(dataset)
     
@@ -42,7 +43,7 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
         for id in tqdm(id_list):
             # self._LOGGER.info("Local process is running. Training client {}".format(id))
             train_loader = self.dataset.get_data_loader(id, batch_size=self.args.batch_size)
-            self.parameters[id], glb_model  = self._train_alone(global_model, self.local_models[id], train_loader)
+            self.local_models[id], glb_model  = self.train(global_model, self.local_models[id], train_loader)
             self.ditto_gmodels.append(deepcopy(glb_model))
 
     @property

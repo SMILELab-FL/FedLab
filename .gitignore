@@ -180,11 +180,20 @@ unit_test.ipynb
 
 /datasets/mnist/*mnist
 /datasets/mnist/fedmnist*
+/datasets/femnist/data
+/datasets/femnist/meta
+/datasets/celeba/data
+/datasets/celeba/meta
+/datasets/sent140/data
+/datasets/shakespeare/data
+/datasets/shakespeare/meta
+
+
 test_client.py
 test_server.py
 unit_test*
 
-/datasets/femnist/data
-/datasets/femnist/meta
-/datasets/shakespeare/data
-/datasets/shakespeare/meta
+/datasets/*/data
+/datasets/*/meta
+/datasets/*/data/*
+/datasets/*/meta/*

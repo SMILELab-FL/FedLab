@@ -28,7 +28,9 @@ setup(
                       'pandas',
                       'scikit-learn',
                       'pynvml',
-                      'tqdm'],
+                      'tqdm',
+                      'scikit-learn',
+                      'munch'],
     python_requires='>=3.6',
     classifiers=[
         'Topic :: Scientific/Engineering',
