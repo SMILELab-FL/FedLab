@@ -23,7 +23,7 @@ $ pip install -r requirements.txt
 
 - Install the stable version (old version) via pip:
 ```
-# assign the version fedlab==1.1.2
+# assign the version fedlab==1.3.0
 $ pip install fedlab 
 ```
 
