@@ -78,7 +78,10 @@ class FedProxSerialClientTrainer(SGDSerialClientTrainer):
         """Client trains its local model on local dataset.
 
         Args:
-            model_parameters (torch.Tensor): Serialized model parameters.
+            model_parameters (torch.Tensor): serialized model parameters.
+            train_loader (torch.utils.data.DataLoader): :class:`torch.utils.data.DataLoader` for this client.
+            mu (float): parameter of FedProx.
+            
         """
         self.set_model(model_parameters)
         frz_model = deepcopy(self._model)

@@ -20,7 +20,8 @@ class FedDynServerHandler(SyncServerHandler):
 
     def global_update(self, buffer):
         parameters_list = [ele[0] for ele in buffer]
-        self.h = self.h - self.alpha * (1.0/self.num_clients) * (sum(parameters_list) - self.model_parameters)
+        deltas = sum([parameters-self.model_parameters for parameters in parameters_list])
+        self.h = self.h - self.alpha * (1.0/self.num_clients) * deltas
         new_parameters = Aggregators.fedavg_aggregate(parameters_list) - 1.0 / self.alpha * self.h
         self.set_model(new_parameters)
 
