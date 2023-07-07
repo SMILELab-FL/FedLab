@@ -37,7 +37,7 @@ args = parser.parse_args()
 model =MLP(784, 10)
 
 # server
-handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
+handler = SyncServerHandler(model, args.com_round, args.total_clients, args.sample_ratio)
 
 # client
 trainer = SGDSerialClientTrainer(model, args.total_client, cuda=True)

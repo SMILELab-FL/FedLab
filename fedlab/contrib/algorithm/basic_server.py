@@ -36,7 +36,7 @@ class SyncServerHandler(ServerHandler):
     Args:
         model (torch.nn.Module): model trained by federated learning.
         global_round (int): stop condition. Shut down FL system when global round is reached.
-        num_clients (int): number of clients in FL.
+        num_clients (int): number of clients in FL. Default: 0 (initialized external). 
         sample_ratio (float): the result of ``sample_ratio * num_clients`` is the number of clients for every FL round.
         cuda (bool): use GPUs or not. Default: ``False``.
         device (str, optional): assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
@@ -48,8 +48,8 @@ class SyncServerHandler(ServerHandler):
         self,
         model: torch.nn.Module,
         global_round: int,
-        num_clients: int,
-        sample_ratio: float,
+        num_clients: int = 0,
+        sample_ratio: float = 1,
         cuda: bool = False,
         device: str = None,
         sampler: FedSampler = None,
