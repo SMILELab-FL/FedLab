@@ -95,7 +95,7 @@ if args.alg == "feddyn":
     trainer = FedDynSerialClientTrainer(model, args.total_client, cuda=True)
     trainer.setup_optim(args.epochs, args.batch_size, args.lr, args.alpha)
 
-mnist = PathologicalMNIST(root='./datasets/mnist/', path="./datasets/mnist/pathmnist", num_clients=args.total_client, shards=200)
+mnist = PathologicalMNIST(root='./datasets/mnist/', path="./datasets/mnist/pathmnist", num_clients=args.total_client, shards=200, preprocess=True)
 # mnist = PartitionedMNIST(root='./datasets/mnist/',
 #                          path="./datasets/mnist/fedmnist_iid",
 #                          num_clients=args.total_client,
