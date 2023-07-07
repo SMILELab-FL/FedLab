@@ -58,7 +58,7 @@ class SyncServerHandler(ServerHandler):
         super(SyncServerHandler, self).__init__(model, cuda, device)
 
         self._LOGGER = Logger() if logger is None else logger
-        assert sample_ratio >= 0.0 and sample_ratio <= 1.0
+        assert 0.0 <= sample_ratio <= 1.0
 
         # basic setting
         self.num_clients = num_clients
