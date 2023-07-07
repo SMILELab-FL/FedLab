@@ -1,5 +1,6 @@
 import torch
 import tqdm
+from tqdm import *
 from copy import deepcopy
 
 from .basic_server import SyncServerHandler
