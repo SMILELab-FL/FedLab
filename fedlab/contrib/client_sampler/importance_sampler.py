@@ -1,4 +1,4 @@
-from base_sampler import FedSampler
+from .base_sampler import FedSampler
 import numpy as np
 
 

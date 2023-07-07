@@ -1,9 +1,11 @@
 import torch
 import numpy as np
-from utils_algorithms import MinNormSolver
-from fedlab.utils.aggregator import Aggregators
-from fedlab.utils.serialization import SerializationTool
-from fedlab.contrib.algorithm.basic_server import SyncServerHandler
+from .utils_algorithms import MinNormSolver
+
+from .basic_server import SyncServerHandler
+from ...utils.aggregator import Aggregators
+from ...utils.serialization import SerializationTool
+
 
 
 class FedMGDAServerHandler(SyncServerHandler):

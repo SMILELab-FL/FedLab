@@ -1,11 +1,12 @@
 import torch
 from torch import nn
 from tqdm import tqdm
-from fedlab.utils.functional import evaluate, setup_seed, AverageMeter
-from fedlab.utils.serialization import SerializationTool
-from fedlab.utils.aggregator import Aggregators
-from fedlab.contrib.algorithm.fedavg import FedAvgSerialClientTrainer, FedAvgServerHandler
 from torch.utils.data import DataLoader
+
+from ...utils.functional import evaluate, setup_seed, AverageMeter
+from ...utils.serialization import SerializationTool
+from ...utils.aggregator import Aggregators
+from ...contrib.algorithm.fedavg import FedAvgSerialClientTrainer, FedAvgServerHandler
 
 
 class FedOptServerHandler(FedAvgServerHandler):
