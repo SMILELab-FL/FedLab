@@ -36,6 +36,7 @@ class SyncServerHandler(ServerHandler):
     Args:
         model (torch.nn.Module): model trained by federated learning.
         global_round (int): stop condition. Shut down FL system when global round is reached.
+        num_clients (int): number of clients in FL.
         sample_ratio (float): the result of ``sample_ratio * num_clients`` is the number of clients for every FL round.
         cuda (bool): use GPUs or not. Default: ``False``.
         device (str, optional): assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
@@ -47,6 +48,7 @@ class SyncServerHandler(ServerHandler):
         self,
         model: torch.nn.Module,
         global_round: int,
+        num_clients: int,
         sample_ratio: float,
         cuda: bool = False,
         device: str = None,
@@ -59,7 +61,7 @@ class SyncServerHandler(ServerHandler):
         assert sample_ratio >= 0.0 and sample_ratio <= 1.0
 
         # basic setting
-        self.num_clients = 0
+        self.num_clients = num_clients
         self.sample_ratio = sample_ratio
         self.sampler = sampler
 
@@ -91,6 +93,9 @@ class SyncServerHandler(ServerHandler):
     # @property
     # def num_clients_per_round(self):
     #     return max(1, int(self.sample_ratio * self.num_clients))
+
+    # def setup_optim(self, num_clients):
+    #     self.num_clients = num_clients
 
     def sample_clients(self, num_to_sample=None):
         """Return a list of client rank indices selected randomly. The client ID is from ``0`` to
@@ -154,6 +159,7 @@ class AsyncServerHandler(ServerHandler):
     Args:
         model (torch.nn.Module): Global model in server
         global_round (int): stop condition. Shut down FL system when global round is reached.
+        num_clients (int): number of clients in FL.
         cuda (bool): Use GPUs or not.
         device (str, optional): Assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
         logger (Logger, optional): Object of :class:`Logger`.
@@ -163,13 +169,14 @@ class AsyncServerHandler(ServerHandler):
         self,
         model: torch.nn.Module,
         global_round: int,
+        num_clients: int,
         cuda: bool = False,
         device: str = None,
         logger: Logger = None,
     ):
         super(AsyncServerHandler, self).__init__(model, cuda, device)
         self._LOGGER = Logger() if logger is None else logger
-        self.num_clients = 0
+        self.num_clients = num_clients
         self.round = 0
         self.global_round = global_round
 
