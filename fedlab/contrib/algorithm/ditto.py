@@ -43,7 +43,7 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
         global_model = payload[0]
         for id in tqdm(id_list):
             # self._LOGGER.info("Local process is running. Training client {}".format(id))
-            train_loader = self.dataset.get_data_loader(id, batch_size=self.args.batch_size)
+            train_loader = self.dataset.get_dataloader(id, batch_size=self.batch_size)
             self.local_models[id], glb_model  = self.train(global_model, self.local_models[id], train_loader)
             self.ditto_gmodels.append(deepcopy(glb_model))
 
@@ -57,10 +57,10 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
         criterion = torch.nn.CrossEntropyLoss()
         SerializationTool.deserialize_model(self._model, global_model_parameters)
         self._model.train()
-        for ep in range(self.args.epochs):
+        for ep in range(self.epochs):
             for data, label in train_loader:
                 if self.cuda:
-                    data, label = data.cuda(self.gpu), label.cuda(self.gpu)
+                    data, label = data.cuda(self.device), label.cuda(self.device)
 
                 preds = self._model(data)
                 loss = criterion(preds,label)
@@ -75,13 +75,13 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
 
         SerializationTool.deserialize_model(self._model, local_model_parameters)
         criterion = torch.nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(self._model.parameters(), lr=self.args.lr)
+        optimizer = torch.optim.SGD(self._model.parameters(), lr=self.lr)
 
         self._model.train()
-        for ep in range(self.args.epochs):
+        for ep in range(self.epochs):
             for data, label in train_loader:
                 if self.cuda:
-                    data, label = data.cuda(self.gpu), label.cuda(self.gpu)
+                    data, label = data.cuda(self.device), label.cuda(self.device)
 
                 preds = self._model(data)
                 l1 = criterion(preds,label)
@@ -89,7 +89,8 @@ class DittoSerialClientTrainer(SGDSerialClientTrainer):
                 for w0, w in zip(frz_model.parameters(), self._model.parameters()):
                     l2 += torch.sum(torch.pow(w - w0, 2))
 
-                loss = l1 + 0.5 * self.args.mu * l2
+                # loss = l1 + 0.5 * self.args.mu * l2
+                loss = l1 + 0.5 * 0.1 * l2  # fedprox 的 mu
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
