@@ -65,7 +65,8 @@ def add_dynamic_callback_normal(app, section, figure_id):
                 os.makedirs(cached_path, exist_ok=True)
                 if os.path.exists(cached_file):
                     return pickle.load(open(cached_file, 'rb'))
-                fig = dic[fig_id]['func'](selected_client)
+                selected_colors = [viewModel.get_color(id) for id in selected_client]
+                fig = dic[fig_id]['func'](selected_client, selected_colors)
                 pickle.dump(fig, open(cached_file, 'wb'))
                 return fig
         return None
@@ -91,7 +92,8 @@ def add_dynamic_callback_slider(app, section, figure_id):
                 os.makedirs(cached_path, exist_ok=True)
                 if os.path.exists(cached_file):
                     return pickle.load(open(cached_file, 'rb'))
-                fig = dic[fig_id]['func'](value, selected_client)
+                selected_colors = [viewModel.get_color(id) for id in selected_client]
+                fig = dic[fig_id]['func'](value, selected_client, selected_colors)
                 pickle.dump(fig, open(cached_file, 'wb'))
                 return fig
         return None

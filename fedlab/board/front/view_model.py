@@ -26,7 +26,7 @@ class ViewModel:
         self.dir = dir
         self.colors = {id: random_color(int(id)) for id in self.get_client_ids()}
         self.setup = True
-        cache = diskcache.Cache(path.join(dir, "cache/"))
+        cache = diskcache.Cache(path.join(dir, "dash-cache/"))
         self.background_callback_manager = DiskcacheManager(cache)
 
     def get_color(self, client_id):
@@ -100,17 +100,12 @@ class ViewModel:
         return encode_int_array(client_indexes)
 
     def client_param_tsne(self, round: int, client_ids: list[str]):
-        if not os.path.exists(os.path.join(self.dir, f'params/raw/rd{round}.pkl')):
+        if not os.path.exists(os.path.join(self.dir, f'log/params/raw/rd{round}.pkl')):
             return None
         if len(client_ids) < 2:
             return None
         raw_params = {str(id): param for id, param in
-                      pickle.load(open(os.path.join(self.dir, f'params/raw/rd{round}.pkl'), 'rb')).items()}
-        # fn = self.encode_client_ids(client_ids)
-        # target_file = os.path.join(self.dir, f'params/tsne/rd{round}/{fn}.pkl')
-        # if os.path.exists(target_file):
-        #     return pickle.load(open(target_file, 'rb'))
-        os.makedirs(os.path.join(self.dir, f'params/tsne/rd{round}/'), exist_ok=True)
+                      pickle.load(open(os.path.join(self.dir, f'log/params/raw/rd{round}.pkl'), 'rb')).items()}
         params_selected = [raw_params[id][0] for id in client_ids if id in raw_params.keys()]
         if len(params_selected) < 1:
             return None
@@ -118,7 +113,6 @@ class ViewModel:
         params_tsne = TSNE(n_components=2, learning_rate=100, random_state=501,
                            perplexity=min(30.0, len(params_selected) - 1)).fit_transform(
             params_selected)
-        # pickle.dump(params_tsne, open(target_file, 'wb+'))
         return params_tsne
 
     def get_client_dataset_tsne(self, client_ids: list, type: str, size):
@@ -126,12 +120,6 @@ class ViewModel:
             return None
         if not self.delegate:
             return None
-        # client_indexes = self.client_ids2indexes(client_ids)
-        # fn = encode_int_array(client_indexes)
-        # target_file = os.path.join(self.dir, f'data/tsne/{fn}.pkl')
-        # if os.path.exists(target_file):
-        #     return pickle.load(open(target_file, 'rb'))
-        os.makedirs(os.path.join(self.dir, f'data/tsne/'), exist_ok=True)
         raw = []
         client_range = {}
         for client_id in client_ids:
@@ -142,17 +130,16 @@ class ViewModel:
         tsne = TSNE(n_components=3, learning_rate=100, random_state=501,
                     perplexity=min(30.0, len(raw) - 1)).fit_transform(raw)
         tsne = {cid: tsne[s:e] for cid, (s, e) in client_range.items()}
-        # pickle.dump(tsne, open(target_file, 'wb+'))
         return tsne
 
     def get_client_data_report(self, clients_ids: list, type: str):
         res = {}
         for client_id in clients_ids:
-            target_file = os.path.join(self.dir, f'data/partition/{client_id}.pkl')
+            target_file = os.path.join(self.dir, f'cache/data/partition/{client_id}.pkl')
             if os.path.exists(target_file):
                 res[client_id] = pickle.load(open(target_file, 'rb'))
             else:
-                os.makedirs(os.path.join(self.dir, f'data/partition/'), exist_ok=True)
+                os.makedirs(os.path.join(self.dir, f'cache/data/partition/'), exist_ok=True)
                 if self.delegate:
                     res[client_id] = self.delegate.read_client_label(client_id, type=type)
                 else:
@@ -163,9 +150,9 @@ class ViewModel:
     def get_overall_metrics(self):
         main_name = ""
         metrics = []
-        if not os.path.exists(path.join(self.dir, f'performs/overall')):
+        if not os.path.exists(path.join(self.dir, f'log/performs/overall')):
             return metrics, main_name
-        log_lines = open(path.join(self.dir, f'performs/overall')).readlines()
+        log_lines = open(path.join(self.dir, f'log/performs/overall')).readlines()
         if len(log_lines) > 1:
             obj: dict[str, Any] = json.loads(log_lines[-1])
             main_name = obj['main_name']
@@ -175,9 +162,9 @@ class ViewModel:
     def get_client_metrics(self):
         main_name = ""
         metrics = []
-        if not os.path.exists(path.join(self.dir, f'performs/client')):
+        if not os.path.exists(path.join(self.dir, f'log/performs/client')):
             return metrics, main_name
-        log_lines = open(path.join(self.dir, f'performs/client')).readlines()
+        log_lines = open(path.join(self.dir, f'log/performs/client')).readlines()
         if len(log_lines) > 1:
             obj: dict[str, dict[str:Any]] = json.loads(log_lines[-1])
             if len(obj.keys()) > 0:
@@ -189,9 +176,9 @@ class ViewModel:
     def get_overall_performance(self):
         res_all = []
         main_name = ""
-        if not os.path.exists(path.join(self.dir, f'performs/overall')):
+        if not os.path.exists(path.join(self.dir, f'log/performs/overall')):
             return res_all, main_name
-        for line in open(path.join(self.dir, f'performs/overall')).readlines():
+        for line in open(path.join(self.dir, f'log/performs/overall')).readlines():
             obj = json.loads(line)
             main_name = obj['main_name']
             res_all.append(obj)
@@ -200,9 +187,9 @@ class ViewModel:
     def get_client_performance(self, client_ids: list[str]):
         res = {}
         main_name = ""
-        if not os.path.exists(path.join(self.dir, f'performs/client')):
+        if not os.path.exists(path.join(self.dir, f'log/performs/client')):
             return res, main_name
-        for line in open(path.join(self.dir, f'performs/client')).readlines():
+        for line in open(path.join(self.dir, f'log/performs/client')).readlines():
             obj = json.loads(line)
             for client_id in client_ids:
                 main_name = obj[client_id]['main_name']

@@ -3,7 +3,6 @@ from typing import List
 
 import torch
 
-from fedlab.contrib.algorithm import SyncServerHandler
 from fedlab.contrib.client_sampler.base_sampler import FedSampler
 from fedlab.contrib.client_sampler.uniform_sampler import RandomSampler
 from fedlab.core.server.handler import ServerHandler

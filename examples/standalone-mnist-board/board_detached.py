@@ -1,3 +1,3 @@
-from fedlab.visual import fedboard
+from fedlab.board import fedboard
 
-fedboard.start(port=8040)
+fedboard.start_offline(port=8040)

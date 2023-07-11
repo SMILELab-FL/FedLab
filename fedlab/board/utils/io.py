@@ -5,8 +5,8 @@ from os import path
 
 
 def _clear_log(dir):
-    shutil.rmtree(path.join(dir, f'performs/'), ignore_errors=True)
-    shutil.rmtree(path.join(dir, f'params/'), ignore_errors=True)
+    shutil.rmtree(path.join(dir, f'log/'), ignore_errors=True)
+    shutil.rmtree(path.join(dir, f'cache/'), ignore_errors=True)
 
 
 def _update_meta_file(file_root: str, section: str, dct: dict):
