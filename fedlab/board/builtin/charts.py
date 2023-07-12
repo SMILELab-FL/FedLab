@@ -1,14 +1,16 @@
-from fedlab.board.front.app import viewModel, _add_section, _add_chart
 import plotly.graph_objects as go
 
+from fedlab.board import fedboard
+from fedlab.board.builtin.renderer import client_param_tsne, get_client_dataset_tsne, get_client_data_report
 
-def _add_built_in_charts():
-    _add_section('dataset', 'normal')
-    _add_section('parameters', 'slider')
 
-    @_add_chart(section='parameters', figure_name='figure_tsne', span=12)
+def add_built_in_charts():
+    fedboard.add_section('dataset', 'normal')
+    fedboard.add_section('parameters', 'slider')
+
+    @fedboard.add_chart(section='parameters', figure_name='figure_tsne', span=1.0)
     def update_tsne_figure(value, selected_client, selected_colors):
-        tsne_data = viewModel.client_param_tsne(value, selected_client)
+        tsne_data = client_param_tsne(value, selected_client)
         if tsne_data is not None:
             data = []
             for idx, cid in enumerate(selected_client):
@@ -23,9 +25,9 @@ def _add_built_in_charts():
             tsne_figure = []
         return tsne_figure
 
-    @_add_chart(section='dataset', figure_name='figure_client_classes', span=6)
+    @fedboard.add_chart(section='dataset', figure_name='figure_client_classes', span=0.5)
     def update_data_classes(selected_client, selected_colors):
-        client_targets = viewModel.get_client_data_report(selected_client, type='train')
+        client_targets = get_client_data_report(selected_client, type='train')
         class_sizes: dict[str, dict[str, int]] = {}
         for cid, targets in client_targets.items():
             for y in targets:
@@ -44,9 +46,9 @@ def _add_built_in_charts():
         client_classes.update_layout(barmode='stack', margin=dict(l=48, r=48, b=64, t=86))
         return client_classes
 
-    @_add_chart(section='dataset', figure_name='figure_client_sizes', span=6)
+    @fedboard.add_chart(section='dataset', figure_name='figure_client_sizes', span=0.5)
     def update_data_sizes(selected_client, selected_colors):
-        client_targets = viewModel.get_client_data_report(selected_client, type='train')
+        client_targets = get_client_data_report(selected_client, type='train')
         client_sizes = go.Figure(
             data=[go.Bar(x=[f'Client{n}' for n, _ in client_targets.items()],
                          y=[len(ce) for _, ce in client_targets.items()],
@@ -56,9 +58,9 @@ def _add_built_in_charts():
         client_sizes.update_layout(margin=dict(l=48, r=48, b=64, t=86))
         return client_sizes
 
-    @_add_chart(section='dataset', figure_name='figure_client_data_tsne', span=12)
+    @fedboard.add_chart(section='dataset', figure_name='figure_client_data_tsne', span=1.0)
     def update_data_tsne_value(selected_client, selected_colors):
-        tsne_data = viewModel.get_client_dataset_tsne(selected_client, "train", 200)
+        tsne_data = get_client_dataset_tsne(selected_client, "train", 200)
         if tsne_data is not None:
             data = []
             for idx, cid in enumerate(selected_client):

@@ -5,6 +5,7 @@ from dash import html
 from dash_iconify import DashIconify
 
 OVERVIEW_HEIGHT = 300
+OVERVIEW_WIDTH = 290
 card_state = dmc.Card(
     children=[
         dcc.Interval(
@@ -49,7 +50,7 @@ card_state = dmc.Card(
     withBorder=True,
     shadow="lg",
     radius="lg",
-    style={"width": 270, 'height': OVERVIEW_HEIGHT},
+    style={"width": OVERVIEW_WIDTH, 'height': OVERVIEW_HEIGHT},
 )
 
 card_overall_performance = dmc.Card(
@@ -59,9 +60,9 @@ card_overall_performance = dmc.Card(
     style={'height': OVERVIEW_HEIGHT},
     children=[
         dmc.Group(children=[
-            dmc.Text("Overall Performance", id='name_overall', size=16, mb='md'),
+            dmc.Text("Overall Performance", id='name_overall', size=16),
             dmc.Select(id='select_overall_metrics', size='xs', clearable=False, value="main")]
-            , position="apart", style={"height": 40}),
+            , position="apart"),
         dmc.Space(h='md'),
         dcc.Graph(id='figure_overall', style={"height": "80%"},
                   config={'autosizable': False, 'displaylogo': False})
@@ -70,14 +71,11 @@ card_overall_performance = dmc.Card(
 
 cyto_graph = dmc.Card(
     children=[
-        # html.H5("显示"),
         dmc.ChipGroup(
             [dmc.Chip(x['label'], value=x['value'], size='xs') for x in [
                 {"label": "COSE", "value": "cose"},
                 {"label": "Cent", "value": "concentric"},
-                # {"label": "环状", "value": "circle"},
                 {"label": "Breadth", "value": "breadthfirst"},
-                # {"label": "随机", "value": "random"},
                 {"label": "Grid", "value": "grid"},
             ]],
             id="select_cyto_layout",
@@ -98,20 +96,19 @@ cyto_graph = dmc.Card(
     style={'height': OVERVIEW_HEIGHT},
 )
 
-
 page_performance = html.Div(
     children=[
         dmc.Group(children=[
             dmc.Text("Client Performance", size=17, ml='md'),
-            dmc.Select(id='select_client_metrics', size='sm', value="main", mb=0, mt='md', ml='md')]
-            , style={"height": 60}, align='center'),
+            dmc.Select(id='select_client_metrics', size='sm', value="main", mb=0, ml='md')]
+            , style={"height": 60}, align='center', mt='md'),
         dmc.Space(h='md'),
         dcc.Graph(id='figure_client_perform',
                   config={'displaylogo': False})
     ]
 )
 selection = html.Div(
-    style={'width': 260},
+    style={'width': OVERVIEW_WIDTH - 16},
     children=[dmc.Text('Select Clients', size=18),
               dmc.Space(h='md'),
               dmc.Grid(
@@ -125,14 +122,16 @@ selection = html.Div(
                           dmc.ActionIcon(
                               DashIconify(icon='iconoir:list-select', width=24),
                               id="client_selection_check",
-                              color="blue", variant="light", size=32, mr='md', mb='md'),
+                              color="blue", variant="light", size=32, mr='sm'),
                           span='content')], mb='sm', align='center'),
               dmc.ChipGroup(
                   [],
                   id="client_selection_ms",
                   value=[],
+                  mr='xs',
+                  mb='lg',
                   multiple=True,
-                  mah=400,
+                  mah=100,
               )
               ])
 
@@ -150,7 +149,7 @@ def _gen_charts_grid(section, charts_config):
 
 def build_normal_charts(section, charts):
     grids = _gen_charts_grid(section, charts)
-    return dmc.Grid(grids)
+    return dmc.Grid(grids,mt='md')
 
 
 def build_slider_charts(section, charts):
@@ -169,9 +168,9 @@ def build_slider_charts(section, charts):
                     ml='sm',
                     min=1,
                     max=1,
-                    style={'width': '50%', 'height': 60}
+                    style={'width': '70%', 'height': 60}
                 )],
-                mt=5
+                mt='md'
                 , style={"height": 60, "width": "100%"}, align='center'),
             dmc.Grid(grids)]
     )
