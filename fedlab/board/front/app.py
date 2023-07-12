@@ -18,16 +18,16 @@ _section_types: dict[str:str] = {}
 _charts: dict[str:dict[str, dict]] = {}
 
 
-def create_app(log_dir, delegate=None):
-    viewModel.init(log_dir, delegate)
+def create_app(log_dir):
+    viewModel.init(log_dir)
     app = Dash(__name__, title="FedBoard", update_title=None, assets_url_path='assets')
     return app
 
 
-def _add_chart(section=None, figure_name=None, span=6):
+def _add_chart(section=None, figure_name=None, span=0.5):
     def ac(func):
         _charts.setdefault(section, {})
-        _charts[section][figure_name] = {'func': func, 'name': figure_name, 'span': span}
+        _charts[section][figure_name] = {'func': func, 'name': figure_name, 'span': int(12 * span)}
         return func
 
     return ac
@@ -99,10 +99,10 @@ def add_dynamic_callback_slider(app, section, figure_id):
         return None
 
 
-def set_up_layout(app: Dash):
-    tabs = [dmc.Tab('performance', value='performance')]
+def _set_up_layout(app: Dash):
+    tabs = [dmc.Tab('performance', value='performance', style={"font-size": 17})]
     for sec in _charts.keys():
-        tabs.append(dmc.Tab(sec, value=sec))
+        tabs.append(dmc.Tab(sec, value=sec, style={"font-size": 17}))
     tablist = dmc.TabsList(tabs)
     tabs_pages = [tablist, dmc.TabsPanel(page_performance, value="performance")]
     for section, type in _section_types.items():
@@ -127,22 +127,21 @@ def set_up_layout(app: Dash):
                                    children=[
                                        dmc.Col(selection, span='content'),
                                        dmc.Divider(orientation='vertical', mt='md', mb='md', mr='lg'),
-                                       dmc.Col(tabs, span='auto')]
+                                       dmc.Col(tabs, span='auto', ml='xs')]
                                )
                            ])
 
     main = dmc.Grid([dmc.Col(card_state, span='content'), dmc.Col(
-        cyto_graph, span=5), dmc.Col(card_overall_performance, span='auto')
+        cyto_graph, span='auto'), dmc.Col(card_overall_performance, span=5)
                         , dmc.Col(bottom_page, span=12)])
     app.layout = dmc.Container(
-        [dmc.Header(
-            height=100, children=[dmc.Grid(
-                dmc.Col(dmc.Image(src='assets/FedLab-logo.svg', height=56, fit="contain", mt='lg'),
-                        span="content"))], style={"backgroundColor": "#ffffff"}, mb='lg'
-        ), main], fluid=True)
+        [dmc.Header(height=110, children=[dmc.Grid(
+            dmc.Col(dmc.Image(src='assets/FedLab-logo.svg', height=64, fit="contain", mt='lg'),
+                    span=3))], style={"backgroundColor": "#ffffff"}, mb='lg'
+                    ), main], fluid=True)
 
 
-def add_callbacks(app: Dash):
+def _add_callbacks(app: Dash):
     @app.callback(
         Output("cytoscape", "elements"),
         Output("cytoscape", "layout"),

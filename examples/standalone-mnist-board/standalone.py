@@ -26,6 +26,7 @@ parser.add_argument("--sample_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--epochs", type=int, default=1)
 parser.add_argument("--lr", type=float, default=0.01)
+parser.add_argument("--port", type=int, default=8040)
 
 args = parser.parse_args()
 
@@ -44,9 +45,11 @@ trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 # main
 pipeline = StandalonePipeline(handler, trainer)
 
-
 # set up FedLabBoard
-# define delegate for additional dataset analysis
+fedboard.setup(max_round=args.com_round, client_ids=[str(i) for i in range(args.total_client)])
+
+
+# To enable builtin figures, a dataset-reading delegate is required
 class mDelegate(FedBoardDelegate):
     def sample_client_data(self, client_id: str, type: str, amount: int) -> tuple[list[Any], list[Any]]:
         data = []
@@ -69,13 +72,13 @@ class mDelegate(FedBoardDelegate):
 
 
 delegate = mDelegate()
-fedboard.setup(delegate, max_round=args.com_round, client_ids=[str(i) for i in range(args.total_client)])
+fedboard.enable_builtin_charts(delegate)
 
 # Add diy chart
 fedboard.add_section(section='diy', type='normal')
 
 
-@fedboard.add_chart(section='diy', figure_name='2d-dataset-tsne', span=12)
+@fedboard.add_chart(section='diy', figure_name='2d-dataset-tsne', span=1.0)
 def diy_chart(selected_clients, selected_colors):
     """
     Args:
@@ -107,6 +110,6 @@ def diy_chart(selected_clients, selected_colors):
     return tsne_figure
 
 
-# start experiment along with FedBoard
-with RuntimeFedBoard(port=8040):
+# Start experiment along with FedBoard
+with RuntimeFedBoard(port=args.port):
     pipeline.main()
