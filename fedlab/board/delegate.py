@@ -7,7 +7,7 @@ class FedBoardDelegate:
         pass
 
     @abstractmethod
-    def read_client_label(self, client_id: str, type: str) -> list[Any]:
+    def read_client_label(self, client_id: str, client_rank: str, type: str) -> list[Any]:
         """
 
         Args:
@@ -21,5 +21,5 @@ class FedBoardDelegate:
         pass
 
     @abstractmethod
-    def sample_client_data(self, client_id: str, type: str, amount: int) -> list[tuple[Any, Any]]:
+    def sample_client_data(self, client_id: str, client_rank: str, type: str, amount: int) -> list[tuple[Any, Any]]:
         pass

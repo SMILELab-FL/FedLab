@@ -21,6 +21,7 @@ _charts: dict[str:dict[str, dict]] = {}
 def create_app(log_dir):
     viewModel.init(log_dir)
     app = Dash(__name__, title="FedBoard", update_title=None, assets_url_path='assets')
+    app._favicon = 'favicon.png'
     return app
 
 
@@ -66,7 +67,7 @@ def add_dynamic_callback_normal(app, section, figure_id):
                 if os.path.exists(cached_file):
                     return pickle.load(open(cached_file, 'rb'))
                 selected_colors = [viewModel.get_color(id) for id in selected_client]
-                fig = dic[fig_id]['func'](selected_client, selected_colors)
+                fig = dic[fig_id]['func'](selected_client, selected_colors, viewModel.client_ids2ranks(selected_client))
                 pickle.dump(fig, open(cached_file, 'wb'))
                 return fig
         return None
@@ -93,7 +94,8 @@ def add_dynamic_callback_slider(app, section, figure_id):
                 if os.path.exists(cached_file):
                     return pickle.load(open(cached_file, 'rb'))
                 selected_colors = [viewModel.get_color(id) for id in selected_client]
-                fig = dic[fig_id]['func'](value, selected_client, selected_colors)
+                fig = dic[fig_id]['func'](value, selected_client, selected_colors,
+                                          viewModel.client_ids2ranks(selected_client))
                 pickle.dump(fig, open(cached_file, 'wb'))
                 return fig
         return None
@@ -152,20 +154,20 @@ def _add_callbacks(app: Dash):
         layout = {}
         if type == 'cose':
             layout = {
-                'idealEdgeLength': 600,
+                'idealEdgeLength': 690,
                 'refresh': 20,
                 'fit': True,
-                'padding': 30,
-                'randomize': True,
-                'animate': False,
+                'padding': 20,
+                'randomize': False,
+                'animate': True,
                 'componentSpacing': 200,
                 'nodeRepulsion': 100,
                 'nodeOverlap': 1000,
-                'edgeElasticity': 200,
-                'nestingFactor': 9,
-                'gravity': 80,
+                'edgeElasticity': 100,
+                'nestingFactor': 24,
+                'gravity': 200,
                 'numIter': 1000,
-                'initialTemp': 300,
+                'initialTemp': 900,
                 'coolingFactor': 0.99,
                 'minTemp': 1.0
             }
@@ -198,9 +200,10 @@ def _add_callbacks(app: Dash):
         overall_perform, main_name = viewModel.get_overall_performance()
         if selected_metric == 'main':
             selected_metric = main_name
-        performance = [obj[selected_metric] for obj in overall_perform]
+        performance = [obj[selected_metric] for round, obj in overall_perform]
+        rounds = [round for round, obj in overall_perform]
         overall_perform_figure = go.Figure(data=go.Scatter(
-            x=[i + 1 for i in range(len(performance))], y=performance,
+            x=rounds, y=performance,
             mode='lines+markers'))
         overall_perform_figure.update_layout(
             autosize=True,
@@ -208,11 +211,11 @@ def _add_callbacks(app: Dash):
             paper_bgcolor="white",
         )
         overall_perform_title = f'Overall Performance: {(performance[-1] if len(performance) > 0 else 0):.2f}'
-        metric_names = []
-        if len(overall_perform) > 0:
-            for metric in overall_perform[-1].keys():
-                if metric != 'main_name':
-                    metric_names.append(metric)
+        # metric_names = []
+        # if len(overall_perform) > 0:
+        #     for metric in overall_perform[-1][1].keys():
+        #         if metric != 'main_name':
+        #             metric_names.append(metric)
         return overall_perform_figure, overall_perform_title
 
     @app.callback(Output("figure_client_perform", "figure"),
@@ -226,12 +229,11 @@ def _add_callbacks(app: Dash):
         if selected_metric == 'main':
             selected_metric = main_name
         figures = []
-        if len(performs) < len(selected_clients):
-            raise PreventUpdate
-        for client_id in selected_clients:
-            performance = [obj[selected_metric] for obj in performs[client_id]]
+        for client_id, rd_pf in performs.items():
+            performance = [obj[selected_metric] for _, obj in rd_pf]
+            rounds = [rd for rd, obj in rd_pf]
             figures.append(go.Scatter(
-                x=[i + 1 for i in range(len(performance))], y=performance,
+                x=rounds, y=performance,
                 mode='lines+markers',
                 marker=dict(color=viewModel.get_color(client_id), size=10),
                 name=f'Client{client_id}'))
