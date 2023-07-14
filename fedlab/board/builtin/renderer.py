@@ -4,9 +4,9 @@ from sklearn.manifold import TSNE
 from fedlab.board import fedboard
 
 
-def client_param_tsne(round: int, client_ids: list[str], client_ranks: list[str]):
+def client_param_tsne(round: int, client_ids: list[str]):
     if len(client_ids) < 2:
-        return None
+        return None, None
     client_params = {}
     for role_id, params in fedboard.read_logged_obj_all_roles(round, 'client_params').items():
         for k, v in params.items():
@@ -15,7 +15,7 @@ def client_param_tsne(round: int, client_ids: list[str], client_ranks: list[str]
     params_selected = [raw_params[id] for id in client_ids if id in raw_params.keys()]
     id_existed = [id for id in client_ids if id in raw_params.keys()]
     if len(params_selected) <= 1:
-        return None
+        return None, None
     params_selected = torch.stack(params_selected)
     params_tsne = TSNE(n_components=2, learning_rate=100, random_state=501,
                        perplexity=min(30.0, len(params_selected) - 1)).fit_transform(

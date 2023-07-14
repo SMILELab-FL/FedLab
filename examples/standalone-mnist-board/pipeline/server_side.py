@@ -1,7 +1,24 @@
 import numpy as np
 
 from fedlab.board import fedboard
+from fedlab.contrib.algorithm import SyncServerHandler
+from fedlab.contrib.client_sampler.uniform_sampler import RandomSampler
 from fedlab.core.standalone import StandalonePipeline
+
+
+class ExampleHandler(SyncServerHandler):
+
+    def sample_clients(self, num_to_sample=None):
+        if self.sampler is None:
+            self.sampler = RandomSampler(self.num_clients)
+        # new version with built-in sampler
+        self.round_clients = max(1, int(self.sample_ratio * self.num_clients))
+        num_to_sample = self.round_clients if num_to_sample is None else num_to_sample
+        sampled = self.sampler.sample(num_to_sample)
+        self.round_clients = len(sampled)
+
+        assert self.num_clients_per_round == len(sampled)
+        return sorted(sampled)
 
 
 class ExamplePipeline(StandalonePipeline):
@@ -10,7 +27,7 @@ class ExamplePipeline(StandalonePipeline):
         round = 0
         while self.handler.if_stop is False:
             # server side
-            sampled_clients = self.handler.sample_clients(self.trainer.num_clients)
+            sampled_clients = self.handler.sample_clients()
             broadcast = self.handler.downlink_package
 
             # client side

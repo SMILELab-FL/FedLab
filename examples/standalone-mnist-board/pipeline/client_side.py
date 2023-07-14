@@ -1,6 +1,3 @@
-from copy import deepcopy
-
-import torch
 from tqdm import tqdm
 
 from fedlab.contrib.algorithm import SGDSerialClientTrainer

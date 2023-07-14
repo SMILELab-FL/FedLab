@@ -87,7 +87,6 @@ def register(id: str = None,
         _add_callbacks(_app)
 
 
-
 def enable_builtin_charts(delegate: FedBoardDelegate):
     """
     Enable builtin charts, including 'parameters' section and 'dataset' section.
@@ -262,10 +261,6 @@ def read_logged_obj_all_roles(round: int, type: str) -> dict[str:Any]:
 
 def get_all_roles():
     return get_role_ids(_dir)
-
-
-# def read_logged_obj_appended(type: str, name: str, sub_type: str = None):
-#     return _read_log_from_fs_appended(_dir, type=type, name=name, sub_type=sub_type)
 
 
 def read_cached_obj(type: str, sub_type: str, key: str, creator: callable):

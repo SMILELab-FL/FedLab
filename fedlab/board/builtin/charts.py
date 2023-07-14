@@ -10,7 +10,7 @@ def add_built_in_charts():
 
     @fedboard.add_chart(section='parameters', figure_name='figure_tsne', span=1.0)
     def update_tsne_figure(value, selected_client, selected_colors, selected_ranks):
-        tsne_data,id_existed = client_param_tsne(value, selected_client, selected_ranks)
+        tsne_data, id_existed = client_param_tsne(value, selected_client)
         if tsne_data is not None:
             data = []
             for idx, cid in enumerate(id_existed):
@@ -60,7 +60,7 @@ def add_built_in_charts():
 
     @fedboard.add_chart(section='dataset', figure_name='figure_client_data_tsne', span=1.0)
     def update_data_tsne_value(selected_client, selected_colors, selected_ranks):
-        tsne_data = get_client_dataset_tsne(selected_client, "train", 200,selected_ranks)
+        tsne_data = get_client_dataset_tsne(selected_client, "train", 200, selected_ranks)
         if tsne_data is not None:
             data = []
             for idx, cid in enumerate(selected_client):

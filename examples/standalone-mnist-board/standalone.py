@@ -10,8 +10,8 @@ sys.path.append("../../")
 torch.manual_seed(0)
 from fedlab.board import fedboard
 from fedlab.board.fedboard import RuntimeFedBoard
-from pipeline import ExamplePipeline
-from trainer import ExampleClientTrainer
+from pipeline.server_side import ExamplePipeline, ExampleHandler
+from pipeline.client_side import ExampleClientTrainer
 from fedlab.models.mlp import MLP
 from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 import plotly.graph_objects as go
@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser(description="Standalone training example")
 parser.add_argument("--total_client", type=int, default=50)
 parser.add_argument("--com_round", type=int, default=1000)
 
-parser.add_argument("--sample_ratio", type=float, default=1.0)
+parser.add_argument("--sample_ratio", type=float, default=0.5)
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--epochs", type=int, default=1)
 parser.add_argument("--lr", type=float, default=0.01)
@@ -34,7 +34,7 @@ args = parser.parse_args()
 model = MLP(784, 10)
 
 # server
-handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
+handler = ExampleHandler(model, args.com_round, args.sample_ratio)
 
 # client
 trainer = ExampleClientTrainer(model, args.total_client, cuda=False)
