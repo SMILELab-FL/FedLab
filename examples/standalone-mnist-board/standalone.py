@@ -1,21 +1,22 @@
 import argparse
 import sys
-from typing import Any
 
 import torch
 from sklearn.manifold import TSNE
 
+from fedlab.contrib.algorithm import SyncServerHandler
+
 sys.path.append("../../")
 torch.manual_seed(0)
 from fedlab.board import fedboard
-from fedlab.board.delegate import FedBoardDelegate
 from fedlab.board.fedboard import RuntimeFedBoard
-from handler import StandaloneSyncServerHandler
-from pipeline import StandalonePipeline
-from trainer import StandaloneSerialClientTrainer
+from pipeline import ExamplePipeline
+from trainer import ExampleClientTrainer
 from fedlab.models.mlp import MLP
 from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 import plotly.graph_objects as go
+from fedlab.board.utils.roles import ALL
+from board import ExampleDelegate
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
@@ -33,45 +34,24 @@ args = parser.parse_args()
 model = MLP(784, 10)
 
 # server
-handler = StandaloneSyncServerHandler(model, args.com_round, args.sample_ratio)
+handler = SyncServerHandler(model, args.com_round, args.sample_ratio)
 
 # client
-trainer = StandaloneSerialClientTrainer(model, args.total_client, cuda=False)
+trainer = ExampleClientTrainer(model, args.total_client, cuda=False)
 dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../datasets/mnist/", num_clients=args.total_client)
 dataset.preprocess()
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 
 # main
-pipeline = StandalonePipeline(handler, trainer)
+pipeline = ExamplePipeline(handler, trainer)
 
 # set up FedLabBoard
-fedboard.setup(max_round=args.com_round, client_ids=[str(i) for i in range(args.total_client)])
-
+fedboard.register(max_round=args.com_round, roles=ALL,
+                  client_ids=[str(i) for i in range(args.total_client)])
 
 # To enable builtin figures, a dataset-reading delegate is required
-class mDelegate(FedBoardDelegate):
-    def sample_client_data(self, client_id: str, type: str, amount: int) -> tuple[list[Any], list[Any]]:
-        data = []
-        label = []
-        for dt in dataset.get_dataloader(client_id, batch_size=amount, type=type):
-            x, y = dt
-            for x_p in x:
-                data.append(x_p)
-            for y_p in y:
-                label.append(y_p)
-            break
-        return data, label
-
-    def read_client_label(self, client_id: str, type: str) -> list[Any]:
-        res = []
-        for _, label in dataset.get_dataloader(client_id, batch_size=args.batch_size, type=type):
-            for y in label:
-                res.append(y.detach().cpu().item())
-        return res
-
-
-delegate = mDelegate()
+delegate = ExampleDelegate(dataset)
 fedboard.enable_builtin_charts(delegate)
 
 # Add diy chart
@@ -79,7 +59,7 @@ fedboard.add_section(section='diy', type='normal')
 
 
 @fedboard.add_chart(section='diy', figure_name='2d-dataset-tsne', span=1.0)
-def diy_chart(selected_clients, selected_colors):
+def diy_chart(selected_clients, selected_colors, selected_rank):
     """
     Args:
         selected_clients: selected client ids, ['1','2',...'124']
@@ -89,8 +69,8 @@ def diy_chart(selected_clients, selected_colors):
     """
     raw = []
     client_range = {}
-    for client_id in selected_clients:
-        data, label = delegate.sample_client_data(client_id, 'train', 100)
+    for client_id, rank in zip(selected_clients, selected_rank):
+        data, label = delegate.sample_client_data(client_id, rank, 'train', 100)
         client_range[client_id] = (len(raw), len(raw) + len(data))
         raw += data
     raw = torch.stack(raw).view(len(raw), -1)

@@ -1,22 +1,29 @@
 import inspect
-import json
 import logging
 import os
+import uuid
 from os import path
 from threading import Thread
 from typing import Any
 
 from dash import Dash
 
+from fedlab.board import utils
 from fedlab.board.builtin.charts import add_built_in_charts
 from fedlab.board.delegate import FedBoardDelegate
-from fedlab.board.front.app import viewModel, create_app,_set_up_layout, _add_chart, _add_section,_add_callbacks
-from fedlab.board.utils.io import _update_meta_file, _clear_log, _log_to_fs, _read_log_from_fs, _read_cached_from_fs, \
-    _cache_to_fs, _log_to_fs_append, _read_log_from_fs_appended
+from fedlab.board.front.app import viewModel, create_app, _set_up_layout, _add_chart, _add_section, _add_callbacks
+from fedlab.board.utils.io import _update_meta_file, _log_to_fs, _read_log_from_fs, _read_cached_from_fs, \
+    _cache_to_fs, _log_to_role_fs_append, get_role_ids, clear_log, clear_roles
+from fedlab.board.utils.roles import *
 
 _app: Dash | None = None
+_initialized = False
 _delegate: FedBoardDelegate | None = None
 _dir: str = ''
+_mode = 'standalone'
+_role_id: str = ''
+_roles: int = 3
+_rank = 0
 
 
 def get_delegate():
@@ -27,34 +34,58 @@ def get_log_dir():
     return _dir
 
 
-def setup(client_ids: list[str], max_round: int, name: str = None, log_dir: str = None):
+def register(id: str = None,
+             log_dir: str = None,
+             mode='standalone',
+             roles: int = 3,
+             process_rank: int = 0,
+             client_ids: list[str] = None,
+             max_round: int = None):
     """
-    Set up FedBoard
+    Register the process to FedBoard
     Args:
-        client_ids: List of client ids
-        max_round: Max communication round
-        name: Experiment name
+        id: Experiment id
         log_dir: Log directory
+        mode(str): Should be 'standalone', or 'distributed'
+            'standalone' for the experiment running on one machine, with multiple process perhaps
+            'distributed' for the experiment running on multiple machines, in this case 'board_machine' must be specified
+        process_rank: Process rank in the network
+        client_ids: If the role of this process is 'Client holder', then register its client ids
+        max_round: Max communication round
+
     """
-    meta_info = {
-        'name': name,
-        'max_round': max_round,
-        'client_ids': json.dumps(client_ids),
-    }
+    if not id:
+        id = str(uuid.uuid4().hex)
     if log_dir is None:
         calling_file = inspect.stack()[1].filename
         calling_directory = os.path.dirname(os.path.abspath(calling_file))
         log_dir = calling_directory
-    log_dir = path.join(log_dir, '.fedboard/')
-    _update_meta_file(log_dir, 'meta', meta_info)
-    _update_meta_file(log_dir, 'runtime', {'state': 'START', 'round': 0})
-    global _app
-    global _delegate
-    global _dir
-    _app = create_app(log_dir)
+    log_dir = path.join(log_dir, f'.fedboard/{id}/')
+    global _dir, _mode, _rank, _role_id, _roles
+    _mode = mode
     _dir = log_dir
-    _add_callbacks(_app)
-    _clear_log(log_dir)
+    _rank = process_rank
+    _roles = roles
+    _role_id = f'{_roles}-{str(os.getpid())}-{process_rank}'
+    if is_server(_roles):
+        clear_log(log_dir)
+        clear_roles(log_dir)
+        _update_meta_file(_dir, 'runtime', {'state': 'START', 'round': 0})
+    utils.io.register_role(_dir, _role_id)
+    if client_ids:
+        utils.io.register_client(_dir, _role_id, client_ids)
+    if max_round:
+        _update_meta_file(log_dir, 'meta', {'max_round': max_round})
+    if is_board_shower(_roles):
+        meta_info = {
+            'name': id,
+            'mode': mode,
+        }
+        _update_meta_file(log_dir, 'meta', meta_info)
+        global _app
+        _app = create_app(log_dir)
+        _add_callbacks(_app)
+
 
 
 def enable_builtin_charts(delegate: FedBoardDelegate):
@@ -65,48 +96,48 @@ def enable_builtin_charts(delegate: FedBoardDelegate):
         delegate (FedBoardDelegate): dataset-reading delegate
 
     """
+    if _dir is None:
+        logging.error('FedBoard hasn\'t been initialized!')
+        return
+    if _mode != 'standalone':
+        logging.error('Built-in charts are only supported in standalone mode')
+        return
     global _delegate
     _delegate = delegate
     add_built_in_charts()
 
 
-def start_offline(log_dir=None, port=8080):
+def start_offline(port=8080):
     """
     Start Fedboard offline (seperated from the experiment)
     Args:
-        log_dir: the experiment's log directory
         port: Which port will the board run in
     """
-    if log_dir is None:
-        calling_file = inspect.stack()[1].filename
-        calling_directory = os.path.dirname(os.path.abspath(calling_file))
-        log_dir = calling_directory
-    log_dir = path.join(log_dir, '.fedboard/')
-    add_built_in_charts()
-    global _app
-    _app = create_app(log_dir)
-    _add_callbacks(_app)
-    if _app is None:
+    if _dir is None:
         logging.error('FedBoard hasn\'t been initialized!')
         return
+    if not is_board_shower(_roles):
+        logging.error('This process cannot start FedBoard!')
+        return
     _set_up_layout(_app)
+    _update_meta_file(_dir, 'meta', {'port': port})
     _app.run(host='0.0.0.0', port=port, debug=False, dev_tools_ui=True, use_reloader=False)
 
 
 class RuntimeFedBoard():
 
     def __init__(self, port):
-        meta_info = {
-            'port': port,
-        }
-        _update_meta_file(_dir, 'meta', meta_info)
         self.port = port
 
     def _start_app(self):
-        if _app is None:
+        if _dir is None:
             logging.error('FedBoard hasn\'t been initialized!')
             return
+        if not is_board_shower(_roles):
+            logging.error('This process cannot start FedBoard!')
+            return
         _set_up_layout(_app)
+        _update_meta_file(_dir, 'meta', {'port': self.port})
         _app.run(host='0.0.0.0', port=self.port, debug=False, dev_tools_ui=True, use_reloader=False)
 
     def __enter__(self):
@@ -133,26 +164,33 @@ def log(round: int, metrics: dict[str, Any] = None, client_metrics: dict[str, di
     Returns:
 
     """
-    state = "RUNNING"
-    if round == viewModel.get_max_round():
-        state = 'DONE'
-    _update_meta_file(_dir, section='runtime', dct={'state': state, 'round': round})
+    if _dir is None:
+        logging.error('FedBoard hasn\'t been initialized!')
+        return
+
     for key, obj in kwargs.items():
-        _log_to_fs(_dir, type='params', sub_type=key, name=f'rd{round}', obj=obj)
-    if metrics:
-        if main_metric_name is None:
-            main_metric_name = list[metrics.keys()][0]
-        metrics['main_name'] = main_metric_name
-        _log_to_fs_append(_dir, type='performs', name='overall', obj=metrics)
-    if client_metrics:
+        _log_to_fs(_dir, _role_id, type='params', sub_type=key, name=f'rd{round}', obj=obj)
+
+    if is_server(_roles):
+        state = "RUNNING"
+        if round == viewModel.get_max_round():
+            state = 'DONE'
+        _update_meta_file(_dir, section='runtime', dct={'state': state, 'round': round})
+        if metrics:
+            if main_metric_name is None:
+                main_metric_name = next(iter(metrics))
+            metrics['main_name'] = main_metric_name
+            _log_to_role_fs_append(_dir, _role_id, section='performs', name='overall', round=round, obj=metrics)
+    if is_client_holder(_roles) and client_metrics:
         if client_main_metric_name is None:
             if main_metric_name:
                 client_main_metric_name = main_metric_name
             else:
-                client_main_metric_name = list(client_metrics[list(client_metrics.keys())[0]].keys())[0]
+                cd = client_metrics[next(iter(client_metrics))]
+                client_main_metric_name = next(iter(cd))
         for cid in client_metrics.keys():
             client_metrics[cid]['main_name'] = client_main_metric_name
-        _log_to_fs_append(_dir, type='performs', name='client', obj=client_metrics)
+        _log_to_role_fs_append(_dir, _role_id, section='performs', name='client', round=round, obj=client_metrics)
 
 
 def add_section(section: str, type: str):
@@ -166,6 +204,12 @@ def add_section(section: str, type: str):
     Returns:
 
     """
+    if _dir is None:
+        logging.error('FedBoard hasn\'t been initialized!')
+        return
+    if _mode != 'standalone':
+        logging.error('Additional charts are only supported in standalone mode')
+        return
     assert type in ['normal', 'slider']
     _add_section(section=section, type=type)
 
@@ -194,15 +238,34 @@ def add_chart(section=None, figure_name=None, span=0.5):
             return figure
 
     """
+    if _dir is None:
+        logging.error('FedBoard hasn\'t been initialized!')
+        return
+    if _mode != 'standalone':
+        logging.error('Additional charts are only supported in standalone mode')
+        return
     return _add_chart(section=section, figure_name=figure_name, span=span)
 
 
 def read_logged_obj(round: int, type: str):
-    return _read_log_from_fs(_dir, type='params', sub_type=type, name=f'rd{round}')
+    return _read_log_from_fs(_dir, _role_id, type='params', sub_type=type, name=f'rd{round}')
 
 
-def read_logged_obj_appended(type: str, name: str, sub_type: str = None):
-    return _read_log_from_fs_appended(_dir, type=type, name=name, sub_type=sub_type)
+def read_logged_obj_all_roles(round: int, type: str) -> dict[str:Any]:
+    res = {}
+    for role_id in get_all_roles():
+        obj = _read_log_from_fs(_dir, role_id, type='params', sub_type=type, name=f'rd{round}')
+        if obj:
+            res[role_id] = obj
+    return res
+
+
+def get_all_roles():
+    return get_role_ids(_dir)
+
+
+# def read_logged_obj_appended(type: str, name: str, sub_type: str = None):
+#     return _read_log_from_fs_appended(_dir, type=type, name=name, sub_type=sub_type)
 
 
 def read_cached_obj(type: str, sub_type: str, key: str, creator: callable):

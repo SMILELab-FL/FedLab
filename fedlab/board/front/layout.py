@@ -149,7 +149,7 @@ def _gen_charts_grid(section, charts_config):
 
 def build_normal_charts(section, charts):
     grids = _gen_charts_grid(section, charts)
-    return dmc.Grid(grids,mt='md')
+    return dmc.Grid(grids, mt='md')
 
 
 def build_slider_charts(section, charts):
