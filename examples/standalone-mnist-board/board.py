@@ -24,7 +24,7 @@ class ExampleDelegate(FedBoardDelegate):
 
     def read_client_label(self, client_id: str, client_rank: str, type: str) -> list[Any]:
         res = []
-        for _, label in self.dataset.get_dataloader(client_id, batch_size=args.batch_size, type=type):
+        for _, label in self.dataset.get_dataloader(client_id, batch_size=64, type=type):
             for y in label:
                 res.append(y.detach().cpu().item())
         return res
