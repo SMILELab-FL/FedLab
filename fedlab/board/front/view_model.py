@@ -60,7 +60,7 @@ class ViewModel:
                'style': {
                    'target-arrow-shape': 'triangle',
                    'target-arrow-color': '#505050',
-                   'line-color': '{}'.format('#505050'),
+                   'line-color': '{}'.format('#808080'),
                    'line-opacity': "30%",
                    'width': "5px",
                }},
