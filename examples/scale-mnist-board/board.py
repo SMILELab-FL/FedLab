@@ -43,4 +43,4 @@ class mDelegate(FedBoardDelegate):
 
 
 fedboard.enable_builtin_charts(mDelegate())
-fedboard.start_offline(port=args.port)
+fedboard.start(port=args.port)

@@ -106,7 +106,7 @@ def enable_builtin_charts(delegate: FedBoardDelegate):
     add_built_in_charts()
 
 
-def start_offline(port=8080):
+def start(port=8080):
     """
     Start Fedboard offline (seperated from the experiment)
     Args:
@@ -128,19 +128,19 @@ class RuntimeFedBoard():
     def __init__(self, port):
         self.port = port
 
-    def _start_app(self):
-        if _dir is None:
-            logging.error('FedBoard hasn\'t been initialized!')
-            return
-        if not is_board_shower(_roles):
-            logging.error('This process cannot start FedBoard!')
-            return
-        _set_up_layout(_app)
-        _update_meta_file(_dir, 'meta', {'port': self.port})
-        _app.run(host='0.0.0.0', port=self.port, debug=False, dev_tools_ui=True, use_reloader=False)
+    # def _start_app(self):
+    #     if _dir is None:
+    #         logging.error('FedBoard hasn\'t been initialized!')
+    #         return
+    #     if not is_board_shower(_roles):
+    #         logging.error('This process cannot start FedBoard!')
+    #         return
+    #     _set_up_layout(_app)
+    #     _update_meta_file(_dir, 'meta', {'port': self.port})
+    #     _app.run(host='0.0.0.0', port=self.port, debug=False, dev_tools_ui=True, use_reloader=False)
 
     def __enter__(self):
-        self.p1 = Thread(target=self._start_app, daemon=True)
+        self.p1 = Thread(target=start, daemon=True, args=[self.port])
         self.p1.start()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
