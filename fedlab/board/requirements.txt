@@ -1,0 +1,7 @@
+dash
+dash[diskcache]
+dash-mantine-components
+dash-core-components
+dash-cytoscape
+dash-html-components
+dash_iconify

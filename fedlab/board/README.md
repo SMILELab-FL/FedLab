@@ -6,6 +6,13 @@ Fedboard is a customizable visualization tool for Federated Learning
 
 # Quick Start
 
+## Install Dash
+
+```shell
+cd fedlab/board
+pip install -r requirements.txt
+```
+
 ## Set up
 
 First, register the process to FedBoard
@@ -55,7 +62,7 @@ fedboard.log(round=...,
   {client_id:{metric_name:metric_value}}
 
 Any other params will also be logged to the file system in the form of **key-values**, to load them during analysis,
-  use
+use
 
 ```python
 fedboard.read_logged_obj(round=12, 'client_params')
@@ -94,10 +101,12 @@ fedboard.enable_builtin_charts(delegate)
 Where `ExampleDelegate` implements several dataset-reading interfaces. More details in
 examples/standalone-mnist-board/board.py
 
-Note that, to enable the 'client parameters t-SNE' chart, all clients' parameters should be logged at every round, using a key = 'client_params'
+Note that, to enable the 'client parameters t-SNE' chart, all clients' parameters should be logged at every round, using
+a key = 'client_params'
+
 ```python
 fedboard.log(...,
-             client_params={'0': param0, '1':param1, ...})
+             client_params={'0': param0, '1': param1, ...})
 ```
 
 # Add DIY figures
