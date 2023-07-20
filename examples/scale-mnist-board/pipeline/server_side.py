@@ -37,7 +37,6 @@ class ExampleManager(SynchronousServerManager):
                     if self._handler.load(payload):
                         break
                 total_loss += payload[1].numpy()
-            # self._handler.evaluate()
             metric = {'loss': total_loss, 'nloss': -total_loss}
             fedboard.log(rd, metrics=metric)
             rd += 1
@@ -48,7 +47,6 @@ class ExampleHandler(SyncServerHandler):
     def sample_clients(self, num_to_sample=None):
         if self.sampler is None:
             self.sampler = RandomSampler(self.num_clients)
-        # new version with built-in sampler
         self.round_clients = max(1, int(self.sample_ratio * self.num_clients))
         sampled = self.sampler.sample(self.round_clients)
         self.round_clients = len(sampled)

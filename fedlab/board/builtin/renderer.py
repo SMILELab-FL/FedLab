@@ -8,7 +8,7 @@ def client_param_tsne(round: int, client_ids: list[str]):
     if len(client_ids) < 2:
         return None, None
     client_params = {}
-    for role_id, params in fedboard.read_logged_obj_all_roles(round, 'client_params').items():
+    for role_id, params in fedboard.read_logged_obj(round, 'client_params').items():
         for k, v in params.items():
             client_params[k] = v
     raw_params = {str(id): param for id, param in client_params.items()}
@@ -52,6 +52,6 @@ def get_client_data_report(clients_ids: list[str], type: str, client_ranks: list
             else:
                 return {}
 
-        obj = fedboard.read_cached_obj('data', 'partition', f'{client_id}', rd)
+        obj = fedboard.read_obj_with_cache('data', 'partition', f'{client_id}', rd)
         res[client_id] = obj
     return res
