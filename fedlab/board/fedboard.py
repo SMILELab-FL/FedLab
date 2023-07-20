@@ -26,14 +26,6 @@ _roles: int = 3
 _rank = 0
 
 
-def get_delegate():
-    return _delegate
-
-
-def get_log_dir():
-    return _dir
-
-
 def register(id: str = None,
              log_dir: str = None,
              mode='standalone',
@@ -91,6 +83,8 @@ def enable_builtin_charts(delegate: FedBoardDelegate):
     """
     Enable builtin charts, including 'parameters' section and 'dataset' section.
     A dataset-reading delegate is required to enable these charts
+    To enable the 'client parameters' chart,
+        all clients' parameters should be logged at every round, using a key = 'client_params'
     Args:
         delegate (FedBoardDelegate): dataset-reading delegate
 
@@ -108,7 +102,7 @@ def enable_builtin_charts(delegate: FedBoardDelegate):
 
 def start(port=8080):
     """
-    Start Fedboard offline (seperated from the experiment)
+    Start Fedboard, the process will be blocked
     Args:
         port: Which port will the board run in
     """
@@ -123,21 +117,10 @@ def start(port=8080):
     _app.run(host='0.0.0.0', port=port, debug=False, dev_tools_ui=True, use_reloader=False)
 
 
-class RuntimeFedBoard():
+class RuntimeFedBoard:
 
     def __init__(self, port):
         self.port = port
-
-    # def _start_app(self):
-    #     if _dir is None:
-    #         logging.error('FedBoard hasn\'t been initialized!')
-    #         return
-    #     if not is_board_shower(_roles):
-    #         logging.error('This process cannot start FedBoard!')
-    #         return
-    #     _set_up_layout(_app)
-    #     _update_meta_file(_dir, 'meta', {'port': self.port})
-    #     _app.run(host='0.0.0.0', port=self.port, debug=False, dev_tools_ui=True, use_reloader=False)
 
     def __enter__(self):
         self.p1 = Thread(target=start, daemon=True, args=[self.port])
@@ -150,6 +133,7 @@ class RuntimeFedBoard():
 def log(round: int, metrics: dict[str, Any] = None, client_metrics: dict[str, dict[str, Any]] = None,
         main_metric_name: str = None, client_main_metric_name: str = None, **kwargs):
     """
+    Log the intermediate results to FedBoard.
 
     Args:
 
@@ -158,9 +142,6 @@ def log(round: int, metrics: dict[str, Any] = None, client_metrics: dict[str, di
         client_metrics (dict): Client performance at this round. E.g., {'Client0':{'loss':0.01, 'acc':0.85}, 'Client1':...}
         main_metric_name (str): Main global metric. E.g., 'loss'
         client_main_metric_name (str): Main Client metric. E.g., 'acc'
-
-
-    Returns:
 
     """
     if _dir is None:
@@ -194,13 +175,11 @@ def log(round: int, metrics: dict[str, Any] = None, client_metrics: dict[str, di
 
 def add_section(section: str, type: str):
     """
+    Add a figure section to FedBoard
 
     Args:
         section (str): Section name
         type (str): Section type, can be 'normal' and 'slider', when set to 'slider', additional
-
-
-    Returns:
 
     """
     if _dir is None:
@@ -246,11 +225,16 @@ def add_chart(section=None, figure_name=None, span=0.5):
     return _add_chart(section=section, figure_name=figure_name, span=span)
 
 
-def read_logged_obj(round: int, type: str):
-    return _read_log_from_fs(_dir, _role_id, type='params', sub_type=type, name=f'rd{round}')
+def read_logged_obj(round: int, type: str) -> dict[str:Any]:
+    f"""
+    Read objects logged by all roles at a specific round
+    Args:
+        round: Global communication round
+        type: Log type
 
-
-def read_logged_obj_all_roles(round: int, type: str) -> dict[str:Any]:
+    Returns:
+        A dict whose keys are role_ids and values are logged objects
+    """
     res = {}
     for role_id in get_all_roles():
         obj = _read_log_from_fs(_dir, role_id, type='params', sub_type=type, name=f'rd{round}')
@@ -259,11 +243,45 @@ def read_logged_obj_all_roles(round: int, type: str) -> dict[str:Any]:
     return res
 
 
+def read_logged_obj_current_process(round: int, type: str):
+    return _read_log_from_fs(_dir, _role_id, type='params', sub_type=type, name=f'rd{round}')
+
+
 def get_all_roles():
     return get_role_ids(_dir)
 
 
-def read_cached_obj(type: str, sub_type: str, key: str, creator: callable):
+def get_delegate() -> FedBoardDelegate | None:
+    """
+    Get the dataset-reading delegate object
+    Returns: delegate
+
+    """
+    return _delegate
+
+
+def get_log_dir() -> str:
+    """
+    Get the logging directory
+    Returns: dir
+
+    """
+    return _dir
+
+
+def read_obj_with_cache(type: str, sub_type: str, key: str, creator: callable) -> Any:
+    """
+    Load from cache or create an object
+    Args:
+        type: object type
+        sub_type: object sub-type
+        key: object name
+        creator: The object creating function
+
+    Returns:
+        object:Any, new created or loaded from cache
+
+    """
     obj = _read_cached_from_fs(_dir, type=type, sub_type=sub_type, name=key)
     if not obj:
         obj = creator()
