@@ -1,4 +1,4 @@
-from .base_sampler import FedSampler
+from fedlab.contrib.client_sampler.base_sampler import FedSampler
 import numpy as np
 
 class RandomSampler(FedSampler):
