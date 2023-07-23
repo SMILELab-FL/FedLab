@@ -261,9 +261,6 @@ def client_inner_dirichlet_partition(targets, num_clients, num_classes, dir_alph
     if not isinstance(targets, np.ndarray):
         targets = np.array(targets)
 
-    rand_perm = np.random.permutation(targets.shape[0])
-    targets = targets[rand_perm]
-
     class_priors = np.random.dirichlet(alpha=[dir_alpha] * num_classes,
                                        size=num_clients)
     prior_cumsum = np.cumsum(class_priors, axis=1)
