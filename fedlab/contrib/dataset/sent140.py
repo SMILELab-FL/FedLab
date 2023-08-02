@@ -33,9 +33,7 @@ class Sent140Dataset(Dataset):
         self.data_token = []
         self.data_tokens_tensor = []
         self.targets_tensor = []
-        self.vocab = None
         self.tokenizer = tokenizer if tokenizer else Tokenizer()
-        self.fix_len = None
 
         self._process_data_target()
         if is_to_tokens:
@@ -63,28 +61,28 @@ class Sent140Dataset(Dataset):
         if len(self.data_tokens_tensor) > 0:
             self.data_tokens_tensor.clear()
             self.targets_tensor.clear()
-        self.vocab = vocab
-        self.fix_len = fix_len
-        pad_idx = self.vocab.get_index('<pad>')
+        pad_idx = vocab.get_index('<pad>')
         assert self.data_token is not None
         for tokens in self.data_token:
-            self.data_tokens_tensor.append(
-                self.__encode_tokens(tokens, pad_idx))
+            self.data_tokens_tensor.append(self.__encode_tokens(tokens, vocab, pad_idx, fix_len))
         for target in self.targets:
             self.targets_tensor.append(torch.tensor(target))
 
-    def __encode_tokens(self, tokens, pad_idx) -> torch.Tensor:
+    def __encode_tokens(self, tokens, vocab, pad_idx, fix_len) -> torch.Tensor:
         """encode `fix_len` length for token_data to get indices list in `self.vocab`
         if one sentence length is shorter than fix_len, it will use pad word for padding to fix_len
         if one sentence length is longer than fix_len, it will cut the first max_words words
         Args:
             tokens (list[str]): data after tokenizer
+            vocab  (fedlab_benchmark.leaf.nlp_utils.util.vocab): vocab for data_token
+            pad_idx (int): '<pad>' index in vocab
+            fix_len (int): max length of sentence
         Returns:
             integer list of indices with `fix_len` length for tokens input
         """
-        x = [pad_idx for _ in range(self.fix_len)]
-        for idx, word in enumerate(tokens[:self.fix_len]):
-            x[idx] = self.vocab.get_index(word)
+        x = [pad_idx for _ in range(fix_len)]
+        for idx, word in enumerate(tokens[:fix_len]):
+            x[idx] = vocab.get_index(word)
         return torch.tensor(x)
 
     def __len__(self):
