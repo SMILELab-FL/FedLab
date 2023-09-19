@@ -26,14 +26,17 @@ from ...utils.dataset.functional import noniid_slicing, random_slicing
 class PathologicalMNIST(FedDataset):
     """The partition stratigy in FedAvg. See http://proceedings.mlr.press/v54/mcmahan17a?ref=https://githubhelp.com
 
-        Args:
-            root (str): Path to download raw dataset.
-            path (str): Path to save partitioned subdataset.
-            num_clients (int): Number of clients.
-            shards (int, optional): Sort the dataset by the label, and uniformly partition them into shards. Then 
-            download (bool, optional): Download. Defaults to True.
-        """
-    def __init__(self, root, path, num_clients=100, shards=200, download=True, preprocess=False) -> None:
+    Args:
+        root (str): Path to download raw dataset.
+        path (str): Path to save partitioned subdataset.
+        num_clients (int): Number of clients.
+        shards (int, optional): Sort the dataset by the label, and uniformly partition them into shards. Then
+        download (bool, optional): Download. Defaults to True.
+    """
+
+    def __init__(
+        self, root, path, num_clients=100, shards=200, download=True, preprocess=False
+    ) -> None:
         self.root = os.path.expanduser(root)
         self.path = path
         self.num_clients = num_clients
@@ -48,15 +51,19 @@ class PathologicalMNIST(FedDataset):
 
         if os.path.exists(self.path) is not True:
             os.mkdir(self.path)
-        
+
         if os.path.exists(os.path.join(self.path, "train")) is not True:
             os.mkdir(os.path.join(self.path, "train"))
             os.mkdir(os.path.join(self.path, "var"))
             os.mkdir(os.path.join(self.path, "test"))
-            
+
         # train
-        mnist = torchvision.datasets.MNIST(self.root, train=True, download=self.download,
-                                           transform=transforms.ToTensor())
+        mnist = torchvision.datasets.MNIST(
+            self.root,
+            train=True,
+            download=self.download,
+            transform=transforms.ToTensor(),
+        )
         data_indices = noniid_slicing(mnist, self.num_clients, self.shards)
 
         samples, labels = [], []
@@ -70,9 +77,25 @@ class PathologicalMNIST(FedDataset):
                 data.append(x)
                 label.append(y)
             dataset = BaseDataset(data, label)
-            torch.save(dataset, os.path.join(self.path, "train", "data{}.pkl".format(id)))
+            torch.save(
+                dataset, os.path.join(self.path, "train", "data{}.pkl".format(id))
+            )
 
-    def get_dataset(self, id, type="train"):
+        # test
+        mnist_test = torchvision.datasets.MNIST(
+            self.root,
+            train=False,
+            download=self.download,
+            transform=transforms.ToTensor(),
+        )
+        test_samples, test_labels = [], []
+        for x, y in mnist_test:
+            test_samples.append(x)
+            test_labels.append(y)
+        test_dataset = BaseDataset(test_samples, test_labels)
+        torch.save(test_dataset, os.path.join(self.path, "test", "test.pkl"))
+
+    def get_dataset(self, id=None, type="train"):
         """Load subdataset for client with client ID ``cid`` from local file.
 
         Args:
@@ -82,10 +105,13 @@ class PathologicalMNIST(FedDataset):
         Returns:
             Dataset
         """
-        dataset = torch.load(os.path.join(self.path, type, "data{}.pkl".format(id)))
+        if type == "train":
+            dataset = torch.load(os.path.join(self.path, type, "data{}.pkl".format(id)))
+        else:
+            dataset = torch.load(os.path.join(self.path, "test", "test.pkl"))
         return dataset
 
-    def get_dataloader(self, id, batch_size=None, type="train"):
+    def get_dataloader(self, id=None, batch_size=None, type="train"):
         """Return dataload for client with client ID ``cid``.
 
         Args:

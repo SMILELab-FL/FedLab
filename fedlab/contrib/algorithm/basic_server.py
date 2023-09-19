@@ -13,11 +13,13 @@
 # limitations under the License.
 
 import torch
+from torch import nn
 import random
 from copy import deepcopy
 
 from typing import List
 from ...utils import Logger, Aggregators, SerializationTool
+from ...utils.functional import evaluate
 from ...core.server.handler import ServerHandler
 from ..client_sampler.base_sampler import FedSampler
 from ..client_sampler.uniform_sampler import RandomSampler
@@ -36,7 +38,7 @@ class SyncServerHandler(ServerHandler):
     Args:
         model (torch.nn.Module): model trained by federated learning.
         global_round (int): stop condition. Shut down FL system when global round is reached.
-        num_clients (int): number of clients in FL. Default: 0 (initialized external). 
+        num_clients (int): number of clients in FL. Default: 0 (initialized external).
         sample_ratio (float): the result of ``sample_ratio * num_clients`` is the number of clients for every FL round.
         cuda (bool): use GPUs or not. Default: ``False``.
         device (str, optional): assign model/data to the given GPUs. E.g., 'device:0' or 'device:0,1'. Defaults to None. If device is None and cuda is True, FedLab will set the gpu with the largest memory as default.
@@ -148,6 +150,19 @@ class SyncServerHandler(ServerHandler):
             return True  # return True to end this round.
         else:
             return False
+
+    def setup_dataset(self, dataset) -> None:
+        self.dataset = dataset
+
+    def evaluate(self):
+        self._model.eval()
+        test_loader = self.dataset.get_dataloader(type="test", batch_size=128)
+        loss_, acc_ = evaluate(self._model, nn.CrossEntropyLoss(), test_loader)
+        self._LOGGER.info(
+            f"Round [{self.round - 1}/{self.global_round}] test performance on server: \t Loss: {loss_:.5f} \t Acc: {100*acc_:.3f}%"
+        )
+
+        return loss_, acc_
 
 
 class AsyncServerHandler(ServerHandler):
