@@ -47,7 +47,7 @@ We provide tutorials in jupyter notebook format for FedLab beginners in FedLab\t
 ```
 # example of standalone
 $ cd ./examples/standalone/
-$ python standalone.py --total_client 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
+$ python standalone.py --total_clients 100 --com_round 3 --sample_ratio 0.1 --batch_size 100 --epochs 5 --lr 0.02
 ```
 
 ## Architecture
