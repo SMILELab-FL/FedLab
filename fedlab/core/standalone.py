@@ -15,6 +15,7 @@
 from .client.trainer import SerialClientTrainer
 from .server.handler import ServerHandler
 
+
 class StandalonePipeline(object):
     def __init__(self, handler: ServerHandler, trainer: SerialClientTrainer):
         """Perform standalone simulation process.
@@ -48,4 +49,4 @@ class StandalonePipeline(object):
             # self.handler.evaluate()
 
     def evaluate(self):
-        print("This is a example implementation. Please read the source code at fedlab.core.standalone.")
+        loss_, acc_ = self.handler.evaluate()

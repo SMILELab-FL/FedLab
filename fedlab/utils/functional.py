@@ -44,14 +44,14 @@ class AverageMeter(object):
 
     def update(self, val, n=1):
         self.val = val
-        self.sum += val
+        self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
 
 
 def evaluate(model, criterion, test_loader):
     """Evaluate classify task model accuracy.
-    
+
     Returns:
         (loss.sum, acc.avg)
     """
@@ -62,6 +62,7 @@ def evaluate(model, criterion, test_loader):
     acc_ = AverageMeter()
     with torch.no_grad():
         for inputs, labels in test_loader:
+            batch_size = len(labels)
             inputs = inputs.to(gpu)
             labels = labels.to(gpu)
 
@@ -69,10 +70,10 @@ def evaluate(model, criterion, test_loader):
             loss = criterion(outputs, labels)
 
             _, predicted = torch.max(outputs, 1)
-            loss_.update(loss.item())
-            acc_.update(torch.sum(predicted.eq(labels)).item(), len(labels))
+            loss_.update(loss.item(), batch_size)
+            acc_.update(torch.sum(predicted.eq(labels)).item() / batch_size, batch_size)
 
-    return loss_.sum, acc_.avg
+    return loss_.avg, acc_.avg
 
 
 def read_config_from_json(json_file: str, user_name: str):
@@ -114,8 +115,12 @@ def read_config_from_json(json_file: str, user_name: str):
     with open(json_file) as f:
         config = json.load(f)
     config_info = config[user_name]
-    return (config_info["ip"], config_info["port"], config_info["world_size"],
-            config_info["rank"])
+    return (
+        config_info["ip"],
+        config_info["port"],
+        config_info["world_size"],
+        config_info["rank"],
+    )
 
 
 def get_best_gpu():
@@ -126,7 +131,7 @@ def get_best_gpu():
 
     if "CUDA_VISIBLE_DEVICES" in os.environ.keys() is not None:
         cuda_devices = [
-            int(device) for device in os.environ["CUDA_VISIBLE_DEVICES"].split(',')
+            int(device) for device in os.environ["CUDA_VISIBLE_DEVICES"].split(",")
         ]
     else:
         cuda_devices = range(deviceCount)
@@ -142,11 +147,7 @@ def get_best_gpu():
     return torch.device("cuda:%d" % (best_device_index))
 
 
-def partition_report(targets,
-                     data_indices,
-                     class_num=None,
-                     verbose=True,
-                     file=None):
+def partition_report(targets, data_indices, class_num=None, verbose=True, file=None):
     """Generate data partition report for clients in ``data_indices``.
 
     Generate data partition report for each client according to ``data_indices``, including
@@ -203,12 +204,10 @@ def partition_report(targets,
     if not class_num:
         class_num = max(targets) + 1
 
-    sorted_cid = sorted(
-        data_indices.keys())  # sort client id in ascending order
+    sorted_cid = sorted(data_indices.keys())  # sort client id in ascending order
 
     header_line = "Class frequencies:"
-    col_name = "client," + ','.join([f"class{i}"
-                                     for i in range(class_num)]) + ",Amount"
+    col_name = "client," + ",".join([f"class{i}" for i in range(class_num)]) + ",Amount"
 
     if verbose:
         print(header_line)
@@ -221,16 +220,21 @@ def partition_report(targets,
     for client_id in sorted_cid:
         indices = data_indices[client_id]
         client_targets = targets[indices]
-        client_sample_num = len(
-            indices)  # total number of samples of current client
-        client_target_cnt = Counter(
-            client_targets)  # { cls1: num1, cls2: num2, ... }
+        client_sample_num = len(indices)  # total number of samples of current client
+        client_target_cnt = Counter(client_targets)  # { cls1: num1, cls2: num2, ... }
 
-        report_line = f"Client {client_id:3d}," + \
-                      ','.join([
-                          f"{client_target_cnt[cls] / client_sample_num:.3f}" if cls in client_target_cnt else "0.00"
-                          for cls in range(class_num)]) + \
-                      f",{client_sample_num}"
+        report_line = (
+            f"Client {client_id:3d},"
+            + ",".join(
+                [
+                    f"{client_target_cnt[cls] / client_sample_num:.3f}"
+                    if cls in client_target_cnt
+                    else "0.00"
+                    for cls in range(class_num)
+                ]
+            )
+            + f",{client_sample_num}"
+        )
         if verbose:
             print(report_line)
         if file is not None:
@@ -240,4 +244,3 @@ def partition_report(targets,
         fh = open(file, "w")
         fh.write("\n".join(reports))
         fh.close()
-
