@@ -24,7 +24,7 @@ from fedlab.contrib.dataset.pathological_mnist import PathologicalMNIST
 
 # configuration
 parser = argparse.ArgumentParser(description="Standalone training example")
-parser.add_argument("--total_client", type=int, default=100)
+parser.add_argument("--total_clients", type=int, default=100)
 parser.add_argument("--com_round", type=int)
 
 parser.add_argument("--sample_ratio", type=float)
@@ -34,18 +34,26 @@ parser.add_argument("--lr", type=float)
 
 args = parser.parse_args()
 
-model =MLP(784, 10)
+model = MLP(784, 10)
 
 # server
-handler = SyncServerHandler(model, args.com_round, args.total_clients, args.sample_ratio)
+handler = SyncServerHandler(
+    model, args.com_round, args.total_clients, args.sample_ratio
+)
 
 # client
-trainer = SGDSerialClientTrainer(model, args.total_client, cuda=True)
-dataset = PathologicalMNIST(root='../../datasets/mnist/', path="../../datasets/mnist/", num_clients=args.total_client)
+trainer = SGDSerialClientTrainer(model, args.total_clients, cuda=True)
+dataset = PathologicalMNIST(
+    root="../../datasets/mnist/",
+    path="../../datasets/mnist/",
+    num_clients=args.total_clients,
+)
 dataset.preprocess()
+
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 
+handler.setup_dataset(dataset)
 # main
 pipeline = StandalonePipeline(handler, trainer)
 pipeline.main()
