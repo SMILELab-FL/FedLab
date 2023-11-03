@@ -19,8 +19,7 @@ class ScaffoldServerHandler(SyncServerHandler):
 
     def setup_optim(self, lr):
         self.lr = lr
-        # self.global_c = torch.zeros_like(self.model_parameters)
-        self.global_c = torch.zeros_like(self.model_grad_parameters)
+        self.global_c = torch.zeros_like(self.model_parameters)
 
     def global_update(self, buffer):
         # unpack
@@ -79,10 +78,10 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
                 grad = self.model_grads
                 grad = grad - self.cs[id] + global_c
                 idx = 0
-
+                
                 parameters = self._model.parameters()
                 for p in self._model.state_dict().values():
-                    if p.grad is None: # batchnorm have no grad
+                    if p.grad is None: # Batchnorm have no grad
                         layer_size = p.numel()
                     else:
                         parameter = next(parameters)
@@ -97,11 +96,11 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
                 #     #parameter.grad = parameter.grad - self.cs[id][idx:idx + layer_size].view(parameter.grad.shape) + global_c[idx:idx + layer_size].view(parameter.grad.shape)
                 #     parameter.grad.data[:] = grad[idx:idx+layer_size].view(shape)[:]
                 #     idx += layer_size
-                # print(idx)
 
                 self.optimizer.step()
 
         dy = self.model_parameters - frz_model
-        dc = -1.0 / (self.epochs * len(train_loader) * self.lr) * dy - global_c  # ????
+        dc = -1.0 / (self.epochs * len(train_loader) * self.lr) * dy - global_c
         self.cs[id] += dc
         return [dy, dc]
+        
