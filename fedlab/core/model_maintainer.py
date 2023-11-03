@@ -61,6 +61,20 @@ class ModelMaintainer(object):
         return SerializationTool.serialize_model(self._model)
 
     @property
+    def model_grads(self) -> torch.Tensor: 
+        """Return serialized model gradients(base on model.state_dict(), Shape is the same as model_parameters)."""
+        params = self._model.state_dict()
+        for name, p in self._model.named_parameters():
+            params[name].grad = p.grad
+        for key in params:
+            if params[key].grad is None:
+                params[key].grad = torch.zeros_like(params[key])
+        gradients = [param.grad.data.view(-1) for param in params.values()]
+        m_gradients = torch.cat(gradients)
+        m_gradients = m_gradients.cpu()
+        return m_gradients
+
+    @property
     def model_gradients(self) -> torch.Tensor:
         """Return serialized model gradients."""
         return SerializationTool.serialize_model_gradients(self._model)
