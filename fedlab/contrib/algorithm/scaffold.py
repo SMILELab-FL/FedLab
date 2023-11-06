@@ -74,15 +74,28 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
                 self.optimizer.zero_grad()
                 loss.backward()
 
-                grad = self.model_gradients
+                # grad = self.model_gradients
+                grad = self.model_grads
                 grad = grad - self.cs[id] + global_c
                 idx = 0
-                for parameter in self._model.parameters():
-                    layer_size = parameter.grad.numel()
-                    shape = parameter.grad.shape
-                    #parameter.grad = parameter.grad - self.cs[id][idx:idx + layer_size].view(parameter.grad.shape) + global_c[idx:idx + layer_size].view(parameter.grad.shape)
-                    parameter.grad.data[:] = grad[idx:idx+layer_size].view(shape)[:]
+                
+                parameters = self._model.parameters()
+                for p in self._model.state_dict().values():
+                    if p.grad is None: # Batchnorm have no grad
+                        layer_size = p.numel()
+                    else:
+                        parameter = next(parameters)
+                        layer_size = parameter.data.numel()
+                        shape = parameter.grad.shape
+                        parameter.grad.data[:] = grad[idx:idx+layer_size].view(shape)[:]
                     idx += layer_size
+
+                # for parameter in self._model.parameters():
+                #     layer_size = parameter.grad.numel()
+                #     shape = parameter.grad.shape
+                #     #parameter.grad = parameter.grad - self.cs[id][idx:idx + layer_size].view(parameter.grad.shape) + global_c[idx:idx + layer_size].view(parameter.grad.shape)
+                #     parameter.grad.data[:] = grad[idx:idx+layer_size].view(shape)[:]
+                #     idx += layer_size
 
                 self.optimizer.step()
 
@@ -90,3 +103,4 @@ class ScaffoldSerialClientTrainer(SGDSerialClientTrainer):
         dc = -1.0 / (self.epochs * len(train_loader) * self.lr) * dy - global_c
         self.cs[id] += dc
         return [dy, dc]
+        
