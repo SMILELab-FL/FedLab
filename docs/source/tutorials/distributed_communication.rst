@@ -8,9 +8,9 @@ Distributed Communication
 Initialize distributed network
 ======================================
 
-FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication tools. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. Here is the details of how to initialize the distributed network. 
+FedLab uses `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ as point-to-point communication tools. The communication backend is Gloo as default. FedLab processes send/receive data through TCP network connection. Here are the details of how to initialize the distributed network. 
 
-You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed`` network initialization works. :class:`DistNetwork` is for quickly network configuration, which you can create one as follows:
+You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.distributed`` network initialization works. :class:`DistNetwork` is for quick network configuration, which you can create as follows:
 
 .. code-block:: python
 
@@ -29,7 +29,7 @@ You need to assign right ethernet to :class:`DistNetwork`, making sure ``torch.d
 - Make sure ``world_size`` is the same across process.
 - Rank should be different (from ``0`` to ``world_size-1``).
 - world_size = 1 (server) + client number.
-- The ethernet is None as default. torch.distributed will try finding the right ethernet automatically. 
+- The ethernet is None as default. ``torch.distributed`` will try finding the right ethernet automatically. 
 - The ``ethernet_name`` must be checked (using ``ifconfig``). Otherwise, network initialization would fail.
 
 If the automatically detected interface does not work, users are required to assign a right network interface for Gloo, by assigning in code or setting the environment variables ``GLOO_SOCKET_IFNAME``, for example ``export GLOO_SOCKET_IFNAME=eth0`` or ``os.environ['GLOO_SOCKET_IFNAME'] = "eth0"``.
@@ -45,7 +45,7 @@ If the automatically detected interface does not work, users are required to ass
 Point-to-point communication
 =============================
 
-In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`. These APIs suppor flexible pytorch tensor communication.
+In recent update, we hide the communication details from user and provide simple APIs. :class:`DistNetwork` now provies two basic communication APIs: :meth:`send()` and :meth:`recv()`. These APIs support flexible pytorch tensor communication.
 
 **Sender process**:
 
@@ -80,7 +80,7 @@ In recent update, we hide the communication details from user and provide simple
 Further understanding of FedLab communication
 ================================================
 
-FedLab pack content into a pre-defined package data structure. :meth:`send()` and :meth:`recv()` are implemented like:
+FedLab packs content into a pre-defined package data structure. :meth:`send()` and :meth:`recv()` are implemented like:
 
 .. code-block:: python
 
@@ -123,7 +123,7 @@ Currently, you can create a network package from following methods:
     tensor_list = [torch.rand(size) for size in tensor_sizes]
     package = Package(content=tensor_list)
 
-3. append a tensor to exist package
+3. append a tensor to existing package
 
 .. code-block:: python
 
@@ -133,7 +133,7 @@ Currently, you can create a network package from following methods:
     new_tensor = torch.Tensor(size=(8,))
     package.append_tensor(new_tensor)
 
-4. append a tensor list to exist package
+4. append a tensor list to existing package
 
 .. code-block:: python
 

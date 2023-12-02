@@ -1,7 +1,7 @@
-# This is a example of fedlab installation via Dockerfile
+# This is an example of fedlab installation via Dockerfile
 
 # replace the value of TORCH_CONTAINER with pytorch image that satisfies your cuda version
-# you can finde it in https://hub.docker.com/r/pytorch/pytorch/tags
+# you can find it in https://hub.docker.com/r/pytorch/pytorch/tags
 ARG TORCH_CONTAINER=1.5-cuda10.1-cudnn7-runtime
 
 FROM pytorch/pytorch:${TORCH_CONTAINER}
