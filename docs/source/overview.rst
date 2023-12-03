@@ -8,7 +8,7 @@ Introduction
 
 Federated learning (FL), proposed by Google at the very beginning, is recently a burgeoning research area of machine learning, which aims to protect individual data privacy in distributed machine learning process, especially in finance, smart healthcare and edge computing. Different from traditional data-centered distributed machine learning, participants in FL setting utilize localized data to train local model, then leverages specific strategies with other participants to acquire the final model collaboratively, avoiding direct data sharing behavior.
 
-To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce highly customizable framework **FedLab** in this work. **FedLab** is builded on the top of `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ modules and provides the necessary modules for FL simulation, including communication, compression, model optimization, data partition and other functional modules. **FedLab** users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmark implemented in **FedLab** are also presented.
+To relieve the burden of researchers in implementing FL algorithms and emancipate FL scientists from repetitive implementation of basic FL setting, we introduce a highly customizable framework **FedLab** in this work. **FedLab** is built on the top of `torch.distributed <https://pytorch.org/docs/stable/distributed.html>`_ modules and provides the necessary modules for FL simulation, including communication, compression, model optimization, data partition and other functional modules. **FedLab** users can build FL simulation environment with custom modules like playing with LEGO bricks. For better understanding and easy usage, FL algorithm benchmarks implemented in **FedLab** are also presented.
 
 For more details, please read our `full paper`__.
 
@@ -95,7 +95,7 @@ Experimental Scene
 Standalone
 -----------
 
-**FedLab** implements ``SerialTrainer`` for FL simulation in single system process. ``SerialTrainer`` allows user to simulate a FL system with multiple clients executing one by one in serial in one ``SerialTrainer``. It is designed for simulation in environment with limited computation resources.
+**FedLab** implements ``SerialTrainer`` for FL simulation in single system process. ``SerialTrainer`` allows user to simulate a FL system with multiple clients executing one by one in serial in one ``SerialTrainer``. It is designed for simulation in environment with limited computational resources.
 
 .. image:: ../imgs/fedlab-SerialTrainer.svg
    :align: center
@@ -108,7 +108,7 @@ Standalone
 Cross-process
 -------------
 
-**FedLab** enables FL simulation tasks to be deployed on multiple processes with correct network configuration (these processes can be run on single or multiple machines). More flexibly in parallel, ``SerialTrainer`` can replace the regular ``Trainer`` directly. Users can balance the calculation burden among processes by choosing different ``Trainer``. In practice, machines with more computation resources can be assigned with more workload of calculation.
+**FedLab** enables FL simulation tasks to be deployed on multiple processes with correct network configuration (these processes can be run on single or multiple machines). More flexibly in parallel, ``SerialTrainer`` can replace the regular ``Trainer`` directly. Users can balance the calculation burden among processes by choosing different ``Trainer``. In practice, machines with more computational resources can be assigned with more workload of calculation.
 
 .. note::
 

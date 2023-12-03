@@ -12,7 +12,7 @@ The communication APIs of **FedLab** is built on `torch.distributed <https://pyt
 Setup docker environment
 ==========================
 
-In this section, we introduce how to setup a docker image for **FedLab** program. Here we provide the Dockerfile for building a FedLab image. Our FedLab environment is based on PytTorch. Therefore, we just need install **FedLab** on the provided PytTorch image.
+In this section, we introduce how to setup a docker image for **FedLab** program. Here we provide the Dockerfile for building a FedLab image. Our FedLab environment is based on PytTorch. Therefore, we just need install **FedLab** on the provided PyTorch image.
 
 Dockerfile:
 
@@ -45,9 +45,9 @@ Dockerfile for different platforms
 
 The steps of modifying Dockerfile for different platforms:
 
-- **Step 1:** Find an appropriate base pytorch image for your platform from dockerhub https://hub.docker.com/r/pytorch/pytorch/tags. Then, replace the value of `TORCH_CONTAINER` in demo dockerfile.
+- **Step 1:** Find an appropriate base PyTorch image for your platform from dockerhub https://hub.docker.com/r/pytorch/pytorch/tags. Then, replace the value of `TORCH_CONTAINER` in demo dockerfile.
 
-- **Step 2:** To install specific PyTorch version, you need to choose a correct install command, which can be find in https://pytorch.org/get-started/previous-versions/. Then, modify the 16-th command in demo dockerfile.
+- **Step 2:** To install specific PyTorch version, you need to choose a correct install command, which can be found at https://pytorch.org/get-started/previous-versions/. Then, modify the 16-th command in demo dockerfile.
 
 - **Step 3:** Build the images for your own platform by running the command below in the dir of Dockerfile.
 
@@ -57,12 +57,12 @@ The steps of modifying Dockerfile for different platforms:
 
 .. warning::
   
-    Using "--gpus all" and "--network=host" when start a docker container:
+    Be sure to use "--gpus all" and "--network=host" when starting a docker container:
 
     .. code-block:: shell-session
 
         $ docker run -itd --gpus all --network=host b23a9c46cd04(image name) /bin/bash
 
-    If you are not in China area, it is ok to remove line 11,12 and "-i https://pypi.mirrors.ustc.edu.cn/simple/" in line 19.
+    If you are not in China area, it is ok to remove line 11, 12 and "-i https://pypi.mirrors.ustc.edu.cn/simple/" in line 19.
 
 - **Finally:** Run your FedLab process in the different started containers.
