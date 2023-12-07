@@ -15,6 +15,7 @@
 import numpy as np
 import pandas as pd
 import warnings
+from collections import Counter
 
 
 def split_indices(num_cumsum, rand_perm):
@@ -517,3 +518,84 @@ def random_slicing(dataset, num_clients):
             np.random.choice(all_idxs, num_items, replace=False))
         all_idxs = list(set(all_idxs) - set(dict_users[i]))
     return dict_users
+
+
+def partition_report(targets, data_indices, class_num=None, verbose=True, file=None):
+    """Generate data partition report for clients in ``data_indices``.
+
+    Generate data partition report for each client according to ``data_indices``, including
+    ratio of each class and dataset size in current client. Report can be printed in screen or into
+    file. The output format is comma-separated values which can be read by :func:`pandas.read_csv`
+    or :func:`csv.reader`.
+
+    Args:
+        targets (list or numpy.ndarray): Targets for all data samples, with each element is in range of ``0`` to ``class_num-1``.
+        data_indices (dict): Dict of ``client_id: [data indices]``.
+        class_num (int, optional): Total number of classes. If set to ``None``, then ``class_num = max(targets) + 1``.
+        verbose (bool, optional): Whether print data partition report in screen. Default as ``True``.
+        file (str, optional): Output file name of data partition report. If ``None``, then no output in file. Default as ``None``.
+
+    Returns:
+        pd.DataFrame
+
+    Examples:
+        First generate synthetic data labels and data partition to obtain ``data_indices``
+        (``{ client_id: sample indices}``):
+
+        >>> sample_num = 15
+        >>> class_num = 4
+        >>> clients_num = 3
+        >>> num_per_client = int(sample_num/clients_num)
+        >>> labels = np.random.randint(class_num, size=sample_num)  # generate 15 labels, each label is 0 to 3
+        >>> rand_per = np.random.permutation(sample_num)
+        >>> # partition synthetic data into 3 clients
+        >>> data_indices = {0: rand_per[0:num_per_client],
+        ...                 1: rand_per[num_per_client:num_per_client*2],
+        ...                 2: rand_per[num_per_client*2:num_per_client*3]}
+
+        Check ``data_indices`` may look like:
+
+        >>> data_indices
+        {0: array([ 4,  1, 14,  8,  5]),
+         1: array([ 0, 13, 12,  3,  2]),
+         2: array([10,  9,  7,  6, 11])}
+
+        Now generate partition report for each client and each class:
+
+        >>> partition_report(labels, data_indices, class_num=class_num, verbose=True, file=None)
+        Class sample statistics:
+           cid  class-0  class-1  class-2  class-3  TotalAmount
+        0    0        3        2        0        0            5
+        1    1        1        1        1        2            5
+        2    2        3        1        1        0            5
+
+    """
+    if not isinstance(targets, np.ndarray):
+        targets = np.array(targets)
+
+    if not class_num:
+        class_num = max(targets) + 1
+
+    sorted_cid = sorted(data_indices.keys())  # sort client id in ascending order
+
+    stats_rows = []
+    for client_id in sorted_cid:
+        indices = data_indices[client_id]
+        client_targets = targets[indices]
+        client_sample_num = len(indices)  # total number of samples of current client
+        client_target_cnt = Counter(client_targets)  # { cls1: num1, cls2: num2, ... }
+        cur_client_stat = {'cid': client_id}
+        for cls in range(class_num):
+            cur_client_stat[f'class-{cls}'] = client_target_cnt[cls] if cls in client_target_cnt else 0
+        cur_client_stat['TotalAmount'] = client_sample_num
+        stats_rows.append(cur_client_stat)
+
+
+    stats_df = pd.DataFrame(stats_rows)
+    if file is not None:
+        stats_df.to_csv(file, header=True, index=False)
+    if verbose:
+        print("Class sample statistics:")
+        print(stats_df)
+
+    return stats_df
