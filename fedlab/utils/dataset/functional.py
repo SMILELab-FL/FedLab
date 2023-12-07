@@ -556,18 +556,18 @@ def partition_report(targets, data_indices, class_num=None, verbose=True, file=N
         Check ``data_indices`` may look like:
 
         >>> data_indices
-        {0: array([8, 6, 5, 7, 2]),
-         1: array([ 3, 10, 14,  4,  1]),
-         2: array([13,  9, 12, 11,  0])}
+        {0: array([ 4,  1, 14,  8,  5]),
+         1: array([ 0, 13, 12,  3,  2]),
+         2: array([10,  9,  7,  6, 11])}
 
         Now generate partition report for each client and each class:
 
         >>> partition_report(labels, data_indices, class_num=class_num, verbose=True, file=None)
         Class sample statistics:
-        client,class0,class1,class2,class3,Amount
-        Client   0,0.200,0.00,0.200,0.600,5
-        Client   1,0.400,0.200,0.200,0.200,5
-        Client   2,0.00,0.400,0.400,0.200,5
+           cid  class-0  class-1  class-2  class-3  TotalAmount
+        0    0        3        2        0        0            5
+        1    1        1        1        1        2            5
+        2    2        3        1        1        0            5
 
     """
     if not isinstance(targets, np.ndarray):

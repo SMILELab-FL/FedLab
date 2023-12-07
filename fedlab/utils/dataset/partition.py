@@ -266,6 +266,7 @@ class BasicPartitioner(DataPartitioner):
         self.client_dict = self._perform_partition()
         # get sample number count for each client
         self.client_sample_count = F.samples_num_count(self.client_dict, self.num_clients)
+        self.stats_report = F.partition_report(targets, self.client_dict, class_num=self.num_classes, verbose=False)
 
     def _perform_partition(self):
         if self.partition == "noniid-#label":
