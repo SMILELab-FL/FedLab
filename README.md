@@ -276,6 +276,44 @@ Non-iid partition used in [[1]](#1). Data example for 4 clients could be shown a
 </tbody>
 </table>
 
+### Partition Visualization
+
+For data distribution visualization in data partition, we provide `fedlab.utils.dataset.functional.feddata_scatterplot()` for users' convenience.
+
+Visualization for synthetic partition code below:
+```python
+import numpy as np
+from matplotlib import pyplot as plt
+from fedlab.utils.dataset.functional import feddata_scatterplot
+
+sample_num = 15
+class_num = 4
+clients_num = 3
+num_per_client = int(sample_num/clients_num)
+labels = np.random.randint(class_num, size=sample_num)  # generate 15 labels, each label is 0 to 3
+rand_per = np.random.permutation(sample_num)
+# partition synthetic data into 3 clients
+data_indices = {0: rand_per[0:num_per_client],
+                1: rand_per[num_per_client:num_per_client*2],
+                2: rand_per[num_per_client*2:num_per_client*3]}
+title = 'Data Distribution over Clients for Each Class'
+fig = feddata_scatterplot(labels.tolist(),
+                          data_indices,
+                          clients_num,
+                          class_num,
+                          figsize=(6, 4),
+                          max_size=200,
+                          title=title)
+plt.show(fig)
+fig.savefig(f'imgs/feddata-scatterplot-vis.png') 
+```
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/feddata-scatterplot-vis.png" height="300"></p>
+
+
+Visualization result for CIFAR-10 Dirichlet Non-IID with $\alpha=0.6$ on 5 clients:
+<p align="center"><img src="./tutorials/Datasets-DataPartitioner-tutorials/imgs/train_vis-noniid-labeldir.png" height="300"></p>
+
+
 ## Performance & Insights
 
 We provide the performance report of several reproduced federated learning algorithms to illustrate the correctness of FedLab in simulation. Furthermore, we describe several insights FedLab could provide for federated learning research. Without loss of generality, this section's experiments are conducted on partitioned MNIST datasets. The conclusions and observations in this section should still be valid in other data sets and scenarios.
