@@ -30,6 +30,7 @@ setup(
         "scikit-learn",
         "munch",
         "seaborn",
+        "matplotlib",
     ],
     python_requires=">=3.6",
     classifiers=[
