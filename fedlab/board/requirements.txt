@@ -1,7 +1,8 @@
-dash
-dash[diskcache]
-dash-mantine-components
-dash-core-components
-dash-cytoscape
-dash-html-components
-dash_iconify
+dash[diskcache]==2.7.0
+dash_cytoscape==0.3.0
+dash_iconify==0.1.2
+dash-core-components==2.0.0
+dash_mantine_components==0.12.1
+dash-html-components==2.0.0
+diskcache==5.4.0
+
