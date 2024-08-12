@@ -38,11 +38,11 @@ model = MLP(784, 10)
 
 # server
 handler = SyncServerHandler(
-    model, args.com_round, args.total_clients, args.sample_ratio
+    model, args.com_round, args.sample_ratio
 )
 
 # client
-trainer = SGDSerialClientTrainer(model, args.total_clients, cuda=True)
+trainer = SGDSerialClientTrainer(model, args.total_clients, cuda=False)
 dataset = PathologicalMNIST(
     root="../../datasets/mnist/",
     path="../../datasets/mnist/",
@@ -53,6 +53,7 @@ dataset.preprocess()
 trainer.setup_dataset(dataset)
 trainer.setup_optim(args.epochs, args.batch_size, args.lr)
 
+handler.num_clients = args.total_clients
 handler.setup_dataset(dataset)
 # main
 pipeline = StandalonePipeline(handler, trainer)
