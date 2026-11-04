@@ -14,6 +14,7 @@
 
 
 from .aggregator import Aggregators
+from .compressor import Int4BlockCompressor
 from .logger import Logger
 from .message_code import MessageCode
 from .serialization import SerializationTool
